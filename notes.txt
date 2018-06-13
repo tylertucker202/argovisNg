@@ -1,0 +1,17 @@
+Following instructions on leaflet-draw. After installing everything, I get the errors
+
+ERROR in Error: Metadata version mismatch for module
+ /home/tyler/ngArgo2/argo/my-ngx-leaflet-tutorial-ngcli/node_modules/@asymmetrik/ngx-leaflet-draw/dist/index.d.ts,
+  found version 4, expected 3
+
+Try: installing latest angular cli
+Result: fixed. I think it was that @asymmetrik/leaflet-draw needs @asymmetrik/leaflet versioin 3
+
+
+make sure leaflet-draw style sheet is included in .angular-cli.json
+
+"styles": [
+"styles.css",
+"../node_modules/leaflet/dist/leaflet.css",
+"../node_modules/leaflet-draw/dist/leaflet.draw.css"
+],

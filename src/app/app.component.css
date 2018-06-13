@@ -2,3 +2,19 @@
   height: 100%;
   padding: 0;
 }
+
+.left-half {
+  background-color: #F5F5F5;
+  position: absolute;
+  left: 0px;
+  width: 25%;
+  overflow:auto;
+}
+
+.right-half {
+  position: absolute;
+  right: 0px;
+  width: 75%;
+  height: 100%;
+  overflow:auto;
+}
