@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('ngx-leaflet-tutorial App', () => {
+describe('Argovis App', () => {
   let page: AppPage;
 
   beforeEach(() => {

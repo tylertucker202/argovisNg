@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { icon, latLng, Map, marker, point, polyline, tileLayer, featureGroup } from 'leaflet';
+import { icon, latLng, Map, marker, point, polyline, tileLayer, featureGroup, control } from 'leaflet';
+import * as L from 'leaflet';
+import '../../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js';
+//import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
+
 
 @Component({
   selector: 'app-leaflet-map',
   templateUrl: './leaflet-map.component.html',
-  styleUrls: ['./leaflet-map.component.css']
-})
+  styleUrls: ['./leaflet-map.component.css'],
+  })
 export class LeafletMapComponent {
 
   satelliteMap = tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -26,16 +30,15 @@ export class LeafletMapComponent {
     baseLayers: {
       'Esri World Imagery ': this.satelliteMap,
       'Google': this.googleMap, 
-      'Ocean basemap': this.Esri_OceanBasemap,
+      'Ocean Basemap': this.Esri_OceanBasemap,
     },
-    overlays: {}
   };
 
   options = {
-    layers: [ this.Esri_OceanBasemap],
+    layers: [this.Esri_OceanBasemap],
     zoom: 3,
     maxBounds: [[-180, -270], [180,270]],
-    center: latLng([ 46.879966, -121.726909 ])
+    center: latLng([ 46.879966, -121.726909 ]),
   };
 
   drawnItems = featureGroup();
@@ -70,6 +73,14 @@ export class LeafletMapComponent {
   
     onMapReady(map: Map) {
       this.drawnItems.addTo(map);
-  }
-
+      control.layers(this.layersControl.baseLayers, null, {position: 'topleft'}).addTo(map)
+      L.control.coordinates({
+        position:"topright",
+        //labelTemplateLat:"Latitude: {y}",
+        //labelTemplateLng:"Longitude: {x}",
+        useDMS:true,
+        labelTemplateLat:"N {y}",
+        labelTemplateLng:"E {x}",
+        decimals:2,}).addTo(map);
+    }
 }
