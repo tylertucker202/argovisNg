@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { MapProjectionService } from './map-projection.service';
 import { icon, latLng, Map, marker, point, polyline, tileLayer, featureGroup, control } from 'leaflet';
 import * as L from 'leaflet';
 import '../../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js';
-//import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
 
 
 @Component({
@@ -10,7 +10,27 @@ import '../../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5
   templateUrl: './leaflet-map.component.html',
   styleUrls: ['./leaflet-map.component.css'],
   })
+
 export class LeafletMapComponent {
+  public mProj = 'Web Mercator'
+  public constructor(private mapProjectionService: MapProjectionService) {}
+
+
+  ngOnInit() {
+    console.log('im in leaflet-map.component');
+    console.log('mProj starts as:')
+    console.log(this.mProj);
+    this.mapProjectionService.change.subscribe(mProj => {
+      this.mProj = mProj;
+      console.log('im in leaflet-map.component');
+      console.log('a change occured');
+      console.log(this.mProj);
+    });
+  }
+
+  private createWebMercator() {}
+  private createSouthernStereographic() {}
+  private createNorthernStereographic() {}
 
   satelliteMap = tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',

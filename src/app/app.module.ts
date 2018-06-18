@@ -15,6 +15,7 @@ import { GriddedClimComponent } from './navbar/gridded-clim/gridded-clim.compone
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
 import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-menu/map-proj-dropdown-menu.component';
+import { MapProjectionService } from './leaflet-map/map-projection.service'
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-me
     LeafletDrawModule.forRoot(),
     NgbModule.forRoot()
   ],
-  providers: [],
+  providers: [MapProjectionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
