@@ -6,6 +6,9 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { routes } from './app-routing.module';
 
+import "leaflet";
+import "leaflet-draw";
+
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AboutArgovisComponent } from './navbar/about-argovis/about-argovis.component';
@@ -15,7 +18,9 @@ import { GriddedClimComponent } from './navbar/gridded-clim/gridded-clim.compone
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
 import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-menu/map-proj-dropdown-menu.component';
-import { MapProjectionService } from './leaflet-map/map-projection.service'
+import { MapProjectionService } from './leaflet-map/map-projection.service';
+import { MapService } from './map.service';
+import { MapComponent } from './map/map.component'
 
 @NgModule({
   declarations: [
@@ -27,7 +32,8 @@ import { MapProjectionService } from './leaflet-map/map-projection.service'
     GriddedClimComponent,
     SidebarNavComponent,
     LeafletMapComponent,
-    MapProjDropdownMenuComponent
+    MapProjDropdownMenuComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +42,7 @@ import { MapProjectionService } from './leaflet-map/map-projection.service'
     LeafletDrawModule.forRoot(),
     NgbModule.forRoot()
   ],
-  providers: [MapProjectionService],
+  providers: [MapProjectionService, MapService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
