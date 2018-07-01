@@ -9,7 +9,9 @@
     "experimentalDecorators": true,
     "target": "es5",
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "node_modules/@types/leaflet",
+      "node_modules/@types/leaflet-draw"
     ],
     "lib": [
       "es2017",

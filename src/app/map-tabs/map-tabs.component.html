@@ -1,0 +1,17 @@
+<ngb-tabset (tabChange)="changeProj($event)">
+    <ngb-tab title="Web-Mercator" id="Web Mercator">
+      <ng-template ngbTabContent>
+        <app-map mProj="Web Mercator"></app-map>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="Southern Stereographic" id="Southern Stereographic">
+      <ng-template ngbTabContent>
+        <app-map mProj="Southern Stereographic"></app-map>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="Northern Stereographic" id="Northern Stereographic">
+      <ng-template ngbTabContent>
+        <app-map mProj="Northern Stereographic"></app-map>
+      </ng-template>
+    </ngb-tab>
+  </ngb-tabset>

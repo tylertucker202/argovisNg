@@ -20,7 +20,8 @@ import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-menu/map-proj-dropdown-menu.component';
 import { MapProjectionService } from './leaflet-map/map-projection.service';
 import { MapService } from './map.service';
-import { MapComponent } from './map/map.component'
+import { MapComponent } from './map/map.component';
+import { MapTabsComponent } from './map-tabs/map-tabs.component'
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { MapComponent } from './map/map.component'
     SidebarNavComponent,
     LeafletMapComponent,
     MapProjDropdownMenuComponent,
-    MapComponent
+    MapComponent,
+    MapTabsComponent
   ],
   imports: [
     BrowserModule,

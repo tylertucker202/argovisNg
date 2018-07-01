@@ -1,6 +1,15 @@
 .map {
   height: 100%;
   padding: 0;
+  display: block;
+}
+
+#map_canvas {
+  margin: 0;
+  padding: 0;
+  height: 400px;
+  border: 1px solid #ccc;
+  display: block;
 }
 
 .left-half {
@@ -18,4 +27,9 @@
   width: 75%;
   height: 100%;
   overflow:auto;
+  display: block;
+}
+
+.tabset, .tab-content, .tab-pane, .tabbable {
+  height:100%;
 }

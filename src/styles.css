@@ -31,3 +31,7 @@ html, body {
   padding:0;
   display:inherit
  }
+
+ .tabset, .tab-content, .tab-pane, .tabbable {
+  height:100%;
+}
