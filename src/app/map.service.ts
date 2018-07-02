@@ -98,7 +98,7 @@ export class MapService {
     //let container = $('<div />');
     //container.html(popupText);        
     layer.bindPopup(popupText);
-    //layer.on('add', function() { layer.openPopup(); });
+    layer.on('add', function() { layer.openPopup(); });
     //layer.on('mouseout', function() { layer.closePopup(); });
     drawnItems.addLayer(layer);
 }

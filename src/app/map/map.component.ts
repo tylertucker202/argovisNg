@@ -15,6 +15,7 @@ import * as L from "leaflet";
 export class MapComponent implements OnInit, OnDestroy {
   @Input() mProj: string;
   public map: L.Map;
+  public drawnItems: any;
   public constructor(public mapProjectionService: MapProjectionService, 
                      public mapService: MapService) {}
 
@@ -25,10 +26,10 @@ export class MapComponent implements OnInit, OnDestroy {
     //this.map = this.mapService.map;
     this.generateMap();
 
-    this.map.on('draw:created', function (event) {
+    this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       var layer = event.layer;
-      this.mapService.popupWindowCreation(layer);
-  });
+      this.mapService.popupWindowCreation(layer, this.drawnItems);
+    });
   }
 
   ngOnDestroy() {
@@ -82,7 +83,7 @@ export class MapComponent implements OnInit, OnDestroy {
                       layers: [this.mapService.baseMaps.ocean]})
                       .setView([ 46.88, -121.73 ], 2, );
 
-    var drawnItems = L.featureGroup();
+    this.drawnItems = L.featureGroup();
     var drawOptions = {
       position: 'topleft',
       draw: {
@@ -106,13 +107,13 @@ export class MapComponent implements OnInit, OnDestroy {
           circle: <false> false
       },
       edit: {
-        featureGroup: drawnItems,
+        featureGroup: this.drawnItems,
         polygon: {
             allowIntersection: <false> false
         }
     },
   }
-    drawnItems.addTo(this.map);
+    this.drawnItems.addTo(this.map);
     var drawControl = new L.Control.Draw(drawOptions);
     L.control.layers(this.mapService.baseMaps).addTo(this.map);
 

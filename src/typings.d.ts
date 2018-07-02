@@ -87,44 +87,44 @@ declare module 'leaflet' {
 
   }
 
-  module DrawEvents {
-    export interface Created {
-      /**
-       * Layer that was just created.
-       */
-      layer: L.Layer;
-      /**
-       * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
-       */
-      layerType: string;
-    }
+  // module DrawEvents {
+  //   export interface Created {
+  //     /**
+  //      * Layer that was just created.
+  //      */
+  //     layer: Polygon<any> | Rectangle<any>
+  //     /**
+  //      * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
+  //      */
+  //     layerType: string;
+  //   }
     
-    export interface Edited {
-      /**
-       * List of all layers just edited on the map.
-       */
-      layers: L.LayerGroup<L.Layer>;
-    }
+  //   export interface Edited {
+  //     /**
+  //      * List of all layers just edited on the map.
+  //      */
+  //     layers: LayerGroup<any>;
+  //   }
     
-    export interface Deleted {
-      /**
-       * List of all layers just removed from the map.
-       */
-      layers:  L.LayerGroup<L.Layer>;
-    }
+  //   export interface Deleted {
+  //     /**
+  //      * List of all layers just removed from the map.
+  //      */
+  //     layers:  L.LayerGroup<L.Layer>;
+  //   }
     
-    export interface DrawStart {
-      /**
-       * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
-       */
-      layerType: string;
-    }
+  //   export interface DrawStart {
+  //     /**
+  //      * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
+  //      */
+  //     layerType: string;
+  //   }
     
-    export interface DrawStop {
-      /**
-       * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
-       */
-      layerType: string;
-    }
-  }
+  //   export interface DrawStop {
+  //     /**
+  //      * The type of layer this is. One of: polyline, polygon, rectangle, circle, marker
+  //      */
+  //     layerType: string;
+  //   }
+  // }
 }
