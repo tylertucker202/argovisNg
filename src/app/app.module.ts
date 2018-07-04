@@ -8,6 +8,7 @@ import { routes } from './app-routing.module';
 
 import "leaflet";
 import "leaflet-draw";
+import "proj4leaflet";
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';

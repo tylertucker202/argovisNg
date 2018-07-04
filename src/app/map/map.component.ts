@@ -15,9 +15,8 @@ import * as L from "leaflet";
 export class MapComponent implements OnInit, OnDestroy {
   @Input() mProj: string;
   public map: L.Map;
-  public drawnItems: any;
-  public constructor(public mapProjectionService: MapProjectionService, 
-                     public mapService: MapService) {}
+  public drawnItems = L.featureGroup();
+  public constructor(public mapService: MapService) {}
 
   ngOnInit() {
     console.log('im in leaflet-map.component');
@@ -83,7 +82,7 @@ export class MapComponent implements OnInit, OnDestroy {
                       layers: [this.mapService.baseMaps.ocean]})
                       .setView([ 46.88, -121.73 ], 2, );
 
-    this.drawnItems = L.featureGroup();
+    //var drawnItems = L.featureGroup();
     var drawOptions = {
       position: 'topleft',
       draw: {

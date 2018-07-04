@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MapProjectionService } from '../leaflet-map/map-projection.service'
 
 @Component({
   selector: 'app-map-tabs',
@@ -10,10 +9,9 @@ export class MapTabsComponent implements OnInit {
 
   changeProj(evt: any) {
     console.log("tab change");
-    console.log(evt.nextId); //clicked tab is the nextId.
-    //this.mapProjectionService.setmProj(evt.nextId);
+    console.log(evt.nextId);
   }
-  constructor(private mapProjectionService: MapProjectionService) { }
+  constructor() { }
 
   ngOnInit() {
   }
