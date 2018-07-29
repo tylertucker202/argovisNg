@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClientModule } from '@angular/common/http';
 
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { routes } from './app-routing.module';
 
 import "leaflet";
@@ -17,10 +16,9 @@ import { FaqComponent } from './navbar/faq/faq.component';
 import { ApiTutComponent } from './navbar/api-tut/api-tut.component';
 import { GriddedClimComponent } from './navbar/gridded-clim/gridded-clim.component';
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
-import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-menu/map-proj-dropdown-menu.component';
-import { MapProjectionService } from './leaflet-map/map-projection.service';
 import { MapService } from './map.service';
+import { PointsService } from './points.service';
 import { MapComponent } from './map/map.component';
 import { MapTabsComponent } from './map-tabs/map-tabs.component'
 
@@ -33,7 +31,6 @@ import { MapTabsComponent } from './map-tabs/map-tabs.component'
     ApiTutComponent,
     GriddedClimComponent,
     SidebarNavComponent,
-    LeafletMapComponent,
     MapProjDropdownMenuComponent,
     MapComponent,
     MapTabsComponent
@@ -41,11 +38,10 @@ import { MapTabsComponent } from './map-tabs/map-tabs.component'
   imports: [
     BrowserModule,
     routes,
-    LeafletModule.forRoot(),
-    LeafletDrawModule.forRoot(),
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    HttpClientModule
   ],
-  providers: [MapProjectionService, MapService],
+  providers: [MapService, PointsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

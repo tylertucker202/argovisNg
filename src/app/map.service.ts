@@ -13,26 +13,26 @@ export class MapService {
   public mProj = 'Web Mercator';
   public startingView = '2/46.88/-121.73/2'
   
-  public sStereo = new L.Proj.CRS( 'EPSG:3411',
-                              '+proj=stere '+
-                              '+lat_0=-90 +lon_0=-45 +lat_ts=80'+
-                              '+k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
-                              {
-                                  resolutions: [
-                                  4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
-                                  ],
-                                  origin: [0, 0]
-                              });
-  public nStereo = new L.Proj.CRS( 'EPSG:3411',
-                              '+proj=stere' +
-                              '+lat_0=90 +lon_0=-45 +lat_ts=-80' +
-                              ' +k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
-                              {
-                                  resolutions: [
-                                  4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
-                                  ],
-                                  origin: [0, 0]
-                              });
+  public sStereo = new L.Proj.CRS('EPSG:3411',
+                                  '+proj=stere '+
+                                  '+lat_0=-90 +lon_0=-45 +lat_ts=80'+
+                                  '+k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
+                                  {
+                                      resolutions: [
+                                      4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
+                                      ],
+                                      origin: [.1,.1]
+                                  });
+  public nStereo = new L.Proj.CRS('EPSG:3411',
+                                  '+proj=stere' +
+                                  '+lat_0=90 +lon_0=-45 +lat_ts=-80' +
+                                  ' +k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
+                                  {
+                                      resolutions: [
+                                      4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
+                                      ],
+                                      origin: [.1,.1]
+                                  });
   public geojsonLayer = new L.GeoJSON.AJAX("../assets/world-countries.json");
   public satelliteMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
@@ -55,7 +55,6 @@ export class MapService {
       google: this.googleMap
     };
   }
-
 
   drawnItems = L.featureGroup();
 
@@ -86,8 +85,8 @@ export class MapService {
       polygon: {
           allowIntersection: <false> false
       }
-  },
-}
+    },
+  }
   drawControl = new L.Control.Draw(this.drawOptions);
 
   public coordDisplay = L.control.coordinates({
@@ -99,7 +98,7 @@ export class MapService {
   
   public scaleDisplay = L.control.scale();
 
-  private getTransformedShape = function(shape) {
+  public getTransformedShape = function(shape) {
     let transformedShape = [];
     //console.log('before tranformation');
     //console.log(JSON.stringify(shape));
@@ -128,11 +127,11 @@ export class MapService {
                         +'<br>' + selectionButton + '</b>'
                         +'<br>' + presSelectionButton + '</b>'
     //let container = $('<div />');
-    //container.html(popupText);        
+    //container.html(popupText);
     layer.bindPopup(popupText);
     layer.on('add', function() { layer.openPopup(); });
     //layer.on('mouseout', function() { layer.closePopup(); });
     drawnItems.addLayer(layer);
-}
+    }
 
 }

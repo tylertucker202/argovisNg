@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MapProjectionService } from '../../leaflet-map/map-projection.service'
 @Component({
   selector: 'app-map-proj-dropdown-menu',
   templateUrl: './map-proj-dropdown-menu.component.html',
@@ -7,7 +6,7 @@ import { MapProjectionService } from '../../leaflet-map/map-projection.service'
 })
 export class MapProjDropdownMenuComponent {
 
-  constructor(private mapProjectionService: MapProjectionService) {}
+  constructor() {}
 
   mapProjections: string[] = ["Web Mercator", "Southern Stereographic", "Northern Stereographic"];
   selectedMapProjection: string = "Web Mercator";
@@ -18,7 +17,6 @@ export class MapProjDropdownMenuComponent {
 
   ChangeMapProjection(newProjection: string) {
     this.selectedMapProjection = newProjection;
-    this.mapProjectionService.setmProj(this.selectedMapProjection);
   }
 
 }
