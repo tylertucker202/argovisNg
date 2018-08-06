@@ -1,12 +1,12 @@
 #slider {
     position: relative;
     height: 150px;
-    margin: 30px;
+    margin: 0px;
     }
     
 #slider-div {
     height: 350px;
-    margin: 30px;
+    margin: 0px;
     }
 #input-div {
         height: 350px;
@@ -15,25 +15,30 @@
 
 .slider-container{
     display:flex;
-}
-.fixed{
-    width: 200px;
-}
-.flex-item{
-    flex-grow: 1;
+    height: 390px;
 }
 
+.pressure-form {
+    width: 90%;
+    height: 390px;
+  }
+  
+.pressure-full-width, .pressure-full-width-bot {
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+
+.pressure-full-width-bot {
+    position:relative;
+    margin-top:220px;
+  }
+
 #minPres, #maxPres {
+    margin:5px;
     font-size: 14px;
     line-height: 20px;
-    width: 75px;
+    width: 95%;
     }
+
     
-    #minPresLabel {
-    margin-top: 0px;
-    }
-    
-    #maxPresLabel {
-    margin-top: 0px;
-    width: 150px;
-    }

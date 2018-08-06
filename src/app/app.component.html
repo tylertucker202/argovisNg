@@ -31,12 +31,12 @@
 </section>
 
 <!-- <mat-sidenav-container id="sidenav-container">
-  <p><button mat-button (click)="drawer.toggle()">Toggle menu</button></p>
-  <mat-drawer class="left-half" #drawer [mode]="side" [opened]="true">
-    <p><button mat-button (click)="drawer.toggle()">Toggle menu</button></p>
+  <p><button mat-button (click)="drawer.toggle()">Show Selection Menu</button></p>
+  <mat-sidenav class="side-menu" #drawer mode="push" [opened]="true">
+    <p><button mat-button (click)="drawer.toggle()">Hide Selection Menu</button></p>
     <app-sidebar-nav></app-sidebar-nav>
-  </mat-drawer>
-  <div class="right-half">
+  </mat-sidenav>
+  <div class="map-side">
       <app-map-tabs></app-map-tabs>
   </div>
 </mat-sidenav-container> -->
