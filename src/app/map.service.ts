@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-//import * as L from "../../node_modules/leaflet/dist/leaflet.js";
 import * as L from 'leaflet';
 import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
 import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js';

@@ -1,0 +1,21 @@
+<div class="slider-container">
+  <div class="fixed">
+    <nouislider id='slider' [(ngModel)]="myRange" [config]="config"></nouislider>
+  </div>
+  <div class="flex-item">
+    <div class='input-div'>
+      <p id='minPresLabel' for='minPres'>Low pressure:</p>
+      <input type="number" value="0" min="0" max="6000" id='minPres'>
+      <p id='maxPresLabel' for='maxPres'>High pressure:</p>
+      <input type="number" value="2000" min="0" max="6000" id='maxPres'>
+    </div>
+    <!-- <form class="example-form">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Low pressure:" type="number" value="0" min="0" max="6000" id='minPres'>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="High pressure:" type="number" value="2000" min="0" max="6000" id='maxPres'>
+        </mat-form-field>
+      </form> -->
+  </div>
+</div>

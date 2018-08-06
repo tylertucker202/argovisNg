@@ -100,7 +100,13 @@ export class PointsService {
       return coords;
   };
 
-  public addToMarkersLayer(this, profile, markersLayer, markerIcon=this.argoIcon) {
+  private makeCoords(coordinates) {
+    const lat = coordinates[1];
+    const lon = coordinates[0];    
+    return [[lon, lat]]
+  }
+
+  public addToMarkersLayer(this, profile, markersLayer, markerIcon=this.argoIcon, wrapCoordinates=true) {
     const selectedPlatform = profile.platform_number;
     const geoLocation = profile.geoLocation;
     var lat = geoLocation.coordinates[1].toFixed(2);
@@ -119,7 +125,12 @@ export class PointsService {
     }
     const cycle = profile.cycle_number
     const profile_id = selectedPlatform.toString()+'_'+cycle.toString();
-    const wrappedCoordinates = this.makeWrappedCoordinates(geoLocation.coordinates);
+    if (wrapCoordinates){
+      var coordArray = this.makeWrappedCoordinates(geoLocation.coordinates);
+    }
+    else {
+      var coordArray = this.makeCoords(geoLocation.coordinates);
+    }
     var profileLink = "<a href='/catalog/profiles/"+profile_id+"/page' target='_blank'> To profile page</a>";
     const platformButton = "<input type='button' value='Position history' onclick=platformProfilesSelection("+selectedPlatform.toString()+",'history')>"
     const platformLink = "<a href='/catalog/platforms/" + selectedPlatform + "/page' target='_blank' >To platform page</a>";
@@ -132,9 +143,9 @@ export class PointsService {
                      + '<br>' + platformLink + '</b>'
                      + '<br>' + platformButton + '</b>'
     
-    for(let i = 0; i < wrappedCoordinates.length; i++) {
+    for(let i = 0; i < coordArray.length; i++) {
         let marker;
-        const coordinates = wrappedCoordinates[i];
+        const coordinates = coordArray[i];
         //const coordinates = geoLocation.coordinates;
         marker = L.marker(coordinates.reverse(), {icon: markerIcon}).bindPopup(popupText);
         markersLayer.addLayer(marker);

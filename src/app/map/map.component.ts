@@ -15,6 +15,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public map: L.Map;
   public profilePoints: ProfilePoints[];
   public markersLayer = L.layerGroup();
+  private wrapCoordinates: boolean;
   constructor(public mapService: MapService, public pointsService: PointsService) {}
 
   ngOnInit() {
@@ -37,8 +38,7 @@ export class MapComponent implements OnInit, OnDestroy {
     //   .subscribe((data: ProfilePoints[]) => 
     //     {this.profilePoints = data});
     //   console.log(this.profilePoints)
-    this.displayProfiles('normalMarker', true);
-    this.markersLayer.addTo(this.map);
+    this.displayProfiles('normalMarker');
     this.invalidateSize();
   }
 
@@ -84,45 +84,32 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-private displayProfiles = function(this, markerType, latestBool) {
-    //this.pointsService.getSelectionPoints(profUrl)
-    //console.log(this.profilePoints)
+private displayProfiles = function(this, markerType) {
+  if (this.mProj == 'Web Mercator') {
+    this.wrapCoordinates = true;
+  }
+  else {
+    this.wrapCoordinates = false;
+  }
 
-      //.subscribe((result: ProfilePoints[]) => {
-      
-      if (this.profilePoints.length > 1000 && latestBool === false) {
-        //this.pointsService.closeDrawnItemPopups()
-          alert("This query is too large."
-          + " Only 1001 profiles will be included in the selection page."
-          + " Try reducing the polygon size or date range."
-          + " Another option is to use an API. See www.itsonlyamodel.us/argovis-python-api.html for more details.");
+  for (let idx in this.profilePoints) {
+      //console.log('myprofile')
+      let profile = this.profilePoints[idx];
+      //console.log(profile)
+      if (markerType==='history') {
+          this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
+          //this.pointsService.openDrawnItemPopups();
+      }
+      else if (markerType==='platform') {
+          this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
+          //this.pointsService.openDrawnItemPopups();
       }
       else {
-          for (let idx in this.profilePoints) {
-              //console.log('myprofile')
-              let profile = this.profilePoints[idx];
-              //console.log(profile)
-              if (markerType==='history') {
-                  this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW);
-                  //this.pointsService.openDrawnItemPopups();
-              }
-              else if (markerType==='platform') {
-                  this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon);
-                  //this.pointsService.openDrawnItemPopups();
-              }
-              else {
-                  this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon);
-                  //this.pointsService.openDrawnItemPopups();
-              }
-          };
-          console.log('mymarkers');
-          console.log(this.markersLayer);
-          this.markersLayer.addTo(this.map);
+          this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
+          //this.pointsService.openDrawnItemPopups();
       }
-//     }).fail(function(){
-//         //console.log(result.length);
-//         this.closeDrawnItemPopups(); 
-//         alert('Points did not load, try reducing the polygon size or date range...or try restarting Argovis')});
+  };
+  this.markersLayer.addTo(this.map);
   };
 
 private createWebMercator(this) {
