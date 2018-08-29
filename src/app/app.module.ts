@@ -55,15 +55,14 @@ import { FaqComponent } from './navbar/faq/faq.component';
 import { ApiTutComponent } from './navbar/api-tut/api-tut.component';
 import { GriddedClimComponent } from './navbar/gridded-clim/gridded-clim.component';
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
-import { MapProjDropdownMenuComponent } from './sidebar-nav/map-proj-dropdown-menu/map-proj-dropdown-menu.component';
 import { DaterangepickerComponent } from './sidebar-nav/daterangepicker/daterangepicker.component';
 import { MapService } from './map.service';
+import { QueryService } from './query.service'
 import { PointsService } from './points.service';
 import { MapComponent } from './map/map.component';
 import { MapTabsComponent } from './map-tabs/map-tabs.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,7 +72,6 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
     ApiTutComponent,
     GriddedClimComponent,
     SidebarNavComponent,
-    MapProjDropdownMenuComponent,
     DaterangepickerComponent,
     MapComponent,
     MapTabsComponent,
@@ -125,7 +123,7 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
     MatTooltipModule,
     MatTreeModule,
   ],
-  providers: [MapService, PointsService],
+  providers: [MapService, PointsService, QueryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

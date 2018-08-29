@@ -11,6 +11,7 @@
 #input-div {
         height: 350px;
         margin: 10px;
+        width: 100%;
         }
 
 .slider-container{
@@ -24,10 +25,12 @@
   }
   
 .pressure-full-width, .pressure-full-width-bot {
-    min-width: 100%;
-    max-width: 100%;
     width: 100%;
   }
+
+.pressure-input {
+    width: 100%;
+}
 
 .pressure-full-width-bot {
     position:relative;

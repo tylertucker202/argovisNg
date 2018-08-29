@@ -27,14 +27,14 @@
   margin: 10px;
   background-color: #F5F5F5;
   position: absolute;
-  left: 0px;
+  left: 5px;
   width: 15%;
   height: 90%;
 }
 
 .right-half {
   position: absolute;
-  right: 0px;
+  right: -15px;
   width: 85%;
   height: 90%;
 }

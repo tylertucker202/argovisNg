@@ -1,4 +1,4 @@
-<ngb-tabset (tabChange)="changeProj($event)">
+<ngb-tabset (tabChange)="changeProj($event)" [destroyOnHide]=true>
     <ngb-tab title="Web-Mercator" id="Web Mercator">
       <ng-template ngbTabContent>
         <app-map mProj="Web Mercator"></app-map>
@@ -15,3 +15,23 @@
       </ng-template>
     </ngb-tab>
   </ngb-tabset>
+
+<!-- Currently there is a bug where ngbTabContent isn't working with mat-tab -->
+<!-- 
+  <mat-tab-group class="tabset" (selectedTabChange)="changeProj($event)">
+    <mat-tab class="tab-pane" label="Web-Mercator" id="Web Mercator">
+      <ng-template ngbTabContent>
+        <app-map mProj="Web Mercator"></app-map>
+      </ng-template>
+    </mat-tab>
+    <mat-tab class="tab-pane" label="Southern Stereographic" id="Southern Stereographic">
+      <ng-template ngbTabContent>
+        <app-map mProj="Southern Stereographic"></app-map>
+      </ng-template>
+    </mat-tab>
+    <mat-tab class="tab-pane" label="Northern Stereographic" id="Northern Stereographic">
+      <ng-template ngbTabContent>
+        <app-map mProj="Northern Stereographic"></app-map>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group> -->

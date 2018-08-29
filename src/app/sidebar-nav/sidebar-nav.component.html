@@ -1,4 +1,5 @@
 <div class="sidebar-nav">
   <app-daterangepicker></app-daterangepicker>
+  <mat-slide-toggle [checked]="checked" (change)="realtimeChange($event)">Include realtime</mat-slide-toggle>
   <app-double-slider></app-double-slider>
 </div>

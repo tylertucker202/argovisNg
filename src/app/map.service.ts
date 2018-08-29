@@ -11,7 +11,11 @@ export class MapService {
   public baseMaps: any;
   public mProj = 'Web Mercator';
   public startingView = '2/46.88/-121.73/2'
+  public drawnItems = L.featureGroup();
+  public platformProfileMarkersLayer = L.featureGroup();
+  public markersLayer = L.featureGroup()
   
+
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
                                   '+lat_0=-90 +lon_0=-45 +lat_ts=80'+
@@ -55,8 +59,6 @@ export class MapService {
     };
   }
 
-  drawnItems = L.featureGroup();
-
   drawOptions = {
     position: 'topleft',
     draw: {
@@ -99,9 +101,6 @@ export class MapService {
 
   public getTransformedShape = function(shape) {
     let transformedShape = [];
-    //console.log('before tranformation');
-    //console.log(JSON.stringify(shape));
-    //console.log('number of points: '+shape[0].length);
     for (let j = 0; j < shape[0].length; j++) {
         //transformation if shape is outside latitude.
         let lat = shape[0][j][0] % 360;
@@ -125,12 +124,10 @@ export class MapService {
     const popupText = '<b> Hello, I\'m a shape! </b>'
                         +'<br>' + selectionButton + '</b>'
                         +'<br>' + presSelectionButton + '</b>'
-    //let container = $('<div />');
-    //container.html(popupText);
     layer.bindPopup(popupText);
     layer.on('add', function() { layer.openPopup(); });
-    //layer.on('mouseout', function() { layer.closePopup(); });
     drawnItems.addLayer(layer);
     }
+ 
 
 }

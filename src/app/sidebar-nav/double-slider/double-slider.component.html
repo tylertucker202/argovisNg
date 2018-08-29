@@ -1,13 +1,13 @@
 <p>Pressure range (depth):</p>
 <div class="slider-container">
-  <nouislider id='slider' [(ngModel)]="myRange" [config]="config"></nouislider>
+  <nouislider id='slider' [config]="config" [(ngModel)]="sliderRange" (ngModelChange)="onChange($event)"></nouislider>
     <div class='input-div'>
       <form class="pressure-form">
         <mat-form-field class="pressure-full-width">
-          <input matInput placeholder="min pres:" value="0" type="number" min="0" max="6000" id='minPres'>
+          <input matInput class="pressure-input" placeholder="min pres:" value={{sliderRange[0]}} type="number" min="0" max="6000" id='minPres' (change)="minValuechange($event.target.value)">
         </mat-form-field>
           <mat-form-field class="pressure-full-width-bot">
-            <input matInput placeholder="max pres:" value="2000" type="number" min="0" max="6000" id='maxPres'>
+            <input matInput class="pressure-input" placeholder="max pres:" value={{sliderRange[1]}} type="number" min="0" max="6000" id='maxPres' (change)="maxValuechange($event.target.value)">
           </mat-form-field>
           </form>
     </div>

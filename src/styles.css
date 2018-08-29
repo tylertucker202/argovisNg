@@ -37,6 +37,10 @@ html, body {
   height:100%;
 }
 
+.mat-tab-body-wrapper {
+  height:100%;
+}
+
 .noUi-vertical {
   margin: 10px;
   height: 350px;

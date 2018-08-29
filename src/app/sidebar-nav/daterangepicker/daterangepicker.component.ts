@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-//import { DaterangepickerConfig } from 'ng2-daterangepicker';
+import { QueryService } from '../../query.service'
 
 @Component({
   selector: 'app-daterangepicker',
@@ -8,14 +8,19 @@ import * as moment from 'moment';
   styleUrls: ['./daterangepicker.component.css']
 })
 export class DaterangepickerComponent {
-  public daterange: any = {};
+  constructor(private queryService: QueryService) {}
+  private daterange: any = {};
+  private startDate: string;
+  private endDate: string;
   private start = moment().subtract(14, 'days');
   private end = moment();
  
   // see original project for full list of options
   // can also be setup using the config service to apply to multiple pickers
-  public options: any = {
+  private options: any = {
       locale: { format: 'MM/DD/YYYY' },
+      startDate: this.start,
+      endDate: this.end,
       alwaysShowCalendars: true,
       minDate: "01/01/1997",
       ranges: {
@@ -25,20 +30,23 @@ export class DaterangepickerComponent {
         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
         'This Month': [moment().startOf('month'), moment().endOf('month')],
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
+        },
   };
 
-  public selectedDate(value: any, datepicker?: any) {
-      // this is the date the iser selected
-      console.log(value);
+  ngOnInit() {
+    this.daterange = {start: this.start, end: this.end }
+    this.sendDateRange()
+  }
 
-      // any object can be passed to the selected event and it will be passed back here
-      datepicker.start = value.start;
-      datepicker.end = value.end;
+  private sendDateRange(): void {
+    this.queryService.sendDateMessage(this.daterange);
+  }
 
+  public selectedDate(value: any) {
       // or manupulat your own internal property
-      this.daterange.start = value.start;
-      this.daterange.end = value.end;
+      this.daterange.start = value.start.format('YYYY-MM-DD');
+      this.daterange.end = value.end.format('YYYY-MM-DD');
       this.daterange.label = value.label;
+      this.sendDateRange();
   }
 }

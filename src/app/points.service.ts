@@ -79,7 +79,7 @@ export class PointsService {
   }
 
   public getSelectionPoints(urlQuery) {
-    return this.http.get('/selection/profiles/map?'+urlQuery);
+    return this.http.get(urlQuery);
   }
 
   public getLatestProfiles() {
@@ -132,7 +132,7 @@ export class PointsService {
       var coordArray = this.makeCoords(geoLocation.coordinates);
     }
     var profileLink = "<a href='/catalog/profiles/"+profile_id+"/page' target='_blank'> To profile page</a>";
-    const platformButton = "<input type='button' value='Position history' onclick=platformProfilesSelection("+selectedPlatform.toString()+",'history')>"
+    const platformButton = "<input type='button' value='Position history' onclick=this.platformProfilesSelection("+selectedPlatform.toString()+",'history')>"
     const platformLink = "<a href='/catalog/platforms/" + selectedPlatform + "/page' target='_blank' >To platform page</a>";
     const popupText = '<b>Hello, I\'m ' + profile_id + '!</b>'
                      + '<br>lon: ' + strLon + '</b>'
@@ -150,6 +150,9 @@ export class PointsService {
         marker = L.marker(coordinates.reverse(), {icon: markerIcon}).bindPopup(popupText);
         markersLayer.addLayer(marker);
     }
+    return markersLayer;
 };
+  public platformProfilesSelection(platform: string, icon: string): void {
 
+  }
 }
