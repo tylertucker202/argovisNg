@@ -18,25 +18,15 @@
     </div>
   </div>
 </div>
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
-<section class="container">
-  <div class="left-half">
-      <app-sidebar-nav></app-sidebar-nav>
-  </div>
-  <div class="right-half">
-      <app-map-tabs></app-map-tabs>
-  </div>
-</section>
-<!-- <mat-sidenav-container id="sidenav-container">
+<mat-sidenav-container id="sidenav-container">
   <p><button mat-button (click)="drawer.toggle()">Show Selection Menu</button></p>
-  <mat-sidenav class="side-menu" #drawer mode="push" [opened]="true">
+  <mat-sidenav class="side-menu" #drawer mode="side" [opened]="true">
     <p><button mat-button (click)="drawer.toggle()">Hide Selection Menu</button></p>
     <app-sidebar-nav></app-sidebar-nav>
   </mat-sidenav>
-  <div class="map-side">
-      <app-map-tabs></app-map-tabs>
-  </div>
-</mat-sidenav-container> -->
+  <mat-sidenav-content>
+      <p><button mat-button (click)="drawer.toggle()">Show Selection Menu</button></p>
+      <app-map></app-map>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 

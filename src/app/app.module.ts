@@ -4,7 +4,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { Daterangepicker } from 'ng2-daterangepicker'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -49,7 +48,6 @@ import "leaflet-draw";
 import "proj4leaflet";
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module'
 import { NavbarComponent } from './navbar/navbar.component';
 import { AboutArgovisComponent } from './navbar/about-argovis/about-argovis.component';
 import { FaqComponent } from './navbar/faq/faq.component';
@@ -61,7 +59,6 @@ import { MapService } from './map.service';
 import { QueryService } from './query.service'
 import { PointsService } from './points.service';
 import { MapComponent } from './map/map.component';
-import { MapTabsComponent } from './map-tabs/map-tabs.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
 @NgModule({
@@ -75,14 +72,11 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
     SidebarNavComponent,
     DaterangepickerComponent,
     MapComponent,
-    MapTabsComponent,
     DoubleSliderComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
-    RouterModule,
     NgbModule.forRoot(),
     HttpClientModule,
     Daterangepicker,
@@ -128,8 +122,4 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
   providers: [MapService, PointsService, QueryService],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(router: Router) {
-    console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
-  }
- }
+export class AppModule { }

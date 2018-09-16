@@ -1,4 +1,11 @@
 <div class="sidebar-nav">
+  <mat-form-field id="projectionForm">
+    <mat-select placeholder="Choose Projection" [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
+      <mat-option *ngFor="let projection of projections" [value]="projection.value">
+        {{projection.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <app-daterangepicker></app-daterangepicker>
   <mat-slide-toggle [checked]="checked" (change)="realtimeChange($event)">Include realtime</mat-slide-toggle>
   <app-double-slider></app-double-slider>

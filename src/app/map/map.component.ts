@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MapService } from '../map.service';
 import { PointsService } from '../points.service'
 import { ProfilePoints } from '../models/profile-points';
 import { QueryService } from '../query.service';
+import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 
 @Component({
@@ -12,16 +13,26 @@ import * as L from "leaflet";
 })
 
 export class MapComponent implements OnInit, OnDestroy {
-  @Input() mProj: string;
   public map: L.Map;
   public profilePoints: ProfilePoints[];
   public platformProfileMarkersLayer = L.layerGroup();
   public markersLayer = L.layerGroup();
   public drawnItems = L.layerGroup();
   private wrapCoordinates: boolean;
-  constructor(public mapService: MapService, public pointsService: PointsService, private queryService: QueryService) {}
+  private proj: string;
+  constructor(public mapService: MapService,
+              public pointsService: PointsService,
+              private queryService: QueryService,
+              @Inject(DOCUMENT) private document: Document) {}
 
   ngOnInit() {
+    this.proj = this.document.location.search.split('?map=')[1];
+    if (this.proj) {
+      console.log(this.proj)
+    }
+    else {
+      this.proj = 'WM'
+    }
     this.profilePoints = this.pointsService.getMockPoints();
     this.generateMap();
     this.mapService.coordDisplay.addTo(this.map);
@@ -58,18 +69,18 @@ export class MapComponent implements OnInit, OnDestroy {
 
 
   private generateMap(this) {
-    switch(this.mProj) {
-      case 'Web Mercator': {
+    switch(this.proj) {
+      case 'WM': {
         console.log('generating web mercator');
         this.createWebMercator();
         break;
       }
-      case 'Southern Stereographic': {
+      case 'SSP': {
         console.log('generating south stereo');
         this.createSouthernStereographic();
         break;
       }
-      case 'Northern Stereographic': {
+      case 'NSP': {
         console.log('generating north stereo');
         this.createNorthernStereographic();
         break;

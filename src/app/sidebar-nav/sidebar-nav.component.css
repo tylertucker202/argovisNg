@@ -1,3 +1,8 @@
 sidebar-nav {
     height: 100%;
 }
+
+#projectionForm {
+    margin: 10px;
+    width: 80%;
+}
