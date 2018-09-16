@@ -15,6 +15,18 @@ export const router: Routes = [
   {path: 'faq', component: FaqComponent},
   {path: 'api-tut', component: ApiTutComponent},
   {path: 'gridded-clim', component: GriddedClimComponent},
+  //{path: '', redirectTo: '/map', pathMatch: 'full'}
 ]
 
-export const routes: ModuleWithProviders = RouterModule.forRoot(router);
+@NgModule({
+  imports: [
+    RouterModule.forRoot(
+      router,
+      { enableTracing: true } // <-- debugging purposes only
+    )
+    // other imports here
+  ]
+})
+export class AppRoutingModule { }
+
+//export const routes: ModuleWithProviders = RouterModule.forRoot(router);

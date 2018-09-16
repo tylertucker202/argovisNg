@@ -8,8 +8,6 @@ import { Component, OnInit } from '@angular/core';
 export class MapTabsComponent implements OnInit {
 
   changeProj(evt: any): void {
-    console.log("tab change");
-    console.log(evt);
   }
   constructor() { }
 

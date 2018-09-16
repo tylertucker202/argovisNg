@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { Daterangepicker } from 'ng2-daterangepicker'
-import { routes } from './app-routing.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -49,6 +49,7 @@ import "leaflet-draw";
 import "proj4leaflet";
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module'
 import { NavbarComponent } from './navbar/navbar.component';
 import { AboutArgovisComponent } from './navbar/about-argovis/about-argovis.component';
 import { FaqComponent } from './navbar/faq/faq.component';
@@ -80,7 +81,8 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    routes,
+    AppRoutingModule,
+    RouterModule,
     NgbModule.forRoot(),
     HttpClientModule,
     Daterangepicker,
@@ -126,4 +128,8 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
   providers: [MapService, PointsService, QueryService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(router: Router) {
+    console.log('Routes: ', JSON.stringify(router.config, undefined, 2));
+  }
+ }

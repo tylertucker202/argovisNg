@@ -1,6 +1,8 @@
 <p>Pressure range (depth):</p>
 <div class="slider-container">
-  <nouislider id='slider' [config]="config" [(ngModel)]="sliderRange" (ngModelChange)="onChange($event)"></nouislider>
+  <div (mouseup)="onChange($event)">
+      <nouislider id='slider' [config]="config" [(ngModel)]="sliderRange" ></nouislider>
+    </div>
     <div class='input-div'>
       <form class="pressure-form">
         <mat-form-field class="pressure-full-width">
