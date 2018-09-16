@@ -134,6 +134,8 @@ private createWebMercator(this) {
   this.map = L.map('map',
                     {maxZoom: 13,
                     minZoom: 1,
+                    zoomDelta: 0.25,
+                    zoomSnap: 0,
                     maxBounds: [[-180, -270], [180,270]],
                     layers: [this.mapService.baseMaps.ocean]})
                     .setView([ 46.88, -121.73 ], 2, );
@@ -144,9 +146,11 @@ private createSouthernStereographic(this) {
   this.map = L.map('map',
                   {maxZoom: 13,
                     minZoom: 3,
-                    maxBounds: [[-1080, -1080], [1080,1080]],
+                    zoomDelta: 0.25,
+                    zoomSnap: 0,
+                    //maxBounds: [[-1080, -1080], [1080,1080]],
                     crs: this.mapService.sStereo})
-                    .setView([-89, .1], 5);    
+                    .setView([-89, .1], 4);    
   this.mapService.geojsonLayer.addTo(this.map);
 };
 
@@ -154,9 +158,11 @@ private createNorthernStereographic(this) {
   this.map = L.map('map',
                   {maxZoom: 13,
                     minZoom: 3,
-                    maxBounds: [[-180, -540], [180,540]],
+                    zoomDelta: 0.25,
+                    zoomSnap: 0,
+                    //maxBounds: [[-1080, -1080], [1080,1080]],
                     crs: this.mapService.nStereo})
-                    .setView([89,.1], 5);
+                    .setView([89,.1], 4);
   this.mapService.geojsonLayer.addTo(this.map);
 };
 
