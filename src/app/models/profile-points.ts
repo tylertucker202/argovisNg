@@ -4,8 +4,8 @@ export interface ProfilePoints {
     date: string;
     geoLocation: {type: string, coordinates: Array<Number> };
     cycle_number: Number;
-    roundLat: string;
-    roundLon: string;
-    strLat: string;
-    strLon: string;
+    roundLat?: any;
+    roundLon?: any;
+    strLat?: any;
+    strLon?: any;
 }

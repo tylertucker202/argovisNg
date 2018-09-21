@@ -34,6 +34,16 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.sendToggleMsg(this.checked);
   }
 
+  clearProfiles(): void {
+    console.log('clearProfiles Clicked')
+    this.queryService.triggerClearLayers();
+  }
+
+  resetToStart(): void {
+    console.log('resetToStart Clicked')
+    this.queryService.triggerResetToStart();
+  }
+
   mapProjChange(proj: string): void {
     const newUrl = this.url + '?map=' + proj
     window.location.assign(newUrl)

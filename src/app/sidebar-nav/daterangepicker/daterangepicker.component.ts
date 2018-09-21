@@ -10,8 +10,6 @@ import { QueryService } from '../../query.service'
 export class DaterangepickerComponent {
   constructor(private queryService: QueryService) {}
   private daterange: any = {};
-  private startDate: string;
-  private endDate: string;
   private start = moment().subtract(14, 'days');
   private end = moment();
  
@@ -34,7 +32,7 @@ export class DaterangepickerComponent {
   };
 
   ngOnInit() {
-    this.daterange = {start: this.start, end: this.end }
+    this.daterange = {start: this.start.format('YYYY-MM-DD'), end: this.end.format('YYYY-MM-DD') }
     this.sendDateRange()
   }
 
@@ -43,7 +41,6 @@ export class DaterangepickerComponent {
   }
 
   public selectedDate(value: any) {
-      // or manupulat your own internal property
       this.daterange.start = value.start.format('YYYY-MM-DD');
       this.daterange.end = value.end.format('YYYY-MM-DD');
       this.daterange.label = value.label;

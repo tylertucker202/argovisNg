@@ -1,0 +1,11 @@
+<section class="mat-typography">
+<p>Hello, I'm {{profileId}}!
+  <br />lon: {{lon}}
+  <br />lat: {{lat}}
+  <br />cycle: {{cycle}}
+  <br />date: {{date}}
+  <br /><a href='/catalog/profiles/{{profileId}}/page' target='_blank'> To profile page</a>
+  <br /><a href='/catalog/platforms/{{platform}}/page' target='_blank' >To platform page</a>
+  <br /><button mat-raised-button color="primary" (click)="showPlatformsProfiles()" >Position history</button>
+</p>
+</section>

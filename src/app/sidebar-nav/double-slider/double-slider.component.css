@@ -2,7 +2,7 @@
     position: relative;
     height: 150px;
     margin: 0px;
-    }
+}
     
 #slider-div {
     height: 350px;
@@ -35,6 +35,10 @@
 .pressure-full-width-bot {
     position:relative;
     margin-top:220px;
+  }
+
+.noUi-connect {
+    background: #58127D;
   }
 
 #minPres, #maxPres {

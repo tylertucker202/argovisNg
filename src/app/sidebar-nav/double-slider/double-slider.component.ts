@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, EventEmitter} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { QueryService } from '../../query.service'
 
 @Component({

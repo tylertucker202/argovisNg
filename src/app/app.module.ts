@@ -58,9 +58,12 @@ import { DaterangepickerComponent } from './sidebar-nav/daterangepicker/daterang
 import { MapService } from './map.service';
 import { QueryService } from './query.service'
 import { PointsService } from './points.service';
+import { PopupCompileService } from './popup-compile.service';
 import { MapComponent } from './map/map.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
+import { ProfPopupComponent } from './prof-popup/prof-popup.component';
+import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,6 +76,8 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
     DaterangepickerComponent,
     MapComponent,
     DoubleSliderComponent,
+    ProfPopupComponent,
+    ShapePopupComponent,
   ],
   imports: [
     BrowserModule,
@@ -119,7 +124,16 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
     MatTooltipModule,
     MatTreeModule,
   ],
-  providers: [MapService, PointsService, QueryService],
+  providers: [
+    MapService,
+    PointsService,
+    QueryService,
+    PopupCompileService
+  ],
+  entryComponents: [
+    ProfPopupComponent, 
+    ShapePopupComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

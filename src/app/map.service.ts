@@ -1,9 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ApplicationRef } from "@angular/core";
 import * as L from 'leaflet';
 import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
 import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js';
 import '../../node_modules/proj4leaflet/lib/proj4-compressed.js';
 import '../../node_modules/leaflet-ajax/dist/leaflet.ajax.min.js';
+import { ShapePopupComponent } from './shape-popup/shape-popup.component';
+import { PopupCompileService } from './popup-compile.service';
 
 @Injectable()
 export class MapService {
@@ -51,12 +53,18 @@ export class MapService {
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
 
-  constructor() { 
+  constructor(private compileService: PopupCompileService) { 
     this.baseMaps = {
       esri: this.satelliteMap,
       ocean: this.esri_OceanBasemap,
       google: this.googleMap
     };
+    
+  }
+  public appRef: ApplicationRef;
+  init(appRef: ApplicationRef) {
+    this.appRef = appRef;
+    this.compileService.configure(this.appRef);
   }
 
   drawOptions = {
@@ -118,14 +126,15 @@ export class MapService {
     let layerCoords = layer.toGeoJSON();
     const shape = layerCoords.geometry.coordinates;
     const transformedShape = this.getTransformedShape(shape);
-
-    const selectionButton = "<input type='button' value='To selection page' onclick='shapeSelection(false,"+JSON.stringify(transformedShape)+")'>"
-    const presSelectionButton = "<input type='button' value='To selection page with pressure query' onclick='shapeSelection(true,"+JSON.stringify(transformedShape)+")'>"    
-    const popupText = '<b> Hello, I\'m a shape! </b>'
-                        +'<br>' + selectionButton + '</b>'
-                        +'<br>' + presSelectionButton + '</b>'
-    layer.bindPopup(popupText);
-    layer.on('add', function() { layer.openPopup(); });
+    layer.bindPopup(null);
+    layer.on('click', (event) => {
+        layer.setPopupContent(
+            this.compileService.compile(ShapePopupComponent, (c) => { c.instance.shape = transformedShape; })
+        );
+    });
+    layer.on('add', (event) => { 
+        layer.fire('click') // click generates popup object
+    });
     drawnItems.addLayer(layer);
     }
  

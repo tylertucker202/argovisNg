@@ -7,6 +7,8 @@
     </mat-select>
   </mat-form-field>
   <app-daterangepicker></app-daterangepicker>
-  <mat-slide-toggle [checked]="checked" (change)="realtimeChange($event)">Include realtime</mat-slide-toggle>
+  <mat-slide-toggle color="primary" [checked]="checked" (change)="realtimeChange($event)">Include realtime</mat-slide-toggle>
   <app-double-slider></app-double-slider>
+  <button mat-raised-button color="accent" (click)="clearProfiles()" >Clear Profiles</button>
+  <button mat-raised-button color="accent" (click)="resetToStart()" >Reset to Start</button>
 </div>
