@@ -62,6 +62,22 @@ export class MapComponent implements OnInit, OnDestroy {
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
+      this.queryService.displayPlatform
+      .subscribe( platform => {
+        this.markersLayer.clearLayers();
+        this.mapService.drawnItems.clearLayers();
+        this.pointsService.getPlatformProfiles(platform)
+          .subscribe((profilePoints: ProfilePoints[]) => {
+            if (profilePoints.length > 0) {
+              this.displayProfiles(profilePoints, 'platform')
+            }
+            else {
+              console.log('platform not found')
+            }
+          },
+          error => { console.log('error in getting platformProfiles') })
+      })
+
     this.queryService.triggerPlatformDisplay
       .subscribe( platform => {
         this.pointsService.getPlatformProfiles(platform)
@@ -145,20 +161,15 @@ private displayProfiles = function(this, profilePoints, markerType) {
   }
 
   for (let idx in profilePoints) {
-      //console.log('myprofile')
       let profile = profilePoints[idx];
-      //console.log(profile)
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
-          //this.pointsService.openDrawnItemPopups();
       }
       else if (markerType==='platform') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
-          //this.pointsService.openDrawnItemPopups();
       }
       else {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
-          //this.pointsService.openDrawnItemPopups();
       }
   };
   this.markersLayer.addTo(this.map);

@@ -1,46 +1,18 @@
-<div class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container">
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <button mat-icon-button (click)="drawer.toggle()">
-              <mat-icon>menu</mat-icon>
-            </button>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://www.argo.ucsd.edu/Argovis_About.html">About Argovis</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://www.argo.ucsd.edu/Argovis_FAQ.html">FAQ</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://www.itsonlyamodel.us/argovis-python-api.html">Link to API tutorial</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://www.argo.ucsd.edu/Gridded_Argovis_v07.html">Link to gridded Argo climatology</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
+<mat-toolbar color="primary">
+    <button mat-icon-button  matTooltip="Show/hide sidebar menu" (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    <a class="nav-link" matTooltip="link to about page" href="http://www.argo.ucsd.edu/Argovis_About.html">About Argovis</a>
+    <a class="nav-link" matTooltip="link to faq page" href="http://www.argo.ucsd.edu/Argovis_FAQ.html">FAQ</a>
+    <a class="nav-link" matTooltip="link to api tutorial" href="https://www.itsonlyamodel.us/argovis-python-api.html">Link to API tutorial</a>
+    <a class="nav-link" matTooltip="link to gridded page (in development)" href="http://www.argo.ucsd.edu/Gridded_Argovis_v07.html">Link to gridded Argo climatology</a>
+  </mat-toolbar>
 <mat-sidenav-container id="sidenav-container">
-  <p><button mat-button (click)="drawer.toggle()">Show Selection Menu</button></p>
   <mat-sidenav class="side-menu" #drawer mode="side" [opened]="true">
-    <!-- <button mat-icon-button (click)="drawer.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button> -->
     <app-sidebar-nav></app-sidebar-nav>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!-- <button mat-icon-button (click)="drawer.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button> -->
-    <!-- <div id="top-left">
-      <button mat-icon-button (click)="drawer.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-    </div> -->
-      <app-map></app-map>
+    <app-map></app-map>
   </mat-sidenav-content>
 </mat-sidenav-container>
 

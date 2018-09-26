@@ -48,6 +48,11 @@ export class SidebarNavComponent implements OnInit {
     const newUrl = this.url + '?map=' + proj
     window.location.assign(newUrl)
   }
+
+  displayPlatformInputChanged(platformInput: string) {
+    if (platformInput.length >= 5){ this.queryService.triggerShowPlatform(platformInput) }
+  }
+
   projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
     {value: 'SSP', viewValue: 'Southern stereo projection'},

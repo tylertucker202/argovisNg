@@ -7,6 +7,7 @@ export class QueryService {
   @Output() triggerPlatformDisplay: EventEmitter<string> = new EventEmitter
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
+  @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange: Number[];
   private dateRange: any;
@@ -24,6 +25,10 @@ export class QueryService {
 
   public triggerResetToStart(): void {
     this.resetToStart.emit()
+  }
+
+  public triggerShowPlatform(platform: string): void {
+    this.displayPlatform.emit(platform);
   }
 
   sendShapeMessage(drawnItems: any): void {

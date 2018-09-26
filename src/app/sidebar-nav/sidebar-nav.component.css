@@ -1,8 +1,13 @@
-sidebar-nav {
+.sidebar-nav {
     height: 100%;
+    padding: 5px;
 }
 
 #projectionForm {
     margin: 10px;
     width: 80%;
+}
+
+.platform-form {
+    width:100%;
 }
