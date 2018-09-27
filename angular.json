@@ -32,8 +32,7 @@
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/nouislider/distribute/nouislider.min.css",
-              "node_modules/angular-notifier/styles/core.css"
+              "node_modules/nouislider/distribute/nouislider.min.css"
             ],
             "scripts": []
           },
@@ -89,8 +88,7 @@
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/nouislider/distribute/nouislider.min.css",
-              "node_modules/angular-notifier/styles/core.css"
+              "node_modules/nouislider/distribute/nouislider.min.css"
             ],
             "assets": [
               {
