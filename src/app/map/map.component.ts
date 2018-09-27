@@ -5,6 +5,7 @@ import { ProfilePoints } from '../models/profile-points';
 import { QueryService } from '../query.service';
 import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-map',
@@ -19,11 +20,14 @@ export class MapComponent implements OnInit, OnDestroy {
   public startZoom: number;
   private wrapCoordinates: boolean;
   private proj: string;
+  private readonly notifier: NotifierService;
+  
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
               public pointsService: PointsService,
               private queryService: QueryService,
-              @Inject(DOCUMENT) private document: Document) {}
+              private notifierService: NotifierService,
+              @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
     this.pointsService.init(this.appRef);
@@ -72,10 +76,14 @@ export class MapComponent implements OnInit, OnDestroy {
               this.displayProfiles(profilePoints, 'platform')
             }
             else {
+              this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
               console.log('platform not found')
             }
           },
-          error => { console.log('error in getting platformProfiles') })
+          error => { 
+            console.log('error in getting platformProfiles')
+            this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
+           })
       })
 
     this.queryService.triggerPlatformDisplay
@@ -84,7 +92,10 @@ export class MapComponent implements OnInit, OnDestroy {
           .subscribe((profilePoints: ProfilePoints[]) => {
             this.displayProfiles(profilePoints, 'history')
           },
-          error => { console.log('error in getting platformProfiles') })
+          error => { 
+            this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
+            console.log('error in getting platformProfiles')
+           })
       })
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       var layer = event.layer
@@ -107,13 +118,17 @@ export class MapComponent implements OnInit, OnDestroy {
     this.pointsService.getLastProfiles()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
+        this.notifier.notify( 'warning', 'zero profile points returned' )
         console.log('zero profile points returned')
       }
       else {
         this.displayProfiles(profilePoints, 'normalMarker')
       }
       },
-      error => {console.log('error in getting latest profiles')})
+      error => {
+        this.notifier.notify( 'error', 'error in getting latest profiles' )
+        console.log('error in getting latest profiles')
+      })
   this.displayProfiles(this.pointsService.getMockPoints(), 'normalMarker')
   }
 
@@ -244,10 +259,12 @@ shapeSelectionOnMap(): void {
               .subscribe((selectionPoints: ProfilePoints[]) => {
                 this.displayProfiles(selectionPoints, 'normalMarker');
                 if (selectionPoints.length == 0) {
+                  this.notifier.notify( 'warning', 'no profile points found in shape' )
                   console.log('no points returned in shape')
                 }
                 }, 
              error => {
+              this.notifier.notify( 'error', 'error in getting profiles in shape' )
                console.log('error occured when selecting points')
              });
       }

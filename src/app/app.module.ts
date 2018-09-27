@@ -4,6 +4,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { Daterangepicker } from 'ng2-daterangepicker'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { NotifierModule, NotifierOptions } from 'angular-notifier';
+
 import {
   MatAutocompleteModule,
   MatBadgeModule,
@@ -64,6 +66,48 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
 import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
+
+const customNotifierOptions: NotifierOptions = {
+  position: {
+		horizontal: {
+			position: 'right',
+			distance: 12
+		},
+		vertical: {
+			position: 'top',
+			distance: 12,
+			gap: 10
+		}
+	},
+  theme: 'material',
+  behaviour: {
+    autoHide: 5000,
+    onClick: 'hide',
+    onMouseover: 'pauseAutoHide',
+    showDismissButton: true,
+    stacking: 4
+  },
+  animations: {
+    enabled: true,
+    show: {
+      preset: 'slide',
+      speed: 300,
+      easing: 'ease'
+    },
+    hide: {
+      preset: 'fade',
+      speed: 300,
+      easing: 'ease',
+      offset: 50
+    },
+    shift: {
+      speed: 300,
+      easing: 'ease'
+    },
+    overlap: 150
+  }
+};
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -88,6 +132,7 @@ import { ShapePopupComponent } from './shape-popup/shape-popup.component';
     NouisliderModule,
     FormsModule,
     ReactiveFormsModule,
+    NotifierModule.withConfig(customNotifierOptions),
     MatAutocompleteModule,
     MatBadgeModule,
     MatBottomSheetModule,
