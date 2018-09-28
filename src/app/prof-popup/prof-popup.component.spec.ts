@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ProfPopupComponent } from './prof-popup.component';
 import { QueryService} from './../query.service';
 describe('ProfPopupComponent', () => {

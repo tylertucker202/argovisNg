@@ -22,17 +22,8 @@ declare module 'leaflet' {
     Draw: Control.DrawStatic;
   }
 
-  //export interface GeoJSON{
-    //AJAX: any;
-  //}
-
-  //const AJAX: (geojson?: Proj4GeoJSONFeature, options?: GeoJSONOptions) => GeoJSON;
-
-  //export interface AJAX{}
-
   namespace GeoJSON {
      function AJAX(path: string,parameters?: any): void;
-     //export interface AJAX {}
    }
 
   module Control {

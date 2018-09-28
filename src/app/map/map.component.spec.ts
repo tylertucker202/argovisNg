@@ -1,19 +1,32 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { MapComponent } from './map.component';
 import { MapService } from '../map.service';
 import { PointsService } from '../points.service'
 import { QueryService } from '../query.service';
 import { PopupCompileService } from '../popup-compile.service';
+import { NotifierService } from 'angular-notifier';
+
 
 describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
 
   beforeEach(async(() => {
-    const spy = jasmine.createSpyObj('MapService', ['getValue']);
+    const spy = jasmine.createSpyObj('MapService', ['init']);
+    const notifierSpy = jasmine.createSpyObj('NotifierService', ['getValue'])
     TestBed.configureTestingModule({
       declarations: [ MapComponent],
-      providers: [{ provide: MapService, useValue: spy }, PointsService, QueryService, PopupCompileService]
+      providers: 
+      [{ provide: NotifierService, useValue: notifierSpy },
+       HttpClient,
+       HttpClientModule,
+       HttpHandler,
+       //{ provide: MapService, useValue: spy },
+       MapService,
+       PointsService,
+       QueryService,
+       PopupCompileService]
     })
     .compileComponents();
   }));
@@ -27,4 +40,9 @@ describe('MapComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have web mercator', () => {
+    expect(component.proj == 'WM')
+  })
+
 });

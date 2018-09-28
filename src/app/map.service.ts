@@ -62,7 +62,8 @@ export class MapService {
     
   }
   public appRef: ApplicationRef;
-  init(appRef: ApplicationRef) {
+
+  public init(appRef: ApplicationRef) {
     this.appRef = appRef;
     this.compileService.configure(this.appRef);
   }

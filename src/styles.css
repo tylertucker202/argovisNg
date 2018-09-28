@@ -6,6 +6,7 @@
 @import "../node_modules/angular-notifier/styles/types/type-warning.css";
 @import "../node_modules/angular-notifier/styles/types/type-info.css";
 @import "../node_modules/angular-notifier/styles/types/type-success.css";
+@import "~nouislider/distribute/nouislider.min.css";
 
 .notifier__container * {
   box-sizing: border-box;
@@ -67,13 +68,4 @@ html, body {
 
 .mat-tab-body-wrapper {
   height:100%;
-}
-
-.noUi-vertical {
-  margin: 10px;
-  height: 350px;
-}
-
-.noUi-connect {
-  background: #58127D;
 }

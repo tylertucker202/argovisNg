@@ -19,7 +19,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public startView: any;
   public startZoom: number;
   private wrapCoordinates: boolean;
-  private proj: string;
+  public proj: string;
   private readonly notifier: NotifierService;
   
   constructor(private appRef: ApplicationRef,

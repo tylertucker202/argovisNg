@@ -24,11 +24,6 @@ import "leaflet-draw";
 import "proj4leaflet";
 
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { AboutArgovisComponent } from './navbar/about-argovis/about-argovis.component';
-import { FaqComponent } from './navbar/faq/faq.component';
-import { ApiTutComponent } from './navbar/api-tut/api-tut.component';
-import { GriddedClimComponent } from './navbar/gridded-clim/gridded-clim.component';
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
 import { DaterangepickerComponent } from './sidebar-nav/daterangepicker/daterangepicker.component';
 import { MapService } from './map.service';
@@ -85,11 +80,6 @@ const customNotifierOptions: NotifierOptions = {
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
-    AboutArgovisComponent,
-    FaqComponent,
-    ApiTutComponent,
-    GriddedClimComponent,
     SidebarNavComponent,
     DaterangepickerComponent,
     MapComponent,

@@ -1,10 +1,13 @@
 import { Component, OnInit} from '@angular/core';
 import { QueryService } from '../../query.service'
+import {ViewEncapsulation} from '@angular/core';
+
 
 @Component({
   selector: 'app-double-slider',
   templateUrl: './double-slider.component.html',
-  styleUrls: ['./double-slider.component.css']
+  styleUrls: ['./double-slider.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class DoubleSliderComponent implements OnInit {
 

@@ -37,8 +37,13 @@
     margin-top:220px;
   }
 
+.noUi-vertical {
+    margin: 10px;
+    height: 350px;
+  }
+
 .noUi-connect {
-    background: #58127D;
+    background: #673ab7;
   }
 
 #minPres, #maxPres {

@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { PointsService } from './points.service';
 import { MapService } from './map.service';
 import { PopupCompileService } from './popup-compile.service';
@@ -10,7 +10,7 @@ describe('PointsService', () => {
   beforeEach(() => {
     const spy = jasmine.createSpyObj('MapService', ['getValue']);
     TestBed.configureTestingModule({
-      providers: [PointsService, HttpClient, { provide: MapService, useValue: spy }, PopupCompileService, ProfPopupComponent]
+      providers: [PointsService, HttpClient, HttpClientModule, HttpHandler, { provide: MapService, useValue: spy }, PopupCompileService, ProfPopupComponent]
     });
   });
 

@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ShapePopupComponent } from './shape-popup.component';
 import { QueryService } from '../query.service';
 
