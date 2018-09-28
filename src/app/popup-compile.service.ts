@@ -10,7 +10,7 @@ export class PopupCompileService {
         private resolver: ComponentFactoryResolver,
     ) { }
 
-    configure(appRef) {
+    configure(appRef: ApplicationRef): void {
         this.appRef = appRef;
     }
 

@@ -52,7 +52,7 @@ export class PointsService {
         this.mapService.drawnItems.eachLayer(function (layer) {
           layer.closePopup();
           });
-      }    
+      }
     }
 
   //close popups from all drawn items
@@ -63,14 +63,14 @@ export class PointsService {
         this.mapService.drawnItems.eachLayer(function (layer) {
           layer.openPopup();
           });
-      }    
+      }
     }
 
-  private serverApi= 'http://argovis.com';
-
-  private mockPoints:  ProfilePoints[] = 
+  public mockPoints:  ProfilePoints[] = 
   [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549"},
   {"_id":"3901520_100","date":"2018-07-09T16:37:32.999Z","cycle_number":100,"geoLocation":{"type":"Point","coordinates":[-32.7866,-21.2051]},"platform_number":"3901520"},
+  {"_id":"6901549_170","date":"2018-07-09T20:43:00.000Z","cycle_number":170,"geoLocation":{"type":"Point","coordinates":[4.74,5.0000]},"platform_number":"6901549"},
+  {"_id":"3901520_101","date":"2018-07-09T16:37:32.999Z","cycle_number":101,"geoLocation":{"type":"Point","coordinates":[-32.7866,5.0000]},"platform_number":"3901520"},
   {"_id":"3901503_136","date":"2018-07-09T15:37:12.999Z","cycle_number":136,"geoLocation":{"type":"Point","coordinates":[-31.6948,-35.3172]},"platform_number":"3901503"},
   {"_id":"6901981_119","date":"2018-07-09T15:01:18.999Z","cycle_number":119,"geoLocation":{"type":"Point","coordinates":[-23.939999999999998,-23.881]},"platform_number":"6901981"},
   {"_id":"3902121_27","date":"2018-07-09T12:55:00.000Z","cycle_number":27,"geoLocation":{"type":"Point","coordinates":[-19.37458833333333,-23.396726666666666]},"platform_number":"3902121"},
@@ -106,7 +106,7 @@ export class PointsService {
   }
 
   // plots the markers on the map three times. 
-  private makeWrappedCoordinates(coordinates) {
+  public makeWrappedCoordinates(coordinates) {
       const lat = coordinates[1];
       const lon = coordinates[0];
       if (0 > lon && lon > -180) {
@@ -119,33 +119,40 @@ export class PointsService {
       return coords;
   };
 
-  private makeCoords(coordinates) {
+  public makeCoords(coordinates) {
     const lat = coordinates[1];
     const lon = coordinates[0];    
     return [[lon, lat]]
   }
 
-  public addToMarkersLayer(this, profile, markersLayer, markerIcon=this.argoIcon, wrapCoordinates=true) {
-    const selectedPlatform = profile.platform_number;
-    const geoLocation = profile.geoLocation;
-    var lat = geoLocation.coordinates[1].toFixed(2);
-    var lon = geoLocation.coordinates[0].toFixed(2);
-    var date = moment(profile.date).format('YYYY-MM-DD')
-
+  public formatLatLng( lonLat : Number[]): String[] {
+    const lat = Number(lonLat[1])
+    const lng = Number(lonLat[0])
     if (lat > 0) {
-        var strLat = Math.abs(lat).toFixed(3).toString() + ' N';
+      var strLat = Math.abs(lat).toFixed(3).toString() + ' N';
     }
     else {
         var strLat = Math.abs(lat).toFixed(3).toString() + ' S';
     }
-    if (lon > 0) {
-        var strLon = Math.abs(lon).toFixed(3).toString() + ' E';
+    if (lng > 0) {
+        var strLng = Math.abs(lng).toFixed(3).toString() + ' E';
     }
     else {
-        var strLon = Math.abs(lon).toFixed(3).toString() + ' W';
+        var strLng = Math.abs(lng).toFixed(3).toString() + ' W';
     }
+
+    return [strLat, strLng]
+  }
+
+  public addToMarkersLayer(this, profile, markersLayer, markerIcon=this.argoIcon, wrapCoordinates=true) {
+    const selectedPlatform = profile.platform_number;
+    const geoLocation = profile.geoLocation;
+    const lat = geoLocation.coordinates[1].toFixed(2);
+    const lon = geoLocation.coordinates[0].toFixed(2);
+    const date = moment(profile.date).format('YYYY-MM-DD')
+    const strLatLng = this.formatLatLng([lon, lat])
     const cycle = profile.cycle_number
-    var profile_id = selectedPlatform.toString()+'_'+cycle.toString();
+    const profile_id = selectedPlatform.toString()+'_'+cycle.toString();
     if (wrapCoordinates){
       var coordArray = this.makeWrappedCoordinates(geoLocation.coordinates);
     }
@@ -164,8 +171,8 @@ export class PointsService {
           marker.setPopupContent(
                 this.compileService.compile(ProfPopupComponent, (c) => { c.instance.param = profile_id; 
                                                                          c.instance.profileId = profile_id;
-                                                                         c.instance.lat = strLat;
-                                                                         c.instance.lon = strLon;
+                                                                         c.instance.lat = strLatLng[0];
+                                                                         c.instance.lon = strLatLng[1];
                                                                          c.instance.cycle = cycle;
                                                                          c.instance.date = date;
                                                                          c.instance.platform = selectedPlatform;

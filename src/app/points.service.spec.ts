@@ -17,4 +17,68 @@ describe('PointsService', () => {
   it('should be created', inject([PointsService], (service: PointsService) => {
     expect(service).toBeTruthy();
   }));
+
+  it('should have icons', inject([PointsService], (service: PointsService) => {
+    expect(service.argoIcon).toBeTruthy();
+    expect(service.argoIconBW).toBeTruthy();
+    expect(service.platformIcon).toBeTruthy();
+  }));
+
+  it('should have icons', inject([PointsService], (service: PointsService) => {
+    expect(service.argoIcon).toBeTruthy();
+    expect(service.argoIconBW).toBeTruthy();
+    expect(service.platformIcon).toBeTruthy();
+  }));
+
+  it('should have mock points', inject([PointsService], (service: PointsService) => {
+    expect(service.mockPoints).toBeTruthy();
+  }));
+
+  it('should return mock points', inject([PointsService], (service: PointsService) => {
+    const mockPoints = service.getMockPoints()
+    expect(mockPoints).toBeTruthy();
+    expect(mockPoints[0]._id).toBeTruthy();
+    expect(mockPoints[0].date).toBeTruthy();
+    expect(mockPoints[0].cycle_number).toBeTruthy();
+    expect(mockPoints[0].geoLocation).toBeTruthy();
+    expect(mockPoints[0].platform_number).toBeTruthy();
+  }));
+
+  it('should have wrap coordinates', inject([PointsService], (service: PointsService) => {
+    expect(service.makeWrappedCoordinates).toBeTruthy();
+
+    const inT1 = [0, 0]
+    const outT1 = service.makeWrappedCoordinates(inT1)
+    expect(outT1).toEqual([[0,0]])
+    const inT2 = [10, 0]
+    const outT2 = service.makeWrappedCoordinates(inT2)
+    expect(outT2).toEqual([inT2, [inT2[0] - 360, inT2[1]]])
+    const inT3 = [-10, 0]
+    const outT3 = service.makeWrappedCoordinates(inT3)
+    expect(outT3).toEqual([inT3, [inT3[0] + 360, inT3[1]]])
+  }));
+
+  it('should make coordinates', inject([PointsService], (service: PointsService) => {
+    expect(service.makeCoords).toBeTruthy();
+    const inT1 = [0, 0]
+    const outT1 = service.makeCoords(inT1)
+    expect(outT1).toEqual([[0,0]])
+  }));
+
+  it('should format LatLng coordinates', inject([PointsService], (service: PointsService) => {
+    const mockPoints = service.getMockPoints()
+    const pointQ4 = mockPoints[0]
+    const pointQ3 = mockPoints[1]
+    const pointQ1 = mockPoints[2]
+    const pointQ2 = mockPoints[3]
+    const Q1LatLng = service.formatLatLng(pointQ1.geoLocation.coordinates)
+    expect(Q1LatLng).toEqual([ "5.000 N", "4.740 E" ])
+    const Q2LatLng = service.formatLatLng(pointQ2.geoLocation.coordinates)
+    expect(Q2LatLng).toEqual([ "5.000 N", "32.787 W" ])
+    const Q3LatLng = service.formatLatLng(pointQ3.geoLocation.coordinates)
+    expect(Q3LatLng).toEqual([ "21.205 S", "32.787 W" ])
+    const Q4LatLng = service.formatLatLng(pointQ4.geoLocation.coordinates)
+    expect(Q4LatLng).toEqual([ "20.180 S", "4.740 E" ])
+  }));
+
 });
