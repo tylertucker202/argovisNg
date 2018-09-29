@@ -1,7 +1,7 @@
 <mat-toolbar color="primary">
     <button mat-icon-button  matTooltip="Show/hide sidebar menu" (click)="drawer.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
+      <mat-icon>menu</mat-icon>
+    </button>
     <a class="nav-link" matTooltip="link to about page" href="http://www.argo.ucsd.edu/Argovis_About.html">About Argovis</a>
     <a class="nav-link" matTooltip="link to faq page" href="http://www.argo.ucsd.edu/Argovis_FAQ.html">FAQ</a>
     <a class="nav-link" matTooltip="link to api tutorial" href="https://www.itsonlyamodel.us/argovis-python-api.html">Link to API tutorial</a>
@@ -12,7 +12,7 @@
     <app-sidebar-nav></app-sidebar-nav>
   </mat-sidenav>
   <mat-sidenav-content>
-    <notifier-container></notifier-container>
     <app-map></app-map>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<notifier-container></notifier-container>

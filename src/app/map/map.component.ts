@@ -108,7 +108,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.setStartingProfiles();
-    this.setMockPoints();
+    //this.setMockPoints();
     this.invalidateSize();
   }
 
