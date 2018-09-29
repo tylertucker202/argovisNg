@@ -1,8 +1,8 @@
 import { Injectable, ApplicationRef } from "@angular/core";
 import * as L from 'leaflet';
+import '../../node_modules/proj4leaflet/src/proj4leaflet.js'
 import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
-import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.src.js';
-import '../../node_modules/proj4leaflet/lib/proj4-compressed.js';
+import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
 import '../../node_modules/leaflet-ajax/dist/leaflet.ajax.min.js';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
@@ -12,11 +12,9 @@ export class MapService {
   public map: L.Map;
   public baseMaps: any;
   public mProj = 'Web Mercator';
-  public startingView = '2/46.88/-121.73/2'
   public drawnItems = L.featureGroup();
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
-  
 
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
@@ -45,10 +43,6 @@ export class MapService {
   public googleMap = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}',
     {attribution: 'google'
   });
-  public watercolor = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}',
-    {attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-  });
   public esri_OceanBasemap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
@@ -59,16 +53,16 @@ export class MapService {
       ocean: this.esri_OceanBasemap,
       google: this.googleMap
     };
-    
   }
+
   public appRef: ApplicationRef;
 
-  public init(appRef: ApplicationRef) {
+  public init(appRef: ApplicationRef): void {
     this.appRef = appRef;
     this.compileService.configure(this.appRef);
   }
 
-  drawOptions = {
+  public drawOptions = {
     position: 'topleft',
     draw: {
         polygon: {
@@ -97,18 +91,19 @@ export class MapService {
       }
     },
   }
-  drawControl = new L.Control.Draw(this.drawOptions);
 
-  public coordDisplay = L.control.coordinates({
-                                                position:"topright",
+  public drawControl = new L.Control.Draw(this.drawOptions);
+
+  public coordDisplay = L.control.coordinates({ position:"topright",
                                                 useDMS:true,
                                                 labelTemplateLat:"N {y}",
                                                 labelTemplateLng:"E {x}",
-                                                decimals:2,});
+                                                decimals:2,
+                                              });
   
   public scaleDisplay = L.control.scale();
 
-  public getTransformedShape = function(shape) {
+  public getTransformedShape(shape: number[][][]): number[][][] {
     let transformedShape = [];
     for (let j = 0; j < shape[0].length; j++) {
         //transformation if shape is outside latitude.
@@ -126,7 +121,9 @@ export class MapService {
   public popupWindowCreation = function(layer, drawnItems){
     let layerCoords = layer.toGeoJSON();
     const shape = layerCoords.geometry.coordinates;
+    console.log(shape)
     const transformedShape = this.getTransformedShape(shape);
+    console.log(transformedShape)
     layer.bindPopup(null);
     layer.on('click', (event) => {
         layer.setPopupContent(
@@ -138,6 +135,4 @@ export class MapService {
     });
     drawnItems.addLayer(layer);
     }
- 
-
 }

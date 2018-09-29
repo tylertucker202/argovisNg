@@ -6,6 +6,8 @@ import { MapService } from './map.service';
 import * as L from 'leaflet';
 import { PopupCompileService } from './popup-compile.service';
 import { ProfPopupComponent } from './prof-popup/prof-popup.component';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 
 @Injectable()
@@ -18,7 +20,7 @@ export class PointsService {
               private http: HttpClient,
               private compileService: PopupCompileService) { }
 
-  init(appRef: ApplicationRef) {
+  init(appRef: ApplicationRef): void {
     this.appRef = appRef;
     this.compileService.configure(this.appRef);
   }
@@ -44,28 +46,6 @@ export class PointsService {
       popupAnchor:  [6, 6]
   });
 
-  //close popups from all drawn items
-  public closeDrawnItemPopups = function() {
-    //close popups from all drawn items
-    if (this.mapService.drawnItems){
-        console.log('closing drawn items');
-        this.mapService.drawnItems.eachLayer(function (layer) {
-          layer.closePopup();
-          });
-      }
-    }
-
-  //close popups from all drawn items
-  public openDrawnItemPopups = function() {
-    //close popups from all drawn items
-    if (this.mapService.drawnItems){
-        console.log('opening drawn items');
-        this.mapService.drawnItems.eachLayer(function (layer) {
-          layer.openPopup();
-          });
-      }
-    }
-
   public mockPoints:  ProfilePoints[] = 
   [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549"},
   {"_id":"3901520_100","date":"2018-07-09T16:37:32.999Z","cycle_number":100,"geoLocation":{"type":"Point","coordinates":[-32.7866,-21.2051]},"platform_number":"3901520"},
@@ -86,27 +66,27 @@ export class PointsService {
   {"_id":"3901110_107","date":"2018-07-08T16:58:26.001Z","cycle_number":107,"geoLocation":{"type":"Point","coordinates":[-27.48367,-24.22411]},"platform_number":"3901110"},
   ]
 
-  public getMockPoints() {
-    return this.mockPoints
+  public getMockPoints(): Observable<ProfilePoints[]> {
+    return of(this.mockPoints)
   }
 
-  public getSelectionPoints(urlQuery) {
-    return this.http.get(urlQuery);
+  public getSelectionPoints(urlQuery): Observable<ProfilePoints[]> {
+    return this.http.get<ProfilePoints[]>(urlQuery);
   }
 
-  public getPlatformProfiles(platform: string) {
-    return this.http.get('/catalog/platforms/' + platform + '/map')
+  public getPlatformProfiles(platform: string): Observable<ProfilePoints[]> {
+    return this.http.get<ProfilePoints[]>('/catalog/platforms/' + platform + '/map')
   }
 
-  public getLatestProfiles() {
-    return this.http.get('/selection/latestProfiles/map');
+  public getLatestProfiles(): Observable<ProfilePoints[]> {
+    return this.http.get<ProfilePoints[]>('/selection/latestProfiles/map');
   }
-  public getLastProfiles() {
-    return this.http.get('/selection/lastProfiles/map');
+  public getLastProfiles(): Observable<ProfilePoints[]> {
+    return this.http.get<ProfilePoints[]>('/selection/lastProfiles/map');
   }
 
   // plots the markers on the map three times. 
-  public makeWrappedCoordinates(coordinates) {
+  public makeWrappedCoordinates(coordinates): number[][] {
       const lat = coordinates[1];
       const lon = coordinates[0];
       if (0 > lon && lon > -180) {
@@ -163,20 +143,19 @@ export class PointsService {
     for(let i = 0; i < coordArray.length; i++) {
         let marker;
         const coordinates = coordArray[i];
-        //const coordinates = geoLocation.coordinates;
-        //marker = L.marker(coordinates.reverse(), {icon: markerIcon}).bindPopup(popupText);
         marker = L.marker(coordinates.reverse(), {icon: markerIcon});
         marker.bindPopup(null);
         marker.on('click', (event) => {
           marker.setPopupContent(
-                this.compileService.compile(ProfPopupComponent, (c) => { c.instance.param = profile_id; 
-                                                                         c.instance.profileId = profile_id;
-                                                                         c.instance.lat = strLatLng[0];
-                                                                         c.instance.lon = strLatLng[1];
-                                                                         c.instance.cycle = cycle;
-                                                                         c.instance.date = date;
-                                                                         c.instance.platform = selectedPlatform;
-                                                                         console.log(c.instance) })
+                this.compileService.compile(ProfPopupComponent, (c) => 
+                  { c.instance.param = profile_id; 
+                    c.instance.profileId = profile_id;
+                    c.instance.lat = strLatLng[0];
+                    c.instance.lon = strLatLng[1];
+                    c.instance.cycle = cycle;
+                    c.instance.date = date;
+                    c.instance.platform = selectedPlatform;
+                  })
             );
 });
         markersLayer.addLayer(marker);

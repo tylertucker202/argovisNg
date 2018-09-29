@@ -76,8 +76,10 @@ export class MapComponent implements OnInit, OnDestroy {
               this.displayProfiles(profilePoints, 'platform')
             }
             else {
-              this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
-              console.log('platform not found')
+              if (platform.length >= 7){
+                this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
+                console.log('platform not found')
+              }
             }
           },
           error => { 
@@ -100,11 +102,19 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       var layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
-      this.queryService.sendShapeMessage(this.mapService.drawnItems);
+      const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
+      console.log(drawnFeatureCollection)
+      this.queryService.sendShapeMessage(drawnFeatureCollection);
     });
 
     this.setStartingProfiles();
+    this.setMockPoints();
     this.invalidateSize();
+  }
+
+  // drawnItems is actually a L.featureGroup(), but the typings don't exist for this.
+  private getDrawnShapes(drawnItems: any): GeoJSON.FeatureCollection {
+    return drawnItems.toGeoJSON()
   }
 
   ngOnDestroy() {
@@ -129,11 +139,27 @@ export class MapComponent implements OnInit, OnDestroy {
         this.notifier.notify( 'error', 'error in getting latest profiles' )
         console.log('error in getting latest profiles')
       })
-  this.displayProfiles(this.pointsService.getMockPoints(), 'normalMarker')
+    }
+  
+  private setMockPoints(this): void {
+    this.pointsService.getMockPoints()
+    .subscribe((profilePoints: ProfilePoints[]) => {
+      if (profilePoints.length == 0) {
+        this.notifier.notify( 'warning', 'zero mock profile points returned' )
+        console.log('zero mock profile points returned')
+      }
+      else {
+        this.displayProfiles(profilePoints, 'normalMarker')
+      }
+      },
+      error => {
+        this.notifier.notify( 'error', 'error in getting mock profiles' )
+        console.log('error in getting mock profiles')
+      })
   }
 
 
-  private generateMap(this) {
+  private generateMap(this): void {
     switch(this.proj) {
       case 'WM': {
         console.log('generating web mercator');

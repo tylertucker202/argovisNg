@@ -1,4 +1,6 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
+import { GeoJsonObject } from 'geojson';
+import { DateRange } from '../typeings/daterange';
 
 @Injectable()
 export class QueryService {
@@ -31,45 +33,43 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  sendShapeMessage(drawnItems: any): void {
+  public sendShapeMessage(data: GeoJSON.FeatureCollection | any): void { //really a GeoJSON.Feature[] object, but for testing purposes, need to make it an any
     const msg = 'shape';
-    const data = drawnItems.toGeoJSON();
-    const features = data.features;
-    this.latLngShapes = features;
+    this.latLngShapes = data.features;
     this.change.emit(msg);
   }
 
-  getShapes(): any {
+  public getShapes(): any {
     return this.latLngShapes;
   }
 
-  sendPresMessage(presRange: Number[]): void {
+  public sendPresMessage(presRange: Number[]): void {
     const msg = 'presRange';
     this.presRange = presRange;
     this.change.emit(msg);
   }
 
-  getPresRange(): Number[] {
+  public getPresRange(): Number[] {
     return this.presRange;
   }
 
-  sendDateMessage(dateRange: any): void {
+  public sendDateMessage(dateRange: DateRange): void {
     const msg = 'date';
     this.dateRange = dateRange;
     this.change.emit(msg);
   }
 
-  getDates(): any {
+  public getDates(): any {
     return this.dateRange;
   }
 
-  sendToggleMsg(toggleChecked: Boolean): void {
+  public sendToggleMsg(toggleChecked: Boolean): void {
     const msg = 'realtime'
     this.includeRealtime = toggleChecked
     this.change.emit(msg)
   }
 
-  getToggle(): Boolean {
+  public getToggle(): Boolean {
     return this.includeRealtime;
   }
 
