@@ -89,10 +89,10 @@ export class PointsService {
   public makeWrappedCoordinates(coordinates): number[][] {
       const lat = coordinates[1];
       const lon = coordinates[0];
-      if (0 > lon && lon > -180) {
+      if (-90 > lon && lon > -180) {
           var coords = [[lon, lat], [lon + 360, lat]]
       }
-      else if (0 < lon && lon < 180) {
+      else if (90 < lon && lon < 180) {
           var coords = [[lon, lat], [lon - 360, lat]];
       }
       else{ var coords = [[lon, lat]]}
