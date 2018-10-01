@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core';
 import { MapService } from '../map.service';
-import { PointsService } from '../points.service'
+import { PointsService } from '../points.service';
 import { ProfilePoints } from '../models/profile-points';
 import { QueryService } from '../query.service';
 import { DOCUMENT } from '@angular/common';
@@ -38,6 +38,13 @@ export class MapComponent implements OnInit, OnDestroy {
     }
     else {
       this.proj = 'WM'
+    }
+
+    if (this.proj == 'WM') {
+      this.wrapCoordinates = true;
+    }
+    else {
+      this.wrapCoordinates = false;
     }
     this.generateMap();
     this.mapService.coordDisplay.addTo(this.map);
@@ -78,12 +85,10 @@ export class MapComponent implements OnInit, OnDestroy {
             else {
               if (platform.length >= 7){
                 this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
-                console.log('platform not found')
               }
             }
           },
-          error => { 
-            console.log('error in getting platformProfiles')
+          error => {
             this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
            })
       })
@@ -96,7 +101,6 @@ export class MapComponent implements OnInit, OnDestroy {
           },
           error => { 
             this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
-            console.log('error in getting platformProfiles')
            })
       })
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
@@ -129,7 +133,6 @@ export class MapComponent implements OnInit, OnDestroy {
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero profile points returned' )
-        console.log('zero profile points returned')
       }
       else {
         this.displayProfiles(profilePoints, 'normalMarker')
@@ -137,7 +140,6 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting latest profiles' )
-        console.log('error in getting latest profiles')
       })
     }
   
@@ -146,7 +148,6 @@ export class MapComponent implements OnInit, OnDestroy {
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero mock profile points returned' )
-        console.log('zero mock profile points returned')
       }
       else {
         this.displayProfiles(profilePoints, 'normalMarker')
@@ -154,7 +155,6 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting mock profiles' )
-        console.log('error in getting mock profiles')
       })
   }
 
@@ -194,12 +194,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
 private displayProfiles = function(this, profilePoints, markerType) {
-  if (this.mProj == 'Web Mercator') {
-    this.wrapCoordinates = true;
-  }
-  else {
-    this.wrapCoordinates = false;
-  }
 
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
