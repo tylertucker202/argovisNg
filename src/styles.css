@@ -54,6 +54,10 @@ html, body {
   display:none
  }
 
+ .leaflet-popup-content-wrapper {
+   opacity: .8;
+ }
+
  .leaflet-control-coordinates .uiElement.label {
   color:rgba(0,0,0,1);
   font-weight:inherit;

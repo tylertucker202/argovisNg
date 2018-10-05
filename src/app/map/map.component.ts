@@ -56,7 +56,10 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg);
+         this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
+         this.setStartingProfiles();
+         this.setMockPoints();
         },)
 
     this.queryService.clearLayers
@@ -70,6 +73,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
+        this.setMockPoints();
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -112,7 +116,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.setStartingProfiles();
-    //this.setMockPoints();
+    this.setMockPoints();
     this.invalidateSize();
   }
 
@@ -195,8 +199,15 @@ export class MapComponent implements OnInit, OnDestroy {
 
 private displayProfiles = function(this, profilePoints, markerType) {
 
+  const includeRT = this.queryService.getToggle()
+  console.log(includeRT)
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
+      let dataMode = profile.DATA_MODE
+      console.log(profile.dataMode)
+      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false)) {
+        continue;
+      }
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
@@ -273,7 +284,7 @@ shapeSelectionOnMap(): void {
           let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
                          '&presRange='+JSON.stringify(presRange) +
                          '&shape='+JSON.stringify([transformedShape])
-                         //'&includeRT='+JSON.stringify(includeRealtime);
+                         '&includeRT='+JSON.stringify(includeRealtime);
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {

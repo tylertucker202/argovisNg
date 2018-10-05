@@ -1,9 +1,10 @@
-<section class="mat-typography">
+<section class="mat-typography" id="profPopup">
 <p>Hello, I'm {{profileId}}!
   <br />lon: {{lon}}
   <br />lat: {{lat}}
   <br />cycle: {{cycle}}
   <br />date: {{date}}
+  <br />data mode: {{dataMode}}
   <br /><a href='/catalog/profiles/{{profileId}}/page' target='_blank'> To profile page</a>
   <br /><a href='/catalog/platforms/{{platform}}/page' target='_blank' >To platform page</a>
   <br /><button matTooltip="Click to show where this platform has been" mat-raised-button color="primary" (click)="showPlatformsProfiles()" >Position history</button>
