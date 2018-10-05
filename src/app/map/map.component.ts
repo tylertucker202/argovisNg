@@ -58,7 +58,7 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
-         this.setStartingProfiles();
+         //this.setStartingProfiles();
          //this.setMockPoints();
         },)
 
