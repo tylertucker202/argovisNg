@@ -59,7 +59,7 @@ export class MapComponent implements OnInit, OnDestroy {
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
          this.setStartingProfiles();
-         this.setMockPoints();
+         //this.setMockPoints();
         },)
 
     this.queryService.clearLayers
@@ -73,7 +73,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
-        this.setMockPoints();
+        //this.setMockPoints();
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -108,6 +108,7 @@ export class MapComponent implements OnInit, OnDestroy {
            })
       })
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
+      this.markersLayer.clearLayers();
       var layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
       const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
@@ -116,7 +117,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.setStartingProfiles();
-    this.setMockPoints();
+    //this.setMockPoints();
     this.invalidateSize();
   }
 
