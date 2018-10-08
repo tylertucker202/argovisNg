@@ -679,11 +679,8 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._hideErrorTooltip();
 		}
 
-		console.log(latlng)
-
 		this._markers.push(this._createMarker(latlng));
 		if (this._markers.length > 1){
-			// //console.log('inside addVertex');
 			var start = this._markers[ markersLength - 1 ].getLatLng();
 			var end = this._markers[ markersLength ].getLatLng()
 			var arcPoints = this._make_arc_points(start, end)
@@ -1093,7 +1090,7 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 			this._markers[this._markers.length - 1].off('click', this._finishShape, this);
 		}
 	},
-
+     // Used to complete polyline
 	_fireCreatedEvent: function () {
 		var markersLength = this._markers.length;
 		var start = this._markers[ markersLength - 1 ].getLatLng();
@@ -1101,13 +1098,13 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 		var arcPoints = this._make_arc_points(start, end)
 		if (!arcPoints) {
 			this._generateArcError(end)
+			console.log('ending segment too long.')
 			return
 		}
 		for(var j=1; j<arcPoints.length-1; j++){
 			arcPoint = arcPoints[j];
 			this._poly.addLatLng(arcPoint);
 		}
-		//console.log('inside _fireCreatedEvent()')
 		var polyLatLngs = this._poly.getLatLngs();
 		polyLatLngs = this._getTransformedShape(polyLatLngs);
 		var poly = new this.Poly(polyLatLngs, this.options.shapeOptions);
@@ -1117,7 +1114,6 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 	// Called to undo arc.js antimeridian transformations.
 	_getTransformedShape: function(arcPoints) {
 		var transformedArcPoints = [];
-		//console.log('inside _getTransformedShape');
 		var beforePts = arcPoints;
 		for (var j = 0; j < arcPoints.length; j++) {
 			var arcPoint = arcPoints[j]
@@ -1138,11 +1134,9 @@ L.Draw.Polyline = L.Draw.Feature.extend({
 
 
 	_make_arc_points: function(start, end) {
-		//console.log('inside _make_arc_points');
 		var deltaLng = end.lng - start.lng;
-		console.log(deltaLng)
 		var mapproj = window.location.href.split('?map=')[1]
-		if (Math.abs(deltaLng) >= 160 && mapproj === false) {
+		if (Math.abs(deltaLng) >= 160 && mapproj === 'WM') {
 			console.log("Arc too long, Try to click closer together.")
 			return
 		}
