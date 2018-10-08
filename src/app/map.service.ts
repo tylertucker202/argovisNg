@@ -1,17 +1,25 @@
 import { Injectable, ApplicationRef } from "@angular/core";
-import * as L from 'leaflet';
-import '../../node_modules/proj4leaflet/src/proj4leaflet.js'
-import '../../node_modules/leaflet-draw/dist/leaflet.draw.js';
-import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
-import '../../node_modules/leaflet-ajax/dist/leaflet.ajax.min.js';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
+
+import 'leaflet';
+import 'proj4leaflet';
+import 'arc';
+import 'leaflet-arc';
+//import 'leaflet-draw';
+import '../ext-js/leaflet.draw-arc-src.js';
+import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
+import 'leaflet-ajax'
+
+
+declare let L;
+
 
 @Injectable()
 export class MapService {
   public map: L.Map;
   public baseMaps: any;
-  public mProj = 'Web Mercator';
+  //public proj = '';
   public drawnItems = L.featureGroup();
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()

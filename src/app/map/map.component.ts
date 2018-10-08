@@ -231,7 +231,7 @@ private createWebMercator(this) {
                     zoomDelta: 0.25,
                     zoomSnap: 0,
                     zoomControl: false,
-                    maxBounds: [[-180, -270], [180,270]],
+                    maxBounds: [[-180, -270], [180,180]],
                     layers: [this.mapService.baseMaps.ocean]})
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom );
   L.control.layers(this.mapService.baseMaps).addTo(this.map);

@@ -9,6 +9,12 @@
     gtag('js', new Date());
     gtag('config', 'UA-108248569-2');
   </script>
+  <script>
+    if (global === undefined) {
+      var global = window;
+      global.stereo = false;
+    }
+  </script>
   <meta charset="utf-8">
   <title>Argovis</title>
   <base href="/">
