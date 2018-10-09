@@ -129,10 +129,13 @@ export class MapService {
         if (lat < -180) {
             lat = 180 + lat % 180;
         }
+        else if (lat > 180) {
+            lat = -180 + lat % 180;
+        }
         let point = [lat, shape[0][j][1]];
         transformedShape.push(point);
     }
-    return(transformedShape)
+    return([transformedShape])
   };
 
   public popupWindowCreation = function(layer, drawnItems){

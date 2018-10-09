@@ -68,10 +68,10 @@ describe('PointsService', () => {
     const inT1 = [0, 0]
     const outT1 = service.makeWrappedCoordinates(inT1)
     expect(outT1).toEqual([[0,0]])
-    const inT2 = [10, 0]
+    const inT2 = [100, 0]
     const outT2 = service.makeWrappedCoordinates(inT2)
     expect(outT2).toEqual([inT2, [inT2[0] - 360, inT2[1]]])
-    const inT3 = [-10, 0]
+    const inT3 = [-100, 0]
     const outT3 = service.makeWrappedCoordinates(inT3)
     expect(outT3).toEqual([inT3, [inT3[0] + 360, inT3[1]]])
   }));

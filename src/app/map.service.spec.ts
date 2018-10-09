@@ -23,7 +23,7 @@ describe('MapService', () => {
 
     const tShape1 = service.getTransformedShape(shape1)
     expect(tShape1).toBeTruthy();
-    expect(tShape1).toEqual(shape1[0]);
+    expect(tShape1).toEqual(shape1);
 
 
     const shape2 = [[[ -192.65625, 26.74561 ],
@@ -39,7 +39,7 @@ describe('MapService', () => {
                     [ -162.773438, 37.300275 ],
                     [ -162.773438, 26.74561 ],
                     [ 167.34375, 26.74561 ]]]
-    expect(tShape2).toEqual(eShape2[0]);
+    expect(tShape2).toEqual(eShape2);
 
     const shape3 = [[[ 168.029119, 26.156804 ],
                     ​​[ 168.029119, 38.311739 ],
@@ -49,10 +49,10 @@ describe('MapService', () => {
     const tShape3 = service.getTransformedShape(shape3)
     const eShape3 = [[[ 168.029119, 26.156804 ],
                     ​[ 168.029119, 38.311739 ],
-                    ​[ 194.379895, 38.311739 ],
-                    ​[ 194.379895, 26.156804 ],
+                    ​[ -165.620105, 38.311739 ],
+                    ​[ -165.620105, 26.156804 ],
                     ​[ 168.029119, 26.156804 ]]]
-    expect(tShape3).toEqual(eShape3[0]);
+    expect(tShape3).toEqual(eShape3);
   }));
 
 
