@@ -89,12 +89,7 @@ export class MapService {
                 weight: 4
             },
         },
-        rectangle: {
-            shapeOptions: {
-                color: '#983fb2',
-                weight: 4
-            },
-        },
+        rectangle: <false> false,
         polyline: <false> false,
         lineString: <false> false,
         marker: <false> false,
