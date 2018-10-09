@@ -53,6 +53,7 @@ export class MapService {
     "fillOpacity": .9,
     };
   public geojsonLayer = new L.GeoJSON.AJAX("../assets/world-countries.json", {style: this.worldStyle});
+  public geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../assets/world-contries-except-ant.json", {style: this.worldStyle});
   public satelliteMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
   });

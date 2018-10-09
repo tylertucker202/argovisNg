@@ -266,7 +266,7 @@ private createNorthernStereographic(this) {
                     //maxBounds: [[-1080, -1080], [1080,1080]],
                     crs: this.mapService.nStereo})
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom);
-  this.mapService.geojsonLayer.addTo(this.map);
+  this.mapService.geojsonLayerNoAntartica.addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
 };
 
