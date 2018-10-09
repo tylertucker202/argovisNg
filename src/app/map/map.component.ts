@@ -284,7 +284,7 @@ shapeSelectionOnMap(): void {
           const transformedShape = this.mapService.getTransformedShape(shape)
           let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
                          '&presRange='+JSON.stringify(presRange) +
-                         '&shape='+JSON.stringify([transformedShape])
+                         '&shape='+JSON.stringify(transformedShape)
                          '&includeRT='+JSON.stringify(includeRealtime);
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
