@@ -277,15 +277,15 @@ shapeSelectionOnMap(): void {
       this.markersLayer.clearLayers();
       let base = '/selection/profiles/map'
       let dates = this.queryService.getDates();
-      let presRange = this.queryService.getPresRange();
-      let includeRealtime = this.queryService.getToggle();
+      let presRange = JSON.stringify(this.queryService.getPresRange());
+      let includeRealtime = JSON.stringify(this.queryService.getToggle());
       for (let i = 0; i < features.length; i++) {
           let shape = features[i].geometry.coordinates;
-          const transformedShape = this.mapService.getTransformedShape(shape)
+          const transformedShape = JSON.stringify(this.mapService.getTransformedShape(shape))
           let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
-                         '&presRange='+JSON.stringify(presRange) +
-                         '&shape='+JSON.stringify(transformedShape)
-                         '&includeRT='+JSON.stringify(includeRealtime);
+                         '&presRange='+presRange +
+                         '&shape='+transformedShape +  
+                         '&includeRT='+includeRealtime;
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {
