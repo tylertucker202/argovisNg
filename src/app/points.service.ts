@@ -72,22 +72,22 @@ export class PointsService {
   }
 
   public getSelectionPoints(urlQuery): Observable<ProfilePoints[]> {
-    const url = this.baseurl + urlQuery
-    console.log(url)
+    const url = this.baseurl + urlQuery;
     return this.http.get<ProfilePoints[]>(url);
   }
 
   public getPlatformProfiles(platform: string): Observable<ProfilePoints[]> {
-    const url = this.baseurl + '/catalog/platforms/' + platform + '/map'
-    console.log(url)
+    const url = this.baseurl + '/catalog/platforms/' + platform + '/map';
     return this.http.get<ProfilePoints[]>(url)
   }
 
   public getLatestProfiles(): Observable<ProfilePoints[]> {
-    return this.http.get<ProfilePoints[]>(this.baseurl + '/selection/latestProfiles/map');
+    const url = this.baseurl + '/selection/latestProfiles/map'
+    return this.http.get<ProfilePoints[]>(url);
   }
   public getLastProfiles(): Observable<ProfilePoints[]> {
-    return this.http.get<ProfilePoints[]>(this.baseurl + '/selection/lastProfiles/map');
+    const url = this.baseurl + '/selection/lastProfiles/map';
+    return this.http.get<ProfilePoints[]>(url);
   }
 
   // plots the markers on the map three times. 

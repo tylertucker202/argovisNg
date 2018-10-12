@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/argo
 
 # dependencies
 /node_modules
