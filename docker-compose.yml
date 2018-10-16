@@ -1,0 +1,38 @@
+version: "2"
+
+services:
+  argo-express:
+    build: . #specify the directory of the Dockerfile
+    ports: 
+    - "3002:3002" # specify port forwarding
+    links:
+    - database
+    environment:
+      - VIRTUAL_HOST=www.ng.argovis.com,ng.argovis.com
+      - LETSENCRYPT_HOST=www.ng.argovis.com,ng.argovis.com
+
+  database:
+    image: mongo:3.4 # specify image to build container from
+    ports:
+      - "27017:27017"
+    volumes:
+      - /storage/mongodb:/data/db
+      - ./mongod.conf/mongod.conf:/etc/mongod.conf
+  
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./nginx/vhost.d:/etc/nginx/vhost.d"
+      - "./nginx/html:/usr/share/nginx/html"
+      - "./nginx/certs:/etc/nginx/certs"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
