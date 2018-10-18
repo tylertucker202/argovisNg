@@ -15,7 +15,6 @@ export class PointsService {
 
   public platformProfilesSelection: any;
   public appRef: ApplicationRef;
-  public baseurl = 'http://localhost:3000';
 
   constructor(public mapService: MapService,
               private http: HttpClient,
@@ -72,21 +71,21 @@ export class PointsService {
   }
 
   public getSelectionPoints(urlQuery): Observable<ProfilePoints[]> {
-    const url = this.baseurl + urlQuery;
+    const url = urlQuery;
     return this.http.get<ProfilePoints[]>(url);
   }
 
   public getPlatformProfiles(platform: string): Observable<ProfilePoints[]> {
-    const url = this.baseurl + '/catalog/platforms/' + platform + '/map';
+    const url = '/catalog/platforms/' + platform + '/map';
     return this.http.get<ProfilePoints[]>(url)
   }
 
   public getLatestProfiles(): Observable<ProfilePoints[]> {
-    const url = this.baseurl + '/selection/latestProfiles/map'
+    const url = '/selection/latestProfiles/map'
     return this.http.get<ProfilePoints[]>(url);
   }
   public getLastProfiles(): Observable<ProfilePoints[]> {
-    const url = this.baseurl + '/selection/lastProfiles/map';
+    const url = '/selection/lastProfiles/map';
     return this.http.get<ProfilePoints[]>(url);
   }
 
