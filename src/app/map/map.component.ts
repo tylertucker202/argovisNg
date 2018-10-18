@@ -145,6 +145,7 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting latest profiles' )
+        console.log(error)
       })
     }
   
@@ -160,6 +161,7 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting mock profiles' )
+        console.log(error)
       })
   }
 
@@ -298,6 +300,7 @@ shapeSelectionOnMap(): void {
              error => {
               this.notifier.notify( 'error', 'error in getting profiles in shape' )
                console.log('error occured when selecting points')
+               console.log(error)
              });
       }
   }
