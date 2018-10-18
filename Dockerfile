@@ -18,6 +18,6 @@ WORKDIR /usr/src/ng-argo/argo
 RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
-EXPOSE 3002
+EXPOSE 3000
 #CMD [ "npm", "start"]
 CMD [ "npm" , "run", "devstart"]

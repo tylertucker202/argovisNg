@@ -4,7 +4,7 @@ services:
   argo-express:
     build: . #specify the directory of the Dockerfile
     ports: 
-    - "3002:3002" # specify port forwarding
+    - "3000:3000" # specify port forwarding
     links:
     - database
     environment:

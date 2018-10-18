@@ -15,7 +15,7 @@ export class PointsService {
 
   public platformProfilesSelection: any;
   public appRef: ApplicationRef;
-  public baseurl = 'http://localhost:3002';
+  public baseurl = 'http://localhost:3000';
 
   constructor(public mapService: MapService,
               private http: HttpClient,
