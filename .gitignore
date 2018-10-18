@@ -35,6 +35,8 @@ npm-debug.log
 testem.log
 /typings
 /nginx
+/argo
+/argo/*
 
 # e2e
 /e2e/*.js
