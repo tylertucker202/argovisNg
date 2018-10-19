@@ -51,6 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.drawControl.addTo(this.map);
+    this.markersLayer.addTo(this.map);
     this.mapService.map = this.map;
 
     this.queryService.change
@@ -58,22 +59,21 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
-         //this.setStartingProfiles();
-         //this.setMockPoints();
         },)
 
     this.queryService.clearLayers
       .subscribe( () => {
+        this.queryService.clearShapes();
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
       })
     
     this.queryService.resetToStart
       .subscribe( () => {
+        this.queryService.clearShapes();
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
-        //this.setMockPoints();
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -112,12 +112,21 @@ export class MapComponent implements OnInit, OnDestroy {
       var layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
       const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      console.log(drawnFeatureCollection)
       this.queryService.sendShapeMessage(drawnFeatureCollection);
     });
 
+    this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
+      var layers = event.layers;
+      let myNewShape = this.mapService.drawnItems;
+      layers.eachLayer(function(layer: any) {
+        const layer_id = layer._leaflet_id
+        myNewShape.removeLayer(layer)
+      });
+      this.mapService.drawnItems = myNewShape
+      const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
+      this.queryService.sendShapeMessage(drawnFeatureCollection);
+      });
     this.setStartingProfiles();
-    //this.setMockPoints();
     this.invalidateSize();
   }
 
@@ -203,11 +212,9 @@ export class MapComponent implements OnInit, OnDestroy {
 private displayProfiles = function(this, profilePoints, markerType) {
 
   const includeRT = this.queryService.getToggle()
-  console.log(includeRT)
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
-      console.log(profile.dataMode)
       if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false)) {
         continue;
       }
@@ -221,7 +228,7 @@ private displayProfiles = function(this, profilePoints, markerType) {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
       }
   };
-  this.markersLayer.addTo(this.map);
+  //this.markersLayer.addTo(this.map);
   };
 
 private createWebMercator(this) {

@@ -13,7 +13,7 @@ export class QueryService {
 
   private presRange: Number[];
   private dateRange: any;
-  private latLngShapes: any;
+  private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime: Boolean;
 
 
@@ -41,6 +41,10 @@ export class QueryService {
 
   public getShapes(): any {
     return this.latLngShapes;
+  }
+
+  public clearShapes(): void {
+    this.latLngShapes = null;
   }
 
   public sendPresMessage(presRange: Number[]): void {
