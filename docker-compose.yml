@@ -8,11 +8,11 @@ services:
     links:
     - database
     environment:
-      - VIRTUAL_HOST=www.ng.argovis.com,ng.argovis.com
-      - LETSENCRYPT_HOST=www.ng.argovis.com,ng.argovis.com
+      - VIRTUAL_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
+      - LETSENCRYPT_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
 
   database:
-    image: mongo:3.4 # specify image to build container from
+    image: mongo # specify image to build container from
     ports:
       - "27017:27017"
     volumes:
