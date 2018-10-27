@@ -37,6 +37,7 @@ testem.log
 /nginx
 /argo
 /argo/*
+notes.txt
 
 # e2e
 /e2e/*.js

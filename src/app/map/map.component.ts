@@ -61,6 +61,10 @@ export class MapComponent implements OnInit, OnDestroy {
          this.shapeSelectionOnMap();
         },)
 
+    //todo: don't clear history or platform profiles (but redo them)
+    //define history layer, & platform profile layer and do logic here.
+
+
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes();
