@@ -12,7 +12,7 @@ services:
       - LETSENCRYPT_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
 
   database:
-    image: mongo # specify image to build container from
+    image: mongo:3.4 # specify image to build container from
     ports:
       - "27017:27017"
     volumes:
