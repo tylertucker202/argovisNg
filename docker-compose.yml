@@ -10,7 +10,7 @@ services:
     environment:
       - VIRTUAL_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
       - LETSENCRYPT_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
-      - "VIRTUAL_PORT=80"
+      - LETSENCRYPT_EMAIL=tylertucker202@gmail.com
 
   database:
     image: mongo # specify image to build container from
@@ -20,21 +20,20 @@ services:
       - /storage/mongodb:/data/db
       - ./mongod.conf/mongod.conf:/etc/mongod.conf
   
-  # nginx-proxy:
-  #   image: jwilder/nginx-proxy
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - "./nginx/vhost.d:/etc/nginx/vhost.d"
-  #     - "./nginx/html:/usr/share/nginx/html"
-  #     - "./nginx/certs:/etc/nginx/certs"
-  #     - "/var/run/docker.sock:/tmp/docker.sock:ro"
-  #     - "./nginx-conf:/etc/nginx/conf.d"
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./nginx/vhost.d:/etc/nginx/vhost.d"
+      - "./nginx/html:/usr/share/nginx/html"
+      - "./nginx/certs:/etc/nginx/certs"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
-  # letsencrypt-nginx-proxy-companion:
-  #   image: jrcs/letsencrypt-nginx-proxy-companion
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  #   volumes_from:
-  #     - "nginx-proxy"
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
