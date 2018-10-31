@@ -8,8 +8,8 @@ services:
     links:
     - database
     environment:
-      - VIRTUAL_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
-      - LETSENCRYPT_HOST=www.argovis.com,argovis.com,www.ng.argovis.com,ng.argovis.com
+      - VIRTUAL_HOST=www.argovis.com,argovis.com
+      - LETSENCRYPT_HOST=www.argovis.com,argovis.com
       - LETSENCRYPT_EMAIL=tylertucker202@gmail.com
 
   database:
@@ -29,11 +29,12 @@ services:
       - "./nginx/vhost.d:/etc/nginx/vhost.d"
       - "./nginx/html:/usr/share/nginx/html"
       - "./nginx/certs:/etc/nginx/certs"
+      - "./nginx-conf/proxy.conf:/etc/nginx/proxy.conf"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
-  # letsencrypt-nginx-proxy-companion:
-  #   image: jrcs/letsencrypt-nginx-proxy-companion
-  #   volumes:
-  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  #   volumes_from:
-  #     - "nginx-proxy"
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
