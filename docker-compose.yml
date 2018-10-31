@@ -13,7 +13,7 @@ services:
       - LETSENCRYPT_EMAIL=tylertucker202@gmail.com
 
   database:
-    image: mongo # specify image to build container from
+    image: mongo  # specify image to build container from
     ports:
       - "27017:27017"
     volumes:
@@ -31,10 +31,9 @@ services:
       - "./nginx/certs:/etc/nginx/certs"
       - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
-  letsencrypt-nginx-proxy-companion:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - "./nginx/certs:/etc/nginx/certs"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    volumes_from:
-      - "nginx-proxy"
+  # letsencrypt-nginx-proxy-companion:
+  #   image: jrcs/letsencrypt-nginx-proxy-companion
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   volumes_from:
+  #     - "nginx-proxy"
