@@ -271,7 +271,6 @@ private createWebMercator(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom );
   L.control.layers(this.mapService.baseMaps).addTo(this.map);
   this.map.on('baselayerchange', (e: any) => {
-    console.log(e.name);
     this.map.removeLayer(this.graticule)
     this.graticule = this.getGraticule(e.name)
     this.graticule.addTo(this.map);
