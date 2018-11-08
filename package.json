@@ -41,6 +41,7 @@
     "leaflet-ajax": "^2.1.0",
     "leaflet-arc": "^1.0.2",
     "leaflet-draw": "^0.4.14",
+    "leaflet-graticule": "0.0.1",
     "leaflet.coordinates": "^0.1.5",
     "moment": "^2.22.2",
     "ng2-daterangepicker": "^2.0.12",

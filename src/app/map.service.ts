@@ -6,6 +6,7 @@ import 'leaflet';
 import 'proj4leaflet';
 import 'arc';
 import 'leaflet-arc';
+import 'leaflet-graticule'
 //import 'leaflet-draw';
 import '../ext-js/leaflet.draw-arc-src.js';
 import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
@@ -63,6 +64,16 @@ export class MapService {
   public esri_OceanBasemap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
+
+  public graticule = L.latlngGraticule({
+    showLabel: true,
+    zoomInterval: [
+        {start: 0, end: 4, interval: 30},
+        {start: 4, end: 5, interval: 10},
+        {start: 5, end: 7.5, interval: 5},
+        {start: 7.5, end: 12, interval: 1}
+    ]
+    });
 
   constructor(private compileService: PopupCompileService) { 
     this.baseMaps = {

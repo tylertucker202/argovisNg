@@ -51,6 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.drawControl.addTo(this.map);
+    this.mapService.graticule.addTo(this.map);
     this.markersLayer.addTo(this.map);
     this.mapService.map = this.map;
 
