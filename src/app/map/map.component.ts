@@ -18,6 +18,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public markersLayer = L.layerGroup();
   public startView: any;
   public startZoom: number;
+  public graticule: any;
   private wrapCoordinates: boolean;
   public proj: string;
   private readonly notifier: NotifierService;
@@ -235,6 +236,27 @@ private displayProfiles = function(this, profilePoints, markerType) {
   //this.markersLayer.addTo(this.map);
   };
 
+private getGraticule(basemapName: string) {
+  switch(basemapName) {
+    case 'esri': {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+    case 'ocean': {
+      return (this.mapService.graticuleDark)
+      break;
+    }
+    case 'google': {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+    default: {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+  }
+}
+
 private createWebMercator(this) {
   this.startView = { latitude: 20, longitude: -150 }
   this.startZoom = 3
@@ -248,8 +270,15 @@ private createWebMercator(this) {
                     layers: [this.mapService.baseMaps.ocean]})
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom );
   L.control.layers(this.mapService.baseMaps).addTo(this.map);
+  this.map.on('baselayerchange', (e: any) => {
+    console.log(e.name);
+    this.map.removeLayer(this.graticule)
+    this.graticule = this.getGraticule(e.name)
+    this.graticule.addTo(this.map);
+  });
   L.control.zoom({position:'topleft'}).addTo(this.map);
-  this.mapService.graticule.addTo(this.map);
+  this.graticule = this.getGraticule('ocean')
+  this.graticule.addTo(this.map);
 };
 
 private createSouthernStereographic(this) {

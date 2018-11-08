@@ -65,8 +65,10 @@ export class MapService {
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
 
-  public graticule = L.latlngGraticule({
+  public graticuleDark = L.latlngGraticule({
     showLabel: true,
+    color: '#000000',
+    opacity: .5,
     zoomInterval: [
         {start: 0, end: 4, interval: 30},
         {start: 4, end: 5, interval: 10},
@@ -74,6 +76,18 @@ export class MapService {
         {start: 7.5, end: 12, interval: 1}
     ]
     });
+
+    public graticuleLight = L.latlngGraticule({
+        showLabel: true,
+        color: '#aaa',
+        opacity: 1,
+        zoomInterval: [
+            {start: 0, end: 4, interval: 30},
+            {start: 4, end: 5, interval: 10},
+            {start: 5, end: 7.5, interval: 5},
+            {start: 7.5, end: 12, interval: 1}
+        ]
+        });
 
     public curvedGraticule = L.latlngGraticule({
         showLabel: true,
