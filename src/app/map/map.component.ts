@@ -237,7 +237,7 @@ private displayProfiles = function(this, profilePoints, markerType) {
   };
 
 private createWebMercator(this) {
-  this.startView = { latitude: 0, longitude: -30 }
+  this.startView = { latitude: 20, longitude: -150 }
   this.startZoom = 3
   this.map = L.map('map',
                     {maxZoom: 13,
