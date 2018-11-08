@@ -75,6 +75,19 @@ export class MapService {
     ]
     });
 
+    public curvedGraticule = L.latlngGraticule({
+        showLabel: true,
+        latLineCurved: 1,
+        weight: 3,
+        lngLineCurved: 1,
+        zoomInterval: [
+            {start: 0, end: 4, interval: 30},
+            {start: 4, end: 5, interval: 10},
+            {start: 5, end: 7.5, interval: 5},
+            {start: 7.5, end: 13, interval: 1}
+        ]
+        });
+
   constructor(private compileService: PopupCompileService) { 
     this.baseMaps = {
       esri: this.satelliteMap,

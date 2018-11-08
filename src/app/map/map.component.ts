@@ -51,7 +51,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.drawControl.addTo(this.map);
-    this.mapService.graticule.addTo(this.map);
     this.markersLayer.addTo(this.map);
     this.mapService.map = this.map;
 
@@ -250,6 +249,7 @@ private createWebMercator(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom );
   L.control.layers(this.mapService.baseMaps).addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  this.mapService.graticule.addTo(this.map);
 };
 
 private createSouthernStereographic(this) {
@@ -266,6 +266,7 @@ private createSouthernStereographic(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom);    
   this.mapService.geojsonLayer.addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  //this.mapService.curvedGraticule.bringToFront().addTo(this.map);
 };
 
 private createNorthernStereographic(this) {
@@ -282,6 +283,7 @@ private createNorthernStereographic(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom);
   this.mapService.geojsonLayerNoAntartica.addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  //this.mapService.curvedGraticule.bringToFront().addTo(this.map);
 };
 
 shapeSelectionOnMap(): void {
