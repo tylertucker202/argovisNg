@@ -46,12 +46,19 @@ export class PointsService {
       popupAnchor:  [6, 6]
   });
 
+  public argoIconBGC = L.icon({
+    iconUrl: 'assets/img/dot_green.png',
+    iconSize:     [12, 12], 
+    iconAnchor:   [0, 0],
+    popupAnchor:  [6, 6]
+});
+
   public mockPoints:  ProfilePoints[] = 
-  [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549", "DATA_MODE":'D'},
+  [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549", "DATA_MODE":'D', 'containsBGC': 1},
   {"_id":"3901520_100","date":"2018-07-09T16:37:32.999Z","cycle_number":100,"geoLocation":{"type":"Point","coordinates":[-32.7866,-21.2051]},"platform_number":"3901520", "DATA_MODE":'D'},
   {"_id":"6901549_170","date":"2018-07-09T20:43:00.000Z","cycle_number":170,"geoLocation":{"type":"Point","coordinates":[4.74,5.0000]},"platform_number":"6901549", "DATA_MODE":'D'},
   {"_id":"3901520_101","date":"2018-07-09T16:37:32.999Z","cycle_number":101,"geoLocation":{"type":"Point","coordinates":[-32.7866,5.0000]},"platform_number":"3901520", "DATA_MODE":'D'},
-  {"_id":"3901503_136","date":"2018-07-09T15:37:12.999Z","cycle_number":136,"geoLocation":{"type":"Point","coordinates":[-31.6948,-35.3172]},"platform_number":"3901503", "DATA_MODE":'D'},
+  {"_id":"3901503_136","date":"2018-07-09T15:37:12.999Z","cycle_number":136,"geoLocation":{"type":"Point","coordinates":[-31.6948,-35.3172]},"platform_number":"3901503", "DATA_MODE":'D', 'containsBGC': 1},
   {"_id":"6901981_119","date":"2018-07-09T15:01:18.999Z","cycle_number":119,"geoLocation":{"type":"Point","coordinates":[-23.939999999999998,-23.881]},"platform_number":"6901981", "DATA_MODE":'R'},
   {"_id":"3902121_27","date":"2018-07-09T12:55:00.000Z","cycle_number":27,"geoLocation":{"type":"Point","coordinates":[-19.37458833333333,-23.396726666666666]},"platform_number":"3902121", "DATA_MODE":'A'},
   {"_id":"3902120_29","date":"2018-07-09T12:34:00.000Z","cycle_number":29,"geoLocation":{"type":"Point","coordinates":[-20.906981666666667,-24.33817833333333]},"platform_number":"3902120", "DATA_MODE":'R'},
@@ -59,10 +66,10 @@ export class PointsService {
   {"_id":"3901887_46","date":"2018-07-09T11:40:30.000Z","cycle_number":46,"geoLocation":{"type":"Point","coordinates":[-12.51845,-26.975236666666667]},"platform_number":"3901887", "DATA_MODE":'A'},
   {"_id":"6901684_127","date":"2018-07-09T06:45:00.000Z","cycle_number":127,"geoLocation":{"type":"Point","coordinates":[-2.687999999999988,-29.542]},"platform_number":"6901684", "DATA_MODE":'R'},
   {"_id":"1901732_108","date":"2018-07-09T04:43:19.000Z","cycle_number":108,"geoLocation":{"type":"Point","coordinates":[0.24943,-17.62164]},"platform_number":"1901732", "DATA_MODE":'R'},
-  {"_id":"1901886_36","date":"2018-07-09T02:10:55.000Z","cycle_number":36,"geoLocation":{"type":"Point","coordinates":[0.1596,-31.7725]},"platform_number":"1901886", "DATA_MODE":'R'},
+  {"_id":"1901886_36","date":"2018-07-09T02:10:55.000Z","cycle_number":36,"geoLocation":{"type":"Point","coordinates":[0.1596,-31.7725]},"platform_number":"1901886", "DATA_MODE":'R', 'containsBGC': 1},
   {"_id":"5905141_55","date":"2018-07-08T23:23:15.002Z","cycle_number":55,"geoLocation":{"type":"Point","coordinates":[-28.427,-34.399]},"platform_number":"5905141", "DATA_MODE":'R'},
   {"_id":"1901298_208","date":"2018-07-08T18:21:52.000Z","cycle_number":208,"geoLocation":{"type":"Point","coordinates":[-21.8925,-23.157]},"platform_number":"1901298", "DATA_MODE":'R'},
-  {"_id":"6901973_156","date":"2018-07-08T17:25:57.999Z","cycle_number":156,"geoLocation":{"type":"Point","coordinates":[-12.422000000000025,-32.747]},"platform_number":"6901973", "DATA_MODE":'R'},
+  {"_id":"6901973_156","date":"2018-07-08T17:25:57.999Z","cycle_number":156,"geoLocation":{"type":"Point","coordinates":[-12.422000000000025,-32.747]},"platform_number":"6901973", "DATA_MODE":'R', 'containsBGC': 1},
   {"_id":"3901110_107","date":"2018-07-08T16:58:26.001Z","cycle_number":107,"geoLocation":{"type":"Point","coordinates":[-27.48367,-24.22411]},"platform_number":"3901110", "DATA_MODE":'R'},
   ]
 
@@ -138,6 +145,8 @@ export class PointsService {
     const cycle = profile.cycle_number
     const profile_id = selectedPlatform.toString()+'_'+cycle.toString();
     const dataMode = profile.DATA_MODE;
+    const bgc = profile.containsBGC;
+
     if (wrapCoordinates){
       var coordArray = this.makeWrappedCoordinates(geoLocation.coordinates);
     }
@@ -161,6 +170,7 @@ export class PointsService {
                     c.instance.date = date;
                     c.instance.platform = selectedPlatform;
                     c.instance.dataMode = dataMode;
+                    c.instance.bgc = bgc;
                   })
             );
 });

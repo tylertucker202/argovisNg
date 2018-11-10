@@ -60,6 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
+         this.setMockPoints()
         },)
 
     //todo: don't clear history or platform profiles (but redo them)
@@ -79,6 +80,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
+        this.setMockPoints()
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -159,7 +161,6 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting latest profiles' )
-        console.log(error)
       })
     }
   
@@ -175,7 +176,6 @@ export class MapComponent implements OnInit, OnDestroy {
       },
       error => {
         this.notifier.notify( 'error', 'error in getting mock profiles' )
-        console.log(error)
       })
   }
 
@@ -220,7 +220,7 @@ private displayProfiles = function(this, profilePoints, markerType) {
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
-      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false)) {
+      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) {
         continue;
       }
       if (markerType==='history') {
@@ -228,6 +228,9 @@ private displayProfiles = function(this, profilePoints, markerType) {
       }
       else if (markerType==='platform') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
+      }
+      else if (profile.containsBGC) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
       }
       else {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
@@ -323,13 +326,15 @@ shapeSelectionOnMap(): void {
       let dates = this.queryService.getDates();
       let presRange = this.queryService.getPresRange();
       let includeRealtime = this.queryService.getToggle();
+      let onlyBGC = this.queryService.getBGCToggle();
       for (let i = 0; i < features.length; i++) {
           let shape = features[i].geometry.coordinates;
           const transformedShape = this.mapService.getTransformedShape(shape)
           let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
                          '&presRange='+JSON.stringify(presRange) +
-                         '&shape='+JSON.stringify(transformedShape) 
-                         '&includeRT='+JSON.stringify(includeRealtime);
+                         '&shape='+JSON.stringify(transformedShape)
+          if (includeRealtime) { urlQuery += '&includeRT='+JSON.stringify(includeRealtime) }
+          if (onlyBGC) { urlQuery += '&onlyBGC='+JSON.stringify(onlyBGC) }
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {
@@ -342,7 +347,6 @@ shapeSelectionOnMap(): void {
              error => {
               this.notifier.notify( 'error', 'error in getting profiles in shape' )
                console.log('error occured when selecting points')
-               console.log(error)
              });
       }
   }

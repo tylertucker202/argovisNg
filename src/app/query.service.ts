@@ -15,6 +15,7 @@ export class QueryService {
   private dateRange: any;
   private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime: Boolean;
+  private onlyBGC: Boolean;
 
 
   public triggerPlatformShow(platform: string): void {
@@ -77,6 +78,16 @@ export class QueryService {
     return this.includeRealtime;
   }
 
+  sendBGCToggleMsg(toggleChecked: Boolean): void {
+    const msg = 'bgc only'
+    this.onlyBGC = toggleChecked
+    this.change.emit(msg)
+  }
+
+  public getBGCToggle(): Boolean {
+    return this.onlyBGC
+  }
+  
   constructor() { }
 
 }

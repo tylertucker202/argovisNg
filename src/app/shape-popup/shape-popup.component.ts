@@ -25,8 +25,6 @@ export class ShapePopupComponent implements OnInit {
     }
     selectionPageUrl += '&shape='+JSON.stringify(this.shape)
     //'&includeRT='+JSON.stringify(includeRealtime);
-    console.log('selection clicked');
-    console.log(selectionPageUrl);
     window.open(selectionPageUrl,"_blank")
   }
 

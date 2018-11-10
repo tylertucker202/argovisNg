@@ -1,0 +1,15 @@
+.bgc {
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+  }
+
+.leaflet-popup-content p {
+    margin: 0px;
+    padding:0px;
+}
+
+#profPopup {
+    padding:0px;
+    margin:0px
+}

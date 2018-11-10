@@ -21,17 +21,23 @@ export class SidebarNavComponent implements OnInit {
   constructor(private queryService: QueryService,
               @Inject(DOCUMENT) private document: Document) { }
 
-  @Input() checked = true;
+  @Input() includeRT = true;
+  @Input() onlyBGC = false;
 
   ngOnInit() {
-    this.queryService.sendToggleMsg(this.checked)
+    this.queryService.sendToggleMsg(this.includeRT)
     this.url = this.document.location.search.split('?map=')[0];
     this.proj = this.document.location.search.split('?map=')[1];
   }
 
   realtimeChange(event: any): void {
-    this.checked = event.checked
-    this.queryService.sendToggleMsg(this.checked);
+    this.includeRT = event.checked
+    this.queryService.sendToggleMsg(this.includeRT);
+  }
+
+  bgcChange(event: any): void {
+    this.onlyBGC = event.checked
+    this.queryService.sendBGCToggleMsg(this.onlyBGC);
   }
 
   clearProfiles(): void {
