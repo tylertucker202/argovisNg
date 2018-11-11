@@ -60,7 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
-         this.setMockPoints()
+         //this.setMockPoints()
         },)
 
     //todo: don't clear history or platform profiles (but redo them)
@@ -80,7 +80,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
-        this.setMockPoints()
+        //this.setMockPoints()
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 

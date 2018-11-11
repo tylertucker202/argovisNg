@@ -1,19 +1,19 @@
 version: "2"
 
 services:
-  # argo-express:
-  #   build: . #specify the directory of the Dockerfile
-  #   ports: 
-  #   - "3001:3001" # specify port forwarding
-  #   links:
-  #   - database
-  #   environment:
-  #     - VIRTUAL_HOST=www.argovis.com,argovis.com
-  #     - LETSENCRYPT_HOST=www.argovis.com,argovis.com
-  #     - LETSENCRYPT_EMAIL=tylertucker202@gmail.com
+  argo-express:
+    build: . #specify the directory of the Dockerfile
+    ports: 
+    - "3000:3000" # specify port forwarding
+    links:
+    - database
+    environment:
+      - VIRTUAL_HOST=www.argovis.com,argovis.com
+      - LETSENCRYPT_HOST=www.argovis.com,argovis.com
+      - LETSENCRYPT_EMAIL=tylertucker202@gmail.com
 
   database:
-    image: mongo:3.6  # specify image to build container from
+    image: mongo  # specify image to build container from
     ports:
       - "27017:27017"
     volumes:
