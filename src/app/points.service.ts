@@ -96,6 +96,14 @@ export class PointsService {
     return this.http.get<ProfilePoints[]>(url);
   }
 
+  public getLastThreeDaysProfiles(startDate: string): Observable<ProfilePoints[]> {
+    let url = '/selection/lastThreeDays/';
+    if (startDate) {
+      url += startDate
+    }
+    return this.http.get<ProfilePoints[]>(url);
+  }
+
   // plots the markers on the map three times. 
   public makeWrappedCoordinates(coordinates): number[][] {
       const lat = coordinates[1];

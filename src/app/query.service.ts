@@ -12,7 +12,8 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange: Number[];
-  private dateRange: any;
+  private selectionDateRange: any;
+  private displayDate: string;
   private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime: Boolean;
   private onlyBGC: Boolean;
@@ -58,14 +59,24 @@ export class QueryService {
     return this.presRange;
   }
 
-  public sendDateMessage(dateRange: DateRange): void {
-    const msg = 'date';
-    this.dateRange = dateRange;
+  public sendSelectedDateMessage(selectionDateRange: DateRange): void {
+    const msg = 'selection date';
+    this.selectionDateRange = selectionDateRange;
     this.change.emit(msg);
   }
 
-  public getDates(): any {
-    return this.dateRange;
+  public getSelectionDates(): any {
+    return this.selectionDateRange;
+  }
+
+  public sendDisplayDateMessage(displayDate: string): void {
+    const msg = 'display date';
+    this.displayDate = displayDate;
+    this.change.emit(msg);
+  }
+
+  public getDisplayDate(): any {
+    return this.displayDate;
   }
 
   public sendToggleMsg(toggleChecked: Boolean): void {

@@ -15,7 +15,9 @@ import {
   MatSidenavModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatSelectModule
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -105,7 +107,9 @@ const customNotifierOptions: NotifierOptions = {
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     MapService,

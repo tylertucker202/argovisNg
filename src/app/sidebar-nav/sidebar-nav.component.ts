@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { QueryService } from '../query.service'
 import { DOCUMENT } from '@angular/common';
+import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {FormControl} from '@angular/forms';
 
 export interface Projections {
   value: string;
@@ -17,6 +19,7 @@ export class SidebarNavComponent implements OnInit {
 
   private url: string;
   private proj: string;
+  private date = new FormControl(new Date());
 
   constructor(private queryService: QueryService,
               @Inject(DOCUMENT) private document: Document) { }
@@ -58,6 +61,16 @@ export class SidebarNavComponent implements OnInit {
   displayPlatformInputChanged(platformInput: string) {
     if (platformInput.length >= 5){ this.queryService.triggerShowPlatform(platformInput) }
   }
+
+  displayLastThreeDaysDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
+    const date = event.value
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const dateStr = year + '-' + month + '-' + day
+    this.queryService.sendDisplayDateMessage(dateStr)
+  }
+
 
   projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},

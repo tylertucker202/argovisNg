@@ -37,7 +37,7 @@ export class DaterangepickerComponent {
   }
 
   private sendDateRange(): void {
-    this.queryService.sendDateMessage(this.daterange);
+    this.queryService.sendSelectedDateMessage(this.daterange);
   }
 
   public selectedDate(value: any) {

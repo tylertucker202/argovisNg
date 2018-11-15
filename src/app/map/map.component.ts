@@ -60,6 +60,9 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
+         if (msg == 'display date') {
+           this.addDisplayProfiles()
+         }
          //this.setMockPoints()
         },)
 
@@ -150,7 +153,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private setStartingProfiles(this) {
-    this.pointsService.getLastProfiles()
+    this.pointsService.getLastThreeDaysProfiles()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero profile points returned' )
@@ -160,9 +163,25 @@ export class MapComponent implements OnInit, OnDestroy {
       }
       },
       error => {
-        this.notifier.notify( 'error', 'error in getting latest profiles' )
+        this.notifier.notify( 'error', 'error in getting last three day profiles' )
       })
     }
+
+    private addDisplayProfiles(this) {
+      const startDate = this.queryService.getDisplayDate()
+      this.pointsService.getLastThreeDaysProfiles(startDate)
+      .subscribe((profilePoints: ProfilePoints[]) => {
+        if (profilePoints.length == 0) {
+          this.notifier.notify( 'warning', 'zero profile points returned' )
+        }
+        else {
+          this.displayProfiles(profilePoints, 'normalMarker')
+        }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting last three day profiles' )
+        })
+      }
   
   private setMockPoints(this): void {
     this.pointsService.getMockPoints()
@@ -323,7 +342,7 @@ shapeSelectionOnMap(): void {
   if (features) {
       this.markersLayer.clearLayers();
       let base = '/selection/profiles/map'
-      let dates = this.queryService.getDates();
+      let dates = this.queryService.getSelectionDates();
       let presRange = this.queryService.getPresRange();
       let includeRealtime = this.queryService.getToggle();
       let onlyBGC = this.queryService.getBGCToggle();
