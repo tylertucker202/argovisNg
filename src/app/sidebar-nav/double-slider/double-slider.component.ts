@@ -32,9 +32,7 @@ export class DoubleSliderComponent implements OnInit {
       step: 1,
       connect: true,
       orientation: 'vertical'
-    },
-
-    this.sendSliderRange()
+    }
   }
 
   private sendSliderRange(): void {

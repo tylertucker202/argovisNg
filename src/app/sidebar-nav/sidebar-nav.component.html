@@ -23,6 +23,10 @@
            (keyup)="displayPlatformInputChanged($event.target.value)"
            id='platformInput'>
   </mat-form-field>
+  <mat-slide-toggle matTooltip="toggle on show global profiles within a three day window"
+                   color="accent" [checked]="display3Day"
+                   (change)="display3DayChange($event)">Display 3 day window
+  </mat-slide-toggle>
   <mat-form-field class="date-form">
     <input matInput 
            matTooltip="Display last three days profile on map from date" 

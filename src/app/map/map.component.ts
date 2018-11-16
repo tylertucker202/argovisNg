@@ -60,8 +60,9 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
-         if (msg == 'display date') {
-           this.addDisplayProfiles()
+         const showThreeDay = this.queryService.getThreeDayToggle()
+         if (showThreeDay) {
+            this.addDisplayProfiles()
          }
          //this.setMockPoints()
         },)
@@ -168,6 +169,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     private addDisplayProfiles(this) {
+      if (!this.queryService.getThreeDayToggle()) {return}
       const startDate = this.queryService.getDisplayDate()
       this.pointsService.getLastThreeDaysProfiles(startDate)
       .subscribe((profilePoints: ProfilePoints[]) => {

@@ -26,6 +26,7 @@ export class SidebarNavComponent implements OnInit {
 
   @Input() includeRT = true;
   @Input() onlyBGC = false;
+  @Input() display3Day = true;
 
   ngOnInit() {
     this.queryService.sendToggleMsg(this.includeRT)
@@ -36,6 +37,11 @@ export class SidebarNavComponent implements OnInit {
   realtimeChange(event: any): void {
     this.includeRT = event.checked
     this.queryService.sendToggleMsg(this.includeRT);
+  }
+
+  display3DayChange(event: any): void {
+    this.display3Day = event.checked
+    this.queryService.sendThreeDayMsg(this.display3Day);
   }
 
   bgcChange(event: any): void {

@@ -1,6 +1,7 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, OnInit } from '@angular/core';
 import { GeoJsonObject } from 'geojson';
 import { DateRange } from '../typeings/daterange';
+import * as moment from 'moment';
 
 @Injectable()
 export class QueryService {
@@ -11,14 +12,17 @@ export class QueryService {
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
-  private presRange: Number[];
-  private selectionDateRange: any;
+  private presRange: any;
+  private selectionDateRange = {start: moment().subtract(14, 'days').format('YYYY-MM-DD'), end: moment().format('YYYY-MM-DD') };
   private displayDate: string;
   private latLngShapes: GeoJSON.FeatureCollection | any;
-  private includeRealtime: Boolean;
-  private onlyBGC: Boolean;
+  private includeRealtime = true;
+  private onlyBGC = false;
+  private threeDayToggle = true;
 
-
+  ngOnInit() {
+    this.presRange = [0, 2000]
+  }
   public triggerPlatformShow(platform: string): void {
     this.triggerPlatformDisplay.emit(platform)
   }
@@ -81,21 +85,32 @@ export class QueryService {
 
   public sendToggleMsg(toggleChecked: Boolean): void {
     const msg = 'realtime'
-    this.includeRealtime = toggleChecked
+    this.includeRealtime = toggleChecked.valueOf()
     this.change.emit(msg)
   }
 
-  public getRealtimeToggle(): Boolean {
+  public getRealtimeToggle(): boolean {
     return this.includeRealtime;
   }
 
-  sendBGCToggleMsg(toggleChecked: Boolean): void {
-    const msg = 'bgc only'
-    this.onlyBGC = toggleChecked
+  public sendThreeDayMsg(toggleChecked: Boolean): void {
+    const msg = '3 day toggle'
+    this.threeDayToggle = toggleChecked.valueOf()
     this.change.emit(msg)
   }
 
-  public getBGCToggle(): Boolean {
+  public getThreeDayToggle(): boolean {
+    return this.threeDayToggle;
+  }
+
+
+  sendBGCToggleMsg(toggleChecked: Boolean): void {
+    const msg = 'bgc only'
+    this.onlyBGC = toggleChecked.valueOf()
+    this.change.emit(msg)
+  }
+
+  public getBGCToggle(): boolean {
     return this.onlyBGC
   }
   

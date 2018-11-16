@@ -33,7 +33,6 @@ export class DaterangepickerComponent {
 
   ngOnInit() {
     this.daterange = {start: this.start.format('YYYY-MM-DD'), end: this.end.format('YYYY-MM-DD') }
-    this.sendDateRange()
   }
 
   private sendDateRange(): void {
