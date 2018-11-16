@@ -85,7 +85,7 @@ export class QueryService {
     this.change.emit(msg)
   }
 
-  public getToggle(): Boolean {
+  public getRealtimeToggle(): Boolean {
     return this.includeRealtime;
   }
 

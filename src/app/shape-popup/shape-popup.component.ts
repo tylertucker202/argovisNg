@@ -17,7 +17,6 @@ export class ShapePopupComponent implements OnInit {
     let base = '/selection/profiles/page'
     let dates = this.queryService.getSelectionDates();
     let presRange = this.queryService.getPresRange();
-    let includeRealtime = this.queryService.getToggle();
 
     let selectionPageUrl = base+'?startDate=' + dates.start + '&endDate=' + dates.end
     if (includePresRange) {

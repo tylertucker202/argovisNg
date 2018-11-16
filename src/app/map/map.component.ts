@@ -235,13 +235,15 @@ export class MapComponent implements OnInit, OnDestroy {
 
 private displayProfiles = function(this, profilePoints, markerType) {
 
-  const includeRT = this.queryService.getToggle()
+  const includeRT = this.queryService.getRealtimeToggle()
+  const bgcOnly = this.queryService.getBGCToggle()
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
       if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) {
         continue;
       }
+      if ( profile.containsBGC!==1 && bgcOnly ) { continue; }
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
@@ -344,7 +346,7 @@ shapeSelectionOnMap(): void {
       let base = '/selection/profiles/map'
       let dates = this.queryService.getSelectionDates();
       let presRange = this.queryService.getPresRange();
-      let includeRealtime = this.queryService.getToggle();
+      let includeRealtime = this.queryService.getRealtimeToggle();
       let onlyBGC = this.queryService.getBGCToggle();
       for (let i = 0; i < features.length; i++) {
           let shape = features[i].geometry.coordinates;
@@ -352,8 +354,6 @@ shapeSelectionOnMap(): void {
           let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
                          '&presRange='+JSON.stringify(presRange) +
                          '&shape='+JSON.stringify(transformedShape)
-          if (includeRealtime) { urlQuery += '&includeRT='+JSON.stringify(includeRealtime) }
-          if (onlyBGC) { urlQuery += '&onlyBGC='+JSON.stringify(onlyBGC) }
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {
