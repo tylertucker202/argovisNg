@@ -20,6 +20,7 @@
     <input matInput 
            matTooltip="input platform number, and map will display its profile markers. hint: try 4902911"
            class="show-platform-input" placeholder="Platform Number:" type="string"
+           (keyup)="displayPlatformInputChanged($event.target.value)"
            id='platformInput'>
   </mat-form-field>
   <mat-form-field class="date-form">
