@@ -96,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy {
           .subscribe((profilePoints: ProfilePoints[]) => {
             if (profilePoints.length > 0) {
               this.displayProfiles(profilePoints, 'platform')
+              this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
             }
             else {
               if (platform.length >= 7){
