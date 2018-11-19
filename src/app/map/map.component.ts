@@ -253,7 +253,7 @@ private displayProfiles = function(this, profilePoints, markerType) {
       else if (markerType==='platform') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
       }
-      else if (profile.containsBGC) {
+      else if (profile.containsBGC===1) {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
       }
       else {
