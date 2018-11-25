@@ -13,9 +13,9 @@ export class DoubleSliderComponent implements OnInit {
 
   private config: any;
   private slider: any;
-  private sliderRange: Number[];
-  private lRange: Number;
-  private uRange: Number;
+  private sliderRange: number[];
+  private lRange: number;
+  private uRange: number;
   //@ViewChild('slider') slider: NouisliderModule;
 
 
@@ -39,17 +39,17 @@ export class DoubleSliderComponent implements OnInit {
     this.queryService.sendPresMessage(this.sliderRange);
   }
 
-  public minValuechange(newLowPres : Number ): void {
-    this.lRange = Number(newLowPres);
+  public minValuechange(newLowPres : number ): void {
+    this.lRange = newLowPres;
     this.sliderRange = [newLowPres, null];
   }
 
-  public maxValuechange(newUpPres : Number ): void {
-    this.uRange = Number(newUpPres);
+  public maxValuechange(newUpPres : number ): void {
+    this.uRange = newUpPres;
     this.sliderRange = [null, newUpPres];
   }
 
-  public onChange(newRange: Number[]): void {
+  public onChange(newRange: number[]): void {
     this.lRange = newRange[0]
     this.uRange = newRange[1]
     this.sendSliderRange();

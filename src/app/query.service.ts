@@ -1,5 +1,4 @@
-import { Injectable, EventEmitter, Output, OnInit } from '@angular/core';
-import { GeoJsonObject } from 'geojson';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { DateRange } from '../typeings/daterange';
 import * as moment from 'moment';
 
@@ -12,7 +11,7 @@ export class QueryService {
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
-  private presRange: any;
+  private presRange = [0, 2000];
   private selectionDateRange = {start: moment().subtract(14, 'days').format('YYYY-MM-DD'), end: moment().format('YYYY-MM-DD') };
   private displayDate: string;
   private latLngShapes: GeoJSON.FeatureCollection | any;
@@ -20,9 +19,6 @@ export class QueryService {
   private onlyBGC = false;
   private threeDayToggle = true;
 
-  ngOnInit() {
-    this.presRange = [0, 2000]
-  }
   public triggerPlatformShow(platform: string): void {
     this.triggerPlatformDisplay.emit(platform)
   }
@@ -53,7 +49,7 @@ export class QueryService {
     this.latLngShapes = null;
   }
 
-  public sendPresMessage(presRange: Number[]): void {
+  public sendPresMessage(presRange: number[]): void {
     const msg = 'presRange';
     this.presRange = presRange;
     this.change.emit(msg);

@@ -354,9 +354,11 @@ shapeSelectionOnMap(): void {
       for (let i = 0; i < features.length; i++) {
           let shape = features[i].geometry.coordinates;
           const transformedShape = this.mapService.getTransformedShape(shape)
-          let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
-                         '&presRange='+JSON.stringify(presRange) +
-                         '&shape='+JSON.stringify(transformedShape)
+          let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+          if (presRange) {
+            urlQuery += '&presRange='+JSON.stringify(presRange)
+          }
+          urlQuery += '&shape='+JSON.stringify(transformedShape)
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {
@@ -369,6 +371,7 @@ shapeSelectionOnMap(): void {
              error => {
               this.notifier.notify( 'error', 'error in getting profiles in shape' )
                console.log('error occured when selecting points')
+               console.log(error)
              });
       }
   }
