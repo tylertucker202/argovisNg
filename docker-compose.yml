@@ -15,7 +15,7 @@ services:
   database:
     image: mongo  # specify image to build container from
     ports:
-      - "127.0.0.1:27017:27017"
+      - "127.0.0.1:27017:27017" # include localhost ip to restrict access to localhost
     volumes:
       - /storage/mongodb:/data/db
       - ./mongod.conf/mongod.conf:/etc/mongod.conf
