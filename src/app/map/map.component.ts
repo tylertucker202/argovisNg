@@ -64,7 +64,7 @@ export class MapComponent implements OnInit, OnDestroy {
          if (showThreeDay) {
             this.addDisplayProfiles()
          }
-         //this.setMockPoints()
+         this.setMockPoints()
         },)
 
     //todo: don't clear history or platform profiles (but redo them)
@@ -84,7 +84,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
-        //this.setMockPoints()
+        this.setMockPoints()
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -240,21 +240,28 @@ private displayProfiles = function(this, profilePoints, markerType) {
 
   const includeRT = this.queryService.getRealtimeToggle()
   const bgcOnly = this.queryService.getBGCToggle()
+  const deepOnly = this.queryService.getDeepToggle()
+
+
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
       if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) {
         continue;
       }
-      if ( profile.containsBGC!==1 && bgcOnly ) { continue; }
+      if ( !profile.containsBGC && bgcOnly ) { continue; }
+      if ( !profile.isDeep && deepOnly ) { continue; }
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
       else if (markerType==='platform') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
       }
-      else if (profile.containsBGC===1) {
+      else if (profile.containsBGC) {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
+      }
+      else if (profile.isDeep) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates);
       }
       else {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);

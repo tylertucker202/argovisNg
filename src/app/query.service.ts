@@ -17,6 +17,7 @@ export class QueryService {
   private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime = true;
   private onlyBGC = false;
+  private onlyDeep = false;
   private threeDayToggle = true;
 
   public triggerPlatformShow(platform: string): void {
@@ -109,7 +110,16 @@ export class QueryService {
   public getBGCToggle(): boolean {
     return this.onlyBGC
   }
-  
+
+  sendDeepToggleMsg(toggleChecked: Boolean): void {
+    const msg = 'deep only'
+    this.onlyDeep = toggleChecked.valueOf()
+    this.change.emit(msg)
+  }
+
+  public getDeepToggle(): boolean {
+    return this.onlyDeep
+  }
   constructor() { }
 
 }

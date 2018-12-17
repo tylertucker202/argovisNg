@@ -26,12 +26,16 @@ export class SidebarNavComponent implements OnInit {
 
   @Input() includeRT = true;
   @Input() onlyBGC = false;
+  @Input() onlyDeep = false;
   @Input() display3Day = true;
 
   ngOnInit() {
     this.queryService.sendToggleMsg(this.includeRT)
     this.url = this.document.location.search.split('?map=')[0];
     this.proj = this.document.location.search.split('?map=')[1];
+    let yd = new Date()
+    yd.setDate(yd.getDate() - 1)
+    this.date = new FormControl(yd)
   }
 
   realtimeChange(event: any): void {
@@ -47,6 +51,11 @@ export class SidebarNavComponent implements OnInit {
   bgcChange(event: any): void {
     this.onlyBGC = event.checked
     this.queryService.sendBGCToggleMsg(this.onlyBGC);
+  }
+
+  deepChange(event: any): void {
+    this.onlyDeep = event.checked
+    this.queryService.sendDeepToggleMsg(this.onlyDeep);
   }
 
   clearProfiles(): void {

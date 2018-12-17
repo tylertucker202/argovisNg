@@ -9,5 +9,6 @@ export interface ProfilePoints {
     roundLon?: any;
     strLat?: any;
     strLon?: any;
-    containsBGC?: Number;
+    containsBGC?: Number | Boolean;
+    isDeep?: Boolean;
 }
