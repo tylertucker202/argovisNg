@@ -158,10 +158,15 @@ public argoIconDeep = L.icon({
     const date = moment(profile.date).format('YYYY-MM-DD')
     const strLatLng = this.formatLatLng([lon, lat])
     const cycle = profile.cycle_number
+    //for some reason _id looses its cycle number when passed to the popup object.
+    // _id is made this way.
     let profile_id = profile.platform_number + '_' +  profile.cycle_number
     if (profile.dataMode==='D') {
       profile_id+='D'
     }
+
+    console.log(profile_id)
+    console.log(profile._id)
     const dataMode = profile.DATA_MODE;
     const bgc = profile.containsBGC;
     const deep = profile.isDeep;
@@ -182,7 +187,7 @@ public argoIconDeep = L.icon({
           marker.setPopupContent(
                 this.compileService.compile(ProfPopupComponent, (c) => 
                   { c.instance.param = profile_id; 
-                    c.instance.profileId = profile_id;
+                    c.instance.profileId = profile._id;
                     c.instance.lat = strLatLng[0];
                     c.instance.lon = strLatLng[1];
                     c.instance.cycle = cycle;
