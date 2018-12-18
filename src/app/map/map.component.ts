@@ -242,15 +242,12 @@ private displayProfiles = function(this, profilePoints, markerType) {
   const bgcOnly = this.queryService.getBGCToggle()
   const deepOnly = this.queryService.getDeepToggle()
 
-
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
-      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) {
-        continue;
-      }
-      if ( !profile.containsBGC && bgcOnly ) { continue; }
-      if ( !profile.isDeep && deepOnly ) { continue; }
+      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) { continue; }
+      if ( !profile.containsBG==true && bgcOnly ) { continue; } //be careful, old values may equal 1. use ==
+      if ( !profile.isDeep===true && deepOnly ) { continue; } // always use ===
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
