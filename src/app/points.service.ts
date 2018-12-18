@@ -158,7 +158,10 @@ public argoIconDeep = L.icon({
     const date = moment(profile.date).format('YYYY-MM-DD')
     const strLatLng = this.formatLatLng([lon, lat])
     const cycle = profile.cycle_number
-    const profile_id = profile._id
+    let profile_id = profile.platform_number + '_' +  profile.cycle_number
+    if (profile.dataMode==='D') {
+      profile_id+='D'
+    }
     const dataMode = profile.DATA_MODE;
     const bgc = profile.containsBGC;
     const deep = profile.isDeep;
