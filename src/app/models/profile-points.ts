@@ -10,5 +10,6 @@ export interface ProfilePoints {
     strLat?: any;
     strLon?: any;
     isDeep?: Boolean;
+    DIRECTION?: string;
     containsBGC?: Number | Boolean;
 }
