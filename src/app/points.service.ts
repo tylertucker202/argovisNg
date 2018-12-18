@@ -165,7 +165,7 @@ public argoIconDeep = L.icon({
     const dataMode = profile.DATA_MODE;
     const bgc = profile.containsBGC;
     const deep = profile.isDeep;
-    if (deep) {
+    if (deep===true) {
       profile_id += 'D'
     }
 
