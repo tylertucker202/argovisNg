@@ -22,6 +22,6 @@ RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
 EXPOSE 3000
-#CMD [ "npm" , "run", "dockerstart"]
-CMD ["pm2", "start", "process.json", "--no-daemon"]
+#CMD [ 'npm' , 'run', 'dockerstart']
+CMD ['pm2', 'start', 'process.json', '--no-daemon']
 

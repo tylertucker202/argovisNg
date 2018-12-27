@@ -1,12 +1,12 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import "../node_modules/angular-notifier/styles/core.css";
-@import "../node_modules/angular-notifier/styles/themes/theme-material.css";
-@import "../node_modules/angular-notifier/styles/types/type-default.css";
-@import "../node_modules/angular-notifier/styles/types/type-error.css";
-@import "../node_modules/angular-notifier/styles/types/type-warning.css";
-@import "../node_modules/angular-notifier/styles/types/type-info.css";
-@import "../node_modules/angular-notifier/styles/types/type-success.css";
-@import "~nouislider/distribute/nouislider.min.css";
+@import '../node_modules/angular-notifier/styles/core.css';
+@import '../node_modules/angular-notifier/styles/themes/theme-material.css';
+@import '../node_modules/angular-notifier/styles/types/type-default.css';
+@import '../node_modules/angular-notifier/styles/types/type-error.css';
+@import '../node_modules/angular-notifier/styles/types/type-warning.css';
+@import '../node_modules/angular-notifier/styles/types/type-info.css';
+@import '../node_modules/angular-notifier/styles/types/type-success.css';
+@import '~nouislider/distribute/nouislider.min.css';
 
 .notifier__container * {
   box-sizing: border-box;
