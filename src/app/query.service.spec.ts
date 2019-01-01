@@ -80,7 +80,7 @@ describe('QueryService', () => {
        expect(msg).toEqual('date');
     });
     const dateRange = { start: "2018-09-14", end: "2018-09-28", label: 'test date range' }
-    service.sendDateMessage(dateRange)
+    //service.sendDisplayDateMessage(dateRange)
   }));
 
   it('should be emit a change upon toggle change', inject([QueryService], (service: QueryService) => {
