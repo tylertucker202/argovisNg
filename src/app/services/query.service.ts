@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { DateRange } from '../typeings/daterange';
+import { DateRange } from '../../typeings/daterange';
 import * as moment from 'moment';
 
 @Injectable()

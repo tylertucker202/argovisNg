@@ -1,5 +1,5 @@
 import { Injectable, ApplicationRef } from "@angular/core";
-import { ShapePopupComponent } from './shape-popup/shape-popup.component';
+import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
 
 import 'leaflet';
@@ -8,8 +8,8 @@ import 'arc';
 import 'leaflet-arc';
 import 'leaflet-graticule'
 //import 'leaflet-draw';
-import '../ext-js/leaflet.draw-arc-src.js';
-import '../../node_modules/leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min.js';
+import '../../ext-js/leaflet.draw-arc-src.js';
+import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
 import 'leaflet-ajax'
 
 

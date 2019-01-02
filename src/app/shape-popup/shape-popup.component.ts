@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QueryService } from '../query.service';
+import { QueryService } from '../services/query.service';
 
 @Component({
   selector: 'app-shape-popup',

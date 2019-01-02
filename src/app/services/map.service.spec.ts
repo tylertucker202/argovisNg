@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { MapService } from './map.service';
-import { ShapePopupComponent } from './shape-popup/shape-popup.component';
+import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
 
 describe('MapService', () => {

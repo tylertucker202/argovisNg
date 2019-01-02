@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { QueryService } from '../query.service'
+import { QueryService } from '../services/query.service'
 import { DOCUMENT } from '@angular/common';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {FormControl} from '@angular/forms';

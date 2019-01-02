@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { QueryService } from '../../query.service'
+import { QueryService } from '../../services/query.service'
 
 @Component({
   selector: 'app-daterangepicker',

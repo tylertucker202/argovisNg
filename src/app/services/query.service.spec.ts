@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { QueryService } from './query.service';
 
-import { GeoJSON } from '../../node_modules/@types/geojson'
+import { GeoJSON } from 'geojson'
 import { geoJSON } from 'leaflet';
 
 describe('QueryService', () => {

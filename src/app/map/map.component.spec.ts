@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { MapComponent } from './map.component';
-import { MapService } from '../map.service';
-import { PointsService } from '../points.service'
-import { QueryService } from '../query.service';
+import { MapService } from '../services/map.service';
+import { PointsService } from '../services/points.service'
+import { QueryService } from '../services/query.service';
 import { PopupCompileService } from '../popup-compile.service';
 import { NotifierService } from 'angular-notifier';
 

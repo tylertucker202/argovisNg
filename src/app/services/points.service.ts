@@ -1,13 +1,12 @@
 import { Injectable, ApplicationRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-import { ProfilePoints } from './models/profile-points'
+import { ProfilePoints } from '../models/profile-points'
 import { MapService } from './map.service';
 import * as L from 'leaflet';
 import { PopupCompileService } from './popup-compile.service';
-import { ProfPopupComponent } from './prof-popup/prof-popup.component';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
+import { ProfPopupComponent } from '../prof-popup/prof-popup.component';
+import { Observable, of } from 'rxjs';
 
 
 @Injectable()
@@ -155,7 +154,7 @@ public argoIconDeep = L.icon({
     const geoLocation = profile.geoLocation;
     const lat = geoLocation.coordinates[1].toFixed(2);
     const lon = geoLocation.coordinates[0].toFixed(2);
-    const date = moment(profile.date).format('YYYY-MM-DD')
+    const date = moment(profile.date).format('LLL')
     const strLatLng = this.formatLatLng([lon, lat])
     const cycle = profile.cycle_number
     //for some reason _id looses its cycle number when passed to the popup object.
