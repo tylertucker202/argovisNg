@@ -1,5 +1,4 @@
 FROM node:8
-RUN npm i npm -g --unsafe-perm=true
 #Install and build angular app
 WORKDIR /usr/src/ng-argo
 # Install app dependencies
