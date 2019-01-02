@@ -12,6 +12,7 @@ RUN npm install
 RUN npm install @angular/cli -g
 # Install PM2
 RUN npm install -g pm2
+RUN ln -s /opt/nodejs/bin/pm2 /usr/bin/pm2
 # copies everything from host dir to container work dir
 COPY . .
 RUN ng build 
