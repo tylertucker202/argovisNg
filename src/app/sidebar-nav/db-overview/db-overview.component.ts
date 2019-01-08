@@ -27,11 +27,12 @@ export class DbOverviewComponent implements OnInit {
   }
 
   public openBottomSheet(): void{
-    console.log(this.dbOverview)
+    const lastDate = moment(this.dbOverview.lastAdded).format('LLLL')
 
-    var lastDate = moment(this.dbOverview.lastAdded)
-    console.log(lastDate.format('LLLL'))
-    this.bottomSheet.open(BottomSheet, { data: this.dbOverview })
+    let bottomData = this.dbOverview
+    bottomData.lastAdded = lastDate
+    console.log(lastDate)
+    this.bottomSheet.open(BottomSheet, { data: bottomData })
   }
 
 
