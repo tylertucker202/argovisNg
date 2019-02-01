@@ -16,8 +16,6 @@ export class DoubleSliderComponent implements OnInit {
   private sliderRange: number[];
   private lRange: number;
   private uRange: number;
-  //@ViewChild('slider') slider: NouisliderModule;
-
 
   constructor(private queryService: QueryService) {
     this.lRange = 0;
@@ -33,6 +31,11 @@ export class DoubleSliderComponent implements OnInit {
       connect: true,
       orientation: 'vertical'
     }
+    const newRange = this.queryService.getPresRange()
+    const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
+    this.sliderRange[0] = nRange[0]
+    this.sliderRange[1] = nRange[1]
+
   }
 
   private sendSliderRange(): void {

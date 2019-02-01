@@ -1,18 +1,1 @@
-<mat-toolbar color="primary">
-    <button mat-icon-button  matTooltip="Show/hide sidebar menu" (click)="drawer.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <a class="nav-link" matTooltip="link to about page" target='_blank' href="http://www.argo.ucsd.edu/Argovis_About.html">About Argovis</a>
-    <a class="nav-link" matTooltip="link to faq page" target='_blank' href="http://www.argo.ucsd.edu/Argovis_FAQ.html">FAQ</a>
-    <a class="nav-link" matTooltip="link to api tutorial" target='_blank' href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">Link to API tutorial</a>
-    <a class="nav-link" matTooltip="link to gridded page (in development)" target='_blank' href="http://www.argo.ucsd.edu/Gridded_Argovis.html">Link to gridded Argo climatology</a>
-  </mat-toolbar>
-<mat-sidenav-container id="sidenav-container">
-  <mat-sidenav class="side-menu" #drawer mode="side" [opened]="true">
-    <app-sidebar-nav></app-sidebar-nav>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <app-map></app-map>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-<notifier-container></notifier-container>
+<router-outlet></router-outlet>

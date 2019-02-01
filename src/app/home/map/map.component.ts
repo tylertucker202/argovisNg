@@ -3,9 +3,11 @@ import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service';
 import { ProfilePoints } from '../models/profile-points';
 import { QueryService } from '../services/query.service';
+import { MapState } from '../../../typeings/mapState';
 import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 import { NotifierService } from 'angular-notifier';
+import { ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'app-map',
@@ -22,31 +24,51 @@ export class MapComponent implements OnInit, OnDestroy {
   private wrapCoordinates: boolean;
   public proj: string;
   private readonly notifier: NotifierService;
+  public mapState: MapState;
   
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
               public pointsService: PointsService,
               private queryService: QueryService,
               private notifierService: NotifierService,
+              private route: ActivatedRoute,
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
+    var location = this.queryService.getURL()
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
-    this.proj = this.document.location.search.split('?map=')[1];
-    if (this.proj) {
-      console.log(this.proj)
-    }
-    else {
-      this.proj = 'WM'
-    }
 
+    this.route.queryParams.subscribe(params => {
+      this.mapState = params
+      Object.keys(this.mapState).forEach(key => {
+        this.queryService.setMapState(key, this.mapState[key])
+      });
+      this.queryService.urlBuild.emit('got state from map component')
+    });
+
+    this.proj = this.queryService.getProj()
     if (this.proj == 'WM') {
       this.wrapCoordinates = true;
     }
     else {
       this.wrapCoordinates = false;
     }
+
+    let shapes = this.queryService.getShapes()
+    for (let idx in shapes) {
+        const shape = shapes[idx]
+        let latLngShape = []
+        for (let jdx in shape) {
+          const lngLat = shape[jdx]
+          const latLng = [ lngLat[1], lngLat[0] ]
+          latLngShape.push(latLng)
+        }
+        const layer = L.polygon([latLngShape])
+        this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
+        //this.mapService.drawnItems.addLayer(leafletPoly)
+    }
+
     this.generateMap();
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
@@ -200,7 +222,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.notifier.notify( 'error', 'error in getting mock profiles' )
       })
   }
-
 
   private generateMap(this): void {
     switch(this.proj) {
