@@ -1,8 +1,10 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
 import * as moment from 'moment';
+
+import * as L from "leaflet";
 
 @Injectable()
 export class QueryService {
@@ -25,17 +27,48 @@ export class QueryService {
   private proj: string;
 
 
-  constructor(private route: ActivatedRoute, private location: Location) { }
+  constructor(private route: ActivatedRoute, private location: Location, private router: Router) { }
 
 
   public setURL(): void {
-
+    const presRangeString = JSON.stringify(this.presRange)
+    let shapesString = null
+    if (this.latLngShapes) {
+      const features = this.latLngShapes.toGeoJSON().features
+      let shapes = []
+      features.forEach( feature => {
+        let coords = []
+        feature.geometry.coordinates.forEach( coord => {
+          coords.push(coord.reverse())
+        })
+        const polygonCoords = coords[0]
+        shapes.push(polygonCoords)
+      });
+      shapesString = JSON.stringify(shapes)
+    }
+    const queryParams = {
+                         'map': this.proj,
+                         'presRange': presRangeString, 
+                         'startDate': this.selectionDateRange.start,
+                         'endDate': this.selectionDateRange.end,
+                         'displayDate': this.displayDate,
+                         'shapes': shapesString,
+                         'includeRealtime': this.includeRealtime,
+                         'onlyBGC': this.onlyBGC,
+                         'onlyDeep': this.onlyDeep,
+                         'threeDayToggle': this.threeDayToggle
+                        }
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: queryParams,
+        //queryParamsHandling: "merge"
+      });
   }
 
   public getURL() {
-    console.log(location.pathname)
-    console.log(location.href)
-    return location
+    return location.href
   }
 
   public triggerPlatformShow(platform: string): void {
@@ -56,7 +89,7 @@ export class QueryService {
 
   public sendShapeMessage(data: GeoJSON.FeatureCollection | any, broadcastChange=true): void { //really a GeoJSON.Feature[] object, but for testing purposes, need to make it an any
     const msg = 'shape';
-    this.latLngShapes = data.features;
+    this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -75,7 +108,7 @@ export class QueryService {
     return this.proj;
   }
 
-  public getShapes(): any {
+  public getShapes(): GeoJSON.FeatureCollection | any{
     return this.latLngShapes;
   }
 
@@ -186,9 +219,15 @@ export class QueryService {
         this.sendDisplayDateMessage(displayDate, notifyChange)
         break;
       }
-      case 'shape': {
-        const shape = {features: JSON.parse(value)} //todo: format into feature collection
-        this.sendShapeMessage(shape, notifyChange)
+      case 'shapes': {
+
+        const tripleArray = JSON.parse(value)
+        let shapes = L.featureGroup()
+        tripleArray.forEach( (array) => {
+          const polygon = L.polygon(array)
+          shapes.addLayer(polygon)
+        })
+        this.sendShapeMessage(shapes.toGeoJSON(), notifyChange)
         break;
       }
       case 'startDate': {

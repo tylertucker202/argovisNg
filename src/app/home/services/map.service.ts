@@ -170,7 +170,7 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation = function(layer, drawnItems){
+  public popupWindowCreation = function(layer, drawnItems): void{
     let layerCoords = layer.toGeoJSON();
     const shape = layerCoords.geometry.coordinates;
     const transformedShape = this.getTransformedShape(shape);

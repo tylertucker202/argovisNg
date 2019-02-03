@@ -35,7 +35,6 @@ export class MapComponent implements OnInit, OnDestroy {
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
-    var location = this.queryService.getURL()
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
 
@@ -55,20 +54,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.wrapCoordinates = false;
     }
 
-    let shapes = this.queryService.getShapes()
-    for (let idx in shapes) {
-        const shape = shapes[idx]
-        let latLngShape = []
-        for (let jdx in shape) {
-          const lngLat = shape[jdx]
-          const latLng = [ lngLat[1], lngLat[0] ]
-          latLngShape.push(latLng)
-        }
-        const layer = L.polygon([latLngShape])
-        this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
-        //this.mapService.drawnItems.addLayer(leafletPoly)
-    }
-
     this.generateMap();
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
@@ -80,6 +65,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg);
+         this.queryService.setURL()
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
          const showThreeDay = this.queryService.getThreeDayToggle()
@@ -92,12 +78,12 @@ export class MapComponent implements OnInit, OnDestroy {
     //todo: don't clear history or platform profiles (but redo them)
     //define history layer, & platform profile layer and do logic here.
 
-
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes();
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
+        this.queryService.setURL()
       })
     
     this.queryService.resetToStart
@@ -108,28 +94,29 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setStartingProfiles();
         //this.setMockPoints()
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
+        this.queryService.setURL()
       })
 
-      this.queryService.displayPlatform
-      .subscribe( platform => {
-        this.markersLayer.clearLayers();
-        this.mapService.drawnItems.clearLayers();
-        this.pointsService.getPlatformProfiles(platform)
-          .subscribe((profilePoints: ProfilePoints[]) => {
-            if (profilePoints.length > 0) {
-              this.displayProfiles(profilePoints, 'platform')
-              this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
+    this.queryService.displayPlatform
+    .subscribe( platform => {
+      this.markersLayer.clearLayers();
+      this.mapService.drawnItems.clearLayers();
+      this.pointsService.getPlatformProfiles(platform)
+        .subscribe((profilePoints: ProfilePoints[]) => {
+          if (profilePoints.length > 0) {
+            this.displayProfiles(profilePoints, 'platform')
+            this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
+          }
+          else {
+            if (platform.length >= 7){
+              this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
             }
-            else {
-              if (platform.length >= 7){
-                this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
-              }
-            }
-          },
-          error => {
-            this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
-           })
-      })
+          }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
+          })
+    })
 
     this.queryService.triggerPlatformDisplay
       .subscribe( platform => {
@@ -140,40 +127,57 @@ export class MapComponent implements OnInit, OnDestroy {
           error => { 
             this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
            })
-      })
+    })
+
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       this.markersLayer.clearLayers();
-      var layer = event.layer
+      const layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
-      const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(drawnFeatureCollection);
+      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
+      this.queryService.sendShapeMessage(this.mapService.drawnItems);
     });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
-      var layers = event.layers;
+      const layers = event.layers;
       let myNewShape = this.mapService.drawnItems;
       layers.eachLayer(function(layer: any) {
         const layer_id = layer._leaflet_id
         myNewShape.removeLayer(layer)
       });
       this.mapService.drawnItems = myNewShape
-      const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(drawnFeatureCollection);
-      });
+      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
+      this.queryService.sendShapeMessage(this.mapService.drawnItems);
+    });
+
     this.setStartingProfiles();
     this.invalidateSize();
+    setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
+      this.addShapesFromURL();
+     });
   }
 
-  // drawnItems is actually a L.featureGroup(), but the typings don't exist for this.
+  // drawnItems is actually a L.featureGroup(), but the typings don't exist
   private getDrawnShapes(drawnItems: any): GeoJSON.FeatureCollection {
     return drawnItems.toGeoJSON()
   }
 
   ngOnDestroy() {
-        this.map.off();
-        this.map.remove();
-        this.mapService.map.off();
-        this.mapService.map.remove();
+    this.map.off();
+    this.map.remove();
+    this.mapService.map.off();
+    this.mapService.map.remove();
+  }
+
+  private addShapesFromURL(): void {
+    let featureCollection = this.queryService.getShapes()
+
+    if (featureCollection) {
+      const features = featureCollection.features
+      features.forEach( shape => {
+        let polygon = L.polygon(shape.geometry.coordinates)
+        this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
+      });
+    }
   }
 
   private setStartingProfiles(this) {
