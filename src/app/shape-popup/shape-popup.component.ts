@@ -23,7 +23,7 @@ export class ShapePopupComponent implements OnInit {
     if (includePresRange) {
       selectionPageUrl += '&presRange='+JSON.stringify(presRange)
     }
-    selectionPageUrl += '&shape='+JSON.stringify(this.shape)
+    selectionPageUrl += '&shape='+JSON.stringify([this.shape])
     //'&includeRT='+JSON.stringify(includeRealtime);
     console.log('selection clicked');
     console.log(selectionPageUrl);
