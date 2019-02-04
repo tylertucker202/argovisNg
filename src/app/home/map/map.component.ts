@@ -47,12 +47,6 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.proj = this.queryService.getProj()
-    if (this.proj == 'WM') {
-      this.wrapCoordinates = true;
-    }
-    else {
-      this.wrapCoordinates = false;
-    }
 
     this.generateMap();
     this.mapService.coordDisplay.addTo(this.map);
@@ -134,7 +128,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
       //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems);
+      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
     });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -146,7 +140,7 @@ export class MapComponent implements OnInit, OnDestroy {
       });
       this.mapService.drawnItems = myNewShape
       //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems);
+      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
     });
 
     this.setStartingProfiles();
@@ -174,10 +168,15 @@ export class MapComponent implements OnInit, OnDestroy {
     if (featureCollection) {
       const features = featureCollection.features
       features.forEach( shape => {
-        let polygon = L.polygon(shape.geometry.coordinates)
+        let coords = []
+        shape.geometry.coordinates.forEach( coord => {
+          coords.push(coord.reverse())
+        })
+        let polygon = L.polygon(coords)
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
+    this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
   }
 
   private setStartingProfiles(this) {
@@ -230,6 +229,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private generateMap(this): void {
     switch(this.proj) {
       case 'WM': {
+        this.wrapCoordinates = true
         console.log('generating web mercator');
         this.createWebMercator();
         break;
@@ -246,6 +246,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
       default: {
         console.log('proj not found, using web mercator')
+        this.wrapCoordinates = true
         this.createWebMercator();
         break;
       }
@@ -372,37 +373,38 @@ private createNorthernStereographic(this) {
 
 shapeSelectionOnMap(): void {
   // Extract GeoJson from featureGroup
-  let features = this.queryService.getShapes();
-  if (features) {
-      this.markersLayer.clearLayers();
-      let base = '/selection/profiles/map'
-      let dates = this.queryService.getSelectionDates();
-      let presRange = this.queryService.getPresRange();
-      let includeRealtime = this.queryService.getRealtimeToggle();
-      let onlyBGC = this.queryService.getBGCToggle();
-      for (let i = 0; i < features.length; i++) {
-          let shape = features[i].geometry.coordinates;
-          const transformedShape = this.mapService.getTransformedShape(shape)
-          let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
-          if (presRange) {
-            urlQuery += '&presRange='+JSON.stringify(presRange)
-          }
-          urlQuery += '&shape='+JSON.stringify(transformedShape)
-          console.log(urlQuery);
-          this.pointsService.getSelectionPoints(urlQuery)
-              .subscribe((selectionPoints: ProfilePoints[]) => {
-                this.displayProfiles(selectionPoints, 'normalMarker');
-                if (selectionPoints.length == 0) {
-                  this.notifier.notify( 'warning', 'no profile points found in shape' )
-                  console.log('no points returned in shape')
-                }
-                }, 
-             error => {
-              this.notifier.notify( 'error', 'error in getting profiles in shape' )
-               console.log('error occured when selecting points')
-               console.log(error)
-             });
+  let featureCollection = this.queryService.getShapes();
+  if (featureCollection) {
+    this.markersLayer.clearLayers();
+    let base = '/selection/profiles/map'
+    let dates = this.queryService.getSelectionDates();
+    let presRange = this.queryService.getPresRange();
+    let includeRealtime = this.queryService.getRealtimeToggle();
+    let onlyBGC = this.queryService.getBGCToggle();
+    let features = featureCollection.features
+    features.forEach( (feature) => {
+      let shape = feature.geometry.coordinates;
+      const transformedShape = this.mapService.getTransformedShape(shape)
+      let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+      if (presRange) {
+        urlQuery += '&presRange='+JSON.stringify(presRange)
       }
+      urlQuery += '&shape='+JSON.stringify(transformedShape)
+      console.log(urlQuery);
+      this.pointsService.getSelectionPoints(urlQuery)
+          .subscribe((selectionPoints: ProfilePoints[]) => {
+            this.displayProfiles(selectionPoints, 'normalMarker');
+            if (selectionPoints.length == 0) {
+              this.notifier.notify( 'warning', 'no profile points found in shape' )
+              console.log('no points returned in shape')
+            }
+            }, 
+          error => {
+          this.notifier.notify( 'error', 'error in getting profiles in shape' )
+            console.log('error occured when selecting points')
+            console.log(error)
+          });      
+      })
   }
 }
 }

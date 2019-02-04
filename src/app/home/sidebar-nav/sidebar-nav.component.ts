@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { QueryService } from '../services/query.service'
-import { DOCUMENT } from '@angular/common';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import {FormControl} from '@angular/forms';
 
@@ -17,21 +16,18 @@ export interface Projections {
 
 export class SidebarNavComponent implements OnInit {
 
-  private url: string;
-  private proj: string;
   private date = new FormControl(new Date());
 
-  constructor(private queryService: QueryService,
-              @Inject(DOCUMENT) private document: Document) { }
+  constructor(private queryService: QueryService ) { }
 
   @Input() includeRT = true;
   @Input() onlyBGC = false;
   @Input() onlyDeep = false;
   @Input() display3Day = true;
+  @Input() proj = 'WM';
 
   ngOnInit() {
     this.queryService.sendToggleMsg(this.includeRT)
-    this.url = this.document.location.search.split('?map=')[0];
     this.proj = this.queryService.getProj()
     let yd = new Date()
     yd.setDate(yd.getDate() - 1)
@@ -83,8 +79,7 @@ export class SidebarNavComponent implements OnInit {
   }
 
   mapProjChange(proj: string): void {
-    const newUrl = this.url + '?map=' + proj
-    window.location.assign(newUrl)
+    this.queryService.sendProj(proj)
   }
 
   displayPlatformInputChanged(platformInput: string) {

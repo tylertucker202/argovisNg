@@ -24,17 +24,21 @@ export class QueryService {
   private onlyBGC = false;
   private onlyDeep = false;
   private threeDayToggle = true;
-  private proj: string;
+  private proj = 'WM';
 
 
-  constructor(private route: ActivatedRoute, private location: Location, private router: Router) { }
+  constructor(private route: ActivatedRoute, private location: Location, private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
 
   public setURL(): void {
     const presRangeString = JSON.stringify(this.presRange)
     let shapesString = null
+    console.log(this.latLngShapes)
     if (this.latLngShapes) {
-      const features = this.latLngShapes.toGeoJSON().features
+      console.log('there are shapes')
+      console.log(this.latLngShapes)
+      //const features = this.latLngShapes.toGeoJSON().features
+      const features = this.latLngShapes.features
       let shapes = []
       features.forEach( feature => {
         let coords = []
@@ -47,7 +51,7 @@ export class QueryService {
       shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'map': this.proj,
+                         'mapProj': this.proj,
                          'presRange': presRangeString, 
                          'startDate': this.selectionDateRange.start,
                          'endDate': this.selectionDateRange.end,
@@ -68,7 +72,7 @@ export class QueryService {
   }
 
   public getURL() {
-    return location.href
+    return location.pathname
   }
 
   public triggerPlatformShow(platform: string): void {
@@ -97,7 +101,7 @@ export class QueryService {
     const msg = 'proj changed';
     this.proj = proj;
     this.setURL();
-    //todo: go to new page with url state and projection
+    location.reload()
   }
 
   public setProj(proj: string): void {
@@ -190,7 +194,7 @@ export class QueryService {
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
-      case 'map': {
+      case 'mapProj': {
         this.setProj(value)
         break;
       }
@@ -220,10 +224,9 @@ export class QueryService {
         break;
       }
       case 'shapes': {
-
-        const tripleArray = JSON.parse(value)
+        const arrays = JSON.parse(value)
         let shapes = L.featureGroup()
-        tripleArray.forEach( (array) => {
+        arrays.forEach( (array) => {
           const polygon = L.polygon(array)
           shapes.addLayer(polygon)
         })
