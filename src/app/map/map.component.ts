@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core';
-import { MapService } from '../map.service';
-import { PointsService } from '../points.service';
+import { MapService } from '../services/map.service';
+import { PointsService } from '../services/points.service';
 import { ProfilePoints } from '../models/profile-points';
-import { QueryService } from '../query.service';
+import { QueryService } from '../services/query.service';
 import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 import { NotifierService } from 'angular-notifier';
@@ -18,6 +18,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public markersLayer = L.layerGroup();
   public startView: any;
   public startZoom: number;
+  public graticule: any;
   private wrapCoordinates: boolean;
   public proj: string;
   private readonly notifier: NotifierService;
@@ -51,6 +52,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.drawControl.addTo(this.map);
+    this.markersLayer.addTo(this.map);
     this.mapService.map = this.map;
 
     this.queryService.change
@@ -58,22 +60,31 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.markersLayer.clearLayers();
          this.shapeSelectionOnMap();
-         //this.setStartingProfiles();
-         //this.setMockPoints();
+         const showThreeDay = this.queryService.getThreeDayToggle()
+         if (showThreeDay) {
+            this.addDisplayProfiles()
+         }
+         //this.setMockPoints()
         },)
+
+    //todo: don't clear history or platform profiles (but redo them)
+    //define history layer, & platform profile layer and do logic here.
+
 
     this.queryService.clearLayers
       .subscribe( () => {
+        this.queryService.clearShapes();
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
       })
     
     this.queryService.resetToStart
       .subscribe( () => {
+        this.queryService.clearShapes();
         this.markersLayer.clearLayers();
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
-        //this.setMockPoints();
+        //this.setMockPoints()
         this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
       })
 
@@ -85,6 +96,7 @@ export class MapComponent implements OnInit, OnDestroy {
           .subscribe((profilePoints: ProfilePoints[]) => {
             if (profilePoints.length > 0) {
               this.displayProfiles(profilePoints, 'platform')
+              this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
             }
             else {
               if (platform.length >= 7){
@@ -112,12 +124,21 @@ export class MapComponent implements OnInit, OnDestroy {
       var layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
       const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      console.log(drawnFeatureCollection)
       this.queryService.sendShapeMessage(drawnFeatureCollection);
     });
 
+    this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
+      var layers = event.layers;
+      let myNewShape = this.mapService.drawnItems;
+      layers.eachLayer(function(layer: any) {
+        const layer_id = layer._leaflet_id
+        myNewShape.removeLayer(layer)
+      });
+      this.mapService.drawnItems = myNewShape
+      const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
+      this.queryService.sendShapeMessage(drawnFeatureCollection);
+      });
     this.setStartingProfiles();
-    //this.setMockPoints();
     this.invalidateSize();
   }
 
@@ -134,7 +155,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private setStartingProfiles(this) {
-    this.pointsService.getLastProfiles()
+    this.pointsService.getLastThreeDaysProfiles()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero profile points returned' )
@@ -144,9 +165,26 @@ export class MapComponent implements OnInit, OnDestroy {
       }
       },
       error => {
-        this.notifier.notify( 'error', 'error in getting latest profiles' )
+        this.notifier.notify( 'error', 'error in getting last three day profiles' )
       })
     }
+
+    private addDisplayProfiles(this) {
+      if (!this.queryService.getThreeDayToggle()) {return}
+      const startDate = this.queryService.getDisplayDate()
+      this.pointsService.getLastThreeDaysProfiles(startDate)
+      .subscribe((profilePoints: ProfilePoints[]) => {
+        if (profilePoints.length == 0) {
+          this.notifier.notify( 'warning', 'zero profile points returned' )
+        }
+        else {
+          this.displayProfiles(profilePoints, 'normalMarker')
+        }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting last three day profiles' )
+        })
+      }
   
   private setMockPoints(this): void {
     this.pointsService.getMockPoints()
@@ -200,30 +238,58 @@ export class MapComponent implements OnInit, OnDestroy {
 
 private displayProfiles = function(this, profilePoints, markerType) {
 
-  const includeRT = this.queryService.getToggle()
-  console.log(includeRT)
+  const includeRT = this.queryService.getRealtimeToggle()
+  const bgcOnly = this.queryService.getBGCToggle()
+  const deepOnly = this.queryService.getDeepToggle()
+
   for (let idx in profilePoints) {
       let profile = profilePoints[idx];
       let dataMode = profile.DATA_MODE
-      console.log(profile.dataMode)
-      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false)) {
-        continue;
-      }
+      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) { continue; }
+      if ( !profile.containsBGC===true && bgcOnly) { continue; } //be careful, old values may equal 1. use ==
+      if ( !profile.isDeep===true && deepOnly ) { continue; } // always use ===
       if (markerType==='history') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
       else if (markerType==='platform') {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
       }
+      else if (profile.containsBGC) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
+      }
+      else if (profile.isDeep) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates);
+      }
       else {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
       }
   };
-  this.markersLayer.addTo(this.map);
+  //this.markersLayer.addTo(this.map);
   };
 
+private getGraticule(basemapName: string) {
+  switch(basemapName) {
+    case 'esri': {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+    case 'ocean': {
+      return (this.mapService.graticuleDark)
+      break;
+    }
+    case 'google': {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+    default: {
+      return (this.mapService.graticuleLight)
+      break;
+    }
+  }
+}
+
 private createWebMercator(this) {
-  this.startView = { latitude: 0, longitude: -30 }
+  this.startView = { latitude: 20, longitude: -150 }
   this.startZoom = 3
   this.map = L.map('map',
                     {maxZoom: 13,
@@ -235,7 +301,14 @@ private createWebMercator(this) {
                     layers: [this.mapService.baseMaps.ocean]})
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom );
   L.control.layers(this.mapService.baseMaps).addTo(this.map);
+  this.map.on('baselayerchange', (e: any) => {
+    this.map.removeLayer(this.graticule)
+    this.graticule = this.getGraticule(e.name)
+    this.graticule.addTo(this.map);
+  });
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  this.graticule = this.getGraticule('ocean')
+  this.graticule.addTo(this.map);
 };
 
 private createSouthernStereographic(this) {
@@ -252,6 +325,7 @@ private createSouthernStereographic(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom);    
   this.mapService.geojsonLayer.addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  //this.mapService.curvedGraticule.bringToFront().addTo(this.map);
 };
 
 private createNorthernStereographic(this) {
@@ -268,6 +342,7 @@ private createNorthernStereographic(this) {
                     .setView([this.startView.latitude, this.startView.longitude], this.startZoom);
   this.mapService.geojsonLayerNoAntartica.addTo(this.map);
   L.control.zoom({position:'topleft'}).addTo(this.map);
+  //this.mapService.curvedGraticule.bringToFront().addTo(this.map);
 };
 
 shapeSelectionOnMap(): void {
@@ -276,16 +351,18 @@ shapeSelectionOnMap(): void {
   if (features) {
       this.markersLayer.clearLayers();
       let base = '/selection/profiles/map'
-      let dates = this.queryService.getDates();
+      let dates = this.queryService.getSelectionDates();
       let presRange = this.queryService.getPresRange();
-      let includeRealtime = this.queryService.getToggle();
+      let includeRealtime = this.queryService.getRealtimeToggle();
+      let onlyBGC = this.queryService.getBGCToggle();
       for (let i = 0; i < features.length; i++) {
           let shape = features[i].geometry.coordinates;
           const transformedShape = this.mapService.getTransformedShape(shape)
-          let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end +
-                         '&presRange='+JSON.stringify(presRange) +
-                         '&shape='+JSON.stringify(transformedShape)
-                         '&includeRT='+JSON.stringify(includeRealtime);
+          let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+          if (presRange) {
+            urlQuery += '&presRange='+JSON.stringify(presRange)
+          }
+          urlQuery += '&shape='+JSON.stringify(transformedShape)
           console.log(urlQuery);
           this.pointsService.getSelectionPoints(urlQuery)
               .subscribe((selectionPoints: ProfilePoints[]) => {
@@ -298,6 +375,7 @@ shapeSelectionOnMap(): void {
              error => {
               this.notifier.notify( 'error', 'error in getting profiles in shape' )
                console.log('error occured when selecting points')
+               console.log(error)
              });
       }
   }

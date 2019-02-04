@@ -15,7 +15,10 @@ import {
   MatSidenavModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatSelectModule
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatBottomSheetModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -26,15 +29,16 @@ import "proj4leaflet";
 import { AppComponent } from './app.component';
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
 import { DaterangepickerComponent } from './sidebar-nav/daterangepicker/daterangepicker.component';
-import { MapService } from './map.service';
-import { QueryService } from './query.service'
-import { PointsService } from './points.service';
-import { PopupCompileService } from './popup-compile.service';
+import { MapService } from './services/map.service';
+import { QueryService } from './services/query.service'
+import { PointsService } from './services/points.service';
+import { PopupCompileService } from './services/popup-compile.service';
 import { MapComponent } from './map/map.component';
 import { NouisliderModule } from 'ng2-nouislider';
 import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
 import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
+import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -85,7 +89,9 @@ const customNotifierOptions: NotifierOptions = {
     MapComponent,
     DoubleSliderComponent,
     ProfPopupComponent,
+    BottomSheet,
     ShapePopupComponent,
+    DbOverviewComponent,
   ],
   imports: [
     BrowserModule,
@@ -105,7 +111,10 @@ const customNotifierOptions: NotifierOptions = {
     MatSidenavModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatBottomSheetModule,
   ],
   providers: [
     MapService,
@@ -115,7 +124,8 @@ const customNotifierOptions: NotifierOptions = {
   ],
   entryComponents: [
     ProfPopupComponent, 
-    ShapePopupComponent
+    ShapePopupComponent, 
+    BottomSheet
   ],
   bootstrap: [AppComponent]
 })

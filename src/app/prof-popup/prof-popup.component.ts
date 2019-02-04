@@ -1,15 +1,30 @@
-import { Component, Input } from '@angular/core';
-import { QueryService} from './../query.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { QueryService} from '../services/query.service';
 @Component({
   selector: 'app-prof-popup',
   templateUrl: './prof-popup.component.html',
   styleUrls: ['./prof-popup.component.css']
 })
 export class ProfPopupComponent {
-
-  constructor(private queryService: QueryService) { }
+  showBGC: boolean = false;
+  show: boolean = false;
+  constructor(private queryService: QueryService) {     
+    if (this.bgc == 1) {
+    this.showBGC = true;
+    }
+  }
 
   @Input() platform: string;
+  @Input() bgc: Number;
+
+  ngOnInit() {
+    if (this.bgc == 1) {
+      console.log('includes bgc')
+      this.showBGC = true;
+      }
+  }
+
+
 
   showPlatformsProfiles() {
     this.queryService.triggerPlatformShow(this.platform)

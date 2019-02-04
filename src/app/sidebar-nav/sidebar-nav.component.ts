@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
-import { QueryService } from '../query.service'
+import { QueryService } from '../services/query.service'
 import { DOCUMENT } from '@angular/common';
+import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {FormControl} from '@angular/forms';
 
 export interface Projections {
   value: string;
@@ -17,21 +19,43 @@ export class SidebarNavComponent implements OnInit {
 
   private url: string;
   private proj: string;
+  private date = new FormControl(new Date());
 
   constructor(private queryService: QueryService,
               @Inject(DOCUMENT) private document: Document) { }
 
-  @Input() checked = true;
+  @Input() includeRT = true;
+  @Input() onlyBGC = false;
+  @Input() onlyDeep = false;
+  @Input() display3Day = true;
 
   ngOnInit() {
-    this.queryService.sendToggleMsg(this.checked)
+    this.queryService.sendToggleMsg(this.includeRT)
     this.url = this.document.location.search.split('?map=')[0];
     this.proj = this.document.location.search.split('?map=')[1];
+    let yd = new Date()
+    yd.setDate(yd.getDate() - 1)
+    this.date = new FormControl(yd)
   }
 
   realtimeChange(event: any): void {
-    this.checked = event.checked
-    this.queryService.sendToggleMsg(this.checked);
+    this.includeRT = event.checked
+    this.queryService.sendToggleMsg(this.includeRT);
+  }
+
+  display3DayChange(event: any): void {
+    this.display3Day = event.checked
+    this.queryService.sendThreeDayMsg(this.display3Day);
+  }
+
+  bgcChange(event: any): void {
+    this.onlyBGC = event.checked
+    this.queryService.sendBGCToggleMsg(this.onlyBGC);
+  }
+
+  deepChange(event: any): void {
+    this.onlyDeep = event.checked
+    this.queryService.sendDeepToggleMsg(this.onlyDeep);
   }
 
   clearProfiles(): void {
@@ -52,6 +76,16 @@ export class SidebarNavComponent implements OnInit {
   displayPlatformInputChanged(platformInput: string) {
     if (platformInput.length >= 5){ this.queryService.triggerShowPlatform(platformInput) }
   }
+
+  displayLastThreeDaysDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
+    const date = event.value
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const dateStr = year + '-' + month + '-' + day
+    this.queryService.sendDisplayDateMessage(dateStr)
+  }
+
 
   projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},

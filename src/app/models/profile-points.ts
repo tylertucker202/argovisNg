@@ -9,4 +9,7 @@ export interface ProfilePoints {
     roundLon?: any;
     strLat?: any;
     strLon?: any;
+    isDeep?: Boolean;
+    DIRECTION?: string;
+    containsBGC?: Boolean;
 }

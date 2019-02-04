@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QueryService } from '../query.service';
+import { QueryService } from '../services/query.service';
 
 @Component({
   selector: 'app-shape-popup',
@@ -15,18 +15,15 @@ export class ShapePopupComponent implements OnInit {
 
   goToSelectionPage(includePresRange: boolean): void {
     let base = '/selection/profiles/page'
-    let dates = this.queryService.getDates();
+    let dates = this.queryService.getSelectionDates();
     let presRange = this.queryService.getPresRange();
-    let includeRealtime = this.queryService.getToggle();
 
     let selectionPageUrl = base+'?startDate=' + dates.start + '&endDate=' + dates.end
     if (includePresRange) {
       selectionPageUrl += '&presRange='+JSON.stringify(presRange)
     }
-    selectionPageUrl += '&shape='+JSON.stringify([this.shape])
+    selectionPageUrl += '&shape='+JSON.stringify(this.shape)
     //'&includeRT='+JSON.stringify(includeRealtime);
-    console.log('selection clicked');
-    console.log(selectionPageUrl);
     window.open(selectionPageUrl,"_blank")
   }
 

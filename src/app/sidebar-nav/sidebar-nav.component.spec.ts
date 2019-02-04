@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SidebarNavComponent } from './sidebar-nav.component';
-import { QueryService } from '../query.service';
+import { QueryService } from '../services/query.service';
 
 describe('SidebarNavComponent', () => {
   let component: SidebarNavComponent;

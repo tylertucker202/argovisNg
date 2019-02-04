@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/argo
 
 # dependencies
 /node_modules
@@ -33,6 +34,10 @@
 npm-debug.log
 testem.log
 /typings
+/nginx
+/argo
+/argo/*
+*.txt
 
 # e2e
 /e2e/*.js

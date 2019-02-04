@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
-import { QueryService } from '../../query.service'
+import { QueryService } from '../../services/query.service'
 
 @Component({
   selector: 'app-daterangepicker',
@@ -33,11 +33,10 @@ export class DaterangepickerComponent {
 
   ngOnInit() {
     this.daterange = {start: this.start.format('YYYY-MM-DD'), end: this.end.format('YYYY-MM-DD') }
-    this.sendDateRange()
   }
 
   private sendDateRange(): void {
-    this.queryService.sendDateMessage(this.daterange);
+    this.queryService.sendSelectedDateMessage(this.daterange);
   }
 
   public selectedDate(value: any) {

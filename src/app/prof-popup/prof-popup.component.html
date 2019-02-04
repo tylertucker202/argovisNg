@@ -7,6 +7,7 @@
   <br />data mode: {{dataMode}}
   <br /><a href='/catalog/profiles/{{profileId}}/page' target='_blank'> To profile page</a>
   <br /><a href='/catalog/platforms/{{platform}}/page' target='_blank' >To platform page</a>
+  <br /><a href='/catalog/profiles/{{profileId}}/bgcPage' target='_blank' *ngIf="showBGC" class="bgc">To bgc profile page</a>
   <br /><button matTooltip="Click to show where this platform has been" mat-raised-button color="primary" (click)="showPlatformsProfiles()" >Position history</button>
 </p>
 </section>
