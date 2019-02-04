@@ -31,24 +31,22 @@ export class QueryService {
 
 
   public setURL(): void {
+
+    //this.setURL() //setURL() is reversing the order of this.latLngShapes()
     const presRangeString = JSON.stringify(this.presRange)
     let shapesString = null
     console.log(this.latLngShapes)
     if (this.latLngShapes) {
       console.log('there are shapes')
       console.log(this.latLngShapes)
-      //const features = this.latLngShapes.toGeoJSON().features
       const features = this.latLngShapes.features
       let shapes = []
       features.forEach( feature => {
-        let coords = []
-        feature.geometry.coordinates.forEach( coord => {
-          coords.push(coord.reverse())
-        })
-        const polygonCoords = coords[0]
-        shapes.push(polygonCoords)
+        shapes.push(feature.geometry.coordinates[0])
       });
       shapesString = JSON.stringify(shapes)
+      console.log('after reverse')
+      console.log(shapesString)
     }
     const queryParams = {
                          'mapProj': this.proj,

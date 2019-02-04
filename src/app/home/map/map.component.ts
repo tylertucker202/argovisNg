@@ -168,11 +168,7 @@ export class MapComponent implements OnInit, OnDestroy {
     if (featureCollection) {
       const features = featureCollection.features
       features.forEach( shape => {
-        let coords = []
-        shape.geometry.coordinates.forEach( coord => {
-          coords.push(coord.reverse())
-        })
-        let polygon = L.polygon(coords)
+        let polygon = L.polygon(shape.geometry.coordinates)
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
