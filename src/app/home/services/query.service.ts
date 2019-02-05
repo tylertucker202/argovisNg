@@ -48,8 +48,6 @@ export class QueryService {
         shapes.push(polygonCoords)
       });
       shapesString = JSON.stringify(shapes)
-      console.log('after reverse')
-      console.log(shapesString)
     }
     const queryParams = {
                          'mapProj': this.proj,
