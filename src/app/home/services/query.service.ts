@@ -42,7 +42,13 @@ export class QueryService {
       const features = this.latLngShapes.features
       let shapes = []
       features.forEach( feature => {
-        shapes.push(feature.geometry.coordinates[0])
+        let coords = []
+        feature.geometry.coordinates[0].forEach( (coord) => {
+          const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
+          coords.push(reverseCoord)
+        })
+        const polygonCoords = coords
+        shapes.push(polygonCoords)
       });
       shapesString = JSON.stringify(shapes)
       console.log('after reverse')
