@@ -164,6 +164,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private addShapesFromURL(): void {
     let featureCollection = this.queryService.getShapes()
+    const options =  {color: '#983fb2',
+                      weight: 4,
+                      opacity: .5}
 
     if (featureCollection) {
       const features = featureCollection.features
@@ -174,7 +177,7 @@ export class MapComponent implements OnInit, OnDestroy {
           coords.push(reverseCoord)
         })
         const polygonCoords = coords
-        let polygon = L.polygon(polygonCoords)
+        let polygon = L.polygon(polygonCoords, options)
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
