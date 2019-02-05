@@ -18,7 +18,6 @@ declare let L;
 
 @Injectable()
 export class MapService {
-  public map: L.Map;
   public baseMaps: any;
   public drawnItems = L.featureGroup();
   public platformProfileMarkersLayer = L.featureGroup();
@@ -52,54 +51,152 @@ export class MapService {
     "opacity": 1,
     "fillOpacity": .9,
     };
-  public geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
-  public geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle});
-  public satelliteMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  private geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
+  private geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle});
+  private satelliteMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
   });
-  public googleMap = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}',
+  private googleMap = L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}',
     {attribution: 'google'
   });
-  public esri_OceanBasemap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
+  private esri_OceanBasemap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
 
-  public graticuleDark = L.latlngGraticule({
-    showLabel: true,
-    color: '#000000',
-    opacity: .5,
-    zoomInterval: [
-        {start: 0, end: 4, interval: 30},
-        {start: 4, end: 5, interval: 10},
-        {start: 5, end: 7.5, interval: 5},
-        {start: 7.5, end: 12, interval: 1}
+  public generateMap(this, proj: string): L.Map {
+    switch(proj) {
+      case 'WM': {
+        console.log('generating web mercator');
+        return  this.createWebMercator();
+      }
+      case 'SSP': {
+        console.log('generating south stereo');
+        return this.createSouthernStereographic();
+      }
+      case 'NSP': {
+        console.log('generating north stereo');
+        return this.createNorthernStereographic();
+      }
+      default: {
+        console.log('proj not found, using web mercator')
+        return  this.createWebMercator();
+      }
+    }
+  }
+
+  public createWebMercator(this): L.Map {
+    const startView = [20, -150]
+    const startZoom = 3
+    let map = L.map('map',
+                      {maxZoom: 13,
+                      minZoom: 1,
+                      zoomDelta: 0.25,
+                      zoomSnap: 0,
+                      zoomControl: false,
+                      maxBounds: [[-180, -270], [180,180]],
+                      layers: [this.baseMaps.ocean]})
+                      .setView(startView, startZoom );
+    L.control.layers(this.baseMaps).addTo(map);
+    map.on('baselayerchange', (e: any) => {
+      const graticule = this.getGraticule(e.name)
+      map.removeLayer(graticule)
+      graticule.addTo(map);
+      });
+    L.control.zoom({position:'topleft'}).addTo(map);
+    const graticule = this.getGraticule('ocean')
+    graticule.addTo(map);
+    return map
+  };
+  
+  public createSouthernStereographic(this): L.Map {
+    const startView = [-89, .1]
+    const startZoom = 4
+    let map = L.map('map',
+                    {maxZoom: 13,
+                      minZoom: 3,
+                      zoomDelta: 0.25,
+                      zoomSnap: 0,
+                      zoomControl: false,
+                      crs: this.sStereo})
+                      .setView(startView, startZoom);    
+    this.geojsonLayer.addTo(map);
+    L.control.zoom({position:'topleft'}).addTo(map);
+    return map
+  };
+  
+  public createNorthernStereographic(this): L.Map {
+    const startView =  [89, .1]
+    const startZoom = 4
+    let map = L.map('map',
+                    {maxZoom: 13,
+                      minZoom: 3,
+                      zoomDelta: 0.25,
+                      zoomSnap: 0,
+                      zoomControl: false,
+                      crs: this.nStereo})
+                      .setView(startView, startZoom);
+    this.geojsonLayerNoAntartica.addTo(map);
+    L.control.zoom({position:'topleft'}).addTo(map);
+    return map
+  };
+
+  private graticuleDark = L.latlngGraticule({
+  showLabel: true,
+  color: '#000000',
+  opacity: .5,
+  zoomInterval: [
+    {start: 0, end: 4, interval: 30},
+    {start: 4, end: 5, interval: 10},
+    {start: 5, end: 7.5, interval: 5},
+    {start: 7.5, end: 12, interval: 1}
     ]
+  });
+  
+  private graticuleLight = L.latlngGraticule({
+    showLabel: true,
+    color: '#aaa',
+    opacity: 1,
+    zoomInterval: [
+      {start: 0, end: 4, interval: 30},
+      {start: 4, end: 5, interval: 10},
+      {start: 5, end: 7.5, interval: 5},
+      {start: 7.5, end: 12, interval: 1}
+      ]
+  });
+
+  private curvedGraticule = L.latlngGraticule({
+    showLabel: true,
+    latLineCurved: 1,
+    weight: 3,
+    lngLineCurved: 1,
+    zoomInterval: [
+      {start: 0, end: 4, interval: 30},
+      {start: 4, end: 5, interval: 10},
+      {start: 5, end: 7.5, interval: 5},
+      {start: 7.5, end: 13, interval: 1}
+      ]
     });
 
-    public graticuleLight = L.latlngGraticule({
-        showLabel: true,
-        color: '#aaa',
-        opacity: 1,
-        zoomInterval: [
-            {start: 0, end: 4, interval: 30},
-            {start: 4, end: 5, interval: 10},
-            {start: 5, end: 7.5, interval: 5},
-            {start: 7.5, end: 12, interval: 1}
-        ]
-        });
-
-    public curvedGraticule = L.latlngGraticule({
-        showLabel: true,
-        latLineCurved: 1,
-        weight: 3,
-        lngLineCurved: 1,
-        zoomInterval: [
-            {start: 0, end: 4, interval: 30},
-            {start: 4, end: 5, interval: 10},
-            {start: 5, end: 7.5, interval: 5},
-            {start: 7.5, end: 13, interval: 1}
-        ]
-        });
+  public getGraticule(basemapName: string) {
+    switch(basemapName) {
+      case 'esri': {
+      return (this.graticuleLight)
+      break;
+      }
+      case 'ocean': {
+      return (this.graticuleDark)
+      break;
+      }
+      case 'google': {
+      return (this.graticuleLight)
+      break;
+      }
+      default: {
+      return (this.graticuleLight)
+      break;
+      }
+    }
+  }
 
   constructor(private compileService: PopupCompileService) { 
     this.baseMaps = {
@@ -119,24 +216,24 @@ export class MapService {
   public drawOptions = {
     position: 'topleft',
     draw: {
-        polygon: {
-            allowIntersection: <false> false,
-            shapeOptions: {
-                color: '#983fb2',
-                weight: 4
-            },
-        },
-        rectangle: <false> false,
-        polyline: <false> false,
-        lineString: <false> false,
-        marker: <false> false,
-        circlemarker: <false> false, 
-        circle: <false> false
+      polygon: {
+          allowIntersection: <false> false,
+          shapeOptions: {
+            color: '#983fb2',
+            weight: 4
+          },
+      },
+      rectangle: <false> false,
+      polyline: <false> false,
+      lineString: <false> false,
+      marker: <false> false,
+      circlemarker: <false> false, 
+      circle: <false> false
     },
     edit: {
       featureGroup: this.drawnItems,
       polygon: {
-          allowIntersection: <false> false
+        allowIntersection: <false> false
       }
     },
   }
@@ -176,12 +273,12 @@ export class MapService {
     const transformedShape = this.getTransformedShape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
-        layer.setPopupContent(
-            this.compileService.compile(ShapePopupComponent, (c) => { c.instance.shape = transformedShape; })
-        );
+      layer.setPopupContent(
+        this.compileService.compile(ShapePopupComponent, (c) => { c.instance.shape = transformedShape; })
+      );
     });
     layer.on('add', (event) => { 
-        layer.fire('click') // click generates popup object
+      layer.fire('click') // click generates popup object
     });
     drawnItems.addLayer(layer);
     }

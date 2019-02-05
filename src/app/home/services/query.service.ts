@@ -35,10 +35,7 @@ export class QueryService {
     //this.setURL() //setURL() is reversing the order of this.latLngShapes()
     const presRangeString = JSON.stringify(this.presRange)
     let shapesString = null
-    console.log(this.latLngShapes)
     if (this.latLngShapes) {
-      console.log('there are shapes')
-      console.log(this.latLngShapes)
       const features = this.latLngShapes.features
       let shapes = []
       features.forEach( feature => {
