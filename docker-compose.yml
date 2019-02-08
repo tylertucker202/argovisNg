@@ -14,6 +14,12 @@ services:
 
   database:
     image: mongo  # specify image to build container from
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     ports:
       - '127.0.0.1:27017:27017' # include localhost ip to restrict access to localhost
     volumes:
