@@ -17,8 +17,8 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000];
-  private selectionDateRange = {start: moment().subtract(14, 'days').format('YYYY-MM-DD'), end: moment().format('YYYY-MM-DD') };
-  private displayDate: string;
+  private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'), end: moment().utc().format('YYYY-MM-DD') };
+  private displayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
   private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime = true;
   private onlyBGC = false;

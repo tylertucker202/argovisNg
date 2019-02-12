@@ -29,8 +29,8 @@ export class SidebarNavComponent implements OnInit {
   ngOnInit() {
     this.queryService.sendToggleMsg(this.includeRT)
     this.proj = this.queryService.getProj()
-    let yd = new Date()
-    yd.setDate(yd.getDate() - 1)
+    const date = this.queryService.getDisplayDate()
+    const yd = new Date(date)
     this.date = new FormControl(yd)
 
     this.queryService.urlBuild
@@ -43,7 +43,8 @@ export class SidebarNavComponent implements OnInit {
       this.proj = this.queryService.getProj()
 
       var displayDate = new Date(this.queryService.getDisplayDate())
-      displayDate.setDate(displayDate.getDate() + 1)
+      displayDate.setDate(displayDate.getDate())
+      displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
     })
   }
