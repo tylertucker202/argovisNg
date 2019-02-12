@@ -52,9 +52,9 @@ export class QueryService {
     const queryParams = {
                          'mapProj': this.proj,
                          'presRange': presRangeString, 
-                         'startDate': this.selectionDateRange.start,
-                         'endDate': this.selectionDateRange.end,
-                         'displayDate': this.displayDate,
+                         'selectionStartDate': this.selectionDateRange.start,
+                         'selectionEndDate': this.selectionDateRange.end,
+                         'threeDayEndDate': this.displayDate,
                          'shapes': shapesString,
                          'includeRealtime': this.includeRealtime,
                          'onlyBGC': this.onlyBGC,
@@ -217,7 +217,7 @@ export class QueryService {
         this.sendThreeDayMsg(threeDayToggle, notifyChange)
         break;
       }
-      case 'displayDate': {
+      case 'threeDayEndDate': {
         const displayDate = value
         this.sendDisplayDateMessage(displayDate, notifyChange)
         break;
@@ -232,12 +232,12 @@ export class QueryService {
         this.sendShapeMessage(shapes.toGeoJSON(), notifyChange)
         break;
       }
-      case 'startDate': {
+      case 'selectionStartDate': {
         const stateDateRange = {start: value, end: this.selectionDateRange.end}
         this.sendSelectedDateMessage(stateDateRange, notifyChange)
         break;
       }
-      case 'endDate': {
+      case 'selectionEndDate': {
         const stateDateRange = {start: this.selectionDateRange.start, end: value}
         this.sendSelectedDateMessage(stateDateRange, notifyChange)
         break;
