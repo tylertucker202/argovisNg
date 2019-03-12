@@ -7,11 +7,10 @@ WORKDIR /usr/src/ng-argo
 COPY package*.json ./
 
 
-RUN npm install
-RUN npm install @angular/cli -g
-# Install PM2
-RUN npm install -g pm2
-# copies everything from host dir to container work dir
+RUN npm install && \
+    npm install @angular/cli -g && \
+    npm install -g pm2
+
 COPY . .
 RUN ng build 
 
