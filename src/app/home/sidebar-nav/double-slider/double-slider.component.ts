@@ -45,14 +45,16 @@ export class DoubleSliderComponent implements OnInit {
   public minValuechange(newLowPres : number ): void {
     this.lRange = newLowPres;
     this.sliderRange = [newLowPres, null];
+    this.sendSliderRange();
   }
 
   public maxValuechange(newUpPres : number ): void {
     this.uRange = newUpPres;
     this.sliderRange = [null, newUpPres];
+    this.sendSliderRange();
   }
 
-  public onChange(newRange: number[]): void {
+  public sliderChange(newRange: number[]): void {
     this.lRange = newRange[0]
     this.uRange = newRange[1]
     this.sendSliderRange();

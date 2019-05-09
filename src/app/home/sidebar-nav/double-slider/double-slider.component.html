@@ -1,15 +1,21 @@
 <section class="mat-typography"><p>Pressure range [dbar]:</p></section>
 <div class="slider-container">
-  <div (mouseup)="onChange($event)">
+  <div (mouseup)="sliderChange($event)">
       <nouislider id='slider' [config]="config" [(ngModel)]="sliderRange" ></nouislider>
     </div>
     <div class='input-div'>
       <form class="pressure-form">
         <mat-form-field class="pressure-full-width">
-          <input matInput matTooltip="sets minimum pressure (depth) for profile selection" class="pressure-input" placeholder="min pres:" value={{sliderRange[0]}} type="number" min="0" max="6000" id='minPres' (change)="minValuechange($event.target.value)">
+          <input matInput matTooltip="sets minimum pressure (depth) for profile selection"
+           class="pressure-input" placeholder="min pres:"
+           value={{sliderRange[0]}} type="number"
+           min="0" max="6000" id='minPres' (change)="minValuechange($event.target.value)">
         </mat-form-field>
           <mat-form-field class="pressure-full-width-bot">
-            <input matInput matTooltip="sets maximum pressure (depth) for profile selection" class="pressure-input" placeholder="max pres:" value={{sliderRange[1]}} type="number" min="0" max="6000" id='maxPres' (change)="maxValuechange($event.target.value)">
+            <input matInput matTooltip="sets maximum pressure (depth) for profile selection" 
+             class="pressure-input" placeholder="max pres:"
+             value={{sliderRange[1]}} type="number"
+             min="0" max="6000" id='maxPres' (change)="maxValuechange($event.target.value)">
           </mat-form-field>
           </form>
     </div>

@@ -17,7 +17,8 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000];
-  private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'), end: moment().utc().format('YYYY-MM-DD') };
+  private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                end: moment().utc().format('YYYY-MM-DD') };
   private displayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
   private latLngShapes: GeoJSON.FeatureCollection | any;
   private includeRealtime = true;
@@ -27,7 +28,9 @@ export class QueryService {
   private proj = 'WM';
 
 
-  constructor(private route: ActivatedRoute, private location: Location, private router: Router) { this.router.urlUpdateStrategy = 'eager' }
+  constructor(private route: ActivatedRoute,
+              private location: Location,
+              private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
 
   public setURL(): void {
@@ -100,7 +103,9 @@ export class QueryService {
     const msg = 'proj changed';
     this.proj = proj;
     this.setURL();
-    location.reload()
+    setTimeout(() => {  // need to wait for url to be set before reloading page.
+      location.reload();
+     });
   }
 
   public setProj(proj: string): void {

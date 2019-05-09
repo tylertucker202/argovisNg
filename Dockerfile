@@ -8,7 +8,7 @@ COPY package*.json ./
 
 
 RUN npm install && \
-    npm install @angular/cli -g && \
+    npm install @angular/cli@7.3.9 -g && \
     npm install -g pm2
 
 COPY . .
