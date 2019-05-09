@@ -39,18 +39,20 @@ export class DoubleSliderComponent implements OnInit {
   }
 
   private sendSliderRange(): void {
+    console.log(this.sliderRange)
     this.queryService.sendPresMessage(this.sliderRange);
   }
 
-  public minValuechange(newLowPres : number ): void {
-    this.lRange = newLowPres;
-    this.sliderRange = [newLowPres, null];
+  public minValuechange(newLowPres: number ): void {
+    console.log(newLowPres)
+    this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
+    this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.sendSliderRange();
   }
 
-  public maxValuechange(newUpPres : number ): void {
-    this.uRange = newUpPres;
-    this.sliderRange = [null, newUpPres];
+  public maxValuechange(newUpPres: number ): void {
+    this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
+    this.sliderRange = [this.sliderRange[0], this.uRange];
     this.sendSliderRange();
   }
 
