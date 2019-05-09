@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { QueryService } from '../services/query.service'
-import { DOCUMENT } from '@angular/common';
-import {MatDatepickerInputEvent} from '@angular/material/datepicker';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import {FormControl} from '@angular/forms';
 
 export interface Projections {
@@ -17,25 +16,37 @@ export interface Projections {
 
 export class SidebarNavComponent implements OnInit {
 
-  private url: string;
-  private proj: string;
   private date = new FormControl(new Date());
 
-  constructor(private queryService: QueryService,
-              @Inject(DOCUMENT) private document: Document) { }
+  constructor(private queryService: QueryService ) { }
 
   @Input() includeRT = true;
   @Input() onlyBGC = false;
   @Input() onlyDeep = false;
   @Input() display3Day = true;
+  @Input() proj = 'WM';
 
   ngOnInit() {
     this.queryService.sendToggleMsg(this.includeRT)
-    this.url = this.document.location.search.split('?map=')[0];
-    this.proj = this.document.location.search.split('?map=')[1];
-    let yd = new Date()
-    yd.setDate(yd.getDate() - 1)
+    this.proj = this.queryService.getProj()
+    const date = this.queryService.getDisplayDate()
+    const yd = new Date(date)
     this.date = new FormControl(yd)
+
+    this.queryService.urlBuild
+    .subscribe(msg => {
+      //toggle if states have changed    
+      this.includeRT = this.queryService.getRealtimeToggle()
+      this.onlyBGC = this.queryService.getBGCToggle()
+      this.onlyDeep = this.queryService.getDeepToggle()
+      this.display3Day = this.queryService.getThreeDayToggle()
+      this.proj = this.queryService.getProj()
+
+      var displayDate = new Date(this.queryService.getDisplayDate())
+      displayDate.setDate(displayDate.getDate())
+      displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
+      this.date = new FormControl(displayDate)
+    })
   }
 
   realtimeChange(event: any): void {
@@ -69,8 +80,7 @@ export class SidebarNavComponent implements OnInit {
   }
 
   mapProjChange(proj: string): void {
-    const newUrl = this.url + '?map=' + proj
-    window.location.assign(newUrl)
+    this.queryService.sendProj(proj)
   }
 
   displayPlatformInputChanged(platformInput: string) {
@@ -85,7 +95,6 @@ export class SidebarNavComponent implements OnInit {
     const dateStr = year + '-' + month + '-' + day
     this.queryService.sendDisplayDateMessage(dateStr)
   }
-
 
   projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},

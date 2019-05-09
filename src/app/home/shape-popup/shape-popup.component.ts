@@ -8,9 +8,11 @@ import { QueryService } from '../services/query.service';
 })
 export class ShapePopupComponent implements OnInit {
   @Input() shape: any;
+  private color: string;
   constructor(private queryService: QueryService) { }
 
   ngOnInit() {
+    this.color = 'primary';
   }
 
   goToSelectionPage(includePresRange: boolean): void {
