@@ -1,10 +1,10 @@
 #sidenav-container {
-    height: 900px;
+    height: 100%;
   }
   
   .side-menu {
     background-color: #F5F5F5;
-    width: 15%;
+    width: 300px;
   }
   
   /* Top left text */
