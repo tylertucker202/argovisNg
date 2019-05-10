@@ -1,7 +1,11 @@
 .sidebar-nav {
-    height: 100%;
+    height: 865px;
     padding: 5px;
 }
+
+#three-day-toggle {
+    font-size: 14px;
+  }
 
 #projectionForm {
     margin: 10px;

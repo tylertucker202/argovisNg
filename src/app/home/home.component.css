@@ -1,20 +1,25 @@
 #sidenav-container {
-    height: 100%;
+    height: 865px;
+  }
+
+#top-toolbar {
+    height: 35px;
   }
   
-  .side-menu {
-    background-color: #F5F5F5;
-    width: 300px;
-  }
-  
-  /* Top left text */
-  #top-left {
-    position: absolute;
-    top: 8px;
-    left: 16px;
-    z-index: 200;
-  }
-  
-  .nav-link {
-    color:  #F5F5F5
-  }
+.side-menu {
+  background-color: #F5F5F5;
+  width: 250px;
+  height: 1100px;
+}
+
+/* Top left text */
+#top-left {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  z-index: 200;
+}
+
+.nav-link {
+  color:  #F5F5F5
+}

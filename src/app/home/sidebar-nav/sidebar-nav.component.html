@@ -1,6 +1,7 @@
 <div class="sidebar-nav">
   <mat-form-field id="projectionForm">
-    <mat-select placeholder="Choose Projection" matTooltip="loads new page with selected map projection" [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
+    <mat-select placeholder="Choose Projection" matTooltip="loads new page with selected map projection"
+     [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
       <mat-option *ngFor="let projection of projections" [value]="projection.value">
         {{projection.viewValue}}
       </mat-option>
@@ -14,8 +15,7 @@
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
-
-  <mat-slide-toggle matTooltip="toggle on show global profiles within a three day window"
+  <mat-slide-toggle id="three-day-toggle" matTooltip="toggle on show global profiles within a three day window"
   color="accent" [checked]="display3Day"
   (change)="display3DayChange($event)">Profiles in 3 days, globally
   </mat-slide-toggle>
