@@ -1,14 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
-
 import { QueryService } from './query.service';
 
 import { GeoJSON } from 'geojson'
 import { geoJSON } from 'leaflet';
 
+import { RouterTestingModule } from '@angular/router/testing';
+
 describe('QueryService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [QueryService]
+      providers: [QueryService],
+      imports: [RouterTestingModule]
     });
   });
 

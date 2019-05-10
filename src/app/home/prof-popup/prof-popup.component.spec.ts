@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfPopupComponent } from './prof-popup.component';
 import { QueryService} from '../services/query.service';
+
+import { RouterTestingModule } from '@angular/router/testing';
+
 describe('ProfPopupComponent', () => {
   let component: ProfPopupComponent;
   let fixture: ComponentFixture<ProfPopupComponent>;
@@ -8,7 +11,8 @@ describe('ProfPopupComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProfPopupComponent ],
-      providers: [QueryService]
+      providers: [ QueryService ], 
+      imports: [ RouterTestingModule ]
     })
     .compileComponents();
   }));
