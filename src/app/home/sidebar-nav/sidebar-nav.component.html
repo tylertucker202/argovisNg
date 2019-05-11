@@ -38,6 +38,7 @@
            id='platformInput'>
   </mat-form-field>
 
+  <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"
                    (change)="realtimeChange($event)">Include realtime
@@ -50,7 +51,8 @@
                     color="accent" [checked]="onlyDeep"
                     (change)="deepChange($event)">Show only Deep
   </mat-slide-toggle>
-
+  
+  <div><b>Box selection:</b></div>
   <app-daterangepicker></app-daterangepicker>
 
   <app-double-slider></app-double-slider>

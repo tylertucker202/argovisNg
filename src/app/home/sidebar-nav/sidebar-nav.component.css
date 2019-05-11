@@ -1,5 +1,5 @@
 .sidebar-nav {
-    height: 865px;
+    height: 900px;
     padding: 5px;
 }
 
@@ -13,6 +13,7 @@
 }
 
 .platform-form {
+    padding-top: 10px;
     width:100%;
 }
 
