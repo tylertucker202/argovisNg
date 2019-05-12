@@ -71,9 +71,6 @@ export class MapComponent implements OnInit, OnDestroy {
          //this.setMockPoints()
         },)
 
-    //todo: don't clear history or platform profiles (but redo them)
-    //define history layer, & platform profile layer and do logic here.
-
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes();
@@ -129,8 +126,9 @@ export class MapComponent implements OnInit, OnDestroy {
       this.markersLayer.clearLayers();
       const layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
-      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+      const broadcast = true
+      const toggleThreeDayOff = true
+      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), broadcast, toggleThreeDayOff);
     });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -142,7 +140,9 @@ export class MapComponent implements OnInit, OnDestroy {
       });
       this.mapService.drawnItems = myNewShape
       //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+      const broadcast = true
+      const toggleThreeDayOff = false
+      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), broadcast, toggleThreeDayOff);
     });
 
     this.setStartingProfiles();
@@ -181,7 +181,9 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
-    this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+    const broadcast = true
+    const toggleThreeDayOff = false
+    this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), broadcast, toggleThreeDayOff);
   }
 
   private setStartingProfiles(this): void {
@@ -301,8 +303,7 @@ shapeSelectionOnMap(): void {
             }, 
           error => {
           this.notifier.notify( 'error', 'error in getting profiles in shape' )
-            console.log('error occured when selecting points')
-            console.log(error)
+            console.log('error occured when selecting points: ', error)
           });      
       })
   }

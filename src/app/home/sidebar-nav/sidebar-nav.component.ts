@@ -39,6 +39,7 @@ export class SidebarNavComponent implements OnInit {
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
+
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
