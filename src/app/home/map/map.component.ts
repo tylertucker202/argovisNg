@@ -18,7 +18,7 @@ import { ActivatedRoute } from '@angular/router'
 export class MapComponent implements OnInit, OnDestroy {
   public map: L.Map;
   public markersLayer = L.layerGroup();
-  public startView: any;
+  public startView: L.LatLng;
   public startZoom: number;
   public graticule: any;
   private wrapCoordinates: boolean;
@@ -52,6 +52,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     this.map = this.mapService.generateMap(this.proj);
+    this.startView = this.map.getCenter()
+    this.startZoom = this.map.getZoom()
+
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
@@ -86,7 +89,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
         //this.setMockPoints()
-        this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
+        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
         this.queryService.setURL()
       })
 
@@ -98,7 +101,7 @@ export class MapComponent implements OnInit, OnDestroy {
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {
             this.displayProfiles(profilePoints, 'platform')
-            this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
+            this.map.setView([this.startView.lat, this.startView.lng], 2.5)
           }
           else {
             if (platform.length >= 7){

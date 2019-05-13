@@ -149,7 +149,7 @@ export class QueryService {
   }
 
   public sendDisplayDateMessage(displayDate: string, broadcastChange=true): void {
-    const msg = 'display date';
+    const msg = 'three day display date';
     this.displayDate = displayDate;
     if (broadcastChange){ this.change.emit(msg) }
   }

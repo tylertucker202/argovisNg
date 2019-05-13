@@ -4,7 +4,7 @@ import { MapComponent } from './map.component';
 import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service'
 import { QueryService } from '../services/query.service';
-import { PopupCompileService } from '../popup-compile.service';
+import { PopupCompileService } from '../services/popup-compile.service';
 import { NotifierService } from 'angular-notifier';
 
 
