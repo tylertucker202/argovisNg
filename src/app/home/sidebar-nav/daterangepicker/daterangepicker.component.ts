@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { QueryService } from '../../services/query.service'
+import { DateRange } from '../../../../typeings/daterange';
 
 @Component({
   selector: 'app-daterangepicker',
@@ -9,7 +10,7 @@ import { QueryService } from '../../services/query.service'
 })
 export class DaterangepickerComponent {
   constructor(private queryService: QueryService) {}
-  private daterange: any = {};
+  private daterange: DateRange;
   private start = moment().subtract(14, 'days');
   private end = moment();
   private options: any;

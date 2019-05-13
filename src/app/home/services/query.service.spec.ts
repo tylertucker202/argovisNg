@@ -39,28 +39,16 @@ describe('QueryService', () => {
        expect(msg).toEqual('shape');
     });
 
-    const coords = [[-67.13734351262877, 45.137451890638886],
+    const shape = [[[-67.13734351262877, 45.137451890638886],
     [-66.96466, 44.8097],
     [-68.03252, 44.3252],
     [-67.79035274928509, 47.066248887716995],
     [-67.79141211614706, 45.702585354182816],
-    [-67.13734351262877, 45.137451890638886]]
+    [-67.13734351262877, 45.137451890638886]]]
 
-    let llc = []
-    for(let idx in coords){
-      llc.push(L.latLng(coords[idx][1], coords[idx][0]))
-    }
-
-    var gfa = new L.Polygon(llc)
-    var geoFeatureArray = {
-      type: "FeatureCollection",
-      features:
-      [gfa.toGeoJSON()]
-      }
-    
     const broadcastChange=true
     const toggleThreeDayOff=false
-    service.sendShapeMessage(geoFeatureArray, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
+    service.sendShapeMessage(shape, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
   }));
 
   it('should be emit a change upon pressure change', inject([QueryService], (service: QueryService) => {
@@ -77,8 +65,8 @@ describe('QueryService', () => {
     .subscribe(msg => {
        expect(msg).toEqual('three day display date');
     });
-    const threeDayDisplayDate = "2018-09-14"
-    service.sengGlobalDateMessage(threeDayDisplayDate)
+    const globalDisplayDate = "2018-09-14"
+    service.sendGlobalDateMessage(globalDisplayDate)
   }));
 
   it('should be emit a change upon toggle change', inject([QueryService], (service: QueryService) => {

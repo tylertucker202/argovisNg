@@ -29,7 +29,7 @@ export class SidebarNavComponent implements OnInit {
   ngOnInit() {
     this.queryService.sendRealtimeMsg(this.includeRT)
     this.proj = this.queryService.getProj()
-    const date = this.queryService.getDisplayDate()
+    const date = this.queryService.getGlobalDisplayDate()
     const yd = new Date(date)
     this.date = new FormControl(yd)
 
@@ -43,7 +43,7 @@ export class SidebarNavComponent implements OnInit {
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
-      var displayDate = new Date(this.queryService.getDisplayDate())
+      var displayDate = new Date(this.queryService.getGlobalDisplayDate())
       displayDate.setDate(displayDate.getDate())
       displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
@@ -94,7 +94,7 @@ export class SidebarNavComponent implements OnInit {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateStr = year + '-' + month + '-' + day
-    this.queryService.sengGlobalDateMessage(dateStr)
+    this.queryService.sendGlobalDateMessage(dateStr)
   }
 
   projections: Projections[] = [
