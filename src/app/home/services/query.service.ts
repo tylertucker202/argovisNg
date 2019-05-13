@@ -148,7 +148,7 @@ export class QueryService {
     return this.selectionDateRange;
   }
 
-  public sendDisplayDateMessage(displayDate: string, broadcastChange=true): void {
+  public sengGlobalDateMessage(displayDate: string, broadcastChange=true): void {
     const msg = 'three day display date';
     this.displayDate = displayDate;
     if (broadcastChange){ this.change.emit(msg) }
@@ -158,7 +158,7 @@ export class QueryService {
     return this.displayDate;
   }
 
-  public sendToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendRealtimeMsg(toggleChecked: Boolean, broadcastChange=true): void {
     const msg = 'realtime'
     this.includeRealtime = toggleChecked.valueOf()
     if (broadcastChange){ this.change.emit(msg) }
@@ -208,7 +208,7 @@ export class QueryService {
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
-        this.sendToggleMsg(includeRealtime, notifyChange)
+        this.sendRealtimeMsg(includeRealtime, notifyChange)
         break;
       }
       case 'onlyBGC': {
@@ -228,7 +228,7 @@ export class QueryService {
       }
       case 'threeDayEndDate': {
         const displayDate = value
-        this.sendDisplayDateMessage(displayDate, notifyChange)
+        this.sengGlobalDateMessage(displayDate, notifyChange)
         break;
       }
       case 'shapes': {

@@ -27,7 +27,7 @@ export class SidebarNavComponent implements OnInit {
   @Input() proj = 'WM';
 
   ngOnInit() {
-    this.queryService.sendToggleMsg(this.includeRT)
+    this.queryService.sendRealtimeMsg(this.includeRT)
     this.proj = this.queryService.getProj()
     const date = this.queryService.getDisplayDate()
     const yd = new Date(date)
@@ -52,10 +52,10 @@ export class SidebarNavComponent implements OnInit {
 
   realtimeChange(event: any): void {
     this.includeRT = event.checked
-    this.queryService.sendToggleMsg(this.includeRT);
+    this.queryService.sendRealtimeMsg(this.includeRT);
   }
 
-  display3DayChange(event: any): void {
+  displayGlobalChange(event: any): void {
     this.display3Day = event.checked
     this.queryService.sendThreeDayMsg(this.display3Day);
   }
@@ -88,13 +88,13 @@ export class SidebarNavComponent implements OnInit {
     if (platformInput.length >= 5){ this.queryService.triggerShowPlatform(platformInput) }
   }
 
-  displayLastThreeDaysDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
+  displayGlobalDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
     const date = event.value
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateStr = year + '-' + month + '-' + day
-    this.queryService.sendDisplayDateMessage(dateStr)
+    this.queryService.sengGlobalDateMessage(dateStr)
   }
 
   projections: Projections[] = [

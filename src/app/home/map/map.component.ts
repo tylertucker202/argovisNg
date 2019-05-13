@@ -142,7 +142,6 @@ export class MapComponent implements OnInit, OnDestroy {
         myNewShape.removeLayer(layer)
       });
       this.mapService.drawnItems = myNewShape
-      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
       const broadcast = true
       const toggleThreeDayOff = false
       this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), broadcast, toggleThreeDayOff);
@@ -153,11 +152,6 @@ export class MapComponent implements OnInit, OnDestroy {
     setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
       this.addShapesFromURL();
      });
-  }
-
-  // drawnItems is actually a L.featureGroup(), but the typings don't exist
-  private getDrawnShapes(drawnItems: any): GeoJSON.FeatureCollection {
-    return drawnItems.toGeoJSON()
   }
 
   ngOnDestroy() {
