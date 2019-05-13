@@ -79,10 +79,10 @@ describe('QueryService', () => {
   it('should be emit a change upon date change', inject([QueryService], (service: QueryService) => {
     service.change
     .subscribe(msg => {
-       expect(msg).toEqual('date');
+       expect(msg).toEqual('three day display date');
     });
-    const dateRange = { start: "2018-09-14", end: "2018-09-28", label: 'test date range' }
-    //service.sendDisplayDateMessage(dateRange)
+    const threeDayDisplayDate = "2018-09-14"
+    service.sendDisplayDateMessage(threeDayDisplayDate)
   }));
 
   it('should be emit a change upon toggle change', inject([QueryService], (service: QueryService) => {

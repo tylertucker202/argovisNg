@@ -35,7 +35,7 @@ export class QueryService {
 
   public setURL(): void {
 
-    //this.setURL() //setURL() is reversing the order of this.latLngShapes()
+    //this is reversing the order of this.latLngShapes()
     const presRangeString = JSON.stringify(this.presRange)
     let shapesString = null
     if (this.latLngShapes) {
@@ -93,8 +93,12 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShapeMessage(data: GeoJSON.FeatureCollection | any, broadcastChange=true): void { //really a GeoJSON.Feature[] object, but for testing purposes, need to make it an any
-    const msg = 'shape';
+  public sendShapeMessage(data: GeoJSON.FeatureCollection | any, broadcastChange=true, toggleThreeDayOff=true): void { //really a GeoJSON.Feature[] object, but for testing purposes, need to make it an any
+    
+    let msg = 'shape';
+    if (toggleThreeDayOff) { 
+      this.sendThreeDayMsg(false, true)
+    }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -145,7 +149,7 @@ export class QueryService {
   }
 
   public sendDisplayDateMessage(displayDate: string, broadcastChange=true): void {
-    const msg = 'display date';
+    const msg = 'three day display date';
     this.displayDate = displayDate;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -234,7 +238,8 @@ export class QueryService {
           const polygon = L.polygon(array)
           shapes.addLayer(polygon)
         })
-        this.sendShapeMessage(shapes.toGeoJSON(), notifyChange)
+        const toggleThreeDayOff = false
+        this.sendShapeMessage(shapes.toGeoJSON(), notifyChange, toggleThreeDayOff)
         break;
       }
       case 'selectionStartDate': {
