@@ -29,6 +29,22 @@ export class QueryService {
               private location: Location,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
+  public resetParams(): void{
+    const broadcastChange = false
+    this.sendDeepToggleMsg(false, broadcastChange)
+    this.sendBGCToggleMsg(false, broadcastChange)
+    this.sendThreeDayMsg(true, broadcastChange)
+    this.sendRealtimeMsg(true, broadcastChange)
+    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+    this.sendGlobalDateMessage(globalDisplayDate, broadcastChange)
+    const presRange = [0, 2000]
+    this.sendPresMessage(presRange, broadcastChange)
+
+    const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    this.sendSelectedDateMessage(selectionDateRange, broadcastChange)
+  }
+
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
     let shapes = []
@@ -88,7 +104,9 @@ export class QueryService {
   }
 
   public triggerResetToStart(): void {
+    this.resetParams()
     this.resetToStart.emit()
+    this.setURL()
   }
 
   public triggerShowPlatform(platform: string): void {
@@ -101,7 +119,6 @@ export class QueryService {
     if (toggleThreeDayOff) { 
       this.sendThreeDayMsg(false, true)
     }
-    console.log('type of shape: ', data)
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -137,7 +154,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getPresRange(): Number[] {
+  public getPresRange(): number[] {
     return this.presRange;
   }
 

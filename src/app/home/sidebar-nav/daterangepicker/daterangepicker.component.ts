@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import { QueryService } from '../../services/query.service'
-import { DateRange } from '../../../../typeings/daterange';
+import { DateRange, DateRangeSel } from '../../../../typeings/daterange';
+import { DaterangePickerComponent } from 'ng2-daterangepicker';
+
 
 @Component({
   selector: 'app-daterangepicker',
@@ -10,9 +12,12 @@ import { DateRange } from '../../../../typeings/daterange';
 })
 export class DaterangepickerComponent {
   constructor(private queryService: QueryService) {}
+
+  @ViewChild(DaterangePickerComponent)
+  private picker: DaterangePickerComponent;
   private daterange: DateRange;
-  private start = moment().subtract(14, 'days');
-  private end = moment();
+  private start: moment.Moment;
+  private end: moment.Moment;
   private options: any;
 
   ngOnInit() {
@@ -34,13 +39,23 @@ export class DaterangepickerComponent {
                       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                       },
                     };
+
+    this.queryService.resetToStart
+    .subscribe( () => {
+      this.daterange = this.queryService.getSelectionDates()
+      this.start = moment(this.daterange.start)
+      this.end = moment(this.daterange.end)
+      this.picker.datePicker.setStartDate(this.start);
+      this.picker.datePicker.setEndDate(this.end);
+    })
   }
 
   private sendDateRange(): void {
     this.queryService.sendSelectedDateMessage(this.daterange);
   }
 
-  public selectedDate(daterangeSel: any) {
+  public selectedDate(daterangeSel: DateRangeSel) {
+    console.log(daterangeSel)
       this.daterange.start = daterangeSel.start.format('YYYY-MM-DD');
       this.daterange.end = daterangeSel.end.format('YYYY-MM-DD');
       this.daterange.label = daterangeSel.label;

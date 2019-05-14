@@ -94,7 +94,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setStartingProfiles();
         //this.setMockPoints()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
-        this.queryService.setURL()
+        //this.queryService.setURL()
       })
 
     this.queryService.displayPlatform

@@ -17,13 +17,14 @@ export class DoubleSliderComponent implements OnInit {
   private lRange: number;
   private uRange: number;
 
-  constructor(private queryService: QueryService) {
-    this.lRange = 0;
-    this.uRange = 2000;
-    this.sliderRange = [this.lRange, this.uRange];
-   }
+  constructor(private queryService: QueryService) {}
 
   ngOnInit() {
+
+    this.sliderRange = this.queryService.getPresRange()
+    this.lRange = this.sliderRange[0]
+    this.uRange = this.sliderRange[1]
+
     this.config = {
       start: this.sliderRange,
       range: { min: 0, max: 6000 },
@@ -36,15 +37,17 @@ export class DoubleSliderComponent implements OnInit {
     this.sliderRange[0] = nRange[0]
     this.sliderRange[1] = nRange[1]
 
+    this.queryService.resetToStart
+    .subscribe( () => {
+      this.sliderRange = this.queryService.getPresRange()
+    })
   }
 
-  private sendSliderRange(): void {
-    console.log(this.sliderRange)
-    this.queryService.sendPresMessage(this.sliderRange);
+  private sendSliderRange(broadcastChange=true): void {
+    this.queryService.sendPresMessage(this.sliderRange, broadcastChange);
   }
 
   public minValuechange(newLowPres: number ): void {
-    console.log(newLowPres)
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.sendSliderRange();
