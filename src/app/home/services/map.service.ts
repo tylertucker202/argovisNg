@@ -12,7 +12,6 @@ import '../../../ext-js/leaflet.draw-arc-src.js';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
 import 'leaflet-ajax'
 
-
 declare let L;
 
 

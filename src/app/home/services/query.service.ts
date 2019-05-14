@@ -126,10 +126,10 @@ export class QueryService {
   public sendProj(proj: string): void {
     const msg = 'proj changed';
     this.proj = proj;
-    this.setURL();
+    this.setURL()
     setTimeout(() => {  // need to wait for url to be set before reloading page.
       location.reload();
-     });
+     } );
   }
 
   public setProj(proj: string): void {
