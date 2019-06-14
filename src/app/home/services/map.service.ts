@@ -12,7 +12,6 @@ import '../../../ext-js/leaflet.draw-arc-src.js';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
 import 'leaflet-ajax'
 
-
 declare let L;
 
 
@@ -249,19 +248,19 @@ export class MapService {
   
   public scaleDisplay = L.control.scale();
 
-  public getTransformedShape(shape: number[][][]): number[][][] {
+  public getTransformedShape(shape: number[][]): number[][][] {
     let transformedShape = [];
-    for (let j = 0; j < shape[0].length; j++) {
-        //transformation if shape is outside latitude.
-        let lat = shape[0][j][0] % 360;
+    for (let j = 0; j < shape.length; j++) {
+        //transformation if shape is outside longitude.
+        let lng = shape[j][1] % 360;
         //crossing antimeridian transformation
-        if (lat < -180) {
-            lat = 180 + lat % 180;
+        if (lng < -180) {
+          lng = 180 + lng % 180;
         }
-        else if (lat > 180) {
-            lat = -180 + lat % 180;
+        else if (lng > 180) {
+          lng = -180 + lng % 180;
         }
-        let point = [lat, shape[0][j][1]];
+        let point = [lng, shape[j][0]];
         transformedShape.push(point);
     }
     return([transformedShape])

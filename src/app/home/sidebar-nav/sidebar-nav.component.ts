@@ -27,9 +27,9 @@ export class SidebarNavComponent implements OnInit {
   @Input() proj = 'WM';
 
   ngOnInit() {
-    this.queryService.sendToggleMsg(this.includeRT)
+    this.queryService.sendRealtimeMsg(this.includeRT)
     this.proj = this.queryService.getProj()
-    const date = this.queryService.getDisplayDate()
+    const date = this.queryService.getGlobalDisplayDate()
     const yd = new Date(date)
     this.date = new FormControl(yd)
 
@@ -39,10 +39,11 @@ export class SidebarNavComponent implements OnInit {
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
+
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
-      var displayDate = new Date(this.queryService.getDisplayDate())
+      var displayDate = new Date(this.queryService.getGlobalDisplayDate())
       displayDate.setDate(displayDate.getDate())
       displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
@@ -51,10 +52,10 @@ export class SidebarNavComponent implements OnInit {
 
   realtimeChange(event: any): void {
     this.includeRT = event.checked
-    this.queryService.sendToggleMsg(this.includeRT);
+    this.queryService.sendRealtimeMsg(this.includeRT);
   }
 
-  display3DayChange(event: any): void {
+  displayGlobalChange(event: any): void {
     this.display3Day = event.checked
     this.queryService.sendThreeDayMsg(this.display3Day);
   }
@@ -87,13 +88,13 @@ export class SidebarNavComponent implements OnInit {
     if (platformInput.length >= 5){ this.queryService.triggerShowPlatform(platformInput) }
   }
 
-  displayLastThreeDaysDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
+  displayGlobalDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
     const date = event.value
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateStr = year + '-' + month + '-' + day
-    this.queryService.sendDisplayDateMessage(dateStr)
+    this.queryService.sendGlobalDateMessage(dateStr)
   }
 
   projections: Projections[] = [

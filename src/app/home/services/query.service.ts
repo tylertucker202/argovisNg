@@ -4,8 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
 import * as moment from 'moment';
 
-import * as L from "leaflet";
-
 @Injectable()
 export class QueryService {
 
@@ -18,30 +16,41 @@ export class QueryService {
 
   private presRange = [0, 2000];
   private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD') };
-  private displayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-  private latLngShapes: GeoJSON.FeatureCollection | any;
+                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+  private latLngShapes: number[][][];
   private includeRealtime = true;
   private onlyBGC = false;
   private onlyDeep = false;
   private threeDayToggle = true;
   private proj = 'WM';
 
-
   constructor(private route: ActivatedRoute,
               private location: Location,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
+  public resetParams(): void{
+    const broadcastChange = false
+    this.sendDeepToggleMsg(false, broadcastChange)
+    this.sendBGCToggleMsg(false, broadcastChange)
+    this.sendThreeDayMsg(true, broadcastChange)
+    this.sendRealtimeMsg(true, broadcastChange)
+    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+    this.sendGlobalDateMessage(globalDisplayDate, broadcastChange)
+    const presRange = [0, 2000]
+    this.sendPresMessage(presRange, broadcastChange)
 
-  public setURL(): void {
+    const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    this.sendSelectedDateMessage(selectionDateRange, broadcastChange)
+  }
 
-    //this.setURL() //setURL() is reversing the order of this.latLngShapes()
-    const presRangeString = JSON.stringify(this.presRange)
-    let shapesString = null
-    if (this.latLngShapes) {
-      const features = this.latLngShapes.features
-      let shapes = []
-      features.forEach( feature => {
+  public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
+    //const features = this.latLngShapes.features
+    let shapes = []
+    for(let idx in features){
+      const feature = features[idx]
+      //features.forEach( feature => {
         let coords = []
         feature.geometry.coordinates[0].forEach( (coord) => {
           const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
@@ -49,15 +58,24 @@ export class QueryService {
         })
         const polygonCoords = coords
         shapes.push(polygonCoords)
-      });
-      shapesString = JSON.stringify(shapes)
+    };
+    return shapes
+  }
+
+  public setURL(): void {
+
+    //this is reversing the order of this.latLngShapes()
+    const presRangeString = JSON.stringify(this.presRange)
+    let shapesString = null
+    if (this.latLngShapes) {
+      shapesString = JSON.stringify(this.latLngShapes)
     }
     const queryParams = {
                          'mapProj': this.proj,
                          'presRange': presRangeString, 
                          'selectionStartDate': this.selectionDateRange.start,
                          'selectionEndDate': this.selectionDateRange.end,
-                         'threeDayEndDate': this.displayDate,
+                         'threeDayEndDate': this.globalDisplayDate,
                          'shapes': shapesString,
                          'includeRealtime': this.includeRealtime,
                          'onlyBGC': this.onlyBGC,
@@ -86,15 +104,21 @@ export class QueryService {
   }
 
   public triggerResetToStart(): void {
+    this.resetParams()
     this.resetToStart.emit()
+    this.setURL()
   }
 
   public triggerShowPlatform(platform: string): void {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShapeMessage(data: GeoJSON.FeatureCollection | any, broadcastChange=true): void { //really a GeoJSON.Feature[] object, but for testing purposes, need to make it an any
-    const msg = 'shape';
+  public sendShapeMessage(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
+    
+    let msg = 'shape';
+    if (toggleThreeDayOff) { 
+      this.sendThreeDayMsg(false, true)
+    }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -102,10 +126,10 @@ export class QueryService {
   public sendProj(proj: string): void {
     const msg = 'proj changed';
     this.proj = proj;
-    this.setURL();
+    this.setURL()
     setTimeout(() => {  // need to wait for url to be set before reloading page.
       location.reload();
-     });
+     } );
   }
 
   public setProj(proj: string): void {
@@ -116,7 +140,7 @@ export class QueryService {
     return this.proj;
   }
 
-  public getShapes(): GeoJSON.FeatureCollection | any{
+  public getShapes(): number[][][] {
     return this.latLngShapes;
   }
 
@@ -130,7 +154,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getPresRange(): Number[] {
+  public getPresRange(): number[] {
     return this.presRange;
   }
 
@@ -140,21 +164,21 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getSelectionDates(): any {
+  public getSelectionDates(): DateRange {
     return this.selectionDateRange;
   }
 
-  public sendDisplayDateMessage(displayDate: string, broadcastChange=true): void {
-    const msg = 'display date';
-    this.displayDate = displayDate;
+  public sendGlobalDateMessage(globalDisplayDate: string, broadcastChange=true): void {
+    const msg = 'three day display date';
+    this.globalDisplayDate = globalDisplayDate;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getDisplayDate(): any{
-    return this.displayDate;
+  public getGlobalDisplayDate(): string{
+    return this.globalDisplayDate;
   }
 
-  public sendToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendRealtimeMsg(toggleChecked: Boolean, broadcastChange=true): void {
     const msg = 'realtime'
     this.includeRealtime = toggleChecked.valueOf()
     if (broadcastChange){ this.change.emit(msg) }
@@ -204,7 +228,7 @@ export class QueryService {
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
-        this.sendToggleMsg(includeRealtime, notifyChange)
+        this.sendRealtimeMsg(includeRealtime, notifyChange)
         break;
       }
       case 'onlyBGC': {
@@ -223,18 +247,14 @@ export class QueryService {
         break;
       }
       case 'threeDayEndDate': {
-        const displayDate = value
-        this.sendDisplayDateMessage(displayDate, notifyChange)
+        const globalDisplayDate = value
+        this.sendGlobalDateMessage(globalDisplayDate, notifyChange)
         break;
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
-        let shapes = L.featureGroup()
-        arrays.forEach( (array) => {
-          const polygon = L.polygon(array)
-          shapes.addLayer(polygon)
-        })
-        this.sendShapeMessage(shapes.toGeoJSON(), notifyChange)
+        const toggleThreeDayOff = false
+        this.sendShapeMessage(arrays, notifyChange, toggleThreeDayOff)
         break;
       }
       case 'selectionStartDate': {

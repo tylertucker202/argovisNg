@@ -1,13 +1,44 @@
 <div class="sidebar-nav">
   <mat-form-field id="projectionForm">
-    <mat-select placeholder="Choose Projection" matTooltip="loads new page with selected map projection" [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
+    <mat-select placeholder="Choose Projection" matTooltip="loads new page with selected map projection"
+     [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
       <mat-option *ngFor="let projection of projections" [value]="projection.value">
         {{projection.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>
+
   <app-db-overview></app-db-overview>
-  <app-daterangepicker></app-daterangepicker>
+  <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
+    <mat-icon aria-label="clear profile and shape layers">layers_clear</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
+    <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
+  </button>
+  <mat-slide-toggle id="three-day-toggle" matTooltip="toggle on show global profiles within a three day window"
+  color="accent" [checked]="display3Day"
+  (change)="displayGlobalChange($event)">Profiles in 3 days, globally
+  </mat-slide-toggle>
+  <mat-form-field class="date-form">
+    <input matInput 
+    matTooltip="display three day window of profiles ending on the selected date" 
+    [matDatepicker]="picker"
+    [value]="date.value"
+    placeholder="3 day window end date"
+    (dateChange)="displayGlobalDateChanged('change', $event)">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field class="platform-form">
+    <input matInput 
+           matTooltip="input platform number, and map will display its profile markers in orange. hint: try 4902911"
+           class="show-platform-input" placeholder="Search platform #" type="string"
+           (keyup)="displayPlatformInputChanged($event.target.value)"
+           id='platformInput'>
+  </mat-form-field>
+
+  <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"
                    (change)="realtimeChange($event)">Include realtime
@@ -20,34 +51,9 @@
                     color="accent" [checked]="onlyDeep"
                     (change)="deepChange($event)">Show only Deep
   </mat-slide-toggle>
+  
+  <div><b>Box selection:</b></div>
+  <app-daterangepicker></app-daterangepicker>
+
   <app-double-slider></app-double-slider>
-  <mat-form-field class="platform-form">
-    <input matInput 
-           matTooltip="input platform number, and map will display its profile markers. hint: try 4902911"
-           class="show-platform-input" placeholder="Platform Number:" type="string"
-           (keyup)="displayPlatformInputChanged($event.target.value)"
-           id='platformInput'>
-  </mat-form-field>
-  <mat-slide-toggle matTooltip="toggle on show global profiles within a three day window"
-                   color="accent" [checked]="display3Day"
-                   (change)="display3DayChange($event)">Display 3 day window
-  </mat-slide-toggle>
-  <mat-form-field class="date-form">
-    <input matInput 
-           matTooltip="display three day window of profiles ending on the selected date" 
-           [matDatepicker]="picker"
-           [value]="date.value"
-           placeholder="3 day window end date"
-           (dateChange)="displayLastThreeDaysDateChanged('change', $event)">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-  <button mat-raised-button 
-          matTooltip="clear all profiles and shapes from map" 
-          color="accent" (click)="clearProfiles()">Clear Profiles
-  </button>
-  <button mat-raised-button 
-          matTooltip="reset map to starting position and markers." 
-          color="accent" (click)="resetToStart()" >Reset to Start
-  </button>
 </div>

@@ -18,13 +18,14 @@ import { ActivatedRoute } from '@angular/router'
 export class MapComponent implements OnInit, OnDestroy {
   public map: L.Map;
   public markersLayer = L.layerGroup();
-  public startView: any;
+  public startView: L.LatLng;
   public startZoom: number;
   public graticule: any;
   private wrapCoordinates: boolean;
   public proj: string;
   private readonly notifier: NotifierService;
   public mapState: MapState;
+  public shapeOptions: any;
   
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
@@ -35,6 +36,9 @@ export class MapComponent implements OnInit, OnDestroy {
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
+    this.shapeOptions =  {color: '#983fb2',
+                    weight: 4,
+                    opacity: .5}
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
 
@@ -52,6 +56,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     this.map = this.mapService.generateMap(this.proj);
+    this.startView = this.map.getCenter()
+    this.startZoom = this.map.getZoom()
+
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
@@ -71,9 +78,6 @@ export class MapComponent implements OnInit, OnDestroy {
          //this.setMockPoints()
         },)
 
-    //todo: don't clear history or platform profiles (but redo them)
-    //define history layer, & platform profile layer and do logic here.
-
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes();
@@ -89,8 +93,8 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.drawnItems.clearLayers();
         this.setStartingProfiles();
         //this.setMockPoints()
-        this.map.setView([this.startView.latitude, this.startView.longitude], this.startZoom)
-        this.queryService.setURL()
+        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+        //this.queryService.setURL()
       })
 
     this.queryService.displayPlatform
@@ -101,7 +105,7 @@ export class MapComponent implements OnInit, OnDestroy {
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {
             this.displayProfiles(profilePoints, 'platform')
-            this.map.setView([this.startView.latitude, this.startView.longitude], 2.5)
+            this.map.setView([this.startView.lat, this.startView.lng], 2.5)
           }
           else {
             if (platform.length >= 7){
@@ -129,8 +133,12 @@ export class MapComponent implements OnInit, OnDestroy {
       this.markersLayer.clearLayers();
       const layer = event.layer
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems);
-      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+      const broadcast = true
+      const toggleThreeDayOff = true
+
+      const drawnItems = this.mapService.drawnItems.toGeoJSON().features
+      const shape = this.queryService.getShapesFromFeatures(drawnItems)
+      this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff);
     });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -141,8 +149,12 @@ export class MapComponent implements OnInit, OnDestroy {
         myNewShape.removeLayer(layer)
       });
       this.mapService.drawnItems = myNewShape
-      //const drawnFeatureCollection = this.getDrawnShapes(this.mapService.drawnItems)
-      this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+      const broadcast = true
+      const toggleThreeDayOff = false
+
+      const drawnItems = this.mapService.drawnItems.toGeoJSON().features
+      const shape = this.queryService.getShapesFromFeatures(drawnItems)
+      this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff);
     });
 
     this.setStartingProfiles();
@@ -152,36 +164,41 @@ export class MapComponent implements OnInit, OnDestroy {
      });
   }
 
-  // drawnItems is actually a L.featureGroup(), but the typings don't exist
-  private getDrawnShapes(drawnItems: any): GeoJSON.FeatureCollection {
-    return drawnItems.toGeoJSON()
-  }
-
   ngOnDestroy() {
     this.map.off();
     this.map.remove();
   }
 
-  private addShapesFromURL(): void {
-    let featureCollection = this.queryService.getShapes()
-    const options =  {color: '#983fb2',
-                      weight: 4,
-                      opacity: .5}
+  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
+  let shapes = L.featureGroup()
+  shapeArrays.forEach( (array) => {
+    let coords = []
+    array.forEach(coord => {
+      coords.push(L.latLng(coord[0], coord[1]))
+    })
+    const polygon = L.polygon(coords, this.shapeOptions)
+    shapes.addLayer(polygon)
+  })
+  return(shapes)
+  }
 
-    if (featureCollection) {
-      const features = featureCollection.features
-      features.forEach( feature => {
-        let coords = []
-        feature.geometry.coordinates[0].forEach( (coord) => {
-          const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
-          coords.push(reverseCoord)
-        })
-        const polygonCoords = coords
-        let polygon = L.polygon(polygonCoords, options)
+  private addShapesFromURL(): void {
+    let shapeArrays = this.queryService.getShapes()
+    if (shapeArrays) {
+      const shapes = this.convertArrayToFeatureGroup(shapeArrays)
+      //const features = shapes.eachLayer()
+      shapes.eachLayer( layer => {
+        console.log(layer)
+        const polygon = layer
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
-    this.queryService.sendShapeMessage(this.mapService.drawnItems.toGeoJSON(), true);
+    const broadcast = true
+    const toggleThreeDayOff = false
+
+    const drawnItems = this.mapService.drawnItems.toGeoJSON().features
+    const shape = this.queryService.getShapesFromFeatures(drawnItems)
+    this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff);
   }
 
   private setStartingProfiles(this): void {
@@ -203,7 +220,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     private addDisplayProfiles(this): void {
       if (!this.queryService.getThreeDayToggle()) {return}
-      const startDate = this.queryService.getDisplayDate()
+      const startDate = this.queryService.getGlobalDisplayDate()
       this.pointsService.getLastThreeDaysProfiles(startDate)
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {
@@ -271,19 +288,21 @@ private displayProfiles = function(this, profilePoints, markerType): void {
   };
   };
 
+
 shapeSelectionOnMap(): void {
   // Extract GeoJson from featureGroup
-  let featureCollection = this.queryService.getShapes();
-  if (featureCollection) {
+  let shapeArrays = this.queryService.getShapes();
+
+  
+  if (shapeArrays) {
     this.markersLayer.clearLayers();
     let base = '/selection/profiles/map'
     let dates = this.queryService.getSelectionDates();
     let presRange = this.queryService.getPresRange();
     let includeRealtime = this.queryService.getRealtimeToggle();
     let onlyBGC = this.queryService.getBGCToggle();
-    let features = featureCollection.features
-    features.forEach( (feature) => {
-      let shape = feature.geometry.coordinates;
+
+    shapeArrays.forEach( (shape) => {
       const transformedShape = this.mapService.getTransformedShape(shape)
       let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
       if (presRange) {
@@ -301,8 +320,7 @@ shapeSelectionOnMap(): void {
             }, 
           error => {
           this.notifier.notify( 'error', 'error in getting profiles in shape' )
-            console.log('error occured when selecting points')
-            console.log(error)
+            console.log('error occured when selecting points: ', error)
           });      
       })
   }
