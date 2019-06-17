@@ -1,0 +1,22 @@
+<div class="sidebar-nav">
+    <mat-form-field class="date-form">
+        <input matInput 
+        matTooltip="select month and year of grid data on display" 
+        [matDatepicker]="picker"
+        [value]="date.value"
+        placeholder="month and year"
+        (dateChange)="displayGridMonthChanged('change', $event)">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+<!-- <mat-form-field>
+  <input matInput [matDatepicker]="dp" placeholder="Month and Year" [formControl]="date">
+  <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+  <mat-datepicker #dp
+                  startView="multi-year"
+                  (yearSelected)="chosenYearHandler($event)"
+                  (monthSelected)="chosenMonthHandler($event, dp)"
+                  panelClass="example-month-picker">
+  </mat-datepicker>
+</mat-form-field> -->
+</div>
