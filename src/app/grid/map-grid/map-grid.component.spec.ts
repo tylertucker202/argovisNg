@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarNavComponent } from './sidebar-nav.component';
+import { MapGridComponent } from './map-grid.component';
 
-describe('SidebarNavComponent', () => {
-  let component: SidebarNavComponent;
-  let fixture: ComponentFixture<SidebarNavComponent>;
+describe('MapGridComponent', () => {
+  let component: MapGridComponent;
+  let fixture: ComponentFixture<MapGridComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidebarNavComponent ]
+      declarations: [ MapGridComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SidebarNavComponent);
+    fixture = TestBed.createComponent(MapGridComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

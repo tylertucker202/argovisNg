@@ -4,12 +4,12 @@ import { MapService } from '../../home/services/map.service';
 import * as L from "leaflet";
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  selector: 'app-map-grid',
+  templateUrl: './map-grid.component.html',
+  styleUrls: ['./map-grid.component.css']
 })
 
-export class MapComponent implements OnInit, OnDestroy {
+export class MapGridComponent implements OnInit, OnDestroy {
   public map: L.Map;
   public markersLayer = L.layerGroup();
   public startView: L.LatLng;
@@ -44,11 +44,26 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.gridDrawControl.addTo(this.map);
     this.markersLayer.addTo(this.map);
+
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       const layer = event.layer
+      let layerCoords = layer.toGeoJSON();
+      const shape = layerCoords.geometry.coordinates;
+      console.log(shape)
       this.mapService.drawnItems.addLayer(layer);
+      console.log(this.mapService.drawnItems.toGeoJSON())
      });
-    this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => { });
+
+    this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
+      const layers = event.layers;
+      let myNewShape = this.mapService.drawnItems;
+      layers.eachLayer(function(layer: any) {
+        const layer_id = layer._leaflet_id
+        myNewShape.removeLayer(layer)
+      });
+      this.mapService.drawnItems = myNewShape
+      console.log(this.mapService.drawnItems.toGeoJSON())
+     });
     this.invalidateSize();
 
   }

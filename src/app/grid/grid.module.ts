@@ -23,17 +23,17 @@ import "leaflet-draw";
 import { NouisliderModule } from 'ng2-nouislider';
 
 import { GridComponent } from './grid.component';
-import { MapComponent } from './map/map.component';
-import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
+import { MapGridComponent } from './map-grid/map-grid.component';
+import { SidebarNavGridComponent } from './sidebar-nav-grid/sidebar-nav-grid.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { MonthPickerComponent } from './sidebar-nav/month-picker/month-picker.component';
-import { PresSliderComponent } from './sidebar-nav/pres-slider/pres-slider.component';
+import { MonthPickerComponent } from './sidebar-nav-grid/month-picker/month-picker.component';
+import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.component';
 
 @NgModule({
   declarations: [
     GridComponent,
-    MapComponent,
-    SidebarNavComponent,
+    MapGridComponent,
+    SidebarNavGridComponent,
     MonthPickerComponent,
     PresSliderComponent
     ],
