@@ -2,7 +2,6 @@ import { Component, OnInit} from '@angular/core';
 import { QueryService } from '../../services/query.service'
 import {ViewEncapsulation} from '@angular/core';
 
-
 @Component({
   selector: 'app-double-slider',
   templateUrl: './double-slider.component.html',

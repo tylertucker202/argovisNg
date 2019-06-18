@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { GridComponent } from './grid/grid.component';
 
 const appRoutes: Routes = [
     { path: 'home',
@@ -10,7 +11,10 @@ const appRoutes: Routes = [
     component: HomeComponent,
     //redirectTo: '/home',
     //pathMatch: 'full'
-  },
+    },
+    { path: 'grid',
+      component: GridComponent,
+    }
   ]
 
 @NgModule({

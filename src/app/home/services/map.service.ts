@@ -7,7 +7,6 @@ import 'proj4leaflet';
 import 'arc';
 import 'leaflet-arc';
 import 'leaflet-graticule'
-//import 'leaflet-draw';
 import '../../../ext-js/leaflet.draw-arc-src.js';
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
 import 'leaflet-ajax'
@@ -212,6 +211,28 @@ export class MapService {
     this.compileService.configure(this.appRef);
   }
 
+  public gridDrawOptions = {
+    position: 'topright',
+    draw: {
+      polygon: <false> false,
+      rectangle: { shapeOptions: {
+                    color: '#983fb2',
+                    weight: 4}
+                  },
+      polyline: <false> false,
+      lineString: <false> false,
+      marker: <false> false,
+      circlemarker: <false> false, 
+      circle: <false> false
+    },
+    edit: {
+      featureGroup: this.drawnItems,
+      polygon: {
+        allowIntersection: <false> false
+      }
+    },
+  }
+
   public drawOptions = {
     position: 'topleft',
     draw: {
@@ -238,6 +259,7 @@ export class MapService {
   }
 
   public drawControl = new L.Control.Draw(this.drawOptions);
+  public gridDrawControl = new L.Control.Draw(this.gridDrawOptions);
 
   public coordDisplay = L.control.coordinates({ position:"topright",
                                                 useDMS:true,

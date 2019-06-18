@@ -42,6 +42,7 @@ import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
 
+
 const customNotifierOptions: NotifierOptions = {
   position: {
 		horizontal: {
@@ -93,7 +94,8 @@ const customNotifierOptions: NotifierOptions = {
     ProfPopupComponent,
     BottomSheet,
     ShapePopupComponent,
-    DbOverviewComponent,],
+    DbOverviewComponent,
+  ],
   imports: [
     CommonModule,
     HttpClientModule,

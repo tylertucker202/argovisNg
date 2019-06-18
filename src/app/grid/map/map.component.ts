@@ -42,9 +42,12 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
-    this.mapService.drawControl.addTo(this.map);
+    this.mapService.gridDrawControl.addTo(this.map);
     this.markersLayer.addTo(this.map);
-    this.map.on('draw:created', (event: L.DrawEvents.Created) => { });
+    this.map.on('draw:created', (event: L.DrawEvents.Created) => {
+      const layer = event.layer
+      this.mapService.drawnItems.addLayer(layer);
+     });
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => { });
     this.invalidateSize();
 
