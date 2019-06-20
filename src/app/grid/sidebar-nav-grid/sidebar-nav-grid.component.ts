@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { QueryGridService } from '../query-grid.service'
 
 @Component({
   selector: 'app-sidebar-nav-grid',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarNavGridComponent implements OnInit {
 
-  constructor() { }
+  constructor(private queryGridService: QueryGridService) { }
 
   ngOnInit() {
+  }
+
+  clearGrids(): void {
+    console.log('clearProfiles Clicked')
+    this.queryGridService.triggerClearLayers();
+  }
+
+  resetToStart(): void {
+    console.log('resetToStart Clicked')
+    this.queryGridService.triggerResetToStart();
   }
 
 }

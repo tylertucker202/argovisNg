@@ -5,6 +5,8 @@ import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
 
+import { QueryGridService } from '../../query-grid.service'
+
 import * as _moment from 'moment';
 import {Moment} from 'moment';
 const moment = _moment;
@@ -33,34 +35,48 @@ export const MY_FORMATS = {
 export class MonthPickerComponent implements OnInit {
 
   private date = new FormControl(moment());
+  private monthYear: _moment.Moment;
   private minDate = new Date(2004, 0, 1);
   private maxDate = new Date(2020, 0, 1);
 
-  constructor() { }
+  constructor(private queryGridService: QueryGridService) { }
 
   ngOnInit() {
+    this.monthYear = this.queryGridService.getMonthYear()
+    console.log(this.monthYear)
+    this.date = new FormControl(this.monthYear)
   }
 
-  displayGridMonthChanged(type: string, event: MatDatepickerInputEvent<Date>) {
-    //triggered when user inputs in box
+  private sendMonthYearMessage(): void {
+    const broadcastChange = true;
+    this.queryGridService.sendMonthYearMessage(this.monthYear, broadcastChange)
+  }
+
+  displayGridMonthChanged(event: MatDatepickerInputEvent<Date>): void {
+    //triggered when user changes date
     const date = moment(event.value)
     this.date.setValue(date)
-    console.log(this.date.value.format('YYYY-MM'))
-    //this.queryService.sendGlobalDateMessage(dateStr)
+    this.monthYear = date
+    console.log(this.monthYear)
+    this.sendMonthYearMessage()
   }
 
   chosenYearHandler(normalizedYear: Moment) {
+    //triggered when user selects year
     const ctrlValue = this.date.value;
     ctrlValue.year(normalizedYear.year());
     this.date.setValue(ctrlValue);
+    this.monthYear = ctrlValue
+    this.sendMonthYearMessage()
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
-    //triggered when user 
+    //triggered when user selects month
     const ctrlValue = this.date.value;
     ctrlValue.month(normalizedMonth.month());
     this.date.setValue(ctrlValue);
-    console.log(this.date.value.format('YYYY-MM'))
     datepicker.close();
+    this.monthYear = ctrlValue
+    this.sendMonthYearMessage()
   }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { QueryGridService } from '../../query-grid.service'
 
 export interface PressureLevels {
   value: number;
@@ -16,20 +17,23 @@ export class PresSliderComponent implements OnInit {
     {value: 200}
   ];
 
-  constructor() { }
+  constructor(private queryGridService: QueryGridService) { }
 
   private presLevel: number;
 
   ngOnInit() { 
-    this.presLevel=10
+    this.presLevel = this.queryGridService.getPresLevel()
   }
 
-  public selChange(newPres: any ): void {
+  private sendPresLevel(): void {
+    const broadcastChange = true
+    this.queryGridService.sendPresMessage(this.presLevel, broadcastChange)
+  } 
+
+  private selChange(newPres: any ): void {
     this.presLevel = newPres.value
-    console.log('sel Change ')
-    console.log(newPres.value)
     console.log(this.presLevel)
-    //this.sendSliderRange();
+    this.sendPresLevel();
   }
 
 }

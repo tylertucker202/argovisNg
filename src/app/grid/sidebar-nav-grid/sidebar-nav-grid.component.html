@@ -1,4 +1,10 @@
 <div class="sidebar-nav-grid">
 <app-month-picker class="date-form"></app-month-picker>
 <app-pres-slider class="pres-form"></app-pres-slider>
+<button mat-icon-button matTooltip="clear all shapes from map" (click)="clearGrids()" >
+    <mat-icon aria-label="clear grid layers">layers_clear</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="reset map to starting position and settings." (click)="resetToStart()" >
+    <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
+  </button>
 </div>

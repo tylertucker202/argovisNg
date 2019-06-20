@@ -1,7 +1,13 @@
 import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core';
 import { MapState } from '../../../typeings/mapState';
 import { MapService } from '../../home/services/map.service';
+import { QueryGridService } from '../query-grid.service';
+import { RasterService } from '../raster.service';
+import { RasterGrid } from '../../home/models/raster-grid'
+import { ActivatedRoute } from '@angular/router'
+
 import * as L from "leaflet";
+
 
 @Component({
   selector: 'app-map-grid',
@@ -11,7 +17,7 @@ import * as L from "leaflet";
 
 export class MapGridComponent implements OnInit, OnDestroy {
   public map: L.Map;
-  public markersLayer = L.layerGroup();
+  public gridLayers = L.layerGroup();
   public startView: L.LatLng;
   public startZoom: number;
   public graticule: any;
@@ -21,14 +27,60 @@ export class MapGridComponent implements OnInit, OnDestroy {
   public shapeOptions: any;
   
   constructor(private appRef: ApplicationRef,
-              public mapService: MapService){ }
+              public mapService: MapService,
+              private route: ActivatedRoute,
+              public rasterService: RasterService,
+              private queryGridService: QueryGridService){ }
 
   ngOnInit() {
-    this.shapeOptions =  {color: '#983fb2',
-                    weight: 4,
-                    opacity: .5}
-    this.mapService.init(this.appRef);
 
+    //todo: put this chunk in queryService as a function and call it here.
+    this.route.queryParams.subscribe(params => {
+      this.mapState = params
+      Object.keys(this.mapState).forEach(key => {
+        this.queryGridService.setMapState(key, this.mapState[key])
+      });
+      this.queryGridService.urlBuild.emit('got state from map component')
+    });
+
+    this.queryGridService.change
+      .subscribe(msg => {
+         console.log('query changed: ' + msg);
+         this.queryGridService.setURL()
+         this.gridLayers.clearLayers();
+        })
+
+    this.rasterService.getMockGridRaster()
+    .subscribe( (rasterGrids: RasterGrid[]) => {
+      if (rasterGrids.length == 0) {
+        console.log('warning: no grid')
+      }
+      else {
+        this.addRasterGridsToMap(rasterGrids)
+      }
+      },
+      error => {
+        console.log('error in getting mock profiles' )
+      })
+
+    this.queryGridService.clearLayers
+    .subscribe( () => {
+      //this.queryGridService.clearShapes();
+      this.gridLayers.clearLayers();
+      this.mapService.drawnItems.clearLayers();
+      this.queryGridService.setURL()
+    })
+
+    this.queryGridService.resetToStart
+      .subscribe( () => {
+        //this.queryGridService.clearShapes();
+        this.gridLayers.clearLayers();
+        this.mapService.drawnItems.clearLayers();
+        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+        //this.queryService.setURL()
+      })
+
+    this.mapService.init(this.appRef);
 
     this.proj = 'WM'
     if ( this.proj === 'WM' ){
@@ -43,7 +95,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.gridDrawControl.addTo(this.map);
-    this.markersLayer.addTo(this.map);
+    this.gridLayers.addTo(this.map);
 
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       const layer = event.layer
@@ -80,4 +132,14 @@ export class MapGridComponent implements OnInit, OnDestroy {
       },100);
     }
   }
+
+  private addRasterGridsToMap(rasterGrids: RasterGrid[]): void {
+
+    for( let idx in rasterGrids){
+      let grid = rasterGrids[idx];
+      this.gridLayers = this.rasterService.addToGridLayer(grid, this.gridLayers)
+    }
+
+  }
+
 }

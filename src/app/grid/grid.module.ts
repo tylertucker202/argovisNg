@@ -28,6 +28,7 @@ import { SidebarNavGridComponent } from './sidebar-nav-grid/sidebar-nav-grid.com
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MonthPickerComponent } from './sidebar-nav-grid/month-picker/month-picker.component';
 import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.component';
+import { QueryGridService } from './query-grid.service';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,9 @@ import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.
     MonthPickerComponent,
     PresSliderComponent
     ],
+  providers: [
+    QueryGridService,
+  ],
   imports: [
     NouisliderModule,
     FormsModule,

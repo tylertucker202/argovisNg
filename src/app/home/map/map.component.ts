@@ -8,7 +8,8 @@ import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 import { NotifierService } from 'angular-notifier';
 import { ActivatedRoute } from '@angular/router'
-
+import 'd3'
+declare var d3: any;
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -42,6 +43,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
 
+    //todo: put this chunk in queryService as a function and call it here.
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach(key => {
@@ -76,7 +78,7 @@ export class MapComponent implements OnInit, OnDestroy {
             this.addDisplayProfiles()
          }
          //this.setMockPoints()
-        },)
+        })
 
     this.queryService.clearLayers
       .subscribe( () => {
