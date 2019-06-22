@@ -4,14 +4,18 @@ import { HomeComponent } from './home/home.component';
 import { GridComponent } from './grid/grid.component';
 
 const appRoutes: Routes = [
-    { path: 'home',
+    { path: 'ng/home',
       component: HomeComponent,
     },
-    { path: '',
-    redirectTo: '/home',
+    { path: 'ng',
+    redirectTo: 'ng/home',
     pathMatch: 'full'
     },
-    { path: 'grid',
+    { path: '',
+    redirectTo: 'ng/home',
+    pathMatch: 'full'
+    },
+    { path: 'ng/grid',
       component: GridComponent,
     }
   ]
