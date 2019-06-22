@@ -5,7 +5,15 @@ import { ActivatedRoute, Router } from '@angular/router'
 
 import * as _moment from 'moment';
 import {Moment} from 'moment';
+import { indexDebugNode } from '@angular/core/src/debug/debug_node';
 const moment = _moment;
+
+export interface GridRange {
+  latMin: number,
+  latMax: number,
+  lonMin: number,
+  lonMax: number,
+}
 
 @Injectable()
 export class QueryGridService {
@@ -17,7 +25,8 @@ export class QueryGridService {
 
   private presLevel = 10;
   private monthYear = moment('2010-01', 'YYYY-MM')
-  private latLngShapes: number[][][];
+  //private latLngShapes: number[][][];
+  private latLngShapes: GeoJSON.FeatureCollection;
 
   constructor(private route: ActivatedRoute,
     private location: Location,
@@ -56,13 +65,13 @@ export class QueryGridService {
     return this.monthYear;
   }
 
-  public sendShapeMessage(shapes: number[][][], broadcastChange=true): void {
+  public sendShapeMessage(features: GeoJSON.FeatureCollection, broadcastChange=true): void {
     let msg = 'shape change';
-    this.latLngShapes = shapes;
+    this.latLngShapes = features;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getShapes(): number[][][] {
+  public getShapes(): GeoJSON.FeatureCollection {
     return this.latLngShapes;
   }
 
@@ -80,8 +89,11 @@ export class QueryGridService {
 
     const presLevelString = JSON.stringify(this.presLevel)
     let shapesString = null
+    let bboxes: number[][]
     if (this.latLngShapes) {
-      shapesString = JSON.stringify(this.latLngShapes)
+      bboxes = this.getBBoxes(this.latLngShapes)
+      console.log(bboxes)
+      shapesString = JSON.stringify(bboxes)
     }
     const monthYearString = this.formatMonthYear(this.monthYear)
     const queryParams = {
@@ -95,6 +107,32 @@ export class QueryGridService {
         relativeTo: this.route,
         queryParams: queryParams,
       });
+  }
+
+  public getBBoxes(fc: GeoJSON.FeatureCollection) {
+    let bboxes = []
+    const features = fc.features
+    for (let idx in features) {
+      const feature = features[idx];
+      var geom: any
+      geom = feature.geometry
+      const coords = geom.coordinates.reduce(function(dump,part) {
+        return dump.concat(part);
+      }, [])
+      let bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
+        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,];
+
+      bbox = coords.reduce(function(prev,coord) {
+        return [
+          Math.min(coord[0], prev[0]),
+          Math.min(coord[1], prev[1]),
+          Math.max(coord[0], prev[2]),
+          Math.max(coord[1], prev[3])
+        ];
+      }, bbox);
+      bboxes = bboxes.concat([bbox])
+    }
+    return bboxes
   }
 
   public setMapState(this, key: string, value: string): void {

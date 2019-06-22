@@ -48,7 +48,10 @@ export class MapGridComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg);
          this.queryGridService.setURL()
          this.gridLayers.clearLayers();
+         this.gridSelectionOnMap()
         })
+
+    this.gridSelectionOnMap()
 
     this.rasterService.getMockGridRaster()
     .subscribe( (rasterGrids: RasterGrid[]) => {
@@ -97,13 +100,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.mapService.gridDrawControl.addTo(this.map);
     this.gridLayers.addTo(this.map);
 
-    this.map.on('draw:created', (event: L.DrawEvents.Created) => {
+    this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
-      let layerCoords = layer.toGeoJSON();
-      const shape = layerCoords.geometry.coordinates;
-      console.log(shape)
       this.mapService.drawnItems.addLayer(layer);
-      console.log(this.mapService.drawnItems.toGeoJSON())
+      const shapes = this.mapService.drawnItems.toGeoJSON()
+      //todo: get bbox of grid layers
+      const broadcastLayer = true
+      this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -133,11 +136,43 @@ export class MapGridComponent implements OnInit, OnDestroy {
     }
   }
 
+  gridSelectionOnMap(): void {
+
+    const fc = this.queryGridService.getShapes()
+    console.log(fc)
+    if (fc) {
+      const bboxes = this.queryGridService.getBBoxes(fc)
+      console.log(bboxes)
+      bboxes.forEach( (bbox) => {
+        const lonRange = [bbox[0], bbox[2]]
+        const latRange = [bbox[1], bbox[3]]
+        this.rasterService.getGridRasterProfiles(latRange, lonRange)
+        .subscribe( (rasterGrids: RasterGrid[]) => {
+          if (rasterGrids.length == 0) {
+            console.log('warning: no grid')
+          }
+          else {
+            this.addRasterGridsToMap(rasterGrids)
+          }
+          },
+          error => {
+            console.log('error in getting mock profiles' )
+          })
+      })
+    }
+
+  }
+
   private addRasterGridsToMap(rasterGrids: RasterGrid[]): void {
 
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
       this.gridLayers = this.rasterService.addToGridLayer(grid, this.gridLayers)
+      this.gridLayers.eachLayer(function(layer: L.Layer | any) { // get around typescript not having _field as a property
+        const field = layer._field
+        const bbox = (({ xllCorner, yllCorner, xurCorner, yurCorner }) => ({ xllCorner, yllCorner, xurCorner, yurCorner }))(field);
+      })
+      console.log(this.gridLayers)
     }
 
   }

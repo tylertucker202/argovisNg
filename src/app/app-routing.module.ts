@@ -8,9 +8,8 @@ const appRoutes: Routes = [
       component: HomeComponent,
     },
     { path: '',
-    component: HomeComponent,
-    //redirectTo: '/home',
-    //pathMatch: 'full'
+    redirectTo: '/home',
+    pathMatch: 'full'
     },
     { path: 'grid',
       component: GridComponent,

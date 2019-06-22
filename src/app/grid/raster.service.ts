@@ -3,16 +3,13 @@ import { RasterGrid } from '../home/models/raster-grid'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
-declare var d3: any;
 
 import * as L from "leaflet";
-import 'd3'
-import * as geotiff from 'geotiff'
-import * as chroma from 'chroma-js'
-//import * as d3 from '../../ext-js/d3.js';
-import '../../ext-js/leaflet.canvaslayer.field.js'
+//leaflet.canvaslayer.field.js depends on d3 and chroma scripts set in angular.json.
+import './../../ext-js/leaflet.canvaslayer.field.js'
+//import * as chroma from 'chroma'
 
-//import 'leaflet-canvaslayer-field'
+declare let chroma: any
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +17,7 @@ import '../../ext-js/leaflet.canvaslayer.field.js'
 export class RasterService {
 
   public mockRaster: RasterGrid[] = [{_id:"5c920df6afc6ec31f7e5092b",pres:2.5,time:0.5,
-                               cellXSize:null,cellYSize:null,noDataValue:null,
+                               cellXSize:1,cellYSize:1,noDataValue:-9999,
                                zs:[-0.9229999780654907,-0.9229999780654907,-0.9520000219345093,-0.9520000219345093,-0.9610000252723694,
                                 -0.9610000252723694,-0.9620000123977661,-0.9620000123977661,-0.9070000052452087,-0.9070000052452087,
                                 -0.8270000219345093,-0.8270000219345093,-0.7250000238418579,-0.7250000238418579,-0.6359999775886536,
@@ -83,7 +80,7 @@ export class RasterService {
                                 0.5809999704360962,0.6299999952316284,0.6299999952316284,0.7070000171661377,0.7070000171661377],
                                 nRows:10,
                                 nCols:15,
-                                xllCorner:330.5,
+                                xllCorner:230.5,
                                 yllCorner:0.5}]
   constructor(private http: HttpClient) { }
 
@@ -92,9 +89,10 @@ export class RasterService {
   }
 
   public getGridRasterProfiles(latRange: number[], lonRange: number[]): Observable<RasterGrid[]> {
-    let url = '/rgGrid?'
+    let url = 'http://localhost:3000/rgGrid?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
+    console.log(url)
     return this.http.get<RasterGrid[]>(url)
   }
 

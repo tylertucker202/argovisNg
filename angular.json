@@ -34,7 +34,7 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/nouislider/distribute/nouislider.min.css"
             ],
-            "scripts": []
+            "scripts": ["src/ext-js/d3.js/", "src/ext-js/chroma-js.js"] // needed for leaflet.canvaslayer.field.js
           },
           "configurations": {
             "production": {
