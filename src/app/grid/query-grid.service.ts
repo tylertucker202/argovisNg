@@ -24,7 +24,7 @@ export class QueryGridService {
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10;
-  private monthYear = moment('2010-01', 'YYYY-MM')
+  private monthYear = moment('01-2010', 'MM-YYYY')
   //private latLngShapes: number[][][];
   private latLngShapes: GeoJSON.FeatureCollection;
 
@@ -33,13 +33,13 @@ export class QueryGridService {
     private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
   public formatMonthYear(monthYear: Moment): string {
-    const monthYearString = monthYear.format('YYYY-MM')
+    const monthYearString = monthYear.format('MM-YYYY')
     return(monthYearString)
   }
 
   public resetParams(): void{
     const broadcastChange = false
-    const monthYear = moment('2010-01', 'YYYY-MM')
+    const monthYear = moment('01-2010', 'MM-YYYY')
     this.sendMonthYearMessage(monthYear, broadcastChange)
     const presLevel = 10;
     this.sendPresMessage(presLevel, broadcastChange)
@@ -139,7 +139,7 @@ export class QueryGridService {
     const notifyChange = false
     switch(key) {
       case 'monthYear': {
-        const monthYear = moment(value, 'YYYY-MM')
+        const monthYear = moment(value, 'MM-YYYY')
         this.sendMonthYearMessage(monthYear, notifyChange)
         break;
       }

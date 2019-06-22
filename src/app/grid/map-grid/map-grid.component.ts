@@ -139,6 +139,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
   gridSelectionOnMap(): void {
 
     const fc = this.queryGridService.getShapes()
+    const monthYear = this.queryGridService.getMonthYear()
+    const pres = this.queryGridService.getPresLevel()
     console.log(fc)
     if (fc) {
       const bboxes = this.queryGridService.getBBoxes(fc)
@@ -146,7 +148,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       bboxes.forEach( (bbox) => {
         const lonRange = [bbox[0], bbox[2]]
         const latRange = [bbox[1], bbox[3]]
-        this.rasterService.getGridRasterProfiles(latRange, lonRange)
+        this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres)
         .subscribe( (rasterGrids: RasterGrid[]) => {
           if (rasterGrids.length == 0) {
             console.log('warning: no grid')

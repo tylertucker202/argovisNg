@@ -88,10 +88,12 @@ export class RasterService {
     return of(this.mockRaster)
   }
 
-  public getGridRasterProfiles(latRange: number[], lonRange: number[]): Observable<RasterGrid[]> {
-    let url = 'http://localhost:3000/rgGrid?'
+  public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number): Observable<RasterGrid[]> {
+    let url = 'http://localhost:3000/kuuselaGrid?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
+    url += '&monthYear=' + monthYear
+    url += '&presLevel=' + JSON.stringify(pres)
     console.log(url)
     return this.http.get<RasterGrid[]>(url)
   }
