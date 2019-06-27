@@ -102,9 +102,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
-      this.mapService.drawnItems.addLayer(layer);
+      this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
-      //todo: get bbox of grid layers
       const broadcastLayer = true
       this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
      });

@@ -100,7 +100,15 @@ export class RasterService {
 
   public addToGridLayer(grid: RasterGrid, gridLayer: L.LayerGroup): L.LayerGroup {
 
+    for (var i = 0; i < grid.zs.length; i++){
+      if (grid.zs[i] == grid.noDataValue) {
+          grid.zs[i] = null;
+        }
+    }
+
     let s = new L.ScalarField(grid)
+    console.log('scalar field')
+    console.log(s)
     
     let c = chroma.scale('OrRd').domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
