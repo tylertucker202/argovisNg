@@ -2,41 +2,59 @@
     <title>help bottom sheet</title>
     <body>
         <h2><b>What am I looking at?</b></h2>
-            <p>I'm Glad you asked. If you just loaded this page fresh,
-                You are looking at a map of Argo profiles over the globe three days ago from yesterday.
+            <p>
+                You are looking at a map of Argo profile locations around the globe in a three day window that ended yesterday.
             </p>
-            <p>Argo profiles are the dots peppering the map. Yellow dots are standard Argo floats. They measure
+            <p>Argo profiles are the dots peppering the map. They measure
                 temperature, pressure and salinity only. Clicking on a profile opens a popup with more information, links, and features.
             </p>
-            <img src="assets/img/dot_yellow.png" alt="yellow dot" height="24" width="24">
-            <p>Yellow dots are standard Argo floats. They measure temperature, pressure and salinity only.
-            </p>
-            <p>Green dots are BGC profiles, they include Biological measurements as well, such as dissolved oxygen, chlorophyll, and more!
-            </p>
-            <img src="assets/img/dot_green.png" alt="green dot" height="24" width="24">
-            <p>Blue dots represent deep profiles, they dive as much as 6000 meters below the surface. Wow!
-            </p>
-            <img src="assets/img/dot_blue.png" alt="blue dot" height="24" width="24">
+            <table style="width:100%">
+                <tr>
+                    <td><img src="assets/img/dot_yellow.png" alt="yellow dot" height="24" width="24"></td>
+                    <td>Yellow dots are standard Argo floats. They measure temperature, pressure and salinity only.</td>
+                </tr>
+                <tr>
+                    <td><img src="assets/img/dot_green.png" alt="green dot" height="24" width="24"></td>
+                    <td>Green dots are BGC profiles, they include Biological measurements as well, such as dissolved oxygen, chlorophyll, and more!</td>
+                </tr>
+                <tr>
+                    <td><img src="assets/img/dot_blue.png" alt="blue dot" height="24" width="24"></td>
+                    <td>Blue dots represent deep profiles, they dive as much as 6000 meters below the surface. Wow!</td>
+                    </tr>
+                </table> 
         <h2><b>Can I change the date from yesterday to something else?</b></h2>
             <p>You sure can. The sidebar to the left has a date input element, pictured below.
             </p>
             <img src="assets/img/3dwindow.png" alt="3 day window date input">
         <h2><b>What is that pentagon in the upper left corner?</b></h2>
             <img src="assets/img/drawcontrol.png" alt="draw control">
-            <p>Oh that? That allows you to draw spherical polygons on the map, which lasso profiles falling within its area. Completing a shape
-                opens another window that will link you to view the profiles data together.
+            <p>Oh that? That allows you to draw spherical polygons on the map, which lasso profiles falling within its area.
+                Completing a shape opens another pop-up that gives options to view all available profiles with or without the pressure range applied.
                 The dates these profiles were taken is selected by the date range input pictured below.
             </p>
             <img src="assets/img/daterange.png" alt="Date Range">
-            <p>The pressure range bar filters out profiles that don't fall within that range. By the way, try using different projections.
-                Selecting the projection in the drop down menu on the top right corner is how its done.
+            <p>The pressure range bar filters out profiles that don't fall within that range. 
             </p>
+            <p>By the way, try using different projections.
+                Selecting the projection in the drop down menu on the top right corner is how its done.
         <h2><b>Can I save drawn shapes, and sidebar settings?</b></h2>
             <p>Yes, you have been saving the state of this page all along. The page view information is stored in the URL.
                 You can rebuild this page as you see it with this url. Go ahead and try sending it to a friend. The link below will also work.
             </p>
             <a class="nav-link" matTooltip="link to a lovely page" target='_blank' href="https://argovis.com/?mapProj=WM&presRange=%5B0,2000%5D&selectionStartDate=2019-02-10&selectionEndDate=2019-02-14&threeDayEndDate=2019-2-14&shapes=%5B%5B%5B40.593477,-189.019359%5D,%5B40.593477,-196.058858%5D,%5B42.567863,-195.948866%5D,%5B42.795031,-189.408603%5D,%5B42.648817,-182.859797%5D,%5B40.676947,-182.749805%5D,%5B40.342442,-185.939578%5D,%5B35.66512,-186.269554%5D,%5B35.843644,-182.52982%5D,%5B33.400108,-182.749805%5D,%5B33.819963,-189.605956%5D,%5B33.858026,-196.498827%5D,%5B35.843644,-196.498827%5D,%5B35.932755,-188.799374%5D,%5B40.593477,-189.019359%5D%5D,%5B%5B39.837559,-166.36097%5D,%5B42.32437,-169.660735%5D,%5B42.32437,-174.500391%5D,%5B39.921966,-176.810227%5D,%5B36.553721,-174.720375%5D,%5B34.495003,-172.520532%5D,%5B32.569755,-168.560813%5D,%5B31.450567,-166.030993%5D,%5B33.675151,-162.84122%5D,%5B35.754432,-159.761439%5D,%5B38.300529,-158.111556%5D,%5B40.593477,-156.461673%5D,%5B42.486804,-158.661517%5D,%5B42.81041,-162.401251%5D,%5B41.009782,-165.481032%5D,%5B39.837559,-166.36097%5D%5D,%5B%5B42.079931,-151.182049%5D,%5B41.916446,-148.322252%5D,%5B39.498893,-148.542236%5D,%5B36.642027,-148.762221%5D,%5B34.131605,-148.652228%5D,%5B32.939765,-145.792432%5D,%5B33.766637,-143.70258%5D,%5B36.199487,-143.70258%5D,%5B38.987785,-144.032557%5D,%5B42.161516,-144.142549%5D,%5B42.242995,-141.392744%5D,%5B39.073229,-140.952776%5D,%5B35.66512,-140.732791%5D,%5B32.939765,-141.17276%5D,%5B29.937314,-144.362533%5D,%5B30.032585,-148.652228%5D,%5B31.731643,-151.622017%5D,%5B34.947033,-153.161908%5D,%5B38.041111,-153.051916%5D,%5B40.843574,-153.711869%5D,%5B42.40564,-153.2719%5D,%5B42.079931,-151.182049%5D%5D%5D&includeRealtime=true&onlyBGC=false&onlyDeep=false&threeDayToggle=false">
             A lovely link</a>
+        <h2><b>What are do those other icons do?</b></h2>
+        <img src="assets/img/sidebaricons.png" alt="Side bar icons">
+        <p>The upside down triangle opens a bottom sheet window with database information. including:
+            latest profile in the database, number of profiles in database, number of deep profiles, number of BGC profiles, 
+            and a list of all the Data Aquisition Centers (DACS) that report Argo profiles</p>
+        <p>The next icon (tiles with the slash) will clear all profiles and drawn items from the map. Things can get cluttered,
+            This button is used to clear everything.</p>
+        <p>The reset button clears drawn shapes and returns the page's state back to its default view. 
+            Think of it as a 'startover button'</p>
+        <h2><b>I want to learn more, what else can you tell me?</b></h2>
+        <p>If you want to learn more about Argovis, consider visiting the Argovis About Page <a class="nav-link" matTooltip="to argovis about page" target='_blank' href="http://www.argo.ucsd.edu/Argovis_About.html">here.</a>
+        </p>
     </body>
 </section>
      
