@@ -7,7 +7,6 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
   <app-db-overview></app-db-overview>
   <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
     <mat-icon aria-label="clear profile and shape layers">layers_clear</mat-icon>
@@ -15,6 +14,7 @@
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
+  <app-help-bottom-sheet></app-help-bottom-sheet>
   <mat-slide-toggle id="three-day-toggle" matTooltip="toggle on show global profiles within a three day window"
   color="accent" [checked]="display3Day"
   (change)="displayGlobalChange($event)">Profiles in 3 days, globally

@@ -41,6 +41,7 @@ import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider
 import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
+import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bottom-sheet/help-bottom-sheet.component';
 
 
 const customNotifierOptions: NotifierOptions = {
@@ -95,7 +96,8 @@ const customNotifierOptions: NotifierOptions = {
     BottomSheet,
     ShapePopupComponent,
     DbOverviewComponent,
-  ],
+    HelpBottomSheetComponent,
+    HelpBottomSheet],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -128,7 +130,8 @@ const customNotifierOptions: NotifierOptions = {
   entryComponents: [
     ProfPopupComponent, 
     ShapePopupComponent, 
-    BottomSheet
+    BottomSheet, 
+    HelpBottomSheet
   ],
 })
 export class HomeModule { }
