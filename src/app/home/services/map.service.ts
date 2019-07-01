@@ -291,9 +291,16 @@ export class MapService {
   };
 
   public popupWindowCreation = function(layer, drawnItems): void{
-    let layerCoords = layer.toGeoJSON();
-    const shape = layerCoords.geometry.coordinates;
+    let feature = layer.toGeoJSON();
+    console.log('popup feature', feature)
+    let shape = []
+    feature.geometry.coordinates[0].forEach( (coord) => {
+      const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
+      shape.push(reverseCoord)
+    })
+    console.log('shape before', shape)
     const transformedShape = this.getTransformedShape(shape);
+    console.log('transformed shape', transformedShape)
     layer.bindPopup(null);
     layer.on('click', (event) => {
       layer.setPopupContent(
