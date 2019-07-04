@@ -78,3 +78,7 @@ html, body {
   margin: 10px;
   height: 350px;
 }
+
+.ol-control{
+  top: 80px;
+}

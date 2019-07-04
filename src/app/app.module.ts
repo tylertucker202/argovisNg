@@ -6,9 +6,11 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './home/home.module';
 import { GridModule } from './grid/grid.module';
+import { CovarModule } from './covar/covar.module';
 
-import { HomeComponent } from './home/home.component';
-import { GridComponent } from './grid/grid.component';
+// import { HomeComponent } from './home/home.component';
+// import { GridComponent } from './grid/grid.component';
+// import { CovarComponent } from './covar/covar.component';
 
 import {
   MatButtonModule,
@@ -35,6 +37,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     HomeModule,
     GridModule,
+    CovarModule,
     BrowserModule,
     MatButtonModule,
     MatSlideToggleModule,
