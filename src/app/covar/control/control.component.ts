@@ -38,7 +38,6 @@ export class controlComponent implements OnInit {
 
   ngOnInit() {
     this.proj = this.covarService.getProj()
-    //this.proj = "EPSG:3857" //todo: find out why map needs to be built with epsg:3857 before turning to others
     this.longCovar = this.covarService.getForcast()
   }
 

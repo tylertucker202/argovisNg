@@ -1,5 +1,5 @@
 <mat-form-field id="view-projection">
-  <mat-select id="view-projection-select" placeholder="Choose Projection" matTooltip="loads new page with selected map projection"
+  <mat-select id="view-projection-select"  matTooltip="loads new page with selected map projection"
    [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
     <mat-option *ngFor="let projection of projections" [value]="projection.value">
       {{projection.viewValue}}

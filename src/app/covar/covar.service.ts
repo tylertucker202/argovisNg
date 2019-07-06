@@ -13,8 +13,7 @@ export class CovarService {
               }
 
   @Output() change: EventEmitter<string> = new EventEmitter
-  @Output() urlBuild: EventEmitter<string> = new EventEmitter
-  private proj: string = 'EPSG:3857';
+  private proj: string// = 'EPSG:3857';
   private longCovar: boolean;
   private lngLat: number[];
 
@@ -23,7 +22,6 @@ export class CovarService {
         Object.keys(params).forEach(key => {
           this.setMapState(key, params[key])
         });
-        this.urlBuild.emit('got state from map component')
       });
   }
 
@@ -59,7 +57,6 @@ export class CovarService {
       }
       case 'proj': {
         this.sendProj(value, notifyChange)
-        console.log(value)
         break;
       }
       case 'lngLat': {
