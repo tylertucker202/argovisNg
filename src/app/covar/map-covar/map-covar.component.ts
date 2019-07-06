@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { CovarPoints } from './../../home/models/covar-points'
-import { QueryFieldsService } from './../query-fields.service'
+import { CovarService } from '../covar.service'
+import { MapCovarService } from '../map-covar.service'
 
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -9,7 +10,7 @@ import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
 import MousePosition from 'ol/control/MousePosition.js';
 import { createStringXY } from 'ol/coordinate.js';
-import { defaults as defaultControls, Control } from 'ol/control.js';
+import { defaults as defaultControls, } from 'ol/control.js';
 
 import { TileWMS } from 'ol/source.js'
 
@@ -20,49 +21,77 @@ import {get as getProjection} from 'ol/proj.js';
 import { getCenter } from 'ol/extent'
 
 import proj4 from 'proj4';
+import { PARAMETERS } from '@angular/core/src/util/decorators';
 
 
 @Component({
   selector: 'app-map-covar',
   templateUrl: './map-covar.component.html',
-  styleUrls: ['./map-covar.component.css']
+  styleUrls: ['./map-covar.component.css'],
+  encapsulation: ViewEncapsulation.None 
 })
 export class MapCovarComponent implements OnInit {
 
-  constructor(private queryFieldService: QueryFieldsService) { }
+  constructor(private covarService: CovarService, 
+              private mapCovarService: MapCovarService) { }
   @ViewChild('mouse-position') mousePosition: any;
   @ViewChild('')
 
   private map: Map;
   private mousePositionControl: MousePosition;
-  private controlPanel: Control;
   private proj: string;
   private longCovar: boolean
   private currentCoordinate: number[]
 
   ngOnInit() {
 
-    this.proj = 'EPSG:3857' //'EPSG:3857 (WM)or EPSG:4346 (plate carrie)'
-    this.longCovar = true
-    this.currentCoordinate = [0,0]
+    this.covarService.readURLParams()
+
+    this.proj = this.covarService.getProj()
+    this.longCovar = this.covarService.getForcast()
+    this.currentCoordinate = this.covarService.getLngLat()
 
     this.makeMousePositionControl()
 
-    this.makeCheckbox()
+    this.projSetup() //set up projections before creating map
 
     this.addMap()
 
-    //this.addMockPoints()
-
     this.addCovarPoints()
-
-    this.projHandler()
 
     this.clickHandler()
 
+    this.covarService.change
+    .subscribe(msg => {
+       console.log('query changed: ' + msg);
+       this.proj = this.covarService.getProj()
+       this.longCovar = this.covarService.getForcast()
+       this.removePoints()
+       //this.addMockPoints()
+       this.addCovarPoints()
+       this.covarService.setURL()
+
+       if (msg === 'proj changed') {
+         this.projUpdate()
+       }
+    })
+
   }
 
-  private projHandler(): void {
+  private projUpdate(): void {
+    const newProj = getProjection(this.proj)
+    const newProjExtent = newProj.getExtent();
+    const newView = new View({
+      projection: newProj,
+      center: getCenter(newProjExtent || [0, 0, 0, 0]),
+      zoom: 3,
+      extent: newProjExtent || undefined
+    });
+    this.map.setView(newView);         
+   }    
+  
+
+  private projSetup(): void {
     proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 ' +
         '+units=m +no_defs');
     proj4.defs("EPSG:3031", "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs");
@@ -77,24 +106,6 @@ export class MapCovarComponent implements OnInit {
     proj3031.setExtent(extent);
     let proj3413 = getProjection('EPSG:3413');
     proj3413.setExtent(extent);
-
-    const viewProjSelect = <HTMLInputElement>document.getElementById('view-projection'); //casts html element as an input type
-    viewProjSelect.onchange = () => {
-      const newProj = getProjection(viewProjSelect.value);
-      this.proj = newProj.getCode()
-
-      this.removePoints()
-      //this.addMockPoints()
-      this.addCovarPoints()
-      const newProjExtent = newProj.getExtent();
-      const newView = new View({
-        projection: newProj,
-        center: getCenter(newProjExtent || [0, 0, 0, 0]),
-        zoom: 3,
-        extent: newProjExtent || undefined
-      });
-      this.map.setView(newView);
-    };      
   }
 
   private clickHandler(): void {
@@ -116,7 +127,6 @@ export class MapCovarComponent implements OnInit {
     this.map.on('singleclick', (evt) => {
 
       featureOnClick = this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-        //console.log(feature);
         return feature;
       });
 
@@ -125,13 +135,11 @@ export class MapCovarComponent implements OnInit {
         //if content is a shape get prob
         const prob = featureOnClick.getProperties().Probability
         if (prob) {
-          //console.log(prob);
           overlay.setPosition(evt.coordinate);
           content.innerHTML = "<p>probability float drifted here:</p><code>" + prob +"</code>";
           container.style.display = 'block';
         }
         else {
-          //console.log(prob);
           overlay.setPosition(evt.coordinate);
           content.innerHTML = "<p>Hi!</p>";
           container.style.display = 'block';          
@@ -141,9 +149,10 @@ export class MapCovarComponent implements OnInit {
       }
       else {
         const coordinate = toLonLat(evt.coordinate, this.proj);
-        console.log(coordinate)
-        this.currentCoordinate = coordinate
-  
+        let lng = new Number(coordinate[0].toFixed(2)).valueOf()
+        let lat = new Number(coordinate[1].toFixed(2)).valueOf()
+        this.currentCoordinate = [lng, lat ]
+        this.covarService.sendLngLat(this.currentCoordinate)
         this.removePoints()
         //this.addMockPoints()
         this.addCovarPoints()
@@ -177,7 +186,7 @@ export class MapCovarComponent implements OnInit {
     });
 
     this.map = new Map({
-      controls: defaultControls().extend([this.mousePositionControl, this.controlPanel]),
+      controls: defaultControls().extend([this.mousePositionControl]),
       layers: Object.values(layers),
       target: 'map',
       view: new View({
@@ -194,7 +203,6 @@ export class MapCovarComponent implements OnInit {
     let layersToRemove = []
     this.map.getLayers().forEach( function(layer) {
       const layerName = layer.get('name')
-      //console.log(layer)
       if (layerName != undefined && layerName === 'grid' || layerName === 'float') {
         layersToRemove.push(layer)
       }
@@ -210,9 +218,9 @@ export class MapCovarComponent implements OnInit {
     let features = covarPoints.features;
     let geoLocation = covarPoints.geoLocation;
 
-    const floatLayer = this.queryFieldService.makeFloatPoint(geoLocation.coordinates, this.proj)
+    const floatLayer = this.mapCovarService.makeFloatPoint(geoLocation.coordinates, this.proj)
 
-    const gridLayer = this.queryFieldService.makeCovarPolygons(features, this.proj)
+    const gridLayer = this.mapCovarService.makeCovarPolygons(features, this.proj)
 
     this.map.addLayer(gridLayer);
     this.map.addLayer(floatLayer);
@@ -222,10 +230,9 @@ export class MapCovarComponent implements OnInit {
   }
 
   private addCovarPoints(): void {
-    const [lng, lat] = this.currentCoordinate
     if (this.currentCoordinate) {
-      console.log(this.longCovar)
-      this.queryFieldService.getCovarPoints(lng, lat, this.longCovar)
+      const [lng, lat] = this.currentCoordinate
+      this.mapCovarService.getCovarPoints(lng, lat, this.longCovar)
       .subscribe( (covarPoints: CovarPoints) => {
         if (covarPoints) {
           this.addCovarField(covarPoints)
@@ -242,7 +249,7 @@ export class MapCovarComponent implements OnInit {
 
   private addMockPoints(): void {
 
-    this.queryFieldService.getMockCovarPoints()
+    this.mapCovarService.getMockCovarPoints()
     .subscribe( (covarPoints: CovarPoints) => {
       if (covarPoints) {
         this.addCovarField(covarPoints)
@@ -264,34 +271,6 @@ export class MapCovarComponent implements OnInit {
       target: this.mousePosition,
       undefinedHTML: '&nbsp;'
     });    
-  }
-
-
-  private makeCheckbox(): void {
-    var longCovarCheckbox = document.createElement('input');
-    longCovarCheckbox.type = "checkbox";
-    longCovarCheckbox.id = "long-covar-checkbox";
-    longCovarCheckbox.checked = this.longCovar;
-    
-
-    var element = document.createElement('div');
-    element.className = 'ol-control-panel ol-unselectable ol-control';
-    element.innerHTML="<b>120 day forcast</b>&nbsp;"
-    element.appendChild(longCovarCheckbox);
-
-    longCovarCheckbox.addEventListener( 'change', (evt: any) => {
-      const checkBox = <any>evt.currentTarget
-          if(checkBox.checked) {
-              console.log('checked')
-              this.longCovar = true
-          } else {
-              this.longCovar = false
-              console.log('not checked')
-          }
-      });
-    this.controlPanel = new Control({
-        element: element
-    });
   }
 
 }

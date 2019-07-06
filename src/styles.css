@@ -73,12 +73,3 @@ html, body {
 .mat-tab-body-wrapper {
   height:100%;
 }
-
-.noUi-vertical {
-  margin: 10px;
-  height: 350px;
-}
-
-.ol-control{
-  top: 80px;
-}

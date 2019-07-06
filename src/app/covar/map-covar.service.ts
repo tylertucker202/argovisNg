@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CovarPoints } from './../home/models/covar-points'
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 
+import { CovarPoints } from '../home/models/covar-points'
+
+import { Observable, of } from 'rxjs';
 import { Style, Fill, Stroke, Icon } from 'ol/style.js'
 import VectorLayer from 'ol/layer/Vector.js';
 import { toLonLat, fromLonLat } from 'ol/proj.js';
@@ -11,16 +12,16 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import Feature from 'ol/Feature.js';
 import { Vector as VectorSource } from 'ol/source.js'
 
-
 import * as d3 from 'd3';
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class QueryFieldsService {
+export class MapCovarService {
 
   constructor(private http: HttpClient) { }
+
+  private gridSize = 2;
 
   private mockCovarPoints: CovarPoints = {
     _id : "78.0_-16.0",
@@ -177,14 +178,12 @@ export class QueryFieldsService {
       }
     ]
   }
-  private gridSize = 2
 
   public getMockCovarPoints(): Observable<CovarPoints> {
     return of(this.mockCovarPoints)
   }
 
   public getCovarPoints(lng: number, lat: number, longCovar: boolean): Observable<CovarPoints> {
-    console.log(longCovar)
     let url = 'http://localhost:3000/covarGrid'
     url += '/' + JSON.stringify(lng)
     url += '/' + JSON.stringify(lat)
@@ -192,7 +191,7 @@ export class QueryFieldsService {
       url += '/60days'
     }
     else {
-      url += '/120days'
+      url += '/140days'
     }
     console.log(url)
     return this.http.get<CovarPoints>(url)
@@ -278,8 +277,6 @@ export class QueryFieldsService {
 
     const pointStyle = new Style({
         image: new Icon({
-          //anchor: [0.5, 1],
-          //size: [100,38],
           scale: .25,
           src: 'assets/img/float-icon.png'
         })
@@ -293,5 +290,4 @@ export class QueryFieldsService {
     floatLayer.set('name', 'float')
     return(floatLayer)
   }
-
 }

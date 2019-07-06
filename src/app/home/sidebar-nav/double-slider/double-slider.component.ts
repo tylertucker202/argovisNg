@@ -6,7 +6,7 @@ import {ViewEncapsulation} from '@angular/core';
   selector: 'app-double-slider',
   templateUrl: './double-slider.component.html',
   styleUrls: ['./double-slider.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None //add to set styles as global
 })
 export class DoubleSliderComponent implements OnInit {
 

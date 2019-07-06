@@ -1,0 +1,17 @@
+<mat-form-field id="view-projection">
+  <mat-select id="view-projection-select" placeholder="Choose Projection" matTooltip="loads new page with selected map projection"
+   [(value)]="proj" (selectionChange)="mapProjChange($event.value)">
+    <mat-option *ngFor="let projection of projections" [value]="projection.value">
+      {{projection.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-radio-group
+  class="forcast-days"
+  [(ngModel)]="longCovar"
+  (change)="forcastChange($event.value)">
+  <mat-radio-button class="forcast-radio-button"
+    *ngFor="let forcast of forcastSelections"
+    [value]="forcast.value">
+    {{forcast.viewValue}}
+  </mat-radio-button>

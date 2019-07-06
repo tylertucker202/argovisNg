@@ -1,0 +1,20 @@
+#view-projection {
+    margin: 10px;
+    width: 500px;
+}
+
+#view-projection-select {
+    margin: 10px;
+    width: 500px;
+}
+
+.forcast-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+  }
+  
+.forcast-radio-button {
+margin: 5px;
+}
+  

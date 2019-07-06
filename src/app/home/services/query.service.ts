@@ -116,7 +116,7 @@ export class QueryService {
   public sendShapeMessage(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     
     let msg = 'shape';
-    if (toggleThreeDayOff) { 
+    if (toggleThreeDayOff) {
       this.sendThreeDayMsg(false, true)
     }
     this.latLngShapes = data;
