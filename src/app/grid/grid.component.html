@@ -1,5 +1,5 @@
 <mat-sidenav-container id="sidenav-container">
-   <mat-sidenav class="side-menu" #drawer mode="side" position="end" [opened]="true">
+   <mat-sidenav class="side-menu" #drawer mode="side" position="end" [opened]=getSidebarState()>
      <app-sidebar-nav-grid></app-sidebar-nav-grid>
    </mat-sidenav>
    <mat-sidenav-content>

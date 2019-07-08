@@ -1,0 +1,36 @@
+<mat-toolbar id="top-toolbar" color="primary">
+  <button mat-icon-button  matTooltip="Show/hide sidebar menu" (click)="sidebarMenuToggle()">
+    <mat-icon>menu</mat-icon></button>
+  <button mat-icon-button matTooltip="go to argovis profile page (home)" routerLink="ng/home">
+    <mat-icon>home</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="go to gridded page (in development)" routerLink="ng/grid">
+    <mat-icon>grid_on</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="go to argo trajectory forcast page (in development)" routerLink="ng/covar">
+    <mat-icon>scatter_plot</mat-icon>
+  </button>
+  <a class="nav-link"
+     matTooltip="link to about page"
+     target='_blank'
+     rel="noopener"
+     href="http://www.argo.ucsd.edu/Argovis_About.html">
+     About Argovis</a>
+  <a class="nav-link"
+     matTooltip="link to faq page"
+     target='_blank'
+     rel="noopener"
+     href="http://www.argo.ucsd.edu/Argovis_FAQ.html">
+     FAQ</a>
+  <a class="nav-link"
+     matTooltip="link to api tutorial"
+     target='_blank'
+     rel="noopener"
+     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
+     Link to API tutorial</a>
+  <a class="nav-link"
+     href="ng/grid"
+     routerLinkActive="active"
+     matTooltip="link to gridded page (in development)">
+     Link to gridded Argo climatology</a>
+</mat-toolbar>

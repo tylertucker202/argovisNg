@@ -28,10 +28,12 @@ import {
   MatBottomSheetModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    TopToolbarComponent
   ],
   imports: [
     AppRoutingModule,
