@@ -17,12 +17,16 @@ import { TileWMS } from 'ol/source.js'
 import { toLonLat } from 'ol/proj.js';
 import Overlay from 'ol/Overlay';
 import {register} from 'ol/proj/proj4.js';
-import {get as getProjection} from 'ol/proj.js';
+import {get as getProjection } from 'ol/proj.js';
 import { getCenter } from 'ol/extent'
 
 import proj4 from 'proj4';
-import { PARAMETERS } from '@angular/core/src/util/decorators';
+import { zip } from 'd3';
 
+export interface ZoomOptions {
+  minZoom: number,
+  zoom: number,
+}
 
 @Component({
   selector: 'app-map-covar',
@@ -40,16 +44,12 @@ export class MapCovarComponent implements OnInit {
   private map: Map;
   private mousePositionControl: MousePosition;
   private proj: string;
-  private longCovar: boolean
-  private currentCoordinate: number[]
 
   ngOnInit() {
-
     this.covarService.readURLParams()
+    this.covarService.buildDataUrl()
 
     this.proj = this.covarService.getProj()
-    this.longCovar = this.covarService.getForcast()
-    this.currentCoordinate = this.covarService.getLngLat()
 
     this.makeMousePositionControl()
 
@@ -57,7 +57,7 @@ export class MapCovarComponent implements OnInit {
 
     this.addMap()
 
-    this.addCovarPoints()
+    this.addCovarPoints() //assumes dataUrl is set
 
     this.clickHandler()
 
@@ -65,32 +65,69 @@ export class MapCovarComponent implements OnInit {
     .subscribe(msg => {
        console.log('query changed: ' + msg);
        this.proj = this.covarService.getProj()
-       this.longCovar = this.covarService.getForcast()
+       this.covarService.buildDataUrl()
        this.removePoints()
        //this.addMockPoints()
        this.addCovarPoints()
        this.covarService.setURL()
-
        if (msg === 'proj changed') {
-         this.projUpdate()
+         this.updateMap()
        }
     })
 
   }
 
-  private projUpdate(): void {
-    const newProj = getProjection(this.proj)
-    const newProjExtent = newProj.getExtent();
-    const newView = new View({
-      projection: newProj,
-      center: getCenter(newProjExtent || [0, 0, 0, 0]),
-      zoom: 3,
-      extent: newProjExtent || undefined
+  private getZoom(proj: string): ZoomOptions {
+    let zoomOptions: ZoomOptions
+    switch(proj) {
+      case 'ESRI:54009': { //Molenweide
+        const minZoom = 2
+        const zoom = 3
+        zoomOptions = {minZoom: 2, zoom: 3}
+        break;
+      }
+      case 'EPSG:3031': { // South Stereo
+        const minZoom = 2
+        const zoom = 3
+        zoomOptions = {minZoom: 2, zoom: 3}
+        break;
+      }
+      case 'EPSG:3413': { // North Stereo
+        const minZoom = 3
+        const zoom = 3
+        zoomOptions = {minZoom: 2, zoom: 3}
+        break;
+      }
+      default: {
+        const minZoom = 2
+        const zoom = 3
+        zoomOptions = {minZoom: 2, zoom: 3}
+        break;
+      }
+    }
+    return zoomOptions
+
+  }
+
+  private makeView(projName: string): View {
+    const z = this.getZoom(projName)
+    const proj = getProjection(projName)
+    const projExtent = proj.getExtent();
+    const view = new View({
+      projection: proj,
+      center: getCenter(projExtent || [0, 0, 0, 0]),
+      zoom: z.minZoom,
+      minZoom: z.zoom,
+      extent: projExtent || undefined
     });
+    return view
+  }
+
+  private updateMap(): void {
+    const newView = this.makeView(this.proj)
     this.map.setView(newView);         
    }    
   
-
   private projSetup(): void {
     proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 ' +
         '+units=m +no_defs');
@@ -123,42 +160,42 @@ export class MapCovarComponent implements OnInit {
 
     this.map.addOverlay(overlay)
 
-    var featureOnClick;
+    let featureOnClick: any;
     this.map.on('singleclick', (evt) => {
-
+      overlay.setPosition(undefined); //removes existing overlay
       featureOnClick = this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
         return feature;
       });
-
-
-      if (featureOnClick) {
-        //if content is a shape get prob
-        const prob = featureOnClick.getProperties().Probability
-        if (prob) {
-          overlay.setPosition(evt.coordinate);
-          content.innerHTML = "<p>probability float drifted here:</p><code>" + prob +"</code>";
-          container.style.display = 'block';
-        }
-        else {
-          overlay.setPosition(evt.coordinate);
-          content.innerHTML = "<p>Hi!</p>";
-          container.style.display = 'block';          
-        }
-
-        //if content is a point, get coords
+    if (featureOnClick) {
+      //if content is a shape get prob
+      const prob = featureOnClick.getProperties().Probability
+      if (prob) {
+        overlay.setPosition(evt.coordinate);
+        content.innerHTML = "<p>probability float drifted here:</p><code>" + prob +" </code>";
+        container.style.display = 'block';
       }
       else {
-        const coordinate = toLonLat(evt.coordinate, this.proj);
-        let lng = new Number(coordinate[0].toFixed(2)).valueOf()
-        let lat = new Number(coordinate[1].toFixed(2)).valueOf()
-        this.currentCoordinate = [lng, lat ]
-        this.covarService.sendLngLat(this.currentCoordinate)
-        this.removePoints()
-        //this.addMockPoints()
-        this.addCovarPoints()
+        const dataUrl = this.covarService.getDataUrl()
+        overlay.setPosition(evt.coordinate);
+        content.innerHTML = "<p>Hi!</p><a target='_blank' href=" + dataUrl 
+                            + ">Link to Data</a>";
+        container.style.display = 'block';          
       }
+      //if content is a point, get coords
+    }
+    else {
+      const coordinate = toLonLat(evt.coordinate, this.proj);
+      let lng = new Number(coordinate[0].toFixed(2)).valueOf()
+      let lat = new Number(coordinate[1].toFixed(2)).valueOf()
+      const currentCoordinate = [lng, lat ]
+      this.covarService.sendLngLat(currentCoordinate)
+      this.removePoints()
+      //this.addMockPoints()
+      this.addCovarPoints()
+    }
+    this.map.addOverlay(overlay)
 
-      });
+    });
 
     closer.onclick = function () {
       overlay.setPosition(undefined);
@@ -176,7 +213,7 @@ export class MapCovarComponent implements OnInit {
     layers['wms4326'] = new TileLayer({
       source: new TileWMS({
         url: 'https://ahocevar.com/geoserver/wms',
-        crossOrigin: '',
+        crossOrigin: 'anonymous',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
           'TILED': true
@@ -185,15 +222,14 @@ export class MapCovarComponent implements OnInit {
       })
     });
 
+
+    const view = this.makeView(this.proj)
+    
     this.map = new Map({
       controls: defaultControls().extend([this.mousePositionControl]),
       layers: Object.values(layers),
       target: 'map',
-      view: new View({
-        projection: this.proj,
-        center: [0, 0],
-        zoom: 2
-      })
+      view: view
     });
 
 
@@ -230,9 +266,11 @@ export class MapCovarComponent implements OnInit {
   }
 
   private addCovarPoints(): void {
-    if (this.currentCoordinate) {
-      const [lng, lat] = this.currentCoordinate
-      this.mapCovarService.getCovarPoints(lng, lat, this.longCovar)
+    const currentCoordinate = this.covarService.getLngLat()
+    if (currentCoordinate) {
+      const [lng, lat] = currentCoordinate
+      const dataUrl = this.covarService.getDataUrl()
+      this.mapCovarService.getCovarPoints(dataUrl)
       .subscribe( (covarPoints: CovarPoints) => {
         if (covarPoints) {
           this.addCovarField(covarPoints)
@@ -242,7 +280,7 @@ export class MapCovarComponent implements OnInit {
         }
         },
         error => {
-          console.log('error in getting points' )
+          console.log('error in getting points', error )
         })
     }
   }

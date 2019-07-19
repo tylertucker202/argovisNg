@@ -17,22 +17,22 @@ export class DbOverviewComponent implements OnInit {
 
   constructor(private http: HttpClient, private bottomSheet: MatBottomSheet) { }
   ngOnInit() {
+
+  }
+
+  public openBottomSheet(): void{
     this.getDatabaseInfo().subscribe((dbOverview: DatabaseOverview) => {
       this.dbOverview = dbOverview
+      const lastDate = moment(this.dbOverview.lastAdded).format('LLLL')
+
+      let bottomData = this.dbOverview
+      bottomData.lastAdded = lastDate
+      this.bottomSheet.open(BottomSheet, { data: bottomData })
       }, 
    error => {
      console.log('error occured when retrieving dbOverview')
      console.log(error)
    });
-  }
-
-  public openBottomSheet(): void{
-    const lastDate = moment(this.dbOverview.lastAdded).format('LLLL')
-
-    let bottomData = this.dbOverview
-    bottomData.lastAdded = lastDate
-    console.log(lastDate)
-    this.bottomSheet.open(BottomSheet, { data: bottomData })
   }
 
 

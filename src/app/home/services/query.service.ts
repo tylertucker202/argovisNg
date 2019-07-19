@@ -117,7 +117,8 @@ export class QueryService {
     
     let msg = 'shape';
     if (toggleThreeDayOff) {
-      this.sendThreeDayMsg(false, true)
+      const broadcastThreeDayToggle = false
+      this.sendThreeDayMsg(false, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }

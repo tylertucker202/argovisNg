@@ -1,7 +1,6 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +14,8 @@ export class CovarService {
   @Output() change: EventEmitter<string> = new EventEmitter
   private proj = 'EPSG:3857';
   private longCovar = false;
-  private lngLat: number[];
+  private lngLat  = [0, 0];
+  private dataUrl: string;
 
   public readURLParams(): void {
       this.route.queryParams.subscribe(params => {
@@ -70,7 +70,25 @@ export class CovarService {
     }
   }
 }
+  public getDataUrl(): string {
+    return this.dataUrl
+  }
 
+  public buildDataUrl(): void {
+    const lngLat = this.getLngLat()
+    let url = '/covarGrid'
+    url += '/' + JSON.stringify(lngLat[0])
+    url += '/' + JSON.stringify(lngLat[1])
+
+    const longCovar = this.getForcast()
+    if (longCovar===false) {
+      url += '/60days'
+    }
+    else {
+      url += '/140days'
+    }
+    this.dataUrl = url
+  }
 
   public getProj(): string {
     return this.proj

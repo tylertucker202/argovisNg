@@ -6,7 +6,7 @@ import { CovarPoints } from '../home/models/covar-points'
 import { Observable, of } from 'rxjs';
 import { Style, Fill, Stroke, Icon } from 'ol/style.js'
 import VectorLayer from 'ol/layer/Vector.js';
-import { toLonLat, fromLonLat } from 'ol/proj.js';
+import { fromLonLat } from 'ol/proj.js';
 import { Polygon, Point } from 'ol/geom.js'
 import GeoJSON from 'ol/format/GeoJSON.js';
 import Feature from 'ol/Feature.js';
@@ -183,16 +183,7 @@ export class MapCovarService {
     return of(this.mockCovarPoints)
   }
 
-  public getCovarPoints(lng: number, lat: number, longCovar: boolean): Observable<CovarPoints> {
-    let url = 'http://localhost:3000/covarGrid'
-    url += '/' + JSON.stringify(lng)
-    url += '/' + JSON.stringify(lat)
-    if (longCovar===false) {
-      url += '/60days'
-    }
-    else {
-      url += '/140days'
-    }
+  public getCovarPoints(url: string): Observable<CovarPoints> {
     return this.http.get<CovarPoints>(url)
   }
 
@@ -226,8 +217,6 @@ export class MapCovarService {
         ),
       attributions: []
     });
-
-    
 
     // Create grid style function
     const gridStyle = function (feature) {
