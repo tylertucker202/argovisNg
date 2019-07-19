@@ -26,7 +26,6 @@ export class MapComponent implements OnInit, OnDestroy {
   public proj: string;
   private readonly notifier: NotifierService;
   public mapState: MapState;
-  public shapeOptions: any;
   
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
@@ -37,11 +36,12 @@ export class MapComponent implements OnInit, OnDestroy {
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
-    this.shapeOptions =  {color: '#983fb2',
-                    weight: 4,
-                    opacity: .5}
+
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
+    this.mapService.shapeOptions =   {color: '#983fb2',
+                                      weight: 4,
+                                      opacity: .5}
 
     //todo: put this chunk in queryService as a function and call it here.
     this.route.queryParams.subscribe(params => {
@@ -171,23 +171,10 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.remove();
   }
 
-  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
-  let shapes = L.featureGroup()
-  shapeArrays.forEach( (array) => {
-    let coords = []
-    array.forEach(coord => {
-      coords.push(L.latLng(coord[0], coord[1]))
-    })
-    const polygon = L.polygon(coords, this.shapeOptions)
-    shapes.addLayer(polygon)
-  })
-  return(shapes)
-  }
-
   private addShapesFromURL(): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
-      const shapes = this.convertArrayToFeatureGroup(shapeArrays)
+      const shapes = this.mapService.convertArrayToFeatureGroup(shapeArrays)
       //const features = shapes.eachLayer()
       shapes.eachLayer( layer => {
         console.log(layer)

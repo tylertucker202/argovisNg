@@ -6,6 +6,7 @@ import { TopToolbarService } from '../top-toolbar.service'
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.css']
 })
+
 export class GridComponent implements OnInit {
 
   constructor(private toolbarService: TopToolbarService) { }

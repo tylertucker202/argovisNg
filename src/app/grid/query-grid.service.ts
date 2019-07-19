@@ -1,11 +1,14 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
-
+import { MapState } from './../../typeings/mapState';
 
 import * as _moment from 'moment';
 import {Moment} from 'moment';
 import { indexDebugNode } from '@angular/core/src/debug/debug_node';
+import { geoJSON } from 'leaflet';
+import { FeatureCollection, Feature, Polygon } from 'geojson';
+import { loadFeaturesXhr } from 'ol/featureloader';
 const moment = _moment;
 
 export interface GridRange {
@@ -25,8 +28,9 @@ export class QueryGridService {
 
   private presLevel = 10;
   private monthYear = moment('01-2010', 'MM-YYYY')
+  private mapState: MapState;
   //private latLngShapes: number[][][];
-  private latLngShapes: GeoJSON.FeatureCollection;
+  private latLngShapes: FeatureCollection<Polygon>;
 
   constructor(private route: ActivatedRoute,
     private location: Location,
@@ -65,14 +69,38 @@ export class QueryGridService {
     return this.monthYear;
   }
 
-  public sendShapeMessage(features: GeoJSON.FeatureCollection, broadcastChange=true): void {
+  public sendShapeMessage(features: FeatureCollection<Polygon>, broadcastChange=true): void {
     let msg = 'shape change';
     this.latLngShapes = features;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getShapes(): GeoJSON.FeatureCollection {
+  public getShapes(): FeatureCollection<Polygon> {
     return this.latLngShapes;
+  }
+
+  public clearShapes(): void {
+    this.latLngShapes = null
+  }
+
+  public convertShapesToArray( ): number[][][] {
+    let fc = this.getShapes()
+    if (!fc) {
+      return  []
+    }
+    console.log('feature collection', fc)
+    let shapeArray = []
+    fc.features.forEach( (feature) => {
+      let latLngArray = []
+      const coordinates = feature.geometry.coordinates[0]
+      console.log(coordinates)
+      coordinates.forEach( (coord) => {
+        const latLng = [coord[1], coord[0]]
+        latLngArray.push(latLng)
+      })
+      shapeArray.push(latLngArray)
+    })
+    return shapeArray
   }
 
   public triggerResetToStart(): void {
@@ -92,7 +120,6 @@ export class QueryGridService {
     let bboxes: number[][]
     if (this.latLngShapes) {
       bboxes = this.getBBoxes(this.latLngShapes)
-      console.log(bboxes)
       shapesString = JSON.stringify(bboxes)
     }
     const monthYearString = this.formatMonthYear(this.monthYear)
@@ -109,7 +136,7 @@ export class QueryGridService {
       });
   }
 
-  public getBBoxes(fc: GeoJSON.FeatureCollection) {
+  public getBBoxes(fc: FeatureCollection<Polygon>): number[][] {
     let bboxes = []
     const features = fc.features
     for (let idx in features) {
@@ -135,6 +162,39 @@ export class QueryGridService {
     return bboxes
   }
 
+  //todo: cast as Feature and FeatureCollection types
+  private convertShapeToFeatureCollection(shapes: number[][]): FeatureCollection<Polygon> {
+
+    let fc: FeatureCollection<Polygon> = { type: 'FeatureCollection',
+    features: [] 
+    };
+
+    shapes.forEach( (shape) => {
+      let feature: Feature<any> = { type: 'Feature', geometry: {}, properties: {}}
+      let geom: Polygon = { type: 'Polygon', coordinates: [] }
+      const ll = [shape[0], shape[1]]
+      const ur = [shape[2], shape[3]]
+      const ul = [ll[0], ur[1]]
+      const lr = [ur[0], ll[1]]
+      const coordinates = [ll, ul, ur, lr, ll]
+      geom.coordinates = [coordinates]
+      feature.geometry = geom
+      fc.features.push(feature)
+    })
+
+    return(fc)
+  }
+
+  public subscribeToMapState(): void {
+    this.route.queryParams.subscribe(params => {
+      this.mapState = params
+      Object.keys(this.mapState).forEach((key) => {
+        this.setMapState(key, this.mapState[key])
+      });
+      this.urlBuild.emit('got state from map component')
+    });
+  }
+
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
@@ -145,7 +205,8 @@ export class QueryGridService {
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
-        this.sendShapeMessage(arrays, notifyChange)
+        const fc = this.convertShapeToFeatureCollection(arrays)
+        this.sendShapeMessage(fc, notifyChange)
         break;
       }
       case 'presLevel': {

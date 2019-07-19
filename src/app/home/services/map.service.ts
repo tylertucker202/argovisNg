@@ -1,6 +1,7 @@
 import { Injectable, ApplicationRef } from "@angular/core";
 import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
+import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson';
 
 import 'leaflet';
 import 'proj4leaflet';
@@ -20,6 +21,7 @@ export class MapService {
   public drawnItems = L.featureGroup();
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
+  public shapeOptions: any;
 
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
@@ -49,8 +51,6 @@ export class MapService {
     "opacity": 1,
     "fillOpacity": .9,
     };
-  private geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
-  private geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle});
   private satelliteMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
   });
@@ -116,8 +116,9 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       crs: this.sStereo})
-                      .setView(startView, startZoom);    
-    this.geojsonLayer.addTo(map);
+                      .setView(startView, startZoom);
+    const geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
+    geojsonLayer.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
     return map
   };
@@ -133,7 +134,8 @@ export class MapService {
                       zoomControl: false,
                       crs: this.nStereo})
                       .setView(startView, startZoom);
-    this.geojsonLayerNoAntartica.addTo(map);
+    const geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle}); 
+    geojsonLayerNoAntartica.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
     return map
   };
@@ -218,7 +220,8 @@ export class MapService {
       rectangle: { shapeOptions: {
                     color: '#983fb2',
                     weight: 4, 
-                    fill: false
+                    fill: false,
+                    opacity: .5,
                     }
                   },
       polyline: <false> false,
@@ -291,13 +294,9 @@ export class MapService {
   };
 
   public popupWindowCreation = function(layer, drawnItems): void{
-    let feature = layer.toGeoJSON();
+    const feature = layer.toGeoJSON();
     console.log('popup feature', feature)
-    let shape = []
-    feature.geometry.coordinates[0].forEach( (coord) => {
-      const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
-      shape.push(reverseCoord)
-    })
+    const shape = this.getLatLngFromFeature(feature)
     console.log('shape before', shape)
     const transformedShape = this.getTransformedShape(shape);
     console.log('transformed shape', transformedShape)
@@ -311,5 +310,27 @@ export class MapService {
       layer.fire('click') // click generates popup object
     });
     drawnItems.addLayer(layer);
+    }
+
+  public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {
+    let shape = []
+    feature.geometry.coordinates[0].forEach( (coord) => {
+      const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
+      shape.push(reverseCoord)
+    })
+    return shape
+  }
+
+  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
+    let shapes = L.featureGroup()
+    shapeArrays.forEach( (array) => {
+      let coords = []
+      array.forEach(coord => {
+        coords.push(L.latLng(coord[0], coord[1]))
+      })
+      const polygon = L.polygon(coords, this.shapeOptions)
+      shapes.addLayer(polygon)
+    })
+    return(shapes)
     }
 }

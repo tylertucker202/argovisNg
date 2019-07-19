@@ -98,7 +98,7 @@ export class RasterService {
     return this.http.get<RasterGrid[]>(url)
   }
 
-  public addToGridLayer(grid: RasterGrid, gridLayer: L.LayerGroup): L.LayerGroup {
+  public addToGridLayer(grid: RasterGrid, gridLayer: L.LayerGroup, map: L.Map): L.LayerGroup {
 
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
@@ -107,8 +107,6 @@ export class RasterService {
     }
 
     let s = new L.ScalarField(grid)
-    console.log('scalar field')
-    console.log(s)
     
     let c = chroma.scale('OrRd').domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
@@ -121,7 +119,7 @@ export class RasterService {
         if (e.value !== null) {
             let v = e.value.toFixed(3);
             let html = `<span class="popupText">Temperature Anomoly ${v} Deg</span>`;
-            let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(this.map);
+            let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
         }
     });
 
