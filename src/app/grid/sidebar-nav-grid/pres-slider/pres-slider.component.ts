@@ -23,6 +23,10 @@ export class PresSliderComponent implements OnInit {
 
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
+
+    this.queryGridService.resetToStart.subscribe((msg) => {
+      this.presLevel = this.queryGridService.getPresLevel()
+    })
   }
 
   private sendPresLevel(): void {

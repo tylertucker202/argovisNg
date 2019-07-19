@@ -42,9 +42,16 @@ export class MonthPickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService) { }
 
   ngOnInit() {
+    this.setDate()
+
+    this.queryGridService.resetToStart.subscribe((msg) => {
+      this.setDate()
+    })
+  }
+
+  private setDate(): void {
     this.monthYear = this.queryGridService.getMonthYear()
-    console.log(this.monthYear)
-    this.date = new FormControl(this.monthYear)
+    this.date = new FormControl(this.monthYear)    
   }
 
   private sendMonthYearMessage(): void {

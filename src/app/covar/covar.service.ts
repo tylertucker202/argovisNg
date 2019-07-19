@@ -13,8 +13,8 @@ export class CovarService {
               }
 
   @Output() change: EventEmitter<string> = new EventEmitter
-  private proj: string// = 'EPSG:3857';
-  private longCovar: boolean;
+  private proj = 'EPSG:3857';
+  private longCovar = false;
   private lngLat: number[];
 
   public readURLParams(): void {

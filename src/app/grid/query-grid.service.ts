@@ -47,6 +47,9 @@ export class QueryGridService {
     this.sendMonthYearMessage(monthYear, broadcastChange)
     const presLevel = 10;
     this.sendPresMessage(presLevel, broadcastChange)
+    this.clearShapes()
+    this.setURL()
+    this.resetToStart.emit('reset params pushed')
   }
 
   public sendPresMessage(presLevel: number, broadcastChange=true): void {

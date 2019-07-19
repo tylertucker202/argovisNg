@@ -193,7 +193,6 @@ export class MapCovarService {
     else {
       url += '/140days'
     }
-    console.log(url)
     return this.http.get<CovarPoints>(url)
   }
 
