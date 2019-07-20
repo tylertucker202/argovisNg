@@ -77,7 +77,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.clearLayers
     .subscribe( () => {
-      //this.queryGridService.clearShapes();
       this.gridLayers.clearLayers();
       this.mapService.drawnItems.clearLayers();
       this.queryGridService.clearShapes()
@@ -169,12 +168,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const fc = this.queryGridService.getShapes()
     const monthYear = this.queryGridService.getMonthYear()
     const pres = this.queryGridService.getPresLevel()
+    const grid = this.queryGridService.getGrid()
     if (fc) {
       const bboxes = this.queryGridService.getBBoxes(fc)
       bboxes.forEach( (bbox) => {
         const lonRange = [bbox[0], bbox[2]]
         const latRange = [bbox[1], bbox[3]]
-        this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres)
+        this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
         .subscribe( (rasterGrids: RasterGrid[]) => {
           if (rasterGrids.length == 0) {
             console.log('warning: no grid')

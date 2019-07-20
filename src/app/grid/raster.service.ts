@@ -88,8 +88,31 @@ export class RasterService {
     return of(this.mockRaster)
   }
 
-  public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number): Observable<RasterGrid[]> {
-    let url = '/kuuselaGrid?'
+   private getGridRout(grid: string): string {
+    let gridRout: string
+    switch(grid) {
+      case 'kuusela': {
+        gridRout = 'KuuselaGrid'
+        break;
+      }
+      case 'rg': {
+        gridRout = 'rgGrid'
+        break;
+      }
+      default: {
+        console.log('key not found. setting default')
+        gridRout = 'KuuselaGrid'
+        break;
+      }
+  }
+
+    return gridRout
+  }
+
+  public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number, grid='kuusela'): Observable<RasterGrid[]> {
+    const gridRout = this.getGridRout(grid)
+    let url = 'http://localhost:3000'
+    url +=  '/' + gridRout + '?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
     url += '&monthYear=' + monthYear

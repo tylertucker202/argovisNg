@@ -27,9 +27,9 @@ export class QueryGridService {
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10;
-  private monthYear = moment('01-2010', 'MM-YYYY')
+  private monthYear = moment('01-2010', 'MM-YYYY');
   private mapState: MapState;
-  //private latLngShapes: number[][][];
+  private grid = 'kuusela';
   private latLngShapes: FeatureCollection<Polygon>;
 
   constructor(private route: ActivatedRoute,
@@ -82,6 +82,15 @@ export class QueryGridService {
     return this.latLngShapes;
   }
 
+  public sendGridMessage(grid: string, broadcastChange=true): void {
+    let msg = 'grid change';
+    this.grid = grid;
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getGrid(): string {
+    return this.grid
+  }
   public clearShapes(): void {
     this.latLngShapes = null
   }
@@ -130,6 +139,7 @@ export class QueryGridService {
                          'presLevel': presLevelString, 
                          'monthYear': monthYearString,
                          'shapes': shapesString,
+                         'grid': this.grid
                         }
     this.router.navigate(
       [],
@@ -204,6 +214,11 @@ export class QueryGridService {
       case 'monthYear': {
         const monthYear = moment(value, 'MM-YYYY')
         this.sendMonthYearMessage(monthYear, notifyChange)
+        break;
+      }
+      case 'grid': {
+        const grid = value
+        this.sendGridMessage(grid, notifyChange)
         break;
       }
       case 'shapes': {
