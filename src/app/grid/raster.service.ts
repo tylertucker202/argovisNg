@@ -92,7 +92,7 @@ export class RasterService {
     let gridRout: string
     switch(grid) {
       case 'kuusela': {
-        gridRout = 'KuuselaGrid'
+        gridRout = 'kuuselaGrid'
         break;
       }
       case 'rg': {
@@ -101,7 +101,7 @@ export class RasterService {
       }
       default: {
         console.log('key not found. setting default')
-        gridRout = 'KuuselaGrid'
+        gridRout = 'kuuselaGrid'
         break;
       }
   }
