@@ -111,7 +111,7 @@ export class RasterService {
 
   public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number, grid='kuusela'): Observable<RasterGrid[]> {
     const gridRout = this.getGridRout(grid)
-    let url = 'http://localhost:3000'
+    let url = ''   //'http://localhost:3000'
     url +=  '/' + gridRout + '?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
