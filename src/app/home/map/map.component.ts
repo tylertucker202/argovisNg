@@ -8,7 +8,8 @@ import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 import { NotifierService } from 'angular-notifier';
 import { ActivatedRoute } from '@angular/router'
-
+import 'd3'
+declare var d3: any;
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -25,7 +26,6 @@ export class MapComponent implements OnInit, OnDestroy {
   public proj: string;
   private readonly notifier: NotifierService;
   public mapState: MapState;
-  public shapeOptions: any;
   
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
@@ -36,12 +36,14 @@ export class MapComponent implements OnInit, OnDestroy {
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
-    this.shapeOptions =  {color: '#983fb2',
-                    weight: 4,
-                    opacity: .5}
+
     this.pointsService.init(this.appRef);
     this.mapService.init(this.appRef);
+    this.mapService.shapeOptions =   {color: '#983fb2',
+                                      weight: 4,
+                                      opacity: .5}
 
+    //todo: put this chunk in queryService as a function and call it here.
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach(key => {
@@ -76,7 +78,7 @@ export class MapComponent implements OnInit, OnDestroy {
             this.addDisplayProfiles()
          }
          //this.setMockPoints()
-        },)
+        })
 
     this.queryService.clearLayers
       .subscribe( () => {
@@ -157,8 +159,8 @@ export class MapComponent implements OnInit, OnDestroy {
       this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff);
     });
 
-    this.setStartingProfiles();
     this.invalidateSize();
+    //sets starting profiles from URL. Default is no params
     setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
       this.addShapesFromURL();
      });
@@ -169,23 +171,10 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.remove();
   }
 
-  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
-  let shapes = L.featureGroup()
-  shapeArrays.forEach( (array) => {
-    let coords = []
-    array.forEach(coord => {
-      coords.push(L.latLng(coord[0], coord[1]))
-    })
-    const polygon = L.polygon(coords, this.shapeOptions)
-    shapes.addLayer(polygon)
-  })
-  return(shapes)
-  }
-
   private addShapesFromURL(): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
-      const shapes = this.convertArrayToFeatureGroup(shapeArrays)
+      const shapes = this.mapService.convertArrayToFeatureGroup(shapeArrays)
       //const features = shapes.eachLayer()
       shapes.eachLayer( layer => {
         console.log(layer)
@@ -193,7 +182,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems);
       });
     }
-    const broadcast = true
+    const broadcast = true // set to true to set page initially
     const toggleThreeDayOff = false
 
     const drawnItems = this.mapService.drawnItems.toGeoJSON().features
@@ -202,7 +191,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private setStartingProfiles(this): void {
-
+    console.log(this.queryService.getThreeDayToggle())
     if (this.queryService.getThreeDayToggle()){
     this.pointsService.getLastThreeDaysProfiles()
     .subscribe((profilePoints: ProfilePoints[]) => {
@@ -218,22 +207,22 @@ export class MapComponent implements OnInit, OnDestroy {
       })
     }}
 
-    private addDisplayProfiles(this): void {
-      if (!this.queryService.getThreeDayToggle()) {return}
-      const startDate = this.queryService.getGlobalDisplayDate()
-      this.pointsService.getLastThreeDaysProfiles(startDate)
-      .subscribe((profilePoints: ProfilePoints[]) => {
-        if (profilePoints.length == 0) {
-          this.notifier.notify( 'warning', 'zero profile points returned' )
-        }
-        else {
-          this.displayProfiles(profilePoints, 'normalMarker')
-        }
-        },
-        error => {
-          this.notifier.notify( 'error', 'error in getting last three day profiles' )
-        })
+  private addDisplayProfiles(this): void {
+    if (!this.queryService.getThreeDayToggle()) {return}
+    const startDate = this.queryService.getGlobalDisplayDate()
+    this.pointsService.getLastThreeDaysProfiles(startDate)
+    .subscribe((profilePoints: ProfilePoints[]) => {
+      if (profilePoints.length == 0) {
+        this.notifier.notify( 'warning', 'zero profile points returned' )
       }
+      else {
+        this.displayProfiles(profilePoints, 'normalMarker')
+      }
+      },
+      error => {
+        this.notifier.notify( 'error', 'error in getting last three day profiles' )
+      })
+    }
   
   private setMockPoints(this): void {
     this.pointsService.getMockPoints()
@@ -258,71 +247,71 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-private displayProfiles = function(this, profilePoints, markerType): void {
+  private displayProfiles = function(this, profilePoints, markerType): void {
 
-  const includeRT = this.queryService.getRealtimeToggle()
-  const bgcOnly = this.queryService.getBGCToggle()
-  const deepOnly = this.queryService.getDeepToggle()
+    const includeRT = this.queryService.getRealtimeToggle()
+    const bgcOnly = this.queryService.getBGCToggle()
+    const deepOnly = this.queryService.getDeepToggle()
 
-  for (let idx in profilePoints) {
-    let profile = profilePoints[idx];
-    let dataMode = profile.DATA_MODE
-    if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) { continue; }
-    if ( !profile.containsBGC===true && bgcOnly) { continue; } //be careful, old values may equal 1. use ==
-    if ( !profile.isDeep===true && deepOnly ) { continue; } // always use ===
-    if (markerType==='history') {
-      this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
-    }
-    else if (markerType==='platform') {
-      this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
-    }
-    else if (profile.containsBGC) {
-      this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
-    }
-    else if (profile.isDeep) {
-      this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates);
-    }
-    else {
-      this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
-    }
-  };
-  };
-
-
-shapeSelectionOnMap(): void {
-  // Extract GeoJson from featureGroup
-  let shapeArrays = this.queryService.getShapes();
-
-  
-  if (shapeArrays) {
-    this.markersLayer.clearLayers();
-    let base = '/selection/profiles/map'
-    let dates = this.queryService.getSelectionDates();
-    let presRange = this.queryService.getPresRange();
-    let includeRealtime = this.queryService.getRealtimeToggle();
-    let onlyBGC = this.queryService.getBGCToggle();
-
-    shapeArrays.forEach( (shape) => {
-      const transformedShape = this.mapService.getTransformedShape(shape)
-      let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
-      if (presRange) {
-        urlQuery += '&presRange='+JSON.stringify(presRange)
+    for (let idx in profilePoints) {
+      let profile = profilePoints[idx];
+      let dataMode = profile.DATA_MODE
+      if ( ( dataMode == 'R' || dataMode == 'A' ) && (includeRT == false) ) { continue; }
+      if ( !profile.containsBGC===true && bgcOnly) { continue; } //be careful, old values may equal 1. use ==
+      if ( !profile.isDeep===true && deepOnly ) { continue; } // always use ===
+      if (markerType==='history') {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates);
       }
-      urlQuery += '&shape='+JSON.stringify(transformedShape)
-      console.log(urlQuery);
-      this.pointsService.getSelectionPoints(urlQuery)
-          .subscribe((selectionPoints: ProfilePoints[]) => {
-            this.displayProfiles(selectionPoints, 'normalMarker');
-            if (selectionPoints.length == 0) {
-              this.notifier.notify( 'warning', 'no profile points found in shape' )
-              console.log('no points returned in shape')
-            }
-            }, 
-          error => {
-          this.notifier.notify( 'error', 'error in getting profiles in shape' )
-            console.log('error occured when selecting points: ', error)
-          });      
-      })
+      else if (markerType==='platform') {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates);
+      }
+      else if (profile.containsBGC) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates);
+      }
+      else if (profile.isDeep) {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates);
+      }
+      else {
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates);
+      }
+    };
+    };
+
+
+  shapeSelectionOnMap(): void {
+    // Extract GeoJson from featureGroup
+    let shapeArrays = this.queryService.getShapes();
+
+    
+    if (shapeArrays) {
+      this.markersLayer.clearLayers();
+      let base = '/selection/profiles/map'
+      let dates = this.queryService.getSelectionDates();
+      let presRange = this.queryService.getPresRange();
+      let includeRealtime = this.queryService.getRealtimeToggle();
+      let onlyBGC = this.queryService.getBGCToggle();
+
+      shapeArrays.forEach( (shape) => {
+        const transformedShape = this.mapService.getTransformedShape(shape)
+        let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+        if (presRange) {
+          urlQuery += '&presRange='+JSON.stringify(presRange)
+        }
+        urlQuery += '&shape='+JSON.stringify(transformedShape)
+        console.log(urlQuery);
+        this.pointsService.getSelectionPoints(urlQuery)
+            .subscribe((selectionPoints: ProfilePoints[]) => {
+              this.displayProfiles(selectionPoints, 'normalMarker');
+              if (selectionPoints.length == 0) {
+                this.notifier.notify( 'warning', 'no profile points found in shape' )
+                console.log('no points returned in shape')
+              }
+              }, 
+            error => {
+            this.notifier.notify( 'error', 'error in getting profiles in shape' )
+              console.log('error occured when selecting points: ', error)
+            });      
+        })
+    }
   }
-}
 }

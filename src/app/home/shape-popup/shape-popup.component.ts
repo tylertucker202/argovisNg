@@ -7,7 +7,7 @@ import { QueryService } from '../services/query.service';
   styleUrls: ['./shape-popup.component.css']
 })
 export class ShapePopupComponent implements OnInit {
-  @Input() shape: any;
+  @Input() shape: number[][];
   private color: string;
   constructor(private queryService: QueryService) { }
 

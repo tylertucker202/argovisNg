@@ -1,0 +1,13 @@
+<section class="mat-typography"><p>Pressure level [dbar]:</p></section>
+<div class="slider-container">
+  <div class='input-div'>
+    <mat-form-field>
+        <mat-label>Pressure Level</mat-label>
+        <mat-select [(value)]="presLevel" (selectionChange)="selChange($event)">
+          <mat-option [(value)]="pres.value" *ngFor="let pres of presLevels">
+            {{pres.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+</div>

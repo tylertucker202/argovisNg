@@ -1,0 +1,9 @@
+.map {
+    height: 100%;
+    width: 100%;
+    margin: 2px;
+}
+
+.ol-mouse-position {
+    background-color: lightblue;
+}

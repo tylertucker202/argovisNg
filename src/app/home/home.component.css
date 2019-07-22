@@ -1,10 +1,6 @@
 #sidenav-container {
     height: 900px;
   }
-
-#top-toolbar {
-    height: 35px;
-  }
   
 .side-menu {
   background-color: #F5F5F5;
@@ -20,6 +16,7 @@
   z-index: 200;
 }
 
-.nav-link {
-  color:  #F5F5F5
+
+#top-toolbar {
+  height: 35px;
 }

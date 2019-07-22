@@ -4,4 +4,5 @@ export interface MapState {
      onlyBGC?: Boolean,
      onlyDeep?: Boolean,
      threeDayToggle?: Boolean
+     grid?: String
      }

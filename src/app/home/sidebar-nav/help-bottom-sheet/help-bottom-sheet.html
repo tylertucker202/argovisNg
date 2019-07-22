@@ -1,0 +1,63 @@
+<section class="mat-typography" id="bottomSheet">
+    <title>help bottom sheet</title>
+    <body>
+        <h2><b>What am I looking at?</b></h2>
+            <p>
+                You are looking at a map of Argo profile locations around the globe in a three day window that ended yesterday.
+            </p>
+            <p>Argo profiles are the dots peppering the map. They measure
+                temperature, pressure and salinity only. Clicking on a profile opens a popup with more information, links, and features.
+            </p>
+            <table style="width:100%">
+                <tr>
+                    <td><img src="assets/img/dot_yellow.png" alt="yellow dot" height="24" width="24"></td>
+                    <td>Yellow dots are standard Argo floats. They measure temperature, pressure and salinity only.</td>
+                </tr>
+                <tr>
+                    <td><img src="assets/img/dot_green.png" alt="green dot" height="24" width="24"></td>
+                    <td>Green dots are BGC profiles, they include Biological measurements as well, such as dissolved oxygen, chlorophyll, and more!</td>
+                </tr>
+                <tr>
+                    <td><img src="assets/img/dot_blue.png" alt="blue dot" height="24" width="24"></td>
+                    <td>Blue dots represent deep profiles, they dive as much as 6000 meters below the surface. Wow!</td>
+                    </tr>
+                </table> 
+        <h2><b>Can I change the date from yesterday to something else?</b></h2>
+            <p>You sure can. The sidebar to the left has a date input element, pictured below.
+            </p>
+            <img src="assets/img/3dwindow.png" alt="3 day window date input">
+        <h2><b>What is that pentagon in the upper left corner?</b></h2>
+            <img src="assets/img/drawcontrol.png" alt="draw control">
+            <p>Oh that? That allows you to draw spherical polygons on the map, which lasso profiles falling within its area.
+                Completing a shape opens another pop-up that gives options to view all available profiles with or without the pressure range applied.
+                The dates these profiles were taken is selected by the date range input pictured below.
+            </p>
+            <img src="assets/img/daterange.png" alt="Date Range">
+            <p>The pressure range bar filters out profiles that don't fall within that range. 
+            </p>
+            <p>By the way, try using different projections.
+                Selecting the projection in the drop down menu on the top right corner is how its done.
+        <h2><b>Can I save drawn shapes, and sidebar settings?</b></h2>
+            <p>Yes, you have been saving the state of this page all along. The page view information is stored in the URL.
+                You can rebuild this page as you see it with this url. Go ahead and try sending it to a friend. The link below will also work.
+            </p>
+            <a class="nav-link" matTooltip="example page" target='_blank' 
+               href={{shapeLink}}
+               >
+            Link of a saved page</a>
+        <h2><b>What do those other icons do?</b></h2>
+        <img src="assets/img/sidebaricons.png" alt="Side bar icons">
+        <p>The upside down triangle opens a bottom sheet window with database information. including:
+            latest profile in the database, number of profiles in database, number of deep profiles, number of BGC profiles, 
+            and a list of all the Data Aquisition Centers (DACS) that report Argo profiles</p>
+        <p>The next icon (tiles with the slash) will clear all profiles and drawn items from the map. Things can get cluttered,
+            This button is used to clear everything.</p>
+        <p>The reset button clears drawn shapes and returns the page's state back to its default view. 
+            Think of it as a 'startover button'</p>
+        <h2><b>I want to learn more, what else can you tell me?</b></h2>
+        <p>If you want to learn more about Argovis, consider visiting the Argovis About Page <a class="nav-link" matTooltip="to argovis about page" target='_blank' href="http://www.argo.ucsd.edu/Argovis_About.html">here.</a>
+        </p>
+    </body>
+</section>
+     
+     
