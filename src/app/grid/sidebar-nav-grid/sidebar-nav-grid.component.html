@@ -8,4 +8,8 @@
   <button mat-icon-button matTooltip="reset map to starting position and settings." (click)="resetToStart()" >
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
+  <mat-slide-toggle matTooltip="toggle on to display grid globally"
+                   color="accent" [checked]="globalGrid"
+                   (change)="globalGridToggle($event)">Global Grid
+  </mat-slide-toggle>
 </div>

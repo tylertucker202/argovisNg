@@ -31,6 +31,7 @@ export class QueryGridService {
   private mapState: MapState;
   private grid = 'kuusela';
   private latLngShapes: FeatureCollection<Polygon>;
+  private globalGrid = false;
 
   constructor(private route: ActivatedRoute,
     private location: Location,
@@ -95,6 +96,16 @@ export class QueryGridService {
     this.latLngShapes = null
   }
 
+  public getGlobalGrid(): boolean {
+    return this.globalGrid
+  }
+
+  public sendGlobalGrid(globalGrid: boolean, broadcastChange=true): void {
+    const msg = 'global grid toggle'
+    this.globalGrid = globalGrid
+    if (broadcastChange) { this.change.emit(msg)}
+  }
+
   public convertShapesToArray( ): number[][][] {
     let fc = this.getShapes()
     if (!fc) {
@@ -134,12 +145,14 @@ export class QueryGridService {
       bboxes = this.getBBoxes(this.latLngShapes)
       shapesString = JSON.stringify(bboxes)
     }
+    const globalGrid = JSON.stringify(this.getGlobalGrid())
     const monthYearString = this.formatMonthYear(this.monthYear)
     const queryParams = {
                          'presLevel': presLevelString, 
                          'monthYear': monthYearString,
                          'shapes': shapesString,
-                         'grid': this.grid
+                         'grid': this.grid,
+                         'displayGlobalGrid': globalGrid
                         }
     this.router.navigate(
       [],
@@ -225,6 +238,11 @@ export class QueryGridService {
         const arrays = JSON.parse(value)
         const fc = this.convertShapeToFeatureCollection(arrays)
         this.sendShapeMessage(fc, notifyChange)
+        break;
+      }
+      case 'displayGlobalGrid': {
+        const globalGrid = JSON.parse(value)
+        this.sendShapeMessage(globalGrid, notifyChange)
         break;
       }
       case 'presLevel': {

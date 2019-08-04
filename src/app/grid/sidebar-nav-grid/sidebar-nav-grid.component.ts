@@ -9,8 +9,10 @@ import { QueryGridService } from '../query-grid.service'
 export class SidebarNavGridComponent implements OnInit {
 
   constructor(private queryGridService: QueryGridService) { }
+  private globalGrid: boolean
 
   ngOnInit() {
+    this.globalGrid = this.queryGridService.getGlobalGrid()
   }
 
   clearGrids(): void {
@@ -21,6 +23,11 @@ export class SidebarNavGridComponent implements OnInit {
   resetToStart(): void {
     console.log('resetToStart Clicked')
     this.queryGridService.triggerResetToStart();
+  }
+
+  globalGridToggle(event: any): void {
+    this.globalGrid = event.checked
+    this.queryGridService.sendGlobalGrid(this.globalGrid);
   }
 
 }

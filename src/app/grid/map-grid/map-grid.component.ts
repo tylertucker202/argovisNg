@@ -165,12 +165,17 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   gridSelectionOnMap(): void {
 
-    const fc = this.queryGridService.getShapes()
+    let fc = this.queryGridService.getShapes()
     const monthYear = this.queryGridService.getMonthYear()
     const pres = this.queryGridService.getPresLevel()
     const grid = this.queryGridService.getGrid()
+    const globalGrid = this.queryGridService.getGlobalGrid()
+
     if (fc) {
-      const bboxes = this.queryGridService.getBBoxes(fc)
+      let bboxes = this.queryGridService.getBBoxes(fc)
+      if (globalGrid) {
+        bboxes = [ [-180, -90, 180, 90] ]
+      }
       bboxes.forEach( (bbox) => {
         const lonRange = [bbox[0], bbox[2]]
         const latRange = [bbox[1], bbox[3]]
@@ -184,7 +189,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
           }
           },
           error => {
-            console.log('error in getting profiles' )
+            console.log('error in getting grid' )
           })
       })
     }
