@@ -7,6 +7,9 @@ import { ActivatedRoute } from '@angular/router'
 
 import * as L from "leaflet";
 
+declare let chroma: any
+import GeoRasterLayer from 'georaster-layer-for-leaflet';
+import parseGeoraster from 'georaster';
 
 @Component({
   selector: 'app-map-grid',
@@ -62,18 +65,19 @@ export class MapGridComponent implements OnInit, OnDestroy {
          this.redrawShapes() //redraws shape with updated change
         })
 
-    // this.rasterService.getMockGridRaster()
-    // .subscribe( (rasterGrids: RasterGrid[]) => {
-    //   if (rasterGrids.length == 0) {
-    //     console.log('warning: no grid')
-    //   }
-    //   else {
-    //     this.addRasterGridsToMap(rasterGrids)
-    //   }
-    //   },
-    //   error => {
-    //     console.log('error in getting mock profiles' )
-    //   })
+    this.rasterService.getMockGridRaster()
+    .subscribe( (rasterGrids: RasterGrid[]) => {
+      if (rasterGrids.length == 0) {
+        console.log('warning: no grid')
+      }
+      else {
+        console.log('adding mock grid')
+        this.addRasterGridsToMap(rasterGrids)
+      }
+      },
+      error => {
+        console.log('error in getting mock profiles' )
+      })
 
     this.queryGridService.clearLayers
     .subscribe( () => {
@@ -200,12 +204,64 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
-      this.gridLayers = this.rasterService.addToGridLayer(grid, this.gridLayers, this.map)
+      this.addToGridLayer(grid)
+      console.log(this.gridLayers)
       this.gridLayers.eachLayer(function(layer: L.Layer | any) { // get around typescript not having _field as a property
         const field = layer._field
         const bbox = (({ xllCorner, yllCorner, xurCorner, yurCorner }) => ({ xllCorner, yllCorner, xurCorner, yurCorner }))(field);
       })
     }
+
+  }
+
+  private addAsyncLayer(values, metadata, debug=true): void {
+    parseGeoraster(values, metadata, false).then(georaster => {
+      var layer = new GeoRasterLayer({
+        georaster: georaster,
+        opacity: 0.7,
+        pixelValuesToColorFn: values => values[0] > 0 ? '#ffffff' : '#000000',
+        resolution: 64,
+        });
+  
+        layer.on('click', function (e) {
+            if (e.value !== null) {
+                let v = e.value.toFixed(3);
+                let html = `<span class="popupText">Temperature Anomoly ${v} Deg</span>`;
+                let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(this.map);
+            }
+        });
+        this.gridLayers.addLayer(layer)
+        this.gridLayers.addTo(this.map)
+        this.map.fitBounds(layer.getBounds());
+    })
+  }
+
+  private addToGridLayer(grid: RasterGrid): void {
+
+    for (var i = 0; i < grid.zs.length; i++){
+      if (grid.zs[i] == grid.noDataValue) {
+          grid.zs[i] = null;
+        }
+    }
+
+    let s = new L.ScalarField(grid)
+    
+    let c = chroma.scale('OrRd').domain(s.range);
+    let values = [[]]
+    while(grid.zs.length) values[0].push(grid.zs.splice(0,grid.nCols));
+    //const values = grid.zs;
+    const noDataValue = null;
+    const projection = 4326;
+    const xmin = -140;
+    const ymax = 0
+    const pixelWidth = grid.cellXSize
+    const pixelHeight = grid.cellYSize
+    const metadata = { noDataValue, projection, xmin, ymax, pixelWidth, pixelHeight };
+    
+    this.addAsyncLayer(values, metadata, false)
+    
+    
+
 
   }
 
