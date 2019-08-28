@@ -8,25 +8,7 @@ import { HomeModule } from './home/home.module';
 import { GridModule } from './grid/grid.module';
 import { CovarModule } from './covar/covar.module';
 
-// import { HomeComponent } from './home/home.component';
-// import { GridComponent } from './grid/grid.component';
-// import { CovarComponent } from './covar/covar.component';
-
-import {
-  MatButtonModule,
-  MatSlideToggleModule,
-  MatDividerModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatBottomSheetModule,
-} from '@angular/material';
+import { MaterialModule } from './material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
 
@@ -40,40 +22,17 @@ import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
     HomeModule,
     GridModule,
     CovarModule,
+    MaterialModule,
     BrowserModule,
-    MatButtonModule,
-    MatSlideToggleModule,
-    MatDividerModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatBottomSheetModule,
     BrowserAnimationsModule
   ],
   exports: [
     AppRoutingModule,
     HomeModule,
     GridModule,
+    CovarModule,
+    MaterialModule,
     BrowserModule,
-    MatButtonModule,
-    MatSlideToggleModule,
-    MatDividerModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatBottomSheetModule,
     BrowserAnimationsModule
   ],
   bootstrap: [AppComponent]

@@ -6,21 +6,7 @@ import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
 import { CommonModule } from '@angular/common';
 
-import {
-  MatButtonModule,
-  MatSlideToggleModule,
-  MatDividerModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatBottomSheetModule,
-} from '@angular/material';
+import { MaterialModule } from '../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import "leaflet";
@@ -107,19 +93,7 @@ const customNotifierOptions: NotifierOptions = {
     FormsModule,
     ReactiveFormsModule,
     NotifierModule.withConfig(customNotifierOptions),
-    MatButtonModule,
-    MatSlideToggleModule,
-    MatDividerModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatBottomSheetModule,
+    MaterialModule,
   ],
   providers: [
     MapService,

@@ -14,8 +14,8 @@ import { loadLContext } from '@angular/core/src/render3/discovery_utils';
 describe('QueryService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [QueryService],
-      imports: [RouterTestingModule]
+      providers: [ QueryService ],
+      imports: [ RouterTestingModule ]
     });
   });
 

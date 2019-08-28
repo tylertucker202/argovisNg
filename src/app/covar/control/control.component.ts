@@ -16,7 +16,7 @@ export interface ForcastSelections {
   templateUrl: './control.component.html',
   styleUrls: ['./control.component.css']
 })
-export class controlComponent implements OnInit {
+export class ControlComponent implements OnInit {
 
   constructor(private covarService: CovarService) { }
   private projections: Projections[] = [

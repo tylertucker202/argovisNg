@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GridPickerComponent } from './grid-picker.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { QueryGridService } from './../../query-grid.service';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('GridPickerComponent', () => {
   let component: GridPickerComponent;
@@ -8,7 +11,10 @@ describe('GridPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GridPickerComponent ]
+      declarations: [ GridPickerComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      providers: [QueryGridService],
+      imports: [ RouterTestingModule ]
     })
     .compileComponents();
   }));

@@ -12,6 +12,7 @@ import './../../ext-js/leaflet.canvaslayer.field.js'
 import GeoRasterLayer from 'georaster-layer-for-leaflet';
 import parseGeoraster from 'georaster';
 import { resolve } from 'q';
+//import { GeoRasterLayer } from 'src/typeings/georaster-layer-for-leaflet';
 //import * as gm from 'georaster-layer-for-leaflet/georaster-layer-for-leaflet.browserify.min.js';
 //import * as chroma from 'chroma'
 
@@ -128,31 +129,24 @@ export class RasterService {
     return this.http.get<RasterGrid[]>(url)
   }
 
-  public addAsyncLayer(values, metadata, debug=true, gridLayer: L.LayerGroup, map: L.Map): void {
-    parseGeoraster(values, metadata, false).then(georaster => {
-      var layer = new GeoRasterLayer({
-        georaster: georaster,
-        opacity: 0.7,
-        pixelValuesToColorFn: values => values[0] > 0 ? '#ffffff' : '#000000',
-        resolution: 64,
-        });
-  
-        layer.on('click', function (e) {
-            if (e.value !== null) {
-                let v = e.value.toFixed(3);
-                let html = `<span class="popupText">Temperature Anomoly ${v} Deg</span>`;
-                let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
-            }
-        });
-        console.log(layer)
-        gridLayer.addLayer(layer)
-        layer.addTo(map)
-        map.fitBounds(layer.getBounds());
-    })
+
+
+  private async makeGeorasterLayer(values, metadata, debug=false): Promise<any> { //todo make GeoRasterLayer typings
+
+    const georaster = await parseGeoraster(values, metadata, debug)
+    
+    
+    let geoRasterLayer = new GeoRasterLayer({
+      georaster: georaster,
+      opacity: 0.7,
+      pixelValuesToColorFn: values => values[0] > 0 ? '#ffffff' : '#000000',
+      resolution: 64,
+      });
+    return(geoRasterLayer)
   }
 
-  public addToGridLayer(grid: RasterGrid, gridLayer: L.LayerGroup, map: L.Map): void {
 
+  public addCanvasToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map): void {
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;
@@ -162,24 +156,48 @@ export class RasterService {
     let s = new L.ScalarField(grid)
     
     let c = chroma.scale('OrRd').domain(s.range);
-    // let layer = L.canvasLayer.scalarField(s, {
-    //     color: c,
-    //     interpolate: true
-    // });
+    let layer = L.canvasLayer.scalarField(s, {
+        color: c,
+        interpolate: true
+    });
 
+    layer.on('click', function (e) {
+      if (e.value !== null) {
+          let v = e.value.toFixed(3);
+          let html = `<span class="popupText">Temperature Anomoly ${v} Deg</span>`;
+          let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
+      }
+      });
+    gridLayers.addLayer(layer)
+    gridLayers.addTo(map)
+
+
+  }
+  public addGeoRasterToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map): void {
+
+    for (var i = 0; i < grid.zs.length; i++){
+      if (grid.zs[i] == grid.noDataValue) {
+          grid.zs[i] = null;
+        }
+    }
+    
 
     let values = [[]]
     while(grid.zs.length) values[0].push(grid.zs.splice(0,grid.nCols));
-    //const values = grid.zs;
     const noDataValue = null;
     const projection = 4326;
-    const xmin = -140;
+    const xmin = -100;
     const ymax = 0
     const pixelWidth = grid.cellXSize
     const pixelHeight = grid.cellYSize
     const metadata = { noDataValue, projection, xmin, ymax, pixelWidth, pixelHeight };
+
+    this.makeGeorasterLayer(values, metadata).then( geoRasterLayer => {
+      geoRasterLayer.setZIndex(500)
+      gridLayers.addLayer(geoRasterLayer)
+      gridLayers.addTo(map)
+    })
     
-    this.addAsyncLayer(values, metadata, false, gridLayer, map)
     
     
 
