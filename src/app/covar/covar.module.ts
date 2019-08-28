@@ -12,11 +12,12 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [CovarComponent, MapCovarComponent, ControlComponent],
   imports: [
+    MaterialModule,
     HttpClientModule,
     CommonModule,
     FormsModule,
     BrowserAnimationsModule,
-    MaterialModule,
+    //MaterialModule,
   ]
 })
 export class CovarModule { }

@@ -7,10 +7,6 @@ import { ActivatedRoute } from '@angular/router'
 
 import * as L from "leaflet";
 
-declare let chroma: any
-import GeoRasterLayer from 'georaster-layer-for-leaflet';
-import parseGeoraster from 'georaster';
-
 @Component({
   selector: 'app-map-grid',
   templateUrl: './map-grid.component.html',

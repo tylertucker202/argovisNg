@@ -9,6 +9,7 @@ import { GridModule } from './grid/grid.module';
 import { CovarModule } from './covar/covar.module';
 
 import { MaterialModule } from './material/material.module';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
 
@@ -18,20 +19,20 @@ import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
     TopToolbarComponent
   ],
   imports: [
+    MaterialModule,
     AppRoutingModule,
     HomeModule,
     GridModule,
     CovarModule,
-    MaterialModule,
     BrowserModule,
     BrowserAnimationsModule
   ],
   exports: [
+    MaterialModule,
     AppRoutingModule,
     HomeModule,
     GridModule,
     CovarModule,
-    MaterialModule,
     BrowserModule,
     BrowserAnimationsModule
   ],

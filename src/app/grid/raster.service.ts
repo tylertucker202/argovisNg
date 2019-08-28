@@ -7,14 +7,7 @@ import { Observable, of } from 'rxjs';
 import * as L from "leaflet";
 //leaflet.canvaslayer.field.js depends on d3 and chroma scripts set in angular.json.
 import './../../ext-js/leaflet.canvaslayer.field.js'
-//import { GeoRasterLayer } from 'georaster-layer-for-leaflet';
-
-import GeoRasterLayer from 'georaster-layer-for-leaflet';
-import parseGeoraster from 'georaster';
-import { resolve } from 'q';
-//import { GeoRasterLayer } from 'src/typeings/georaster-layer-for-leaflet';
-//import * as gm from 'georaster-layer-for-leaflet/georaster-layer-for-leaflet.browserify.min.js';
-//import * as chroma from 'chroma'
+import * as chroma from 'chroma'
 
 
 
@@ -130,22 +123,6 @@ export class RasterService {
   }
 
 
-
-  private async makeGeorasterLayer(values, metadata, debug=false): Promise<any> { //todo make GeoRasterLayer typings
-
-    const georaster = await parseGeoraster(values, metadata, debug)
-    
-    
-    let geoRasterLayer = new GeoRasterLayer({
-      georaster: georaster,
-      opacity: 0.7,
-      pixelValuesToColorFn: values => values[0] > 0 ? '#ffffff' : '#000000',
-      resolution: 64,
-      });
-    return(geoRasterLayer)
-  }
-
-
   public addCanvasToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map): void {
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
@@ -173,34 +150,5 @@ export class RasterService {
 
 
   }
-  public addGeoRasterToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map): void {
 
-    for (var i = 0; i < grid.zs.length; i++){
-      if (grid.zs[i] == grid.noDataValue) {
-          grid.zs[i] = null;
-        }
-    }
-    
-
-    let values = [[]]
-    while(grid.zs.length) values[0].push(grid.zs.splice(0,grid.nCols));
-    const noDataValue = null;
-    const projection = 4326;
-    const xmin = -100;
-    const ymax = 0
-    const pixelWidth = grid.cellXSize
-    const pixelHeight = grid.cellYSize
-    const metadata = { noDataValue, projection, xmin, ymax, pixelWidth, pixelHeight };
-
-    this.makeGeorasterLayer(values, metadata).then( geoRasterLayer => {
-      geoRasterLayer.setZIndex(500)
-      gridLayers.addLayer(geoRasterLayer)
-      gridLayers.addTo(map)
-    })
-    
-    
-    
-
-
-  }
 }

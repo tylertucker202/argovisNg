@@ -30,13 +30,13 @@ import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.
     QueryGridService,
   ],
   imports: [
+    MaterialModule,
     NouisliderModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MaterialModule,
   ],
 })
 export class GridModule { }
