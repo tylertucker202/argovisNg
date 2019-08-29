@@ -21,7 +21,6 @@ import {get as getProjection } from 'ol/proj.js';
 import { getCenter } from 'ol/extent'
 
 import proj4 from 'proj4';
-import { zip } from 'd3';
 
 export interface ZoomOptions {
   minZoom: number,

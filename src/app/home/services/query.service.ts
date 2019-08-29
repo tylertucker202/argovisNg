@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
 import * as moment from 'moment';
+import { MapState } from '../../../typeings/mapState';
 
 @Injectable()
 export class QueryService {
@@ -62,6 +63,17 @@ export class QueryService {
     return shapes
   }
 
+  public setParamsFromURL(): void{
+      let mapState: MapState
+      this.route.queryParams.subscribe(params => {
+        mapState = params
+        Object.keys(mapState).forEach(key => {
+          this.setMapState(key, mapState[key])
+        });
+        this.urlBuild.emit('got state from map component')
+      });
+    }
+
   public setURL(): void {
 
     //this is reversing the order of this.latLngShapes()
@@ -70,6 +82,8 @@ export class QueryService {
     if (this.latLngShapes) {
       shapesString = JSON.stringify(this.latLngShapes)
     }
+
+    console.log('three day toggle in url', this.threeDayToggle)
     const queryParams = {
                          'mapProj': this.proj,
                          'presRange': presRangeString, 
@@ -91,7 +105,7 @@ export class QueryService {
       });
   }
 
-  public getURL() {
+  public getURL(): string {
     return location.pathname
   }
 
@@ -179,9 +193,9 @@ export class QueryService {
     return this.globalDisplayDate;
   }
 
-  public sendRealtimeMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendRealtimeMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'realtime'
-    this.includeRealtime = toggleChecked.valueOf()
+    this.includeRealtime = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -189,9 +203,10 @@ export class QueryService {
     return this.includeRealtime;
   }
 
-  public sendThreeDayMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendThreeDayMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = '3 day toggle'
-    this.threeDayToggle = toggleChecked.valueOf()
+    this.threeDayToggle = toggleChecked
+    console.log('three day toggle changed', this.threeDayToggle)
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -200,9 +215,9 @@ export class QueryService {
   }
 
 
-  sendBGCToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  sendBGCToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'bgc only'
-    this.onlyBGC = toggleChecked.valueOf()
+    this.onlyBGC = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -210,9 +225,9 @@ export class QueryService {
     return this.onlyBGC
   }
 
-  sendDeepToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  sendDeepToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'deep only'
-    this.onlyDeep = toggleChecked.valueOf()
+    this.onlyDeep = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -222,6 +237,8 @@ export class QueryService {
 
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
+    // console.log(key)
+    // console.log(value)
     switch(key) {
       case 'mapProj': {
         this.setProj(value)

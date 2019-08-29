@@ -14,7 +14,7 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatBottomSheetModule,
-  MatRadioModule,
+  MatRadioModule
 } from '@angular/material';
 
 
@@ -34,7 +34,7 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatBottomSheetModule,
-    MatRadioModule,
+    MatRadioModule
   ],
   imports: [
     CommonModule,
@@ -51,7 +51,7 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatBottomSheetModule,
-    MatRadioModule,
+    MatRadioModule
   ]
 })
 export class MaterialModule { }

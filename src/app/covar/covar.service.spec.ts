@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { CovarService } from './covar.service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,4 +13,35 @@ describe('CovarService', () => {
     const service: CovarService = TestBed.get(CovarService);
     expect(service).toBeTruthy();
   });
+
+  it('should have params', inject([CovarService], (service: CovarService) => {
+
+    expect(service['proj']).toEqual('EPSG:3857')
+    expect(service['longCovar']).toEqual(false)
+    //expect(service['dataUrl']).toBeTruthy()
+    expect(service['lngLat']).toEqual([0, 0])
+  }));
+
+  it('should set map state', inject([CovarService], (service: CovarService) => {
+
+    const testProj = 'testProj'
+    const testLongCovar = true
+    const testLngLat = [25, 25]
+    const testDataUrl = '/covarGrid/25/25/140days'
+
+    service.setMapState('proj', testProj)
+    service.setMapState('longCovar', JSON.stringify(testLongCovar))
+    service.setMapState('lngLat', JSON.stringify(testLngLat))
+
+
+    expect(service['proj']).toEqual(testProj)
+    expect(service['longCovar']).toEqual(testLongCovar)
+    expect(service['lngLat']).toEqual(testLngLat)
+
+    service.buildDataUrl()
+    expect(service.getDataUrl()).toEqual(testDataUrl)
+    expect(service['dataUrl']).toEqual(testDataUrl)
+
+  }));
+
 });

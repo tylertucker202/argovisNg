@@ -5,6 +5,7 @@ import { RasterService } from '../raster.service';
 import { RasterGrid } from '../../home/models/raster-grid'
 import { ActivatedRoute } from '@angular/router'
 
+import * as d3 from 'd3'; //needed for leaflet canvas layer
 import * as L from "leaflet";
 
 @Component({

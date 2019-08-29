@@ -6,6 +6,8 @@ import { Observable, of } from 'rxjs';
 
 import * as L from "leaflet";
 //leaflet.canvaslayer.field.js depends on d3 and chroma scripts set in angular.json.
+
+import * as d3 from 'd3'; //needed for leaflet canvas layer
 import './../../ext-js/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
 
@@ -18,7 +20,7 @@ declare let chroma: any
 })
 export class RasterService {
 
-  public mockRaster: RasterGrid[] = [{_id:"5c920df6afc6ec31f7e5092b",pres:2.5,time:0.5,
+  private mockRaster: RasterGrid[] = [{_id:"5c920df6afc6ec31f7e5092b",pres:2.5,time:0.5,
                                cellXSize:1,cellYSize:1,noDataValue:-9999,
                                zs:[-0.9229999780654907,-0.9229999780654907,-0.9520000219345093,-0.9520000219345093,-0.9610000252723694,
                                 -0.9610000252723694,-0.9620000123977661,-0.9620000123977661,-0.9070000052452087,-0.9070000052452087,
@@ -90,7 +92,7 @@ export class RasterService {
     return of(this.mockRaster)
   }
 
-   private getGridRout(grid: string): string {
+   public getGridRout(grid: string): string {
     let gridRout: string
     switch(grid) {
       case 'kuusela': {
@@ -122,8 +124,7 @@ export class RasterService {
     return this.http.get<RasterGrid[]>(url)
   }
 
-
-  public addCanvasToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map): void {
+  public makeCanvasLayer(grid: RasterGrid, brewerColorScheme: string): any { //todo: create scalar field type
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;
@@ -132,12 +133,17 @@ export class RasterService {
 
     let s = new L.ScalarField(grid)
     
-    let c = chroma.scale('OrRd').domain(s.range);
+    let c = chroma.scale(brewerColorScheme).domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
         interpolate: true
     });
+      return(layer)
+  }
 
+
+  public addCanvasToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map, brewerColorScheme='OrRd'): void {
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme)
     layer.on('click', function (e) {
       if (e.value !== null) {
           let v = e.value.toFixed(3);

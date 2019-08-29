@@ -3,13 +3,12 @@ import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service';
 import { ProfilePoints } from '../models/profile-points';
 import { QueryService } from '../services/query.service';
-import { MapState } from '../../../typeings/mapState';
 import { DOCUMENT } from '@angular/common';
 import * as L from "leaflet";
 import { NotifierService } from 'angular-notifier';
 import { ActivatedRoute } from '@angular/router'
-import 'd3'
-declare var d3: any;
+//import 'd3'
+//declare var d3: any;
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -25,7 +24,6 @@ export class MapComponent implements OnInit, OnDestroy {
   private wrapCoordinates: boolean;
   public proj: string;
   private readonly notifier: NotifierService;
-  public mapState: MapState;
   
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
@@ -43,14 +41,7 @@ export class MapComponent implements OnInit, OnDestroy {
                                       weight: 4,
                                       opacity: .5}
 
-    //todo: put this chunk in queryService as a function and call it here.
-    this.route.queryParams.subscribe(params => {
-      this.mapState = params
-      Object.keys(this.mapState).forEach(key => {
-        this.queryService.setMapState(key, this.mapState[key])
-      });
-      this.queryService.urlBuild.emit('got state from map component')
-    });
+    this.queryService.setParamsFromURL()
 
     this.proj = this.queryService.getProj()
     if ( this.proj === 'WM' ){
@@ -191,7 +182,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private setStartingProfiles(this): void {
-    console.log(this.queryService.getThreeDayToggle())
     if (this.queryService.getThreeDayToggle()){
     this.pointsService.getLastThreeDaysProfiles()
     .subscribe((profilePoints: ProfilePoints[]) => {
