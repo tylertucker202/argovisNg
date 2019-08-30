@@ -122,6 +122,15 @@ export class MapComponent implements OnInit, OnDestroy {
            })
     })
 
+    this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
+      this.markersLayer.clearLayers()
+      const broadcast = true
+      const toggleThreeDayOff = false
+      const drawnItems = this.mapService.drawnItems.toGeoJSON().features
+      const shapes = this.queryService.getShapesFromFeatures(drawnItems)
+      this.queryService.sendShapeMessage(shapes, broadcast, toggleThreeDayOff);
+    })
+
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       this.markersLayer.clearLayers();
       const layer = event.layer
@@ -130,8 +139,8 @@ export class MapComponent implements OnInit, OnDestroy {
       const toggleThreeDayOff = true
 
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
-      const shape = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff);
+      const shapes = this.queryService.getShapesFromFeatures(drawnItems)
+      this.queryService.sendShapeMessage(shapes, broadcast, toggleThreeDayOff);
     });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
