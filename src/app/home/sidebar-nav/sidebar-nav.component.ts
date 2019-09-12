@@ -51,7 +51,6 @@ export class SidebarNavComponent implements OnInit {
   }
 
   realtimeChange(checked: boolean): void {
-
     this.includeRT = checked
     this.queryService.sendRealtimeMsg(this.includeRT);
   }

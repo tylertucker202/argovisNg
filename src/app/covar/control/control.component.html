@@ -6,12 +6,11 @@
     </mat-option>
   </mat-select>
 </mat-form-field>
-<mat-radio-group
-  class="forcast-days"
-  [(ngModel)]="longCovar"
-  (change)="forcastChange($event.value)">
-  <mat-radio-button class="forcast-radio-button"
-    *ngFor="let forcast of forcastSelections"
-    [value]="forcast.value">
-    {{forcast.viewValue}}
-  </mat-radio-button>
+<mat-form-field id="view-forcast">
+<mat-select id="view-forcast-select"  matTooltip="select forcast day"
+[(value)]="forcastDays" (selectionChange)="forcastChange($event.value)">
+ <mat-option *ngFor="let forcast of forcasts" [value]="forcast.value">
+   {{forcast.viewValue}}
+ </mat-option>
+</mat-select>
+</mat-form-field>

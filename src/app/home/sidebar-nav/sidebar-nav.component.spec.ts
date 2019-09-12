@@ -5,6 +5,7 @@ import { FormControl } from '@angular/forms';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../services/query.service';
 import { of } from 'rxjs'; //use for observables
+import * as moment from 'moment';
 
 
 import { MaterialModule } from '../../material/material.module';
@@ -125,12 +126,13 @@ describe('SidebarNavComponent', () => {
 
   it('should set date string', () => {
     const dateStr = '1900-01-01'
-    let date = new Date(dateStr)
+    const momentDate = moment(dateStr, 'YYYY-MM-DD').utc()
+    let date = momentDate.toDate()
 
     component.displayGlobalDateChanged(date)
-
     const outDate = component['date'];
-    console.log('date', outDate)
+    const outDateMoment = moment(outDate.value)
+    expect(outDateMoment.toDate()).toEqual(date)
   });
 
 });

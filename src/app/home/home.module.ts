@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Daterangepicker } from 'ng2-daterangepicker'
 import { HttpClientModule } from '@angular/common/http';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,7 @@ import "proj4leaflet";
 // home and its components
 import { HomeComponent } from './home.component';
 import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
-import { DaterangepickerComponent } from './sidebar-nav/daterangepicker/daterangepicker.component';
+import { SelectionDatePicker } from './sidebar-nav/selectiondatepicker/selectiondatepicker.component';
 import { MapService } from './services/map.service';
 import { QueryService } from './services/query.service'
 import { PointsService } from './services/points.service';
@@ -75,7 +75,7 @@ const customNotifierOptions: NotifierOptions = {
   declarations: [
     HomeComponent,
     SidebarNavComponent,
-    DaterangepickerComponent,
+    SelectionDatePicker,
     MapComponent,
     DoubleSliderComponent,
     ProfPopupComponent,

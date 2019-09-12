@@ -16,11 +16,9 @@ export class DbOverviewComponent implements OnInit {
   public dbOverview: DatabaseOverview;
 
   constructor(private http: HttpClient, private bottomSheet: MatBottomSheet) { }
-  ngOnInit() {
+  ngOnInit() { }
 
-  }
-
-  public openBottomSheet(): void{
+  public openBottomSheet(): void {
     this.getDatabaseInfo().subscribe((dbOverview: DatabaseOverview) => {
       this.dbOverview = dbOverview
       const lastDate = moment(this.dbOverview.lastAdded).format('LLLL')

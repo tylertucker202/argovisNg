@@ -7,7 +7,7 @@ export interface Projections {
 }
 
 export interface ForcastSelections {
-  value: boolean;
+  value: number;
   viewValue: string;
 }
 
@@ -28,25 +28,25 @@ export class ControlComponent implements OnInit {
   ];
 
   @Input() proj: string;
-  @Input() longCovar: boolean;
+  @Input() forcastDays: number;
 
-  public forcastSelections: ForcastSelections[] = [
-    {value: true,  viewValue: "140 days"},
-    {value: false, viewValue: "60 days"}
+  public forcasts: ForcastSelections[] = [
+    {value: 140,  viewValue: "140 days"},
+    {value: 60, viewValue: "60 days"}
   ]
 
 
   ngOnInit() {
     this.proj = this.covarService.getProj()
-    this.longCovar = this.covarService.getForcast()
+    this.forcastDays = this.covarService.getForcast()
   }
 
   private mapProjChange(proj: string): void {
     this.covarService.sendProj(proj)
   }
 
-  private forcastChange(longCovar: boolean): void {
-    this.covarService.sendForcast(longCovar)
+  private forcastChange(forcastDays: number): void {
+    this.covarService.sendForcast(forcastDays)
   }
 
 }

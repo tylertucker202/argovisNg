@@ -3,6 +3,16 @@
     width: 500px;
 }
 
+#view-forcast {
+    margin: 10px;
+    width: 200px;
+}
+
+#view-forcast-select {
+    margin: 10px;
+    width: 200px;
+}
+
 #view-projection-select {
     margin: 10px;
     width: 500px;

@@ -6,11 +6,11 @@ import { DaterangePickerComponent } from 'ng2-daterangepicker';
 
 
 @Component({
-  selector: 'app-daterangepicker',
-  templateUrl: './daterangepicker.component.html',
-  styleUrls: ['./daterangepicker.component.css']
+  selector: 'app-selectiondatepicker',
+  templateUrl: './selectiondatepicker.component.html',
+  styleUrls: ['./selectiondatepicker.component.css']
 })
-export class DaterangepickerComponent {
+export class SelectionDatePicker {
   constructor(private queryService: QueryService) {}
 
   @ViewChild(DaterangePickerComponent)
@@ -54,7 +54,7 @@ export class DaterangepickerComponent {
     this.queryService.sendSelectedDateMessage(this.daterange);
   }
 
-  public selectedDate(daterangeSel: DateRangeSel) {
+  public selectedDate(daterangeSel: DateRangeSel):void {
     console.log(daterangeSel)
       this.daterange.start = daterangeSel.start.format('YYYY-MM-DD');
       this.daterange.end = daterangeSel.end.format('YYYY-MM-DD');

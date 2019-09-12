@@ -17,7 +17,7 @@ describe('CovarService', () => {
   it('should have params', inject([CovarService], (service: CovarService) => {
 
     expect(service['proj']).toEqual('EPSG:3857')
-    expect(service['longCovar']).toEqual(false)
+    expect(service['forcastDays']).toEqual(60)
     //expect(service['dataUrl']).toBeTruthy()
     expect(service['lngLat']).toEqual([0, 0])
   }));
@@ -25,17 +25,17 @@ describe('CovarService', () => {
   it('should set map state', inject([CovarService], (service: CovarService) => {
 
     const testProj = 'testProj'
-    const testLongCovar = true
+    const forcastDays = 140
     const testLngLat = [25, 25]
     const testDataUrl = '/covarGrid/25/25/140days'
 
     service.setMapState('proj', testProj)
-    service.setMapState('longCovar', JSON.stringify(testLongCovar))
+    service.setMapState('forcastDays', JSON.stringify(forcastDays))
     service.setMapState('lngLat', JSON.stringify(testLngLat))
 
 
     expect(service['proj']).toEqual(testProj)
-    expect(service['longCovar']).toEqual(testLongCovar)
+    expect(service['forcastDays']).toEqual(forcastDays)
     expect(service['lngLat']).toEqual(testLngLat)
 
     service.buildDataUrl()
