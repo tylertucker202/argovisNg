@@ -21,10 +21,11 @@ export class MapCovarService {
 
   constructor(private http: HttpClient) { }
 
-  private gridSize = 2;
 
   private mockCovarPoints: CovarPoints = {
     _id : "78.0_-16.0",
+    dLat: 2,
+    dLong: 2,
     geoLocation : {
       type : "Point",
       coordinates : [
@@ -187,7 +188,7 @@ export class MapCovarService {
     return this.http.get<CovarPoints>(url)
   }
 
-  public makeCovarPolygons(features: any, proj: string): VectorLayer {
+  public makeCovarPolygons(features: any, proj: string, dLat: number, dLong: number): VectorLayer {
     let maxProb = 0
     features.forEach( (feature: any) => {
       // find max probability for colorscale
@@ -196,10 +197,10 @@ export class MapCovarService {
       const x = feature.geometry.coordinates[0]
       const y = feature.geometry.coordinates[1]
       const shape = { 
-        ulc: [x - this.gridSize/2, y + this.gridSize/2],
-        urc: [x + this.gridSize/2, y + this.gridSize/2],
-        lrc: [x + this.gridSize/2, y - this.gridSize/2],
-        llc: [x - this.gridSize/2, y - this.gridSize/2],
+        ulc: [x - dLong/2, y + dLat/2],
+        urc: [x + dLong/2, y + dLat/2],
+        lrc: [x + dLong/2, y - dLat/2],
+        llc: [x - dLong/2, y - dLat/2],
       }
       feature.properties.shape = shape
     })

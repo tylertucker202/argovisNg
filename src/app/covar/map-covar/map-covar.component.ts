@@ -250,12 +250,14 @@ export class MapCovarComponent implements OnInit {
   };
 
   private addCovarField(covarPoints: CovarPoints): void {
-    let features = covarPoints.features;
-    let geoLocation = covarPoints.geoLocation;
+    let features = covarPoints.features
+    const dLat = covarPoints.dLat
+    const dLong = covarPoints.dLong
+    let geoLocation = covarPoints.geoLocation
 
     const floatLayer = this.mapCovarService.makeFloatPoint(geoLocation.coordinates, this.proj)
 
-    const gridLayer = this.mapCovarService.makeCovarPolygons(features, this.proj)
+    const gridLayer = this.mapCovarService.makeCovarPolygons(features, this.proj, dLat, dLong)
 
     this.map.addLayer(gridLayer);
     this.map.addLayer(floatLayer);

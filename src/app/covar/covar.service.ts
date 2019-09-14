@@ -81,12 +81,7 @@ export class CovarService {
     url += '/' + JSON.stringify(lngLat[1])
 
     const forcastDays = this.getForcast()
-    if (forcastDays===60) {
-      url += '/60'
-    }
-    else {
-      url += '/140'
-    }
+    url += '/' + JSON.stringify(forcastDays)
     this.dataUrl = url
   }
 
