@@ -27,7 +27,7 @@ describe('CovarService', () => {
     const testProj = 'testProj'
     const forcastDays = 140
     const testLngLat = [25, 25]
-    const testDataUrl = '/covarGrid/25/25/140days'
+    const testDataUrl = '/covarGrid/25/25/140'
 
     service.setMapState('proj', testProj)
     service.setMapState('forcastDays', JSON.stringify(forcastDays))
