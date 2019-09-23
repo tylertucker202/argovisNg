@@ -205,14 +205,11 @@ export class MapCovarComponent implements OnInit {
 
   private addMap(): void {
     let layers = {}
-    // layers['osm'] = new TileLayer({
-    //   source: new OSM()
-    // });
 
     layers['wms4326'] = new TileLayer({
       source: new TileWMS({
         url: 'https://ahocevar.com/geoserver/wms',
-        crossOrigin: 'anonymous',
+        //crossOrigin: "use-credentials",
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
           'TILED': true
