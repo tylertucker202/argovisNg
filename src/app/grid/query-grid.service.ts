@@ -2,6 +2,7 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { MapState } from './../../typeings/mapState';
+import { AvailableGrids, GridRange } from './../../typeings/grids';
 
 import * as _moment from 'moment';
 import {Moment} from 'moment';
@@ -10,13 +11,6 @@ import { geoJSON } from 'leaflet';
 import { FeatureCollection, Feature, Polygon } from 'geojson';
 import { loadFeaturesXhr } from 'ol/featureloader';
 const moment = _moment;
-
-export interface GridRange {
-  latMin: number,
-  latMax: number,
-  lonMin: number,
-  lonMax: number,
-}
 
 @Injectable()
 export class QueryGridService {
@@ -30,8 +24,15 @@ export class QueryGridService {
   private monthYear = moment('01-2010', 'MM-YYYY');
   private mapState: MapState;
   private grid = 'kuusela';
+  private compareGrid: string;
   private latLngShapes: FeatureCollection<Polygon>;
+  private compare = false;
   private globalGrid = false;
+
+  public availableGrids: AvailableGrids[] = [
+    {value: 'rg', viewValue: 'Roemmich-Gilson' },
+    {value: 'kuusela' , viewValue: 'Kuusela-Stein'  },
+  ];
 
   constructor(private route: ActivatedRoute,
     private location: Location,
@@ -44,7 +45,7 @@ export class QueryGridService {
 
   public resetParams(): void{
     const broadcastChange = false
-    const monthYear = moment('01-2010', 'MM-YYYY')
+    const monthYear = moment('01-2007', 'MM-YYYY')
     this.sendMonthYearMessage(monthYear, broadcastChange)
     const presLevel = 10;
     this.sendPresMessage(presLevel, broadcastChange)
@@ -92,6 +93,17 @@ export class QueryGridService {
   public getGrid(): string {
     return this.grid
   }
+
+  public sendCompareGridMessage(grid: string, broadcastChange=true): void {
+    let msg = 'compare grid change';
+    this.compareGrid = grid;
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getCompareGrid(): string {
+    return this.compareGrid
+  }
+
   public clearShapes(): void {
     this.latLngShapes = null
   }
@@ -106,17 +118,23 @@ export class QueryGridService {
     if (broadcastChange) { this.change.emit(msg)}
   }
 
-  public convertShapesToArray( ): number[][][] {
-    let fc = this.getShapes()
-    if (!fc) {
-      return  []
-    }
-    console.log('feature collection', fc)
+  public sendCompare(compareToggle: boolean, broadcastChange=true): void {
+    const msg = 'compare grid toggled'
+    this.compare = compareToggle
+    if (broadcastChange) { this.change.emit(msg)}
+  }
+
+  public getCompare(): boolean {
+    return this.compare
+  }
+
+  public getShapeArray(fc: FeatureCollection<Polygon>): number[][][] {
     let shapeArray = []
+    console.log(fc)
     fc.features.forEach( (feature) => {
+      console.log('feature', feature)
       let latLngArray = []
       const coordinates = feature.geometry.coordinates[0]
-      console.log(coordinates)
       coordinates.forEach( (coord) => {
         const latLng = [coord[1], coord[0]]
         latLngArray.push(latLng)
@@ -147,13 +165,16 @@ export class QueryGridService {
     }
     const globalGrid = JSON.stringify(this.getGlobalGrid())
     const monthYearString = this.formatMonthYear(this.monthYear)
-    const queryParams = {
+    let queryParams = {
                          'presLevel': presLevelString, 
                          'monthYear': monthYearString,
                          'shapes': shapesString,
                          'grid': this.grid,
                          'displayGlobalGrid': globalGrid
                         }
+    if (this.compare) {
+      queryParams['compareGrid'] = this.compareGrid
+    }
     this.router.navigate(
       [],
       {
@@ -211,7 +232,7 @@ export class QueryGridService {
     return(fc)
   }
 
-  public subscribeToMapState(): void {
+  public setParamsFromURL(): void {
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
@@ -234,15 +255,22 @@ export class QueryGridService {
         this.sendGridMessage(grid, notifyChange)
         break;
       }
+      case 'compareGrid': {
+        const grid = value
+        this.compare = true
+        this.sendCompareGridMessage(grid, notifyChange)
+        break;
+      }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const fc = this.convertShapeToFeatureCollection(arrays)
+        console.log('shapes set from url: ', fc)
         this.sendShapeMessage(fc, notifyChange)
         break;
       }
       case 'displayGlobalGrid': {
         const globalGrid = JSON.parse(value)
-        this.sendShapeMessage(globalGrid, notifyChange)
+        this.sendGlobalGrid(globalGrid, notifyChange)
         break;
       }
       case 'presLevel': {

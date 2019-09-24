@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service';
-
-export interface Grids {
-  value: string;
-  viewValue: string;
-}
+import { AvailableGrids } from '../../../../typeings/grids';
 
 @Component({
   selector: 'app-grid-picker',
@@ -15,12 +11,10 @@ export class GridPickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService) { }
 
   private grid: string;
-  private grids: Grids[] = [
-    {value: 'rg', viewValue: 'Roemmich-Gilson' },
-    {value: 'kuusela' , viewValue: 'Kuusela-Stein'  },
-  ];
+  private availableGrids: AvailableGrids[]
 
-  ngOnInit() { 
+  ngOnInit() {
+    this.availableGrids = this.queryGridService.availableGrids
     this.grid = this.queryGridService.getGrid()
 
     this.queryGridService.resetToStart.subscribe((msg) => {

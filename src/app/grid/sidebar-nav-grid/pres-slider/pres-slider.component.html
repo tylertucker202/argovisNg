@@ -1,7 +1,10 @@
 <section class="mat-typography"><p>Pressure level [dbar]:</p></section>
 <div class="slider-container">
   <div class='input-div'>
-    <mat-form-field>
+      <button mat-icon-button matTooltip="previous level" (click)="incrementLevel(-1)"  id="minusOne">
+          <mat-icon class="icon" aria-label="prev pressure level">exposure_neg_1</mat-icon>
+        </button>
+    <mat-form-field id="presInput">
         <mat-label>Pressure Level</mat-label>
         <mat-select [(value)]="presLevel" (selectionChange)="selChange($event)">
           <mat-option [(value)]="pres.value" *ngFor="let pres of presLevels">
@@ -9,5 +12,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <button mat-icon-button matTooltip="next level" (click)="incrementLevel(+1)"  id="plusOne">
+          <mat-icon class="icon" aria-label="next pressure level">exposure_neg_1</mat-icon>
+        </button>
     </div>
 </div>

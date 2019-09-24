@@ -39,26 +39,39 @@ export class MapGridComponent implements OnInit, OnDestroy {
                                       opacity: .5,
                                       }
 
+    //set state from url
+    this.queryGridService.setParamsFromURL()
+
     //setup map
     this.proj = 'WM'
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
     this.map = this.mapService.generateMap(this.proj);
+    const startView = {lat: 0, lng: 0};
+    const startZoom = 3
+    this.map.setView(startView, startZoom)
+    this.mapService.drawnItems.addTo(this.map);
 
-    //set state from url
-    this.queryGridService.subscribeToMapState()
-    const shapeArray = this.queryGridService.convertShapesToArray()
-    if (shapeArray.length > 0) {
+    const shapeFeature = this.queryGridService.getShapes()
+    const displayGlobalGrid = this.queryGridService.getGlobalGrid()
+    if (shapeFeature && !displayGlobalGrid) {
+      const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
       const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
       this.mapService.drawnItems.addLayer(initShapes)
-      this.redrawShapes(false) // runs after map state is set
+      const setURLBool = false
+      this.redrawGrids(setURLBool)
+    }
+    else if (displayGlobalGrid) {
+      const setURLBool = false
+      this.redrawGrids(setURLBool)
     }
 
     this.queryGridService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg);
-         this.redrawShapes() //redraws shape with updated change
+         const setURLBool = true
+         this.redrawGrids(setURLBool) //redraws shape with updated change
         })
 
     this.rasterService.getMockGridRaster()
@@ -119,7 +132,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       });
       this.mapService.drawnItems = myNewShape
 
-      this.redrawShapes()
+      this.redrawGrids()
      });
 
      this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
@@ -131,7 +144,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
          myNewShape.addLayer(layer)
        })
        this.mapService.drawnItems = myNewShape
-       this.redrawShapes() //may be a bit heavy handed, as it requeries db query.
+       this.redrawGrids() //may be a bit heavy handed, as it requeries db query.
      })
 
     this.invalidateSize();
@@ -151,7 +164,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     }
   }
 
-  private redrawShapes(setUrl=true): void {
+  private redrawGrids(setUrl=true): void {
     //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const shapes = this.mapService.drawnItems.toGeoJSON()
     this.gridLayers.clearLayers();

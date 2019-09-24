@@ -11,11 +11,14 @@ export interface PressureLevels {
   styleUrls: ['./pres-slider.component.css'],
 })
 export class PresSliderComponent implements OnInit {
-  presLevels: PressureLevels[] = [
+  private presLevels: PressureLevels[] = [
     {value: 5},
     {value: 10},
     {value: 200}
   ];
+
+  private presArray: number[] = this.presLevels.map(function(x) {return x.value; })
+
 
   constructor(private queryGridService: QueryGridService) { }
 
@@ -27,6 +30,18 @@ export class PresSliderComponent implements OnInit {
     this.queryGridService.resetToStart.subscribe((msg) => {
       this.presLevel = this.queryGridService.getPresLevel()
     })
+  }
+
+  private incrementLevel(increment: number): void {
+
+    const idx = this.presArray.indexOf(this.presLevel)
+    const inc = idx + increment
+
+    if( inc >= 0 && inc <= this.presLevels.length-1 ) {
+      this.presLevel = this.presLevels[idx + increment].value
+      this.sendPresLevel()
+    }
+
   }
 
   private sendPresLevel(): void {

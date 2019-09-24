@@ -12,7 +12,12 @@ export class SidebarNavGridComponent implements OnInit {
   private globalGrid: boolean
 
   ngOnInit() {
-    this.globalGrid = this.queryGridService.getGlobalGrid()
+
+    this.queryGridService.urlBuild.subscribe(msg => {
+      //toggle if states have changed    
+      this.globalGrid = this.queryGridService.getGlobalGrid()
+      console.log('init global grid', this.globalGrid)
+    })
   }
 
   clearGrids(): void {

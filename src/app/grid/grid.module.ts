@@ -16,6 +16,7 @@ import { MonthPickerComponent } from './sidebar-nav-grid/month-picker/month-pick
 import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.component';
 import { QueryGridService } from './query-grid.service';
 import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.component';
+import { GridComparePickerComponent } from './sidebar-nav-grid/grid-compare-picker/grid-compare-picker.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.
     SidebarNavGridComponent,
     MonthPickerComponent,
     PresSliderComponent,
-    GridPickerComponent
+    GridPickerComponent,
+    GridComparePickerComponent
     ],
   providers: [
     QueryGridService,

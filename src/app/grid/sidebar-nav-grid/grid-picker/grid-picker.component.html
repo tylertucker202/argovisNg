@@ -4,7 +4,7 @@
     <mat-form-field>
         <mat-label>Grid</mat-label>
         <mat-select [(value)]="grid" (selectionChange)="selChange($event)">
-          <mat-option [(value)]="grid.value" *ngFor="let grid of grids">
+          <mat-option [(value)]="grid.value" *ngFor="let grid of availableGrids">
             {{grid.viewValue}}
           </mat-option>
         </mat-select>
