@@ -74,19 +74,19 @@ export class MapGridComponent implements OnInit, OnDestroy {
          this.redrawGrids(setURLBool) //redraws shape with updated change
         })
 
-    this.rasterService.getMockGridRaster()
-    .subscribe( (rasterGrids: RasterGrid[]) => {
-      if (rasterGrids.length == 0) {
-        console.log('warning: no grid')
-      }
-      else {
-        console.log('adding mock grid')
-        this.addRasterGridsToMap(rasterGrids)
-      }
-      },
-      error => {
-        console.log('error in getting mock profiles' )
-      })
+    // this.rasterService.getMockGridRaster()
+    // .subscribe( (rasterGrids: RasterGrid[]) => {
+    //   if (rasterGrids.length == 0) {
+    //     console.log('warning: no grid')
+    //   }
+    //   else {
+    //     console.log('adding mock grid')
+    //     this.addRasterGridsToMap(rasterGrids)
+    //   }
+    //   },
+    //   error => {
+    //     console.log('error in getting mock profiles' )
+    //   })
 
     this.queryGridService.clearLayers
     .subscribe( () => {
@@ -183,6 +183,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const pres = this.queryGridService.getPresLevel()
     const grid = this.queryGridService.getGrid()
     const globalGrid = this.queryGridService.getGlobalGrid()
+    const compareGrid = this.queryGridService.getCompareGrid()
 
     if (fc) {
       let bboxes = this.queryGridService.getBBoxes(fc)
@@ -192,18 +193,36 @@ export class MapGridComponent implements OnInit, OnDestroy {
       bboxes.forEach( (bbox) => {
         const lonRange = [bbox[0], bbox[2]]
         const latRange = [bbox[1], bbox[3]]
-        this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
-        .subscribe( (rasterGrids: RasterGrid[]) => {
-          if (rasterGrids.length == 0) {
-            console.log('warning: no grid')
-          }
-          else {
-            this.addRasterGridsToMap(rasterGrids)
-          }
-          },
-          error => {
-            console.log('error in getting grid' )
-          })
+        let gridURL;
+        if (compareGrid){
+          this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
+          .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
+            if (rasterGrids.length != 2) {
+              console.log('warning missing: a grid')
+            }
+            else {
+              let dGrid = this.rasterService.makeDiffGrid(rasterGrids)
+              this.addRasterGridsToMap(dGrid)
+            }
+            },
+            error => {
+              console.log('error in getting grid', error )
+            })
+        }
+        else {
+          this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
+          .subscribe( (rasterGrids: RasterGrid[]) => {
+            if (rasterGrids.length == 0) {
+              console.log('warning: no grid')
+            }
+            else {
+              this.addRasterGridsToMap(rasterGrids)
+            }
+            },
+            error => {
+              console.log('error in getting grid', error )
+            })
+        }
       })
     }
 

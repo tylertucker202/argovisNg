@@ -2,6 +2,7 @@ export interface RasterGrid {
     _id: string;
     pres: number;
     time: number;
+    gridName?: string;
     cellXSize: number | null;
     cellYSize: number | null;
     noDataValue: number | null;

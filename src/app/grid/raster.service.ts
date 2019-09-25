@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RasterGrid } from '../home/models/raster-grid'
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 
 
 import * as L from "leaflet";
@@ -92,36 +92,48 @@ export class RasterService {
     return of(this.mockRaster)
   }
 
-   public getGridRout(grid: string): string {
-    let gridRout: string
-    switch(grid) {
-      case 'kuusela': {
-        gridRout = 'kuuselaGrid'
-        break;
-      }
-      case 'rg': {
-        gridRout = 'rgGrid'
-        break;
-      }
-      default: {
-        console.log('key not found. setting default')
-        gridRout = 'kuuselaGrid'
-        break;
-      }
-  }
-
-    return gridRout
-  }
-
-  public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number, grid='kuusela'): Observable<RasterGrid[]> {
-    const gridRout = this.getGridRout(grid)
+  public getGridRasterProfiles(latRange: number[], lonRange: number[], monthYear: string, pres: number, grid: string): Observable<RasterGrid[]> {
     let url = ''   //'http://localhost:3000'
-    url +=  '/' + gridRout + '?'
+    url += '/griddedProducts/' + grid + '/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
     url += '&monthYear=' + monthYear
     url += '&presLevel=' + JSON.stringify(pres)
     return this.http.get<RasterGrid[]>(url)
+  }
+
+  public getTwoGridRasterProfiles(latRange: number[], lonRange: number[],
+                                  monthYear: string, pres: number,
+                                  grid: string, grid2: string): Observable<[RasterGrid[], RasterGrid[]]> {
+      const numerandGrid = this.getGridRasterProfiles(latRange, lonRange, monthYear, pres, grid)
+      const subtrahendGrid = this.getGridRasterProfiles(latRange, lonRange, monthYear, pres, grid2)
+      const grids = forkJoin([numerandGrid, subtrahendGrid])
+      return grids
+  }
+
+  public makeDiffGrid(rasterGrids: [RasterGrid[], RasterGrid[]]): RasterGrid[] {
+    const numerendGrid = rasterGrids[0][0]
+    const subtrahendGrid = rasterGrids[1][0]
+    let dGrid = numerendGrid;
+    const gridName = numerendGrid['gridName'] + ' - ' + subtrahendGrid['gridName']
+    let zs = []
+    for (let idx = 0; idx < numerendGrid['zs'].length; idx++){
+      
+      const x1 = numerendGrid['zs'][idx]
+      const x2 = subtrahendGrid['zs'][idx]
+      let c: number;
+      if (x1 === numerendGrid['noDataValue'] || x2 === subtrahendGrid['noDataValue']) {
+        c = dGrid['noDataValue']
+      }
+      else{
+        c = numerendGrid['zs'][idx] - subtrahendGrid['zs'][idx]
+      }
+      zs.push(c)
+    }
+    dGrid['zs'] = zs
+    dGrid['gridName'] = gridName
+
+    return [dGrid]
   }
 
   public makeCanvasLayer(grid: RasterGrid, brewerColorScheme: string): any { //todo: create scalar field type
@@ -136,7 +148,7 @@ export class RasterService {
     let c = chroma.scale(brewerColorScheme).domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
-        interpolate: true
+        interpolate: false
     });
       return(layer)
   }
@@ -144,10 +156,11 @@ export class RasterService {
 
   public addCanvasToGridLayer(grid: RasterGrid, gridLayers: L.LayerGroup, map: L.Map, brewerColorScheme='OrRd'): void {
     let layer = this.makeCanvasLayer(grid, brewerColorScheme)
+    const gridName = grid['gridName']
     layer.on('click', function (e) {
       if (e.value !== null) {
           let v = e.value.toFixed(3);
-          let html = `<span class="popupText">Temperature Anomoly ${v} Deg</span>`;
+          let html = `<span class="popupText"> ${gridName} Temperature Anomoly ${v} Deg</span>`;
           let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
       }
       });

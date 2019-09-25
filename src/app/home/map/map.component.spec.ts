@@ -5,9 +5,11 @@ import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service';
 import { QueryService } from '../services/query.service';
 import { PopupCompileService } from '../services/popup-compile.service';
-import { NotifierService } from 'angular-notifier';
+import { NotifierService, NotifierModule } from 'angular-notifier';
 
 
+import { MaterialModule } from '../../material/material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('MapComponent', () => {
@@ -29,7 +31,7 @@ describe('MapComponent', () => {
        PointsService,
        QueryService,
        PopupCompileService],
-       imports: [RouterTestingModule],
+       imports: [RouterTestingModule, NotifierModule],
 
     })
     .compileComponents();
@@ -42,12 +44,12 @@ describe('MapComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+     expect(component).toBeTruthy();
+  });
 
-  // it('should have web mercator', () => {
-  //   expect(component.proj == 'WM')
-  // })
+  it('should have web mercator', () => {
+    expect(component.proj == 'WM')
+  })
 
 });

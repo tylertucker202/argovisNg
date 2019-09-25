@@ -2,14 +2,11 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { MapState } from './../../typeings/mapState';
-import { AvailableGrids, GridRange } from './../../typeings/grids';
+import { GridGroup, ProducerGroup, ParamGroup } from './../../typeings/grids';
 
 import * as _moment from 'moment';
 import {Moment} from 'moment';
-import { indexDebugNode } from '@angular/core/src/debug/debug_node';
-import { geoJSON } from 'leaflet';
 import { FeatureCollection, Feature, Polygon } from 'geojson';
-import { loadFeaturesXhr } from 'ol/featureloader';
 const moment = _moment;
 
 @Injectable()
@@ -21,7 +18,7 @@ export class QueryGridService {
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10;
-  private monthYear = moment('01-2010', 'MM-YYYY');
+  private monthYear = moment('01-2007', 'MM-YYYY');
   private mapState: MapState;
   private grid = 'kuusela';
   private compareGrid: string;
@@ -29,10 +26,21 @@ export class QueryGridService {
   private compare = false;
   private globalGrid = false;
 
-  public availableGrids: AvailableGrids[] = [
-    {value: 'rg', viewValue: 'Roemmich-Gilson' },
-    {value: 'kuusela' , viewValue: 'Kuusela-Stein'  },
+  private ksGrids: GridGroup[] = [
+    {value: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly'  },
+    {value: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly'  },
+    {value: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly'  },
   ];
+  private rgGrids: GridGroup[] = [
+    {value: 'rgTempAnom', viewValue: 'Anomaly'}
+  ]
+  private ksGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
+
+  private rgGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
+
+  private tempGroup: ParamGroup = {param:'Temperature', producers: [this.rgGroup, this.ksGroup]}
+
+  public allParams = [this.tempGroup]
 
   constructor(private route: ActivatedRoute,
     private location: Location,
