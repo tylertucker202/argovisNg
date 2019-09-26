@@ -23,6 +23,13 @@ export class MapService {
   public markersLayer = L.featureGroup()
   public shapeOptions: any;
 
+  private WMstartView = [20, -150]
+  private WMstartZoom = 3
+  private SSPstartView = [-89, .1]
+  private SSPstartZoom = 4
+  private NSPstartView =  [89, .1]
+  private NSPstartZoom = 4
+
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
                                   '+lat_0=-90 +lon_0=-45 +lat_ts=80'+
@@ -83,8 +90,6 @@ export class MapService {
   }
 
   public createWebMercator(this): L.Map {
-    const startView = [20, -150]
-    const startZoom = 3
     let map = L.map('map',
                       {maxZoom: 13,
                       minZoom: 1,
@@ -93,7 +98,7 @@ export class MapService {
                       zoomControl: false,
                       maxBounds: [[-180, -270], [180,180]],
                       layers: [this.baseMaps.ocean]})
-                      .setView(startView, startZoom );
+                      .setView(this.WMstartView, this.WMstartZoom );
     L.control.layers(this.baseMaps).addTo(map);
     map.on('baselayerchange', (e: any) => {
       const graticule = this.getGraticule(e.name)
@@ -107,8 +112,6 @@ export class MapService {
   };
   
   public createSouthernStereographic(this): L.Map {
-    const startView = [-89, .1]
-    const startZoom = 4
     let map = L.map('map',
                     {maxZoom: 13,
                       minZoom: 3,
@@ -116,7 +119,7 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       crs: this.sStereo})
-                      .setView(startView, startZoom);
+                      .setView(this.SSPstartView, this.SSPstartZoom);
     const geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
     geojsonLayer.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
@@ -124,8 +127,6 @@ export class MapService {
   };
   
   public createNorthernStereographic(this): L.Map {
-    const startView =  [89, .1]
-    const startZoom = 4
     let map = L.map('map',
                     {maxZoom: 13,
                       minZoom: 3,
@@ -133,7 +134,7 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       crs: this.nStereo})
-                      .setView(startView, startZoom);
+                      .setView(this.NSPstartView, this.NSPstartZoom);
     const geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle}); 
     geojsonLayerNoAntartica.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
@@ -276,6 +277,7 @@ export class MapService {
   public scaleDisplay = L.control.scale();
 
   public getTransformedShape(shape: number[][]): number[][][] {
+    //takes [lat long] array and transforms it into a [lng lat] nested array 
     let transformedShape = [];
     for (let j = 0; j < shape.length; j++) {
         //transformation if shape is outside longitude.

@@ -62,18 +62,4 @@ describe('RasterService', () => {
 
   }));
 
-  it('should get grid route', inject([RasterService], (service: RasterService) => {
-
-    let gridRout = service.getGridRout('kuusela')
-    expect(gridRout).toBeTruthy()
-    expect(gridRout).toEqual('kuuselaGrid')
-
-    gridRout = service.getGridRout('rg')
-    expect(gridRout).toBeTruthy()
-    expect(gridRout).toEqual('rgGrid')
-
-    gridRout = service.getGridRout('none')
-    expect(gridRout).toBeTruthy()
-    expect(gridRout).toEqual('kuuselaGrid')
-  }));
 });
