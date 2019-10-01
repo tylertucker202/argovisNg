@@ -106,7 +106,7 @@ export class MapComponent implements OnInit, OnDestroy {
           }
         },
         error => {
-          this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
+          this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles.' )
           })
     })
 
