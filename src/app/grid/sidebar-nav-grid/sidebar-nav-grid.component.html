@@ -1,7 +1,7 @@
 <div class="sidebar-nav-grid">
-<app-month-picker class="date-form"></app-month-picker>
+<app-month-picker class="date-form" [hidden]="displayGridParam"></app-month-picker>
 <app-pres-slider class="pres-form"></app-pres-slider>
-<app-grid-picker class="grid-form"></app-grid-picker>
+<app-grid-picker class="grid-form" [displayGridParam]="displayGridParam"></app-grid-picker>
 <button mat-icon-button matTooltip="clear all shapes from map" (click)="clearGrids()" >
     <mat-icon aria-label="clear grid layers">layers_clear</mat-icon>
   </button>
@@ -10,7 +10,11 @@
   </button>
   <mat-slide-toggle matTooltip="toggle on to display grid globally"
                    color="accent" [checked]="globalGrid"
-                   (change)="globalGridToggle($event)">Global Grid
+                   (change)="globalGridToggle($event.checked)">Global Grid
   </mat-slide-toggle>
-  <app-grid-compare-picker class="grid-picker-form"></app-grid-compare-picker>
+  <mat-slide-toggle matTooltip="toggle on to display grid parameters"
+  color="accent" [checked]="displayGridParam"
+  (change)="displayGridParamToggle($event.checked)">Grid Parameters
+</mat-slide-toggle>
+  <app-grid-compare-picker class="grid-picker-form" [hidden]="displayGridParam"></app-grid-compare-picker>
 </div>

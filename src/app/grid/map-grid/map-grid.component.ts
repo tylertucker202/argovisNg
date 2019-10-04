@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core';
 import { MapService } from '../../home/services/map.service';
 import { QueryGridService } from '../query-grid.service';
 import { RasterService } from '../raster.service';
-import { RasterGrid } from '../../home/models/raster-grid'
+import { RasterGrid, RasterParam } from '../../home/models/raster-grid'
 import { ActivatedRoute } from '@angular/router'
 
 import * as d3 from 'd3'; //needed for leaflet canvas layer
@@ -185,6 +185,10 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const globalGrid = this.queryGridService.getGlobalGrid()
     const compareGrid = this.queryGridService.getCompareGrid()
 
+    const displayGridParam = this.queryGridService.getDisplayGridParam()
+    console.log('displayGridParam', displayGridParam)
+    const gridParam = this.queryGridService.getGridParam()
+
     if (fc) {
       let bboxes = this.queryGridService.getBBoxes(fc)
       if (globalGrid) {
@@ -209,8 +213,22 @@ export class MapGridComponent implements OnInit, OnDestroy {
               console.log('error in getting grid', error )
             })
         }
+        else if (displayGridParam) {
+          console.log('gridParam mode active plotting: ', gridParam, ' for grid: ', grid)
+          this.rasterService.getParamRaster(latRange, lonRange, pres, grid, gridParam).subscribe( (rasterParam: RasterParam[]) => {
+            if (rasterParam.length == 0) {
+              console.log('warning missing: a param')
+            }
+            else {
+              this.addRasterGridsToMap(rasterParam)
+            }
+            },
+            error => {
+              console.log('error in getting grid', error )
+            })
+        }
         else {
-          this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
+          this.rasterService.getGridRaster(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
           .subscribe( (rasterGrids: RasterGrid[]) => {
             if (rasterGrids.length == 0) {
               console.log('warning: no grid')
@@ -228,7 +246,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   }
 
-  public addRasterGridsToMap(rasterGrids: RasterGrid[]): void {
+  public addRasterGridsToMap(rasterGrids: RasterGrid[] | RasterParam[]): void {
 
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];

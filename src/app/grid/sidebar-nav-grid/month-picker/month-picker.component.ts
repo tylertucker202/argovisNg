@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import {FormControl} from '@angular/forms';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -38,6 +38,7 @@ export class MonthPickerComponent implements OnInit {
   private monthYear: _moment.Moment;
   private minDate = new Date(2004, 0, 1);
   private maxDate = new Date(2020, 0, 1);
+  @Input() displayGridParam: boolean
 
   constructor(private queryGridService: QueryGridService) { }
 

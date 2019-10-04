@@ -1,6 +1,6 @@
 export interface GridGroup {
   disabled?: boolean;
-  value: string;
+  grid: string;
   viewValue: string;
   }
 
@@ -9,9 +9,15 @@ export interface ProducerGroup {
   grids: GridGroup[]
   }
   
-export interface ParamGroup {
+export interface MeasGroup {
   param: string;
-  producers: ProducerGroup[]
+  producers: ProducerGroup[] | GridParamGroup[];
+}
+
+export interface GridParamGroup {
+  grid: string;
+  viewValue: string;
+  params: string[];
 }
 
 export interface GridRange {

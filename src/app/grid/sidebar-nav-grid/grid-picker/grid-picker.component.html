@@ -1,15 +1,32 @@
-<section class="mat-typography"><p>Grid Selected:</p></section>
-<div class="slider-container">
-  <div class='input-div'>
-    <mat-form-field>
-      <mat-label>Grid</mat-label>
-        <mat-select [(value)]="grid" (selectionChange)="selChange($event)">
-            <mat-optgroup flex-offset="5" *ngFor="let producerGroup of availableGrids[0].producers" [label]="producerGroup.producer">
-              <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.value">
-                {{grid.viewValue}}
-              </mat-option>
-          </mat-optgroup>
-        </mat-select>
-    </mat-form-field>
-  </div>
+<section *ngIf="!displayGridParam" class="mat-typography"><p>Grid Selected:</p></section>
+<div *ngIf="!displayGridParam" class='input-div'>
+  <mat-form-field>
+    <mat-label>Grid</mat-label>
+      <mat-select [(value)]="grid" (selectionChange)="selChange($event)">
+        <mat-optgroup flex-offset="5" *ngFor="let producerGroup of availableGrids[0].producers" [label]="producerGroup.producer">
+          <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.grid">
+            {{grid.viewValue}}
+          </mat-option>
+      </mat-optgroup>
+    </mat-select>
+  </mat-form-field>
+</div>
+<section *ngIf="displayGridParam" class="mat-typography"><p>Grid Param Selected:</p></section>
+<div *ngIf="displayGridParam" class='input-div'>
+  <mat-form-field>
+    <mat-label>Grid</mat-label>
+    <mat-select [(value)]="grid" (selectionChange)="changeParams($event.value)">
+      <mat-option *ngFor="let grid of availableParams" [(value)]="grid.grid">
+        {{grid.viewValue}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Params</mat-label>
+    <mat-select (selectionChange)="paramSelected($event.value)" >
+      <mat-option *ngFor="let param of params" [(value)]="param">
+          {{param}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>

@@ -2,7 +2,7 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { MapState } from './../../typeings/mapState';
-import { GridGroup, ProducerGroup, ParamGroup } from './../../typeings/grids';
+import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typeings/grids';
 
 import * as _moment from 'moment';
 import {Moment} from 'moment';
@@ -20,31 +20,54 @@ export class QueryGridService {
   private presLevel = 10;
   private monthYear = moment('01-2007', 'MM-YYYY');
   private mapState: MapState;
-  private grid = 'kuusela';
+  private grid = 'rgTempAnom';
+  private gridParam: string;
   private compareGrid: string;
   private latLngShapes: FeatureCollection<Polygon>;
   private compare = false;
+  private displayGridParam = false;
   private globalGrid = false;
 
   private ksGrids: GridGroup[] = [
-    {value: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly'  },
-    {value: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly'  },
-    {value: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly'  },
+    {grid: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly'  },
+    {grid: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly'  },
+    {grid: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly'  },
+    {grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly'  },
+    {grid: 'ksSpaceTimeTempTrend' , viewValue: 'Space Time Trend Anomaly'  },
+    {grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly'  },
   ];
   private rgGrids: GridGroup[] = [
-    {value: 'rgTempAnom', viewValue: 'Anomaly'}
+    {grid: 'rgTempAnom', viewValue: 'Anomaly'}
   ]
-  private ksGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
+  private ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
 
-  private rgGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
+  private rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
 
-  private tempGroup: ParamGroup = {param:'Temperature', producers: [this.rgGroup, this.ksGroup]}
+  private tempGridGroup: MeasGroup = {param:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
 
-  public allParams = [this.tempGroup]
+  public allGrids = [this.tempGridGroup]
+
+  private spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
+  private spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
+
+  private ksParams: GridParamGroup[] = [
+    {grid: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly', params: this.spaceParams  },
+    {grid: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly', params: this.spaceParams   },
+    {grid: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly', params: this.spaceParams   },
+    {grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly', params: this.spaceTimeParams   },
+    {grid: 'ksSpaceTimeTempTrend' , viewValue: 'Space Time Trend Anomaly', params: this.spaceTimeParams   },
+    {grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
+  ]
+
+  private ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
+
+  private tempParamGroup: any = {param: 'Temperature', producers: [this.ksParamGroup]}
+  
+  public allGridParams: any =  [this.tempParamGroup]
 
   constructor(private route: ActivatedRoute,
-    private location: Location,
-    private router: Router) { this.router.urlUpdateStrategy = 'eager' }
+              private location: Location,
+              private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
   public formatMonthYear(monthYear: Moment): string {
     const monthYearString = monthYear.format('MM-YYYY')
@@ -102,6 +125,17 @@ export class QueryGridService {
     return this.grid
   }
 
+  public sendGridParamMessage(grid: string, param: string, broadcastChange=true): void {
+    let msg = 'grid param change';
+    this.grid = grid
+    this.gridParam = param
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getGridParam(): string {
+    return this.gridParam
+  }
+
   public sendCompareGridMessage(grid: string, broadcastChange=true): void {
     let msg = 'compare grid change';
     this.compareGrid = grid;
@@ -110,6 +144,16 @@ export class QueryGridService {
 
   public getCompareGrid(): string {
     return this.compareGrid
+  }
+
+  public sendDisplayGridParamMessage(displayGridParam: boolean, broadcastChange=true): void {
+    let msg = 'display grid param change';
+    this.displayGridParam = displayGridParam;
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getDisplayGridParam(): boolean {
+    return this.displayGridParam
   }
 
   public clearShapes(): void {

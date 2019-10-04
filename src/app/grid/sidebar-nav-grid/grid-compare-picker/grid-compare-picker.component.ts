@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service'
-import { ParamGroup } from '../../../../typeings/grids';
+import { MeasGroup } from '../../../../typeings/grids';
 
 @Component({
   selector: 'app-grid-compare-picker',
@@ -14,10 +14,10 @@ export class GridComparePickerComponent implements OnInit {
   private compareGrid: boolean
   private grid: string
 
-  private availableGrids: ParamGroup[]
+  private availableGrids: MeasGroup[]
 
   ngOnInit() {
-    this.availableGrids = this.queryGridService.allParams
+    this.availableGrids = this.queryGridService.allGrids
     this.compareGrid = this.queryGridService.getCompare()
     this.grid = this.queryGridService.getCompareGrid()
   }

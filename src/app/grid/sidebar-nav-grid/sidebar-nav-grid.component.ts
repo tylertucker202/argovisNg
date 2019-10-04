@@ -10,13 +10,18 @@ export class SidebarNavGridComponent implements OnInit {
 
   constructor(private queryGridService: QueryGridService) { }
   private globalGrid: boolean
-
+  private displayGridParam: boolean
   ngOnInit() {
 
     this.queryGridService.urlBuild.subscribe(msg => {
       //toggle if states have changed    
       this.globalGrid = this.queryGridService.getGlobalGrid()
-      console.log('init global grid', this.globalGrid)
+      this.displayGridParam = this.queryGridService.getDisplayGridParam();
+    })
+
+    
+    this.queryGridService.change.subscribe(msg => {
+      this.displayGridParam = this.queryGridService.getDisplayGridParam();
     })
   }
 
@@ -30,9 +35,14 @@ export class SidebarNavGridComponent implements OnInit {
     this.queryGridService.triggerResetToStart();
   }
 
-  globalGridToggle(event: any): void {
-    this.globalGrid = event.checked
+  globalGridToggle(checked: boolean): void {
+    this.globalGrid = checked
     this.queryGridService.sendGlobalGrid(this.globalGrid);
+  }
+
+  displayGridParamToggle(checked: boolean): void {
+    this.displayGridParam = checked
+    this.queryGridService.sendDisplayGridParamMessage(this.displayGridParam);
   }
 
 }
