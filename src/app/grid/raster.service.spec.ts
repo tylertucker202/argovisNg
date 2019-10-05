@@ -46,7 +46,7 @@ describe('RasterService', () => {
       const grid = grids[0]
       const layer = service.makeCanvasLayer(grid, brewerColorScheme)
       expect(layer).toBeTruthy()
-      expect(layer.options.interpolate).toEqual(true)
+      expect(layer.options.interpolate).toEqual(false)
 
       const color = layer.options.color
       const zeroColor = [ 222.5757573724622, 55.1515147449244, 151.60606052787008, 1 ]
