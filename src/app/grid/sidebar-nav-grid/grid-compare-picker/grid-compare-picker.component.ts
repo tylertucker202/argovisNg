@@ -22,17 +22,19 @@ export class GridComparePickerComponent implements OnInit {
     this.grid = this.queryGridService.getCompareGrid()
   }
 
-  compareGridToggle(event: any): void {
-    this.compareGrid = event.checked
-    this.queryGridService.sendCompare(this.compareGrid);
+  compareGridToggle(checked: boolean): void {
+    this.compareGrid = checked
+    const broadcast = true
+    this.queryGridService.sendCompare(this.compareGrid, broadcast);
   }
 
   private sendGrid(): void {
     const broadcastChange = true
     this.queryGridService.sendCompareGridMessage(this.grid, broadcastChange)
-  } 
-  private selChange(grid: any ): void {
-    this.grid = grid.value
+  }
+
+  private selChange(grid: string ): void {
+    this.grid = grid
     this.sendGrid();
   }
 

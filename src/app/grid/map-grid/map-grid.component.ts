@@ -184,9 +184,11 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const grid = this.queryGridService.getGrid()
     const globalGrid = this.queryGridService.getGlobalGrid()
     const compareGrid = this.queryGridService.getCompareGrid()
+    const compare = this.queryGridService.getCompare()
 
     const displayGridParam = this.queryGridService.getDisplayGridParam()
     console.log('displayGridParam', displayGridParam)
+    console.log('compareGrid', compareGrid)
     const gridParam = this.queryGridService.getGridParam()
 
     if (fc) {
@@ -197,8 +199,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
       bboxes.forEach( (bbox) => {
         const lonRange = [bbox[0], bbox[2]]
         const latRange = [bbox[1], bbox[3]]
-        let gridURL;
-        if (compareGrid){
+        let gridURL
+
+        if (compare) {
           this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
           .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
             if (rasterGrids.length != 2) {

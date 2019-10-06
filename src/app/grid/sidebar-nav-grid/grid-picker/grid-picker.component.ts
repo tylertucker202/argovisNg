@@ -20,7 +20,6 @@ export class GridPickerComponent implements OnInit {
   ngOnInit() {
     this.availableGrids = this.queryGridService.allGrids
     this.availableParams = this.queryGridService.allGridParams[0].producers[0].grids
-    console.log(this.availableParams)
     this.grid = this.queryGridService.getGrid()
 
     this.queryGridService.resetToStart.subscribe(msg => {
@@ -33,9 +32,8 @@ export class GridPickerComponent implements OnInit {
     this.queryGridService.sendGridMessage(this.grid, broadcastChange)
   } 
 
-  private selChange(grid: any ): void {
-    this.grid = grid.value
-    console.log(this.grid)
+  private selChange(grid: string ): void {
+    this.grid = grid
     this.sendGrid();
   }
 

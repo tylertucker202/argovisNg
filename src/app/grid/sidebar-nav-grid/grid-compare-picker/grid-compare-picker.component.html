@@ -1,15 +1,15 @@
 <div *ngIf="!displayGridParam">
 <mat-slide-toggle matTooltip="toggle on to subtract another grid"
 color="accent" [checked]="compareGrid"
-(change)="compareGridToggle($event)">Compare Grid
+(change)="compareGridToggle($event.checked)">Compare Grid
 </mat-slide-toggle>
 <section class="mat-typography"><p>Grid Subtrahend Selected:</p></section>
 <div class='input-div'>
     <mat-form-field>
       <mat-label>Grid Subtrahend</mat-label>
-      <mat-select [(value)]="grid" [disabled]="!compareGrid" (selectionChange)="selChange($event)">
+      <mat-select [(value)]="grid" [disabled]="!compareGrid" (selectionChange)="selChange($event.value)">
         <mat-optgroup *ngFor="let producerGroup of availableGrids[0].producers" [label]="producerGroup.producer">
-          <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.value">
+          <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.grid">
             {{grid.viewValue}}
           </mat-option>
         </mat-optgroup>

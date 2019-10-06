@@ -2,7 +2,7 @@
 <div *ngIf="!displayGridParam" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
-      <mat-select [(value)]="grid" (selectionChange)="selChange($event)">
+      <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">
         <mat-optgroup flex-offset="5" *ngFor="let producerGroup of availableGrids[0].producers" [label]="producerGroup.producer">
           <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.grid">
             {{grid.viewValue}}
