@@ -160,19 +160,23 @@ export class RasterService {
   }
 
   public getParamRaster(latRange: number[], lonRange: number[], pres: number, gridName: string, gridParam: string): Observable<RasterParam[]> {
-    let url = '/griddedProducts/gridParams/Temp/'
-    url += JSON.stringify(pres) + '/'
-    url += gridName + '/'
-    url += gridParam + '/'
-    console.log('mock url:', url)
-    return of(this.mockParamRaster)
+    //http://localhost:3000/griddedProducts/gridParams/find?latRange=[-5,5]&lonRange=[-5,5]&grid=kslocalMLESpaceTrend2&param=aOpt&pres=10
+    let url = '/griddedProducts/gridParams/window?'
+    url += 'latRange=' + JSON.stringify(latRange)
+    url += '&lonRange=' + JSON.stringify(lonRange)
+    url += '&presLevel=' + JSON.stringify(pres)
+    url += '&grid=' + gridName
+    url += '&param=' + gridParam
+    //console.log('mock url:', url)
+    return this.http.get<RasterParam[]>(url)
   }
 
   public getGridRaster(latRange: number[], lonRange: number[], monthYear: string, pres: number, gridName: string): Observable<RasterGrid[]> {
     let url = ''   //'http://localhost:3000'
-    url += '/griddedProducts/' + gridName + '/window?'
+    url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
+    url += '&grid=' + gridName
     url += '&monthYear=' + monthYear
     url += '&presLevel=' + JSON.stringify(pres)
     return this.http.get<RasterGrid[]>(url)
