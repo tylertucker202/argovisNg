@@ -43,8 +43,8 @@ export class SelectionDatePicker {
     this.queryService.resetToStart
     .subscribe( () => {
       this.daterange = this.queryService.getSelectionDates()
-      this.start = moment(this.daterange.start)
-      this.end = moment(this.daterange.end)
+      this.start = moment.utc(this.daterange.start)
+      this.end = moment.utc(this.daterange.end)
       this.picker.datePicker.setStartDate(this.start);
       this.picker.datePicker.setEndDate(this.end);
     })

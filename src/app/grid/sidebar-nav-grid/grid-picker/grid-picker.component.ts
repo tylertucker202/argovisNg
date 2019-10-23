@@ -21,14 +21,21 @@ export class GridPickerComponent implements OnInit {
     this.availableGrids = this.queryGridService.allGrids
     this.availableParams = this.queryGridService.allGridParams[0].producers[0].grids
     this.grid = this.queryGridService.getGrid()
+    this.changeParams(this.grid)
+    this.param = this.queryGridService.getGridParam()
+    console.log('grid and param set:', this.grid, this.param)
 
     this.queryGridService.resetToStart.subscribe(msg => {
       this.grid = this.queryGridService.getGrid()
+      this.changeParams(this.grid)
+      this.param = this.queryGridService.getGridParam()
     })
   }
 
   private sendGrid(): void {
-    const broadcastChange = true
+    let broadcastChange
+    if (this.displayGridParam) { broadcastChange = true }
+    else { broadcastChange = false }
     this.queryGridService.sendGridMessage(this.grid, broadcastChange)
   } 
 
@@ -44,8 +51,9 @@ export class GridPickerComponent implements OnInit {
   }
 
   private paramSelected(value: string): void {
-    console.log(this.grid, value)
+    console.log('paramSelected event:', this.grid, value)
     this.param = value;
-    this.queryGridService.sendGridParamMessage(this.grid, this.param)
+    const notifyChange = true
+    this.queryGridService.sendGridParamMessage(this.grid, this.param, notifyChange)
   }
 }

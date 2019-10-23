@@ -26,3 +26,8 @@ export interface GridRange {
   lonMin: number,
   lonMax: number,
   }
+
+export interface ColorScaleGroup {
+  colorScale: string,
+  viewValue: string
+}

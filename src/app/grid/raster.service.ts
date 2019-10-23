@@ -228,7 +228,7 @@ export class RasterService {
     let c = chroma.scale(brewerColorScheme).domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
-        interpolate: false
+        interpolate: true
     });
       return(layer)
   }

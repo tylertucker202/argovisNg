@@ -23,7 +23,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Params</mat-label>
-    <mat-select (selectionChange)="paramSelected($event.value)" >
+    <mat-select [(value)]="param" (selectionChange)="paramSelected($event.value)" >
       <mat-option *ngFor="let param of params" [(value)]="param">
           {{param}}
       </mat-option>

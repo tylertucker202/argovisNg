@@ -59,20 +59,21 @@ export class MonthPickerComponent implements OnInit {
 
   private setDate(): void {
     this.monthYear = this.queryGridService.getMonthYear()
+    console.log(this.monthYear)
     this.date = new FormControl(this.monthYear)    
   }
 
   private sendMonthYearMessage(): void {
     const broadcastChange = true;
+    console.log('month year from picker', this.monthYear)
     this.queryGridService.sendMonthYearMessage(this.monthYear, broadcastChange)
   }
 
   displayGridMonthChanged(event: MatDatepickerInputEvent<Date>): void {
     //triggered when user changes date
     const date = moment(event.value)
-    this.date.setValue(date)
+    this.date.setValue(date) //todo manual fix date picker when directly typing date in
     this.monthYear = date
-    console.log(this.monthYear)
     this.sendMonthYearMessage()
   }
 

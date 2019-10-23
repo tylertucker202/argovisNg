@@ -187,8 +187,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const compare = this.queryGridService.getCompare()
 
     const displayGridParam = this.queryGridService.getDisplayGridParam()
-    console.log('displayGridParam', displayGridParam)
-    console.log('compareGrid', compareGrid)
     const gridParam = this.queryGridService.getGridParam()
 
     if (fc) {
@@ -250,11 +248,11 @@ export class MapGridComponent implements OnInit, OnDestroy {
   }
 
   public addRasterGridsToMap(rasterGrids: RasterGrid[] | RasterParam[]): void {
-
+    const colorScale = this.queryGridService.getColorScale()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
       //this.rasterService.addGeoRasterToGridLayer(grid, this.gridLayers, this.map)
-      this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, this.map)
+      this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, this.map, colorScale)
     }
 
   }

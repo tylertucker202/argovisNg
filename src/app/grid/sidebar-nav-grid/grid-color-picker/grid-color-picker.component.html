@@ -1,0 +1,8 @@
+<mat-form-field>
+  <mat-label>Color scale</mat-label>
+  <mat-select [(value)]="colorScale" (selectionChange)="changeColorScale($event.value)">
+    <mat-option *ngFor="let avlColorScale of availableColorscales" [(value)]="avlColorScale.colorScale">
+      {{avlColorScale.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

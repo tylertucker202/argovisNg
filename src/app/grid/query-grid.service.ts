@@ -1,13 +1,13 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
-import { Location } from '@angular/common';
+import { Injectable, EventEmitter, Output } from '@angular/core'
+import { Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MapState } from './../../typeings/mapState';
-import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typeings/grids';
+import { MapState } from './../../typeings/mapState'
+import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typeings/grids'
 
-import * as _moment from 'moment';
-import {Moment} from 'moment';
-import { FeatureCollection, Feature, Polygon } from 'geojson';
-const moment = _moment;
+import * as _moment from 'moment'
+import {Moment} from 'moment'
+import { FeatureCollection, Feature, Polygon } from 'geojson'
+const moment = _moment
 
 @Injectable()
 export class QueryGridService {
@@ -17,52 +17,45 @@ export class QueryGridService {
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
-  private presLevel = 10;
-  private monthYear = moment('01-2007', 'MM-YYYY');
-  private mapState: MapState;
-  private grid = 'rgTempAnom';
-  private gridParam: string;
-  private compareGrid: string;
-  private latLngShapes: FeatureCollection<Polygon>;
-  private compare = false;
-  private displayGridParam = false;
-  private globalGrid = false;
+  private presLevel = 10
+  private monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+  private mapState: MapState
+  private grid = 'rgTempAnom'
+  private gridParam: string
+  private compareGrid: string
+  private latLngShapes: FeatureCollection<Polygon>
+  private compare = false
+  private displayGridParam = false
+  private globalGrid = false
+  private colorScale = 'OrRd'
 
   private ksGrids: GridGroup[] = [
     {grid: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly'  },
     {grid: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly'  },
     {grid: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly'  },
-    {grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly'  },
+    //{grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly'  },
     {grid: 'ksSpaceTimeTempTrend' , viewValue: 'Space Time Trend Anomaly'  },
     {grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly'  },
-  ];
+  ]
   private rgGrids: GridGroup[] = [
     {grid: 'rgTempAnom', viewValue: 'Anomaly'}
   ]
   private ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
-
   private rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
-
   private tempGridGroup: MeasGroup = {param:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
-
   public allGrids = [this.tempGridGroup]
-
   private spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
   private spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
-
   private ksParams: GridParamGroup[] = [
-    {grid: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly', params: this.spaceParams  },
+    //{grid: 'ksSpaceTempNoTrend' , viewValue: 'Space No Trend Anomaly', params: this.spaceParams  },
     {grid: 'ksSpaceTempTrend' , viewValue: 'Space Trend Anomaly', params: this.spaceParams   },
-    {grid: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly', params: this.spaceParams   },
-    {grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly', params: this.spaceTimeParams   },
+    //{grid: 'ksSpaceTempTrend2' , viewValue: 'Space Trend2 Anomaly', params: this.spaceParams   },
+    //{grid: 'ksSpaceTimeTempNoTrend' , viewValue: 'Space Time No Trend Anomaly', params: this.spaceTimeParams   },
     {grid: 'ksSpaceTimeTempTrend' , viewValue: 'Space Time Trend Anomaly', params: this.spaceTimeParams   },
-    {grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
+    //{grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
   ]
-
   private ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
-
   private tempParamGroup: any = {param: 'Temperature', producers: [this.ksParamGroup]}
-  
   public allGridParams: any =  [this.tempParamGroup]
 
   constructor(private route: ActivatedRoute,
@@ -76,48 +69,52 @@ export class QueryGridService {
 
   public resetParams(): void{
     const broadcastChange = false
-    const monthYear = moment('01-2007', 'MM-YYYY')
+    const monthYear = moment('01-2007', 'MM-YYYY').utc(false)
     this.sendMonthYearMessage(monthYear, broadcastChange)
-    const presLevel = 10;
+    const presLevel = 10
     this.sendPresMessage(presLevel, broadcastChange)
+    this.colorScale = 'OrRd'
     this.clearShapes()
     this.setURL()
     this.resetToStart.emit('reset params pushed')
   }
 
   public sendPresMessage(presLevel: number, broadcastChange=true): void {
-    const msg = 'pres level change';
-    this.presLevel = presLevel;
+    const msg = 'pres level change'
+    this.presLevel = presLevel
     if (broadcastChange){ this.change.emit(msg) }
   }
 
   public getPresLevel(): number {
-    return this.presLevel;
+    return this.presLevel
   }
 
   public sendMonthYearMessage(monthYear: Moment, broadcastChange=true): void {
-    const msg = 'month year change';
-    this.monthYear = monthYear;
+    const msg = 'month year change'
+    if (!monthYear.isValid) {
+      monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+    }
+    this.monthYear = monthYear
     if (broadcastChange){ this.change.emit(msg) }
   }
 
   public getMonthYear(): Moment {
-    return this.monthYear;
+    return this.monthYear
   }
 
   public sendShapeMessage(features: FeatureCollection<Polygon>, broadcastChange=true): void {
-    let msg = 'shape change';
-    this.latLngShapes = features;
+    let msg = 'shape change'
+    this.latLngShapes = features
     if (broadcastChange){ this.change.emit(msg) }
   }
 
   public getShapes(): FeatureCollection<Polygon> {
-    return this.latLngShapes;
+    return this.latLngShapes
   }
 
   public sendGridMessage(grid: string, broadcastChange=true): void {
-    let msg = 'grid change';
-    this.grid = grid;
+    let msg = 'grid change'
+    this.grid = grid
     if (broadcastChange) { this.change.emit(msg) }
   }
 
@@ -126,7 +123,7 @@ export class QueryGridService {
   }
 
   public sendGridParamMessage(grid: string, param: string, broadcastChange=true): void {
-    let msg = 'grid param change';
+    let msg = 'grid param change'
     this.grid = grid
     this.gridParam = param
     if (broadcastChange) { this.change.emit(msg) }
@@ -136,9 +133,19 @@ export class QueryGridService {
     return this.gridParam
   }
 
+  public sendColorScaleMessage(colorScale: string, broadcastChange=true): void {
+    let msg = 'color scale change'
+    this.colorScale = colorScale
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getColorScale(): string {
+    return this.colorScale
+  }
+
   public sendCompareGridMessage(grid: string, broadcastChange=true): void {
-    let msg = 'compare grid change';
-    this.compareGrid = grid;
+    let msg = 'compare grid change'
+    this.compareGrid = grid
     if (broadcastChange) { this.change.emit(msg) }
   }
 
@@ -147,8 +154,11 @@ export class QueryGridService {
   }
 
   public sendDisplayGridParamMessage(displayGridParam: boolean, broadcastChange=true): void {
-    let msg = 'display grid param change';
-    this.displayGridParam = displayGridParam;
+    let msg = 'display grid param change'
+    // if (!this.displayGridParam && displayGridParam && !this.monthYear.isValid()){
+    //   this.monthYear = moment.utc('01-2007', 'MM-YYYY')
+    // }
+    this.displayGridParam = displayGridParam
     if (broadcastChange) { this.change.emit(msg) }
   }
 
@@ -182,9 +192,7 @@ export class QueryGridService {
 
   public getShapeArray(fc: FeatureCollection<Polygon>): number[][][] {
     let shapeArray = []
-    console.log(fc)
     fc.features.forEach( (feature) => {
-      console.log('feature', feature)
       let latLngArray = []
       const coordinates = feature.geometry.coordinates[0]
       coordinates.forEach( (coord) => {
@@ -222,7 +230,10 @@ export class QueryGridService {
                          'monthYear': monthYearString,
                          'shapes': shapesString,
                          'grid': this.grid,
-                         'displayGlobalGrid': globalGrid
+                         'displayGlobalGrid': globalGrid,
+                         'colorScale': this.colorScale,
+                         'displayGridParam': this.displayGridParam,
+                         'gridParam': this.gridParam,
                         }
     if (this.compare) {
       queryParams['compareGrid'] = this.compareGrid
@@ -232,21 +243,21 @@ export class QueryGridService {
       {
         relativeTo: this.route,
         queryParams: queryParams,
-      });
+      })
   }
 
   public getBBoxes(fc: FeatureCollection<Polygon>): number[][] {
     let bboxes = []
     const features = fc.features
     for (let idx in features) {
-      const feature = features[idx];
+      const feature = features[idx]
       var geom: any
       geom = feature.geometry
       const coords = geom.coordinates.reduce(function(dump,part) {
-        return dump.concat(part);
+        return dump.concat(part)
       }, [])
       let bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,];
+        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,]
 
       bbox = coords.reduce(function(prev,coord) {
         return [
@@ -254,8 +265,8 @@ export class QueryGridService {
           Math.min(coord[1], prev[1]),
           Math.max(coord[0], prev[2]),
           Math.max(coord[1], prev[3])
-        ];
-      }, bbox);
+        ]
+      }, bbox)
       bboxes = bboxes.concat([bbox])
     }
     return bboxes
@@ -266,7 +277,7 @@ export class QueryGridService {
 
     let fc: FeatureCollection<Polygon> = { type: 'FeatureCollection',
     features: [] 
-    };
+    }
 
     shapes.forEach( (shape) => {
       let feature: Feature<any> = { type: 'Feature', geometry: {}, properties: {}}
@@ -289,50 +300,67 @@ export class QueryGridService {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
         this.setMapState(key, this.mapState[key])
-      });
+      })
       this.urlBuild.emit('got state from map component')
-    });
+    })
   }
 
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
+      case 'colorScale': {
+        const colorScale = value
+        this.sendColorScaleMessage(colorScale, notifyChange)
+        break
+      }
+      case 'displayGridParam': {
+        const displayGridParam = JSON.parse(value)
+        this.sendDisplayGridParamMessage(displayGridParam, notifyChange)
+        break
+      }
+      case 'gridParam': {
+        const param = value
+        //const grid = this.getGrid()
+        const grid = 'ksSpaceTempTrend' //default grid if param but no grid
+        this.sendGridParamMessage(grid, param, notifyChange)
+        break
+      }
       case 'monthYear': {
-        const monthYear = moment(value, 'MM-YYYY')
-        this.sendMonthYearMessage(monthYear, notifyChange)
-        break;
+
+        const monthYear = moment(value, 'MM-YYYY').utc()
+        if (monthYear.isValid)  { this.sendMonthYearMessage(monthYear, notifyChange) }
+        break
       }
       case 'grid': {
         const grid = value
         this.sendGridMessage(grid, notifyChange)
-        break;
+        break
       }
       case 'compareGrid': {
         const grid = value
         this.compare = true
         this.sendCompareGridMessage(grid, notifyChange)
-        break;
+        break
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const fc = this.convertShapeToFeatureCollection(arrays)
-        console.log('shapes set from url: ', fc)
         this.sendShapeMessage(fc, notifyChange)
-        break;
+        break
       }
       case 'displayGlobalGrid': {
         const globalGrid = JSON.parse(value)
         this.sendGlobalGrid(globalGrid, notifyChange)
-        break;
+        break
       }
       case 'presLevel': {
         const presLevel = JSON.parse(value)
         this.sendPresMessage(presLevel, notifyChange)
-        break;
+        break
       }
       default: {
         console.log('key not found. not doing anything')
-        break;
+        break
     }
   }
 }
