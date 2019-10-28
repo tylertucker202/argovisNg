@@ -34,8 +34,9 @@ export class GridPickerComponent implements OnInit {
 
   private sendGrid(): void {
     let broadcastChange
-    if (this.displayGridParam) { broadcastChange = true }
-    else { broadcastChange = false }
+    if (this.displayGridParam) { broadcastChange = false }
+    else { broadcastChange = true }
+    console.log(this.grid, broadcastChange)
     this.queryGridService.sendGridMessage(this.grid, broadcastChange)
   } 
 
@@ -45,6 +46,7 @@ export class GridPickerComponent implements OnInit {
   }
 
   private changeParams(gridName: string): void {
+    console.log(this.availableParams, gridName)
     const obj = this.availableParams.find(o => o.grid === gridName);
     this.grid = obj.grid
     this.params = obj.params;

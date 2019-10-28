@@ -237,10 +237,13 @@ export class RasterService {
   public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, brewerColorScheme='OrRd'): void {
     let layer = this.makeCanvasLayer(grid, brewerColorScheme)
     const gridName = grid['gridName']
+    const units = grid['units']
+    const measurement = grid['measurement']
+    const param = grid['param']
     layer.on('click', function (e) {
       if (e.value !== null) {
           let v = e.value.toFixed(3);
-          let html = `<span class="popupText"> ${gridName} Temperature Anomoly ${v} Deg</span>`;
+          let html = `<span class="popupText"> ${gridName} <br /> ${measurement} <br /> ${param} <br /> ${v} ${units}</span>`;
           let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
       }
       });

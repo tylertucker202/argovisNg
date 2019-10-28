@@ -42,7 +42,7 @@ export class QueryGridService {
   ]
   private ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
   private rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
-  private tempGridGroup: MeasGroup = {param:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
+  private tempGridGroup: MeasGroup = {meas:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
   public allGrids = [this.tempGridGroup]
   private spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
   private spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
@@ -55,7 +55,7 @@ export class QueryGridService {
     //{grid: 'ksSpaceTimeTempTrend2' , viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
   ]
   private ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
-  private tempParamGroup: any = {param: 'Temperature', producers: [this.ksParamGroup]}
+  private tempParamGroup: any = {meas: 'Temperature', producers: [this.ksParamGroup]}
   public allGridParams: any =  [this.tempParamGroup]
 
   constructor(private route: ActivatedRoute,

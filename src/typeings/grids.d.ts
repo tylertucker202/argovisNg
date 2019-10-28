@@ -10,7 +10,7 @@ export interface ProducerGroup {
   }
   
 export interface MeasGroup {
-  param: string;
+  meas: string;
   producers: ProducerGroup[] | GridParamGroup[];
 }
 
