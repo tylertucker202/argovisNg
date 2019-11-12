@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service'
-import { MeasGroup } from '../../../../typeings/grids';
+import { GridGroup } from '../../../../typeings/grids';
+import { SelectGridService } from '../../select-grid.service';
 
 @Component({
   selector: 'app-grid-compare-picker',
@@ -9,17 +10,38 @@ import { MeasGroup } from '../../../../typeings/grids';
 })
 export class GridComparePickerComponent implements OnInit {
 
-  constructor(private queryGridService: QueryGridService) { }
+  constructor(private queryGridService: QueryGridService,
+              private selectGridService: SelectGridService) { }
 
   private compareGrid: boolean
   private grid: string
+  private param: string
 
-  private availableGrids: MeasGroup[]
+  private availableGrids: GridGroup[]
 
   ngOnInit() {
-    this.availableGrids = this.queryGridService.allGrids
+    this.param = this.queryGridService.getParam()
+    this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
     this.compareGrid = this.queryGridService.getCompare()
     this.grid = this.queryGridService.getCompareGrid()
+
+    this.queryGridService.change //updates selection upon change
+    .subscribe(msg => {
+       if (msg === 'param change'){
+        this.param = this.queryGridService.getParam()
+        this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+       }
+       if (msg === 'display grid param change' && this.compareGrid) {
+        this.param = this.queryGridService.getParam()
+        this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+       }
+      })
+
+      this.queryGridService.resetToStart //updates selection upon change
+      .subscribe(msg => {
+        this.compareGrid = this.queryGridService.getCompare();
+      })
+
   }
 
   compareGridToggle(checked: boolean): void {

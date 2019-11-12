@@ -8,11 +8,9 @@ color="accent" [checked]="compareGrid"
     <mat-form-field>
       <mat-label>Grid Subtrahend</mat-label>
       <mat-select [(value)]="grid" [disabled]="!compareGrid" (selectionChange)="selChange($event.value)">
-        <mat-optgroup *ngFor="let producerGroup of availableGrids[0].producers" [label]="producerGroup.producer">
-          <mat-option *ngFor="let grid of producerGroup.grids" [(value)]="grid.grid">
+          <mat-option *ngFor="let grid of availableGrids" [(value)]="grid.grid">
             {{grid.viewValue}}
           </mat-option>
-        </mat-optgroup>
       </mat-select>
     </mat-form-field>
 </div>

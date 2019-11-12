@@ -42,6 +42,11 @@ export class SidebarNavGridComponent implements OnInit {
 
   displayGridParamToggle(checked: boolean): void {
     this.displayGridParam = checked
+    if (this.displayGridParam) {
+      const broadcastChange = false
+      const param = 'anomaly'
+      this.queryGridService.sendParamMessage(param, broadcastChange)
+    }
     this.queryGridService.sendDisplayGridParamMessage(this.displayGridParam);
   }
 

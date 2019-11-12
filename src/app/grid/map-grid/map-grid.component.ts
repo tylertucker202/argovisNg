@@ -199,7 +199,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
         const latRange = [bbox[1], bbox[3]]
         let gridURL
 
-        if (compare) {
+        if (compare && !displayGridParam) {
           this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
           .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
             if (rasterGrids.length != 2) {
@@ -214,7 +214,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
               console.log('error in getting grid', error )
             })
         }
-        else if (displayGridParam) {
+        else if (!compare && displayGridParam) {
           console.log('gridParam mode active plotting: ', gridParam, ' for grid: ', grid)
           this.rasterService.getParamRaster(latRange, lonRange, pres, grid, gridParam).subscribe( (rasterParam: RasterParam[]) => {
             if (rasterParam.length == 0) {
@@ -222,6 +222,21 @@ export class MapGridComponent implements OnInit, OnDestroy {
             }
             else {
               this.addRasterGridsToMap(rasterParam)
+            }
+            },
+            error => {
+              console.log('error in getting grid', error )
+            })
+        }
+        else if (compare && displayGridParam) {
+          console.log('gridParam mode with compare plotting: ', gridParam, ' for grid: ', grid)
+          this.rasterService.getTwoParamRaster(latRange, lonRange, pres, grid, gridParam, compareGrid).subscribe( (rasterParams: [RasterParam[], RasterParam[]]) => {
+            if (rasterParams.length !=2 ) {
+              console.log('warning missing: a param')
+            }
+            else {
+              let dGrid = this.rasterService.makeDiffGrid(rasterParams)
+              this.addRasterGridsToMap(dGrid)
             }
             },
             error => {
@@ -249,10 +264,11 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   public addRasterGridsToMap(rasterGrids: RasterGrid[] | RasterParam[]): void {
     const colorScale = this.queryGridService.getColorScale()
+    const globalGrid = this.queryGridService.getGlobalGrid()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
       //this.rasterService.addGeoRasterToGridLayer(grid, this.gridLayers, this.map)
-      this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, this.map, colorScale)
+      this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, this.map, globalGrid, colorScale)
     }
 
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service';
-import { MeasGroup } from '../../../../typeings/grids';
+import { MeasGroup, GridGroup } from '../../../../typeings/grids';
+import { SelectGridService } from '../../select-grid.service';
 
 @Component({
   selector: 'app-grid-picker',
@@ -8,54 +9,86 @@ import { MeasGroup } from '../../../../typeings/grids';
   styleUrls: ['./grid-picker.component.css']
 })
 export class GridPickerComponent implements OnInit {
-  constructor(private queryGridService: QueryGridService) { }
+  constructor(private queryGridService: QueryGridService,
+              private selectGridService: SelectGridService) { }
 
-  private grid: string;
-  private params: string[];
-  private param: string;
-  private availableGrids: MeasGroup[]
-  private availableParams: MeasGroup[] | any
+  private grid: string
+  private params: string[]
+  private param: string
+  private gridParam: string
+  private gridParams: string[]
+  private availableGrids: GridGroup[]
+  private availableGridParams: MeasGroup[] | any
+  private availableParams: any
   @Input() displayGridParam: boolean
 
   ngOnInit() {
-    this.availableGrids = this.queryGridService.allGrids
-    this.availableParams = this.queryGridService.allGridParams[0].producers[0].grids
+    this.param = this.queryGridService.getParam()
+    this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+    this.availableParams = this.selectGridService.params
+    this.availableGridParams = this.selectGridService.allGridParams[0].producers[0].grids
     this.grid = this.queryGridService.getGrid()
-    this.changeParams(this.grid)
-    this.param = this.queryGridService.getGridParam()
-    console.log('grid and param set:', this.grid, this.param)
+    if (this.displayGridParam) {
+      this.changeGridParams(this.grid)
+      this.gridParam = this.queryGridService.getGridParam()
+    }
 
     this.queryGridService.resetToStart.subscribe(msg => {
       this.grid = this.queryGridService.getGrid()
-      this.changeParams(this.grid)
-      this.param = this.queryGridService.getGridParam()
+      this.changeGridParams(this.grid)
+      this.param = this.queryGridService.getParam()
+      this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+
+      this.gridParam = this.queryGridService.getGridParam()
     })
+
+    this.queryGridService.change //updates selection upon change
+    .subscribe(msg => {
+      const displayGridParam = this.queryGridService.getDisplayGridParam()
+      if (msg === 'display grid param change' && displayGridParam) {
+        this.param = this.queryGridService.getParam()
+        this.grid = this.queryGridService.getGrid()
+        this.gridParam = this.queryGridService.getGridParam()
+        this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+       }
+      })
   }
 
   private sendGrid(): void {
     let broadcastChange
     if (this.displayGridParam) { broadcastChange = false }
     else { broadcastChange = true }
-    console.log(this.grid, broadcastChange)
     this.queryGridService.sendGridMessage(this.grid, broadcastChange)
   } 
 
-  private selChange(grid: string ): void {
-    this.grid = grid
+  private selChange(gridName: string ): void {
+    this.grid = gridName
+    this.changeGridParams(gridName)
     this.sendGrid();
   }
 
-  private changeParams(gridName: string): void {
-    console.log(this.availableParams, gridName)
-    const obj = this.availableParams.find(o => o.grid === gridName);
-    this.grid = obj.grid
-    this.params = obj.params;
+  private changeParams(param: string): void {
+    this.param = param
+    this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
+    this.queryGridService.sendParamMessage(this.param)
+
   }
 
-  private paramSelected(value: string): void {
-    console.log('paramSelected event:', this.grid, value)
-    this.param = value;
+  private changeGridParams(gridName: string): void {
+    const obj = this.availableGridParams.find(o => o.grid === gridName);
+    if (obj){
+      const gridParams = obj.params
+      this.grid = obj.grid
+      this.gridParams = gridParams
+    }
+    else {
+      this.gridParams = []
+    }
+  }
+
+  private gridParamSelected(value: string): void {
+    this.gridParam = value;
     const notifyChange = true
-    this.queryGridService.sendGridParamMessage(this.grid, this.param, notifyChange)
+    this.queryGridService.sendGridParamMessage(this.grid, this.gridParam, notifyChange)
   }
 }

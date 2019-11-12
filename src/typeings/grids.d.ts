@@ -1,5 +1,6 @@
 export interface GridGroup {
   disabled?: boolean;
+  param: string;
   grid: string;
   viewValue: string;
   }
@@ -16,6 +17,7 @@ export interface MeasGroup {
 
 export interface GridParamGroup {
   grid: string;
+  param: string;
   viewValue: string;
   params: string[];
 }

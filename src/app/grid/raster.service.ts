@@ -165,10 +165,17 @@ export class RasterService {
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
     url += '&presLevel=' + JSON.stringify(pres)
-    url += '&grid=' + gridName
+    url += '&gridName=' + gridName
     url += '&param=' + gridParam
     //console.log('mock url:', url)
     return this.http.get<RasterParam[]>(url)
+  }
+
+  public getTwoParamRaster(latRange: number[], lonRange: number[], pres: number, gridName: string, gridParam: string, gridName2): Observable<[RasterParam[], RasterParam[]]> {
+    const numerendGrid = this.getParamRaster(latRange, lonRange, pres, gridName, gridParam)
+    const subtrahendGrid = this.getParamRaster(latRange, lonRange, pres, gridName2, gridParam)
+    const grids = forkJoin([numerendGrid, subtrahendGrid])
+    return grids
   }
 
   public getGridRaster(latRange: number[], lonRange: number[], monthYear: string, pres: number, gridName: string): Observable<RasterGrid[]> {
@@ -176,7 +183,7 @@ export class RasterService {
     url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
-    url += '&grid=' + gridName
+    url += '&gridName=' + gridName
     url += '&monthYear=' + monthYear
     url += '&presLevel=' + JSON.stringify(pres)
     return this.http.get<RasterGrid[]>(url)
@@ -185,13 +192,13 @@ export class RasterService {
   public getTwoGridRasterProfiles(latRange: number[], lonRange: number[],
                                   monthYear: string, pres: number,
                                   gridName: string, gridName2: string): Observable<[RasterGrid[], RasterGrid[]]> {
-      const numerandGrid = this.getGridRaster(latRange, lonRange, monthYear, pres, gridName)
+      const numerendGrid = this.getGridRaster(latRange, lonRange, monthYear, pres, gridName)
       const subtrahendGrid = this.getGridRaster(latRange, lonRange, monthYear, pres, gridName2)
-      const grids = forkJoin([numerandGrid, subtrahendGrid])
+      const grids = forkJoin([numerendGrid, subtrahendGrid])
       return grids
   }
 
-  public makeDiffGrid(rasterGrids: [RasterGrid[], RasterGrid[]]): RasterGrid[] {
+  public makeDiffGrid(rasterGrids: [RasterGrid[], RasterGrid[]] | [RasterParam[], RasterParam[]]): RasterGrid[] | RasterParam[] {
     const numerendGrid = rasterGrids[0][0]
     const subtrahendGrid = rasterGrids[1][0]
     let dGrid = numerendGrid;
@@ -216,7 +223,7 @@ export class RasterService {
     return [dGrid]
   }
 
-  public makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string): any { //todo: create scalar field type
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean): any { //todo: create scalar field type
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;
@@ -224,18 +231,19 @@ export class RasterService {
     }
 
     let s = new L.ScalarField(grid)
-    
+    const interpolate = !globalGrid
     let c = chroma.scale(brewerColorScheme).domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
-        interpolate: true
+        interpolate: interpolate
     });
       return(layer)
   }
 
 
-  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, brewerColorScheme='OrRd'): void {
-    let layer = this.makeCanvasLayer(grid, brewerColorScheme)
+  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd'): void {
+
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme, globalGrid)
     const gridName = grid['gridName']
     const units = grid['units']
     const measurement = grid['measurement']
