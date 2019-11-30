@@ -45,7 +45,7 @@
     "leaflet": "^1.5.1",
     "leaflet-ajax": "^2.1.0",
     "leaflet-arc": "^1.0.2",
-    "leaflet-canvaslayer-field": "^1.4.1",
+    "leaflet-canvaslayer-field": "tylertucker202/Leaflet.CanvasLayer.Field",
     "leaflet-draw": "^1.0.4",
     "leaflet-graticule": "0.0.1",
     "leaflet.coordinates": "^0.1.5",
