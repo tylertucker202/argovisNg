@@ -223,7 +223,7 @@ export class RasterService {
     return [dGrid]
   }
 
-  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean): any { //todo: create scalar field type
+  public makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean): any { //todo: create scalar field type
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;

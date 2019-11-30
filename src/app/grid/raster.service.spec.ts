@@ -44,17 +44,10 @@ describe('RasterService', () => {
 
       const brewerColorScheme = 'RdPu'
       const grid = grids[0]
-      const layer = service.makeCanvasLayer(grid, brewerColorScheme)
+      const globalGrid = false;
+      const layer = service.makeCanvasLayer(grid, brewerColorScheme, globalGrid)
       expect(layer).toBeTruthy()
       expect(layer.options.interpolate).toEqual(false)
-
-      const color = layer.options.color
-      const zeroColor = [ 222.5757573724622, 55.1515147449244, 151.60606052787008, 1 ]
-      const layerZeroColor = color(0)._rgb
-      expect(layerZeroColor[0]).toEqual(zeroColor[0])
-      expect(layerZeroColor[1]).toEqual(zeroColor[1])
-      expect(layerZeroColor[2]).toEqual(zeroColor[2])
-      expect(layerZeroColor[3]).toEqual(zeroColor[3])
     },
       error => {
         console.log('error in getting mock profiles' )
