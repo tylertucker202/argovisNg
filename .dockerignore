@@ -1,5 +1,6 @@
 .git
 node_modules
-argo/node_modules
+argo-backend
+argo-backend/node_modules
 .gitignore
 dist
