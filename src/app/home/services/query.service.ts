@@ -2,6 +2,7 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
+import { ARShape } from './../models/ar-shape'
 import * as moment from 'moment';
 import { MapState } from '../../../typeings/mapState';
 

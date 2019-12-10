@@ -68,6 +68,18 @@ export class MapService {
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
 
+  private gebco = L.tileLayer.wms('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
+    layers: 'GEBCO_2019_GRID',
+    attribution: 'WMS for the GEBCO_2019 global bathymetric grid'
+    });
+
+  private gebco_2 = L.tileLayer.wms('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
+    layers: 'GEBCO_2019_GRID_2',
+    attribution: 'WMS for the GEBCO_2019 global bathymetric grid. This layers displays the GEBCO_2019 Grid as an image colour-shaded for elevation'
+    });
+
+
+
   public generateMap(this, proj: string): L.Map {
     switch(proj) {
       case 'WM': {
@@ -203,7 +215,9 @@ export class MapService {
     this.baseMaps = {
       esri: this.satelliteMap,
       ocean: this.esri_OceanBasemap,
-      google: this.googleMap
+      google: this.googleMap,
+      gebco: this.gebco,
+      gebco2: this.gebco_2,
     };
   }
 
@@ -297,11 +311,8 @@ export class MapService {
 
   public popupWindowCreation = function(layer, drawnItems): void{
     const feature = layer.toGeoJSON();
-    console.log('popup feature', feature)
     const shape = this.getLatLngFromFeature(feature)
-    console.log('shape before', shape)
     const transformedShape = this.getTransformedShape(shape);
-    console.log('transformed shape', transformedShape)
     layer.bindPopup(null);
     layer.on('click', (event) => {
       layer.setPopupContent(

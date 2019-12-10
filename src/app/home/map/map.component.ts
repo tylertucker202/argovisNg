@@ -173,10 +173,8 @@ export class MapComponent implements OnInit, OnDestroy {
   private addShapesFromURL(): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
-      const shapes = this.mapService.convertArrayToFeatureGroup(shapeArrays)
-      //const features = shapes.eachLayer()
-      shapes.eachLayer( layer => {
-        console.log(layer)
+      const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays)
+      shapeFeatureGroup.eachLayer( layer => {
         const polygon = layer
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems)
       })

@@ -1,0 +1,17 @@
+#minusOne, #plusOne, #minusThree, #plusThree{
+    display:inline-block;
+    transform: scale(1);
+}
+
+#dateInput, #timeInput{
+    width: 100px;
+    text-align: center;
+    display:inline-block;
+}
+
+#row {
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

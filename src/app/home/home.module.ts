@@ -28,6 +28,7 @@ import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
 import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bottom-sheet/help-bottom-sheet.component';
+import { ArDisplayComponent } from './sidebar-nav/ar-display/ar-display.component';
 
 
 const customNotifierOptions: NotifierOptions = {
@@ -83,7 +84,8 @@ const customNotifierOptions: NotifierOptions = {
     ShapePopupComponent,
     DbOverviewComponent,
     HelpBottomSheetComponent,
-    HelpBottomSheet],
+    HelpBottomSheet,
+    ArDisplayComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -105,7 +107,8 @@ const customNotifierOptions: NotifierOptions = {
     ProfPopupComponent, 
     ShapePopupComponent, 
     BottomSheet, 
-    HelpBottomSheet
+    HelpBottomSheet,
+    ArDisplayComponent
   ],
 })
 export class HomeModule { }

@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
+import { ArDisplayComponent } from './ar-display/ar-display.component'
 
 export interface Projections {
   value: string;
@@ -18,7 +20,8 @@ export class SidebarNavComponent implements OnInit {
 
   private date = new FormControl(new Date());
 
-  constructor(private queryService: QueryService ) { }
+  constructor( private queryService: QueryService,
+               public dialog: MatDialog ) { }
 
   @Input() private includeRT: boolean;
   @Input() private onlyBGC: boolean;
@@ -99,5 +102,13 @@ export class SidebarNavComponent implements OnInit {
     const year = date.getFullYear();
     const dateStr = year + '-' + month + '-' + day
     this.queryService.sendGlobalDateMessage(dateStr)
+  }
+
+  openARDialog(): void {
+    console.log('inside AR dialog')
+    const dialogRef = this.dialog.open(ArDisplayComponent, {
+      width: '300px',
+      data: {}
+    });
   }
 }
