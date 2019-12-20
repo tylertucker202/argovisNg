@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RasterGrid, RasterParam } from '../home/models/raster-grid'
+import { RasterGrid, RasterParam, BaseRaster } from '../home/models/raster-grid'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 
@@ -10,18 +10,15 @@ import * as L from "leaflet";
 import * as d3 from 'd3'; //needed for leaflet canvas layer
 import './../../ext-js/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
-
-
-
 declare let chroma: any
 
 @Injectable({
   providedIn: 'root'
 })
 export class RasterService {
-
   private mockRaster: RasterGrid[] = [{_id:"5c920df6afc6ec31f7e5092b",pres:2.5,time:0.5,
                                cellXSize:1,cellYSize:1,noDataValue:-9999,
+                               gridName: 'testGrid', units: 'no units', measurement: 'no meas', param: 'no param',
                                zs:[-0.9229999780654907,-0.9229999780654907,-0.9520000219345093,-0.9520000219345093,-0.9610000252723694,
                                 -0.9610000252723694,-0.9620000123977661,-0.9620000123977661,-0.9070000052452087,-0.9070000052452087,
                                 -0.8270000219345093,-0.8270000219345093,-0.7250000238418579,-0.7250000238418579,-0.6359999775886536,
@@ -89,6 +86,7 @@ export class RasterService {
 
   private mockParamRaster: RasterParam[] = [{_id:"5c920df6afc6ec31f7e5092b",pres:2.5,
                                 cellXSize:1,cellYSize:1,noDataValue:-9999,
+                                gridName: 'testGrid', units: 'no units', measurement: 'no meas', param: 'no param',
                                 zs:[-0.9229999780654907,-0.9229999780654907,-0.9520000219345093,-0.9520000219345093,-0.9610000252723694,
                                  -0.9610000252723694,-0.9620000123977661,-0.9620000123977661,-0.9070000052452087,-0.9070000052452087,
                                  -0.8270000219345093,-0.8270000219345093,-0.7250000238418579,-0.7250000238418579,-0.6359999775886536,
@@ -179,7 +177,7 @@ export class RasterService {
   }
 
   public getGridRaster(latRange: number[], lonRange: number[], monthYear: string, pres: number, gridName: string): Observable<RasterGrid[]> {
-    let url = ''   //'http://localhost:3000'
+    let url = 'http://localhost:3000'
     url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
@@ -223,31 +221,34 @@ export class RasterService {
     return [dGrid]
   }
 
-  public makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean): any { //todo: create scalar field type
+  public makeScalarField(grid: RasterGrid | RasterParam): any {  //todo: create scalar field type
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;
         }
     }
-
     let s = new L.ScalarField(grid)
+    return s
+  }
+
+
+  public makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, range: number[], globalGrid: boolean, map: L.Map): any { //todo: create custom canvas Layer
+    let s = this.makeScalarField(grid)
     const interpolate = !globalGrid
-    let c = chroma.scale(brewerColorScheme).domain(s.range);
+    let c = chroma.scale(brewerColorScheme).domain(range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
         interpolate: interpolate
     });
-      return(layer)
-  }
+    layer['gridName'] = grid['gridName']
+    layer['units'] = grid['units']
+    layer['measurement'] =  grid['measurement']
+    layer['param'] = grid['param']
 
-
-  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd'): void {
-
-    let layer = this.makeCanvasLayer(grid, brewerColorScheme, globalGrid)
-    const gridName = grid['gridName']
-    const units = grid['units']
-    const measurement = grid['measurement']
-    const param = grid['param']
+    const gridName = layer['gridName']
+    const units = layer['units']
+    const measurement = layer['measurement']
+    const param = layer['param']
     layer.on('click', function (e) {
       if (e.value !== null) {
           let v = e.value.toFixed(3);
@@ -255,10 +256,23 @@ export class RasterService {
           let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
       }
       });
+      return(layer)
+  }
+
+  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd', range=[0,1]): L.LayerGroup {
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme, range, globalGrid, map)
     gridLayers.addLayer(layer)
-    gridLayers.addTo(map)
+    return gridLayers
+  }
 
-
+  public buildGridFromLayer(layer: L.Layer | any): BaseRaster {
+    //let grid = layer._field.params
+    // const layerField = layer._field.params
+    // Object.keys(layerField).forEach((key) => {
+    //   grid[key] = layerField[key]
+    // })
+    let g = layer._field.params as BaseRaster
+    return g
   }
 
 }

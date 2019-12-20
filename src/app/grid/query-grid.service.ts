@@ -13,6 +13,7 @@ const moment = _moment
 export class QueryGridService {
 
   @Output() change: EventEmitter<string> = new EventEmitter
+  @Output() updateColorbar: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
@@ -29,6 +30,7 @@ export class QueryGridService {
   private displayGridParam = false
   private globalGrid = false
   private colorScale = 'OrRd'
+  private gridRange = [0, 1]
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -46,6 +48,7 @@ export class QueryGridService {
     const presLevel = 10
     this.sendPresMessage(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
+    this.gridRange = [0, 1]
     this.param = 'total'
     this.displayGridParam = false
     this.compare = false
@@ -62,6 +65,17 @@ export class QueryGridService {
 
   public getPresLevel(): number {
     return this.presLevel
+  }
+
+  public getGridRange(): number[] {
+    return this.gridRange
+  }
+
+  public sendGridRange(gridRange: number[], broadcastChange=true, updateColorBar=true): void {
+    const msg = 'grid range changed'
+    this.gridRange = [+(gridRange[0].toFixed(3)), +(gridRange[1].toFixed(3))]
+    if (updateColorBar) { this.updateColorbar.emit(msg) }
+    if (broadcastChange) {this.change.emit(msg)}
   }
 
   public sendMonthYearMessage(monthYear: Moment, broadcastChange=true): void {
@@ -196,9 +210,19 @@ export class QueryGridService {
     this.clearLayers.emit()
   }
 
+  public getBBoxes(fc: FeatureCollection): number[][]{
+    let bboxes = []
+    fc.features.forEach((feature: Feature) => {
+      const bbox = this.getBBox(feature)
+      bboxes.push(bbox)
+    })
+    return bboxes
+  }
+
   public setURL(): void {
 
     const presLevelString = JSON.stringify(this.presLevel)
+    const gridRangeStr = JSON.stringify(this.gridRange)
     let shapesString = null
     let bboxes: number[][]
     if (this.latLngShapes) {
@@ -217,6 +241,7 @@ export class QueryGridService {
                          'displayGridParam': this.displayGridParam,
                          'gridParam': this.gridParam,
                          'param': this.param,
+                         'gridRange': gridRangeStr
                         }
     if (this.compare) {
       queryParams['compareGrid'] = this.compareGrid
@@ -229,30 +254,25 @@ export class QueryGridService {
       })
   }
 
-  public getBBoxes(fc: FeatureCollection<Polygon>): number[][] {
-    let bboxes = []
-    const features = fc.features
-    for (let idx in features) {
-      const feature = features[idx]
-      var geom: any
-      geom = feature.geometry
-      const coords = geom.coordinates.reduce(function(dump,part) {
-        return dump.concat(part)
-      }, [])
-      let bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,]
+  public getBBox(feature: Feature): number[] {
+    var geom: any
+    geom = feature.geometry
+    const coords = geom.coordinates.reduce(function(dump,part) {
+      return dump.concat(part)
+    }, [])
+    let bbox = [ Number.POSITIVE_INFINITY,Number.POSITIVE_INFINITY,
+      Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY,]
 
-      bbox = coords.reduce(function(prev,coord) {
-        return [
-          Math.min(coord[0], prev[0]),
-          Math.min(coord[1], prev[1]),
-          Math.max(coord[0], prev[2]),
-          Math.max(coord[1], prev[3])
-        ]
-      }, bbox)
-      bboxes = bboxes.concat([bbox])
-    }
-    return bboxes
+    bbox = coords.reduce(function(prev,coord) {
+      return [
+        Math.min(coord[0], prev[0]),
+        Math.min(coord[1], prev[1]),
+        Math.max(coord[0], prev[2]),
+        Math.max(coord[1], prev[3])
+      ]
+    }, bbox)
+    
+    return bbox
   }
 
   //todo: cast as Feature and FeatureCollection types
@@ -314,7 +334,6 @@ export class QueryGridService {
         break
       }
       case 'monthYear': {
-
         const monthYear = moment(value, 'MM-YYYY').utc()
         if (monthYear.isValid)  { this.sendMonthYearMessage(monthYear, notifyChange) }
         break
@@ -346,8 +365,13 @@ export class QueryGridService {
         this.sendPresMessage(presLevel, notifyChange)
         break
       }
+      case 'gridRange': {
+        const gridRange = JSON.parse(value)
+        this.sendGridRange(gridRange, notifyChange)
+        break
+      }
       default: {
-        console.log('key not found. not doing anything')
+        console.log('key not found. not doing anything', key, value)
         break
     }
   }

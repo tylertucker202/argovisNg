@@ -53,19 +53,19 @@ export class MonthPickerComponent implements OnInit {
   private incrementMonth(increment: number): void {
     this.monthYear = this.monthYear.add(increment, 'M')
     this.date = new FormControl(this.monthYear)
-    console.log('increment ', increment)
+    //console.log('increment ', increment)
     this.sendMonthYearMessage()
   }
 
   private setDate(): void {
     this.monthYear = this.queryGridService.getMonthYear()
-    console.log(this.monthYear)
+    //console.log(this.monthYear)
     this.date = new FormControl(this.monthYear)    
   }
 
   private sendMonthYearMessage(): void {
     const broadcastChange = true;
-    console.log('month year from picker', this.monthYear)
+    //console.log('month year from picker', this.monthYear)
     this.queryGridService.sendMonthYearMessage(this.monthYear, broadcastChange)
   }
 

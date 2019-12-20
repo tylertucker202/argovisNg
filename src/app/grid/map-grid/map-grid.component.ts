@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core';
-import { MapService } from '../../home/services/map.service';
-import { QueryGridService } from '../query-grid.service';
-import { RasterService } from '../raster.service';
+import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core'
+import { MapService } from '../../home/services/map.service'
+import { QueryGridService } from '../query-grid.service'
+import { GridMappingService } from '../grid-mapping.service'
+import { RasterService } from '../raster.service'
 import { RasterGrid, RasterParam } from '../../home/models/raster-grid'
-import { ActivatedRoute } from '@angular/router'
 
-import * as d3 from 'd3'; //needed for leaflet canvas layer
 import * as L from "leaflet";
+import { FeatureCollection, Feature, Polygon } from 'geojson'
+import { Geometry } from 'ol/geom'
 
 @Component({
   selector: 'app-map-grid',
@@ -16,7 +17,6 @@ import * as L from "leaflet";
 
 export class MapGridComponent implements OnInit, OnDestroy {
   public map: L.Map;
-  public gridLayers = L.layerGroup();
   public startView: L.LatLng;
   public startZoom: number;
   public graticule: any;
@@ -27,7 +27,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
               public rasterService: RasterService,
-              private queryGridService: QueryGridService){ }
+              private queryGridService: QueryGridService,
+              private gridMappingService: GridMappingService ){ }
 
   ngOnInit() {
 
@@ -47,6 +48,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
+    const queryShapes = true
     this.map = this.mapService.generateMap(this.proj);
     const startView = {lat: 0, lng: 0};
     const startZoom = 3
@@ -60,18 +62,23 @@ export class MapGridComponent implements OnInit, OnDestroy {
       const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
       this.mapService.drawnItems.addLayer(initShapes)
       const setURLBool = false
-      this.redrawGrids(setURLBool)
+      this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes)
     }
     else if (displayGlobalGrid) {
       const setURLBool = false
-      this.redrawGrids(setURLBool)
+      this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes)
     }
 
     this.queryGridService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg);
          const setURLBool = true
-         this.redrawGrids(setURLBool) //redraws shape with updated change
+         let queryShapes = true
+         if (msg === 'color scale change') {
+           queryShapes = false
+           console.log('queryShapes?', queryShapes)
+         }
+         this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes) //redraws shape with updated change
         })
 
     // this.rasterService.getMockGridRaster()
@@ -81,7 +88,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     //   }
     //   else {
     //     console.log('adding mock grid')
-    //     this.addRasterGridsToMap(rasterGrids)
+    //     this.gridMappingService.addRasterGridsToMap(this.map, rasterGrids)
     //   }
     //   },
     //   error => {
@@ -90,7 +97,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.clearLayers
     .subscribe( () => {
-      this.gridLayers.clearLayers();
+      this.gridMappingService.gridLayers.clearLayers();
       this.mapService.drawnItems.clearLayers();
       this.queryGridService.clearShapes()
       this.queryGridService.setURL()
@@ -99,7 +106,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.resetToStart
       .subscribe( () => {
         //this.queryGridService.clearShapes();
-        this.gridLayers.clearLayers();
+        this.gridMappingService.gridLayers.clearLayers();
         this.mapService.drawnItems.clearLayers();
         //this.queryGridService.clearShapes()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
@@ -113,14 +120,15 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.gridDrawControl.addTo(this.map);
-    this.gridLayers.addTo(this.map);
+    this.gridMappingService.gridLayers.addTo(this.map);
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
-      const broadcastLayer = true
-      this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
+      const feature = layer.toGeoJSON()
+      console.log('added layer:', feature)
+      this.updateGridsOnAdd(feature, shapes)
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -131,8 +139,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
         myNewShape.removeLayer(layer)
       });
       this.mapService.drawnItems = myNewShape
-
-      this.redrawGrids()
+      const setURLBool = true
+      const queryGrids = false
+      this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
      });
 
      this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
@@ -144,11 +153,32 @@ export class MapGridComponent implements OnInit, OnDestroy {
          myNewShape.addLayer(layer)
        })
        this.mapService.drawnItems = myNewShape
-       this.redrawGrids() //may be a bit heavy handed, as it requeries db query.
+       const setURLBool = true
+       const queryGrids = false
+       this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
      })
 
     this.invalidateSize();
+  }
 
+  private updateGridsOnAdd(feature, shapes): void {
+    const broadcastLayer = false
+    const setURLBool = true
+    const queryGrids = false
+    const bbox = this.queryGridService.getBBox(feature)
+    const monthYear = this.queryGridService.getMonthYear()
+    const pres = this.queryGridService.getPresLevel()
+    const grid = this.queryGridService.getGrid()
+    const compareGrid = this.queryGridService.getCompareGrid()
+    const compare = this.queryGridService.getCompare()
+    const displayGridParam = this.queryGridService.getDisplayGridParam()
+    const gridParam = this.queryGridService.getGridParam()
+
+    
+    this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
+    this.gridMappingService.addGridSelectionFromFeatureToMap(bbox, this.map, monthYear, pres, grid, compareGrid, compare, displayGridParam, gridParam)
+    this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
+    this.queryGridService.updateColorbar.emit('new shape added')
   }
 
   ngOnDestroy() {
@@ -162,114 +192,5 @@ export class MapGridComponent implements OnInit, OnDestroy {
         this.map.invalidateSize(true);
       },100);
     }
-  }
-
-  private redrawGrids(setUrl=true): void {
-    //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
-    const shapes = this.mapService.drawnItems.toGeoJSON()
-    this.gridLayers.clearLayers();
-    const broadcastLayer = false
-    this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
-    this.gridSelectionOnMap();
-    if(setUrl){
-      this.queryGridService.setURL(); //this should be the last thing
-    }
-  }
-
-  gridSelectionOnMap(): void {
-
-    let fc = this.queryGridService.getShapes()
-    const monthYear = this.queryGridService.getMonthYear()
-    const pres = this.queryGridService.getPresLevel()
-    const grid = this.queryGridService.getGrid()
-    const globalGrid = this.queryGridService.getGlobalGrid()
-    const compareGrid = this.queryGridService.getCompareGrid()
-    const compare = this.queryGridService.getCompare()
-
-    const displayGridParam = this.queryGridService.getDisplayGridParam()
-    const gridParam = this.queryGridService.getGridParam()
-
-    if (fc) {
-      let bboxes = this.queryGridService.getBBoxes(fc)
-      if (globalGrid) {
-        bboxes = [ [-180, -90, 180, 90] ]
-      }
-      bboxes.forEach( (bbox) => {
-        const lonRange = [bbox[0], bbox[2]]
-        const latRange = [bbox[1], bbox[3]]
-        let gridURL
-
-        if (compare && !displayGridParam) {
-          this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
-          .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
-            if (rasterGrids.length != 2) {
-              console.log('warning missing: a grid')
-            }
-            else {
-              let dGrid = this.rasterService.makeDiffGrid(rasterGrids)
-              this.addRasterGridsToMap(dGrid)
-            }
-            },
-            error => {
-              console.log('error in getting grid', error )
-            })
-        }
-        else if (!compare && displayGridParam) {
-          console.log('gridParam mode active plotting: ', gridParam, ' for grid: ', grid)
-          this.rasterService.getParamRaster(latRange, lonRange, pres, grid, gridParam).subscribe( (rasterParam: RasterParam[]) => {
-            if (rasterParam.length == 0) {
-              console.log('warning missing: a param')
-            }
-            else {
-              this.addRasterGridsToMap(rasterParam)
-            }
-            },
-            error => {
-              console.log('error in getting grid', error )
-            })
-        }
-        else if (compare && displayGridParam) {
-          console.log('gridParam mode with compare plotting: ', gridParam, ' for grid: ', grid)
-          this.rasterService.getTwoParamRaster(latRange, lonRange, pres, grid, gridParam, compareGrid).subscribe( (rasterParams: [RasterParam[], RasterParam[]]) => {
-            if (rasterParams.length !=2 ) {
-              console.log('warning missing: a param')
-            }
-            else {
-              let dGrid = this.rasterService.makeDiffGrid(rasterParams)
-              this.addRasterGridsToMap(dGrid)
-            }
-            },
-            error => {
-              console.log('error in getting grid', error )
-            })
-        }
-        else {
-          this.rasterService.getGridRaster(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
-          .subscribe( (rasterGrids: RasterGrid[]) => {
-            if (rasterGrids.length == 0) {
-              console.log('warning: no grid')
-            }
-            else {
-              this.addRasterGridsToMap(rasterGrids)
-            }
-            },
-            error => {
-              console.log('error in getting grid', error )
-            })
-        }
-      })
-    }
-
-  }
-
-  public addRasterGridsToMap(rasterGrids: RasterGrid[] | RasterParam[]): void {
-    const colorScale = this.queryGridService.getColorScale()
-    const globalGrid = this.queryGridService.getGlobalGrid()
-    for( let idx in rasterGrids){
-      let grid = rasterGrids[idx];
-      //this.rasterService.addGeoRasterToGridLayer(grid, this.gridLayers, this.map)
-      this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, this.map, globalGrid, colorScale)
-    }
-
   }
 }

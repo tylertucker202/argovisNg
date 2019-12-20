@@ -1,18 +1,20 @@
-import { Injectable, ApplicationRef } from "@angular/core";
-import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
-import { PopupCompileService } from './popup-compile.service';
-import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson';
+import { Injectable, ApplicationRef } from "@angular/core"
+import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
+import { PopupCompileService } from './popup-compile.service'
+import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
 
-import 'leaflet';
-import 'proj4leaflet';
-import 'arc';
-import 'leaflet-arc';
+import 'leaflet'
+import 'proj4leaflet'
+import 'arc'
+import 'leaflet-arc'
 import 'leaflet-graticule'
-import '../../../ext-js/leaflet.draw-arc-src.js';
-import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
+import '../../../ext-js/leaflet.draw-arc-src.js'
+import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
 import 'leaflet-ajax'
 
 declare let L;
+import * as chroma from 'chroma'
+declare let chroma: any
 
 
 @Injectable()

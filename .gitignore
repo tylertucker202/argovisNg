@@ -6,6 +6,8 @@
 /out-tsc
 
 # another git repository
+argo-backend
+/argo-backend
 /argo-backend/*
 
 

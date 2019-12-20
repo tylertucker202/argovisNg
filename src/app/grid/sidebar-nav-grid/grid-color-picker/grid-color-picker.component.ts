@@ -33,6 +33,11 @@ export class GridColorPickerComponent implements OnInit {
     ]
 
     this.colorScale = this.queryGridService.getColorScale()
+
+    this.queryGridService.resetToStart
+    .subscribe(msg => {
+      this.colorScale = this.queryGridService.getColorScale()
+    })
   }
 
   private changeColorScale(colorScale: string): void {

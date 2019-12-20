@@ -18,6 +18,7 @@ import { QueryGridService } from './query-grid.service';
 import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.component';
 import { GridComparePickerComponent } from './sidebar-nav-grid/grid-compare-picker/grid-compare-picker.component';
 import { GridColorPickerComponent } from './sidebar-nav-grid/grid-color-picker/grid-color-picker.component';
+import { ColorbarComponent } from './sidebar-nav-grid/colorbar/colorbar.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { GridColorPickerComponent } from './sidebar-nav-grid/grid-color-picker/g
     PresSliderComponent,
     GridPickerComponent,
     GridComparePickerComponent,
-    GridColorPickerComponent
+    GridColorPickerComponent,
+    ColorbarComponent
     ],
   providers: [
     QueryGridService,
