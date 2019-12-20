@@ -16,7 +16,8 @@ export class ColorbarComponent implements OnInit {
   private colorScale: string
   private colorArr: string[]
   private domain: number[]
-  private range: number[]
+  private cbrange: number[]
+  private cbarShift: string
   private ticks: number
   private rectHeight: number
   private svgHeight: number
@@ -26,12 +27,13 @@ export class ColorbarComponent implements OnInit {
   constructor( private queryGridService: QueryGridService ) { }
 
   ngOnInit() {
-    this.domain = this.queryGridService.getGridRange()
-    this.range = [0, 200] //pxls for colorbar
+    this.domain = this.queryGridService.getGridDomain()
+    this.cbrange = [0, 200] //pxls for colorbar
     this.ticks = 5;
     this.rectHeight = 20
-    this.svgHeight = 100
+    this.svgHeight = 50
     this.svgWidth = '95%'
+    this.cbarShift = "10"
     this.colorScale = this.queryGridService.getColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
     this.createColorbar(this.colorArr, this.domain)
@@ -54,7 +56,7 @@ export class ColorbarComponent implements OnInit {
 
   private updateColorbar() {
     this.colorScale = this.queryGridService.getColorScale()
-    this.domain = this.queryGridService.getGridRange()
+    this.domain = this.queryGridService.getGridDomain()
     //todo: update domain here
     this.colorArr = chroma.brewer[this.colorScale]
     this.svg.remove();
@@ -89,23 +91,37 @@ export class ColorbarComponent implements OnInit {
 
     //Draw the rectangle and fill with gradient
     this.svg.append("rect")
-      .attr("width", this.range[1])
+      .attr("width", this.cbrange[1])
       .attr("height", this.rectHeight)
+      .attr("x", this.cbarShift)
       .style("fill", "url(#linear-gradient)");
     // //create tick marks
     let scale = d3.scaleLinear()
-    .domain(c.domain()).range(this.range).nice()
+    .domain(c.domain()).range(this.cbrange).nice()
 
     let axis = d3.axisBottom().scale(scale).ticks(this.ticks);
 
     this.svg.append("g")
         .attr("id", "g-runoff")
-        .attr("transform", "translate(0,20)")
+        .attr("transform", "translate("+this.cbarShift+",20)")
         .call(axis);
     }
 
   private clicked(event: any): void {
     console.log('that tickles', event.target, event.x, event.y)
+  }
+
+
+  public minChange(val: number ): void {
+    const lRange = Number(val).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
+    this.domain = [lRange, this.domain[1]];
+    this.queryGridService.sendGridDomainMessage(this.domain, true, false)
+  }
+
+  public maxChange(val: number ): void {
+    const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
+    this.domain = [this.domain[0], uRange];
+    this.queryGridService.sendGridDomainMessage(this.domain, true, false)
   }
   
 

@@ -157,8 +157,8 @@ export class RasterService {
     return of(this.mockRaster)
   }
 
-  public getParamRaster(latRange: number[], lonRange: number[], pres: number, gridName: string, gridParam: string): Observable<RasterParam[]> {
-    //http://localhost:3000/griddedProducts/gridParams/find?latRange=[-5,5]&lonRange=[-5,5]&grid=kslocalMLESpaceTrend2&param=aOpt&pres=10
+  public getParamRaster(latRange: number[], lonRange: number[], pres: number,
+                       gridName: string, gridParam: string): Observable<RasterParam[]> {
     let url = '/griddedProducts/gridParams/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
@@ -169,14 +169,16 @@ export class RasterService {
     return this.http.get<RasterParam[]>(url)
   }
 
-  public getTwoParamRaster(latRange: number[], lonRange: number[], pres: number, gridName: string, gridParam: string, gridName2): Observable<[RasterParam[], RasterParam[]]> {
+  public getTwoParamRaster(latRange: number[], lonRange: number[], pres: number,
+                           gridName: string, gridParam: string, gridName2): Observable<[RasterParam[], RasterParam[]]> {
     const numerendGrid = this.getParamRaster(latRange, lonRange, pres, gridName, gridParam)
     const subtrahendGrid = this.getParamRaster(latRange, lonRange, pres, gridName2, gridParam)
     const grids = forkJoin([numerendGrid, subtrahendGrid])
     return grids
   }
 
-  public getGridRaster(latRange: number[], lonRange: number[], monthYear: string, pres: number, gridName: string): Observable<RasterGrid[]> {
+  public getGridRaster(latRange: number[], lonRange: number[], monthYear: string,
+                       pres: number, gridName: string): Observable<RasterGrid[]> {
     let url = 'http://localhost:3000'
     url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
@@ -231,11 +233,11 @@ export class RasterService {
     return s
   }
 
-
-  public makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, range: number[], globalGrid: boolean, map: L.Map): any { //todo: create custom canvas Layer
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean, map: L.Map): any { //todo: create custom canvas Layer
     let s = this.makeScalarField(grid)
     const interpolate = !globalGrid
-    let c = chroma.scale(brewerColorScheme).domain(range);
+    
+    let c = chroma.scale(brewerColorScheme).domain(s.range);
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
         interpolate: interpolate
@@ -244,33 +246,25 @@ export class RasterService {
     layer['units'] = grid['units']
     layer['measurement'] =  grid['measurement']
     layer['param'] = grid['param']
-
-    const gridName = layer['gridName']
-    const units = layer['units']
-    const measurement = layer['measurement']
-    const param = layer['param']
+    
     layer.on('click', function (e) {
       if (e.value !== null) {
           let v = e.value.toFixed(3);
-          let html = `<span class="popupText"> ${gridName} <br /> ${measurement} <br /> ${param} <br /> ${v} ${units}</span>`;
+          let html = `<span class="popupText"> ${layer['gridName']} <br /> ${layer['measurement']} <br /> ${layer['param']} <br /> ${v} ${layer['units']}</span>`;
           let popup = L.popup().setLatLng(e.latlng).setContent(html).openOn(map);
       }
       });
       return(layer)
   }
 
-  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup, map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd', range=[0,1]): L.LayerGroup {
-    let layer = this.makeCanvasLayer(grid, brewerColorScheme, range, globalGrid, map)
+  public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup,
+                              map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd'): L.LayerGroup {
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme, globalGrid, map)
     gridLayers.addLayer(layer)
     return gridLayers
   }
 
-  public buildGridFromLayer(layer: L.Layer | any): BaseRaster {
-    //let grid = layer._field.params
-    // const layerField = layer._field.params
-    // Object.keys(layerField).forEach((key) => {
-    //   grid[key] = layerField[key]
-    // })
+  public buildGridFromLayer(layer: L.Layer | any): BaseRaster { //todo: create special layer with canvas object _field
     let g = layer._field.params as BaseRaster
     return g
   }

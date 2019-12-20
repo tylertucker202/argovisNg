@@ -48,37 +48,24 @@ export class MapGridComponent implements OnInit, OnDestroy {
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
-    const queryShapes = true
+
     this.map = this.mapService.generateMap(this.proj);
     const startView = {lat: 0, lng: 0};
     const startZoom = 3
     this.map.setView(startView, startZoom)
     this.mapService.drawnItems.addTo(this.map);
 
-    const shapeFeature = this.queryGridService.getShapes()
-    const displayGlobalGrid = this.queryGridService.getGlobalGrid()
-    if (shapeFeature && !displayGlobalGrid) {
-      const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
-      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
-      this.mapService.drawnItems.addLayer(initShapes)
-      const setURLBool = false
-      this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes)
-    }
-    else if (displayGlobalGrid) {
-      const setURLBool = false
-      this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes)
-    }
+    this.initGrids()
 
     this.queryGridService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg);
-         const setURLBool = true
          let queryShapes = true
          if (msg === 'color scale change') {
            queryShapes = false
            console.log('queryShapes?', queryShapes)
          }
-         this.gridMappingService.redrawGrids(this.map, setURLBool, queryShapes) //redraws shape with updated change
+         this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
         })
 
     // this.rasterService.getMockGridRaster()
@@ -124,6 +111,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
+      this.mapService.drawnItems.clearLayers() // allow only one drawn item at a time.
+      this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
       const feature = layer.toGeoJSON()
@@ -132,39 +121,50 @@ export class MapGridComponent implements OnInit, OnDestroy {
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
-      const layers = event.layers;
-      let myNewShape = this.mapService.drawnItems;
-      layers.eachLayer(function(layer: any) {
-        const layer_id = layer._leaflet_id
-        myNewShape.removeLayer(layer)
-      });
-      this.mapService.drawnItems = myNewShape
-      const setURLBool = true
-      const queryGrids = false
-      this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
+      this.queryGridService.clearLayers.emit('deleted event')
      });
 
-     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
-       const layers = event.layers; //layers that have changed
-       let myNewShape = this.mapService.drawnItems;
-       layers.eachLayer(function(layer: any) {
-         const layer_id = layer._leaflet_id
-         myNewShape.removeLayer(layer_id)
-         myNewShape.addLayer(layer)
-       })
-       this.mapService.drawnItems = myNewShape
-       const setURLBool = true
-       const queryGrids = false
-       this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
-     })
+    this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
+      this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
+      this.mapService.drawnItems = this.getNewDrawnItems(event)
+
+      const shapes = this.mapService.drawnItems.toGeoJSON()
+      shapes.features.forEach(feature => {
+      console.log('added layer:', feature)
+      this.updateGridsOnAdd(feature, shapes)
+      });
+    });
 
     this.invalidateSize();
   }
 
+  private getNewDrawnItems(event: L.DrawEvents.Edited): L.FeatureGroup {
+    const layers = event.layers;
+    let myNewShape = this.mapService.drawnItems;
+    layers.eachLayer(function(layer: any) {
+      const layer_id = layer._leaflet_id
+      myNewShape.removeLayer(layer_id)
+      myNewShape.addLayer(layer)
+    });
+    return myNewShape
+}
+
+  private initGrids(): void{ 
+    const shapeFeature = this.queryGridService.getShapes()
+    const displayGlobalGrid = this.queryGridService.getGlobalGrid()
+    if (shapeFeature && !displayGlobalGrid) {
+      const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
+      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
+      this.mapService.drawnItems.addLayer(initShapes)
+      this.gridMappingService.drawGrids(this.map)
+    }
+    else if (displayGlobalGrid) {
+      this.gridMappingService.drawGrids(this.map)
+    }
+  }
+
   private updateGridsOnAdd(feature, shapes): void {
     const broadcastLayer = false
-    const setURLBool = true
-    const queryGrids = false
     const bbox = this.queryGridService.getBBox(feature)
     const monthYear = this.queryGridService.getMonthYear()
     const pres = this.queryGridService.getPresLevel()
@@ -173,11 +173,12 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const compare = this.queryGridService.getCompare()
     const displayGridParam = this.queryGridService.getDisplayGridParam()
     const gridParam = this.queryGridService.getGridParam()
+    const lockRange = false
 
     
     this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
-    this.gridMappingService.addGridSelectionFromFeatureToMap(bbox, this.map, monthYear, pres, grid, compareGrid, compare, displayGridParam, gridParam)
-    this.gridMappingService.redrawGrids(this.map, setURLBool, queryGrids)
+    this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, displayGridParam, gridParam, lockRange)
+    this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')
   }
 

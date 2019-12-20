@@ -1,2 +1,16 @@
-<svg width="100%" height="0px" class="mySvg" (click)="clicked($event)">
-</svg>
+<!-- <svg width="100%" height="0px" class="mySvg" (click)="clicked($event)"></svg> -->
+<mat-label>Colorbar range:</mat-label>
+<div class='input-div'>
+    <mat-form-field>
+    <input matInput matTooltip="sets minimum colorbar leve for raster selectionl"
+        class="colorbar-input" placeholder="min"
+        value={{domain[0]}} type="number" 
+        id='minInput' (change)="minChange($event.target.value)">
+    </mat-form-field>
+    <mat-form-field>
+    <input matInput matTooltip="sets maximum colorbar level for raster selection" 
+        class="colorbar-input" placeholder="max"
+        value={{domain[1]}} type="number" 
+        id='maxInput' (change)="maxChange($event.target.value)">
+    </mat-form-field>
+</div>

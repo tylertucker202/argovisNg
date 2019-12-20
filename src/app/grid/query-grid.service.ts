@@ -30,7 +30,7 @@ export class QueryGridService {
   private displayGridParam = false
   private globalGrid = false
   private colorScale = 'OrRd'
-  private gridRange = [0, 1]
+  private gridDomain = [0, 1]
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -48,7 +48,7 @@ export class QueryGridService {
     const presLevel = 10
     this.sendPresMessage(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
-    this.gridRange = [0, 1]
+    this.gridDomain = [0, 1]
     this.param = 'total'
     this.displayGridParam = false
     this.compare = false
@@ -67,15 +67,16 @@ export class QueryGridService {
     return this.presLevel
   }
 
-  public getGridRange(): number[] {
-    return this.gridRange
+  public getGridDomain(): number[] {
+    return this.gridDomain
   }
 
-  public sendGridRange(gridRange: number[], broadcastChange=true, updateColorBar=true): void {
+  public sendGridDomainMessage(gridDomain: number[], broadcastChange=true, updateColorBar=true): void {
     const msg = 'grid range changed'
-    this.gridRange = [+(gridRange[0].toFixed(3)), +(gridRange[1].toFixed(3))]
+    this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
+    this.setURL()
     if (updateColorBar) { this.updateColorbar.emit(msg) }
-    if (broadcastChange) {this.change.emit(msg)}
+    else if (broadcastChange) {this.change.emit(msg)}
   }
 
   public sendMonthYearMessage(monthYear: Moment, broadcastChange=true): void {
@@ -222,7 +223,7 @@ export class QueryGridService {
   public setURL(): void {
 
     const presLevelString = JSON.stringify(this.presLevel)
-    const gridRangeStr = JSON.stringify(this.gridRange)
+    const gridDomainStr = JSON.stringify(this.gridDomain)
     let shapesString = null
     let bboxes: number[][]
     if (this.latLngShapes) {
@@ -241,7 +242,7 @@ export class QueryGridService {
                          'displayGridParam': this.displayGridParam,
                          'gridParam': this.gridParam,
                          'param': this.param,
-                         'gridRange': gridRangeStr
+                         'gridDomain': gridDomainStr
                         }
     if (this.compare) {
       queryParams['compareGrid'] = this.compareGrid
@@ -365,9 +366,9 @@ export class QueryGridService {
         this.sendPresMessage(presLevel, notifyChange)
         break
       }
-      case 'gridRange': {
-        const gridRange = JSON.parse(value)
-        this.sendGridRange(gridRange, notifyChange)
+      case 'gridDomain': {
+        const gridDomain = JSON.parse(value)
+        this.sendGridDomainMessage(gridDomain, notifyChange)
         break
       }
       default: {
