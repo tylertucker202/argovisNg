@@ -4,7 +4,11 @@
 /dist
 /tmp
 /out-tsc
-/argo
+
+# another git repository
+/argo-backend/*
+
+
 
 # dependencies
 /node_modules
