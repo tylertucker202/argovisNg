@@ -35,9 +35,9 @@ export class PresSliderComponent implements OnInit {
   private incrementLevel(increment: number): void {
     const idx = this.presArray.indexOf(this.presLevel)
     const inc = idx + increment
-    console.log('increment', increment, 'idx', idx, 'inc', inc)
-    if( inc >= 0 && inc <= this.presLevels.length-1 ) {
-      this.presLevel = this.presLevels[idx + increment].value
+    console.log('increment', increment, 'idx', idx, 'inc', inc, 'new pres level', this.presLevels[inc].value)
+    if( inc >= 0 && inc < this.presLevels.length) {
+      this.presLevel = this.presLevels[inc].value
       this.sendPresLevel()
     }
 

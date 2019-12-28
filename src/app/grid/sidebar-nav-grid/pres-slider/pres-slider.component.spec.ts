@@ -55,10 +55,12 @@ fdescribe('PresSliderComponent', () => {
     let inc = 1
     component['incrementLevel'](inc)
     expect(component['presLevel']).toEqual(200)
-    inc -= 2
+    inc = -1
+    component['incrementLevel'](inc)
+    expect(component['presLevel']).toEqual(pres)
+    inc = -1
     component['incrementLevel'](inc)
     expect(component['presLevel']).toEqual(5)
-    expect(spySendPresMessage).toHaveBeenCalledTimes(2)
 
   });
 
