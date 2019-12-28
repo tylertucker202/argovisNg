@@ -29,7 +29,6 @@ export class GridColorPickerComponent implements OnInit {
       {viewValue: 'Blue to Purple', colorScale: 'BuPu'},
       {viewValue: 'Blue to Green', colorScale: 'BuGn'},
       {viewValue: 'Blues', colorScale: 'Blues'}
-      
     ]
 
     this.colorScale = this.queryGridService.getColorScale()

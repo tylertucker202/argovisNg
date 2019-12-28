@@ -33,10 +33,9 @@ export class PresSliderComponent implements OnInit {
   }
 
   private incrementLevel(increment: number): void {
-
     const idx = this.presArray.indexOf(this.presLevel)
     const inc = idx + increment
-
+    console.log('increment', increment, 'idx', idx, 'inc', inc)
     if( inc >= 0 && inc <= this.presLevels.length-1 ) {
       this.presLevel = this.presLevels[idx + increment].value
       this.sendPresLevel()
@@ -46,11 +45,13 @@ export class PresSliderComponent implements OnInit {
 
   private sendPresLevel(): void {
     const broadcastChange = true
-    this.queryGridService.sendPresMessage(this.presLevel, broadcastChange)
+    if (this.presLevel !== this.queryGridService.getPresLevel()){
+      this.queryGridService.sendPresMessage(this.presLevel, broadcastChange)
+    }
   } 
 
-  private selChange(newPres: any ): void {
-    this.presLevel = newPres.value
+  private selChange(newPres: number ): void {
+    this.presLevel = newPres
     console.log(this.presLevel)
     this.sendPresLevel();
   }

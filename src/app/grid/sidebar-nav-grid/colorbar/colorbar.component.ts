@@ -80,7 +80,7 @@ export class ColorbarComponent implements OnInit {
       .attr("y2", "0%");
 
     //A color scale
-    let c = d3.scaleLinear().range(colorArr).domain(domain).nice();
+    const c = d3.scaleLinear().range(colorArr).domain(domain).nice();
     
     //Append multiple color stops by using D3's data/enter step
     linearGradient.selectAll("stop")
@@ -96,10 +96,10 @@ export class ColorbarComponent implements OnInit {
       .attr("x", this.cbarShift)
       .style("fill", "url(#linear-gradient)");
     // //create tick marks
-    let scale = d3.scaleLinear()
+    const scale = d3.scaleLinear()
     .domain(c.domain()).range(this.cbrange).nice()
 
-    let axis = d3.axisBottom().scale(scale).ticks(this.ticks);
+    const axis = d3.axisBottom().scale(scale).ticks(this.ticks);
 
     this.svg.append("g")
         .attr("id", "g-runoff")
@@ -107,21 +107,20 @@ export class ColorbarComponent implements OnInit {
         .call(axis);
     }
 
-  private clicked(event: any): void {
-    console.log('that tickles', event.target, event.x, event.y)
-  }
-
-
   public minChange(val: number ): void {
-    const lRange = Number(val).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
-    this.domain = [lRange, this.domain[1]];
-    this.queryGridService.sendGridDomainMessage(this.domain, true, false)
+    const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
+    this.domain = [lRange, this.domain[1]]
+    const broadcastChange = true
+    const updateColorbar = false
+    this.queryGridService.sendGridDomainMessage(this.domain, broadcastChange, updateColorbar)
   }
 
   public maxChange(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.domain = [this.domain[0], uRange];
-    this.queryGridService.sendGridDomainMessage(this.domain, true, false)
+    const broadcastChange = true
+    const updateColorbar = false
+    this.queryGridService.sendGridDomainMessage(this.domain, broadcastChange, updateColorbar)
   }
   
 

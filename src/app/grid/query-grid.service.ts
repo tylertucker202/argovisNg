@@ -4,10 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { MapState } from './../../typeings/mapState'
 import { SelectGridService} from './select-grid.service'
 
-import * as _moment from 'moment'
+import * as moment from 'moment'
 import {Moment} from 'moment'
 import { FeatureCollection, Feature, Polygon } from 'geojson'
-const moment = _moment
 
 @Injectable()
 export class QueryGridService {
@@ -79,6 +78,16 @@ export class QueryGridService {
     else if (broadcastChange) {this.change.emit(msg)}
   }
 
+  public sendColorScaleMessage(colorScale: string, broadcastChange=true): void {
+    let msg = 'color scale change'
+    this.colorScale = colorScale
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getColorScale(): string {
+    return this.colorScale
+  }
+
   public sendMonthYearMessage(monthYear: Moment, broadcastChange=true): void {
     const msg = 'month year change'
     if (!monthYear.isValid) {
@@ -131,16 +140,6 @@ export class QueryGridService {
 
   public getParam(): string {
     return this.param
-  }
-
-  public sendColorScaleMessage(colorScale: string, broadcastChange=true): void {
-    let msg = 'color scale change'
-    this.colorScale = colorScale
-    if (broadcastChange) { this.change.emit(msg) }
-  }
-
-  public getColorScale(): string {
-    return this.colorScale
   }
 
   public sendCompareGridMessage(grid: string, broadcastChange=true): void {

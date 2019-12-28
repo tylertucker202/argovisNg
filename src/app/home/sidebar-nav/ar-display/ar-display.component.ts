@@ -8,9 +8,7 @@ import { ARShape } from './../../models/ar-shape'
 import { DateRange } from './../../../../typeings/daterange'
 
 
-import * as _moment from 'moment';
-import {Moment} from 'moment';
-const moment = _moment;
+import * as moment from 'moment';
 
 export interface DropDownSelection {
   value: number;
@@ -24,11 +22,11 @@ export interface DropDownSelection {
 })
 export class ArDisplayComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<ArDisplayComponent>,
+  constructor(public dialogRef: MatDialogRef<ArDisplayComponent>, 
               private arService: ArServiceService,
               private queryService: QueryService,
               private mapService: MapService ) { }
-  private datetime: _moment.Moment;
+  private datetime: moment.Moment;
   private arDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
   
   private hour: number

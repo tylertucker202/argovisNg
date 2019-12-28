@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ARShape } from './../models/ar-shape'
-import * as _moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -750,7 +750,7 @@ export class ArServiceService {
   
   constructor(private http: HttpClient) { }
 
-  public getMockShape(date: _moment.Moment): Observable<ARShape[]> {
+  public getMockShape(date: moment.Moment): Observable<ARShape[]> {
     return of([this.mockShapeComplex])
   }
 
