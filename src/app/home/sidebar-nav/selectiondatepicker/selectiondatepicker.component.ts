@@ -60,7 +60,7 @@ export class SelectionDatePicker {
   }
 
   private sendDateRange(): void {
-    this.queryService.sendSelectedDateMessage(this.daterange);
+    this.queryService.sendSelectedDate(this.daterange);
   }
 
   public selectedDate(daterangeSel: DateRangeSel):void {

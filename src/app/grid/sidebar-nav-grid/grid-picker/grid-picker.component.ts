@@ -20,7 +20,7 @@ export class GridPickerComponent implements OnInit {
   private availableGrids: GridGroup[]
   private availableGridParams: MeasGroup[] | any
   private availableParams: any
-  @Input() displayGridParam: boolean
+  @Input() paramMode: boolean
 
   ngOnInit() {
     this.param = this.queryGridService.getParam()
@@ -28,7 +28,7 @@ export class GridPickerComponent implements OnInit {
     this.availableParams = this.selectGridService.params
     this.availableGridParams = this.selectGridService.allGridParams[0].producers[0].grids
     this.grid = this.queryGridService.getGrid()
-    if (this.displayGridParam) {
+    if (this.paramMode) {
       this.changeGridParams(this.grid)
       this.gridParam = this.queryGridService.getGridParam()
     }
@@ -44,8 +44,8 @@ export class GridPickerComponent implements OnInit {
 
     this.queryGridService.change //updates selection upon change
     .subscribe(msg => {
-      const displayGridParam = this.queryGridService.getDisplayGridParam()
-      if (msg === 'display grid param change' && displayGridParam) {
+      const paramMode = this.queryGridService.getParamMode()
+      if (msg === 'display grid param change' && paramMode) {
         this.param = this.queryGridService.getParam()
         this.grid = this.queryGridService.getGrid()
         this.gridParam = this.queryGridService.getGridParam()
@@ -56,9 +56,9 @@ export class GridPickerComponent implements OnInit {
 
   private sendGrid(): void {
     let broadcastChange
-    if (this.displayGridParam) { broadcastChange = false }
+    if (this.paramMode) { broadcastChange = false }
     else { broadcastChange = true }
-    this.queryGridService.sendGridMessage(this.grid, broadcastChange)
+    this.queryGridService.sendGrid(this.grid, broadcastChange)
   } 
 
   private selChange(gridName: string ): void {
@@ -70,7 +70,7 @@ export class GridPickerComponent implements OnInit {
   private changeParams(param: string): void {
     this.param = param
     this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
-    this.queryGridService.sendParamMessage(this.param)
+    this.queryGridService.sendParam(this.param)
 
   }
 
@@ -89,6 +89,6 @@ export class GridPickerComponent implements OnInit {
   private gridParamSelected(value: string): void {
     this.gridParam = value;
     const notifyChange = true
-    this.queryGridService.sendGridParamMessage(this.grid, this.gridParam, notifyChange)
+    this.queryGridService.sendGridParam(this.grid, this.gridParam, notifyChange)
   }
 }

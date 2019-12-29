@@ -52,7 +52,7 @@ export class GridComparePickerComponent implements OnInit {
 
   private sendGrid(): void {
     const broadcastChange = true
-    this.queryGridService.sendCompareGridMessage(this.grid, broadcastChange)
+    this.queryGridService.sendCompareGrid(this.grid, broadcastChange)
   }
 
   private selChange(grid: string ): void {

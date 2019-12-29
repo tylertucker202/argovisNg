@@ -46,7 +46,7 @@ export class PresSliderComponent implements OnInit {
   private sendPresLevel(): void {
     const broadcastChange = true
     if (this.presLevel !== this.queryGridService.getPresLevel()){
-      this.queryGridService.sendPresMessage(this.presLevel, broadcastChange)
+      this.queryGridService.sendPres(this.presLevel, broadcastChange)
     }
   } 
 

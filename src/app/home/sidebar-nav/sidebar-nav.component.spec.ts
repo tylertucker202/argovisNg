@@ -55,7 +55,7 @@ describe('SidebarNavComponent', () => {
     spyDeep = spyOn(queryService, 'sendDeepToggleMsg'); 
     spyProj = spyOn(queryService, 'sendProj'); 
     spyPlatform = spyOn(queryService, 'triggerShowPlatform'); 
-    spyDate = spyOn(queryService, 'sendGlobalDateMessage')
+    spyDate = spyOn(queryService, 'sendGlobalDate')
     fixture.detectChanges();
   });
 

@@ -42,7 +42,7 @@ export class GridMappingService {
     const lockRange = true
     this.gridLayers.clearLayers();
     const shapes = this.mapService.drawnItems.toGeoJSON()
-    this.queryGridService.sendShapeMessage(shapes, broadcastChange)
+    this.queryGridService.sendShape(shapes, broadcastChange)
     let features = this.queryGridService.getShapes()
     this.generateGridSections(features, map, lockRange);
     if(setURL){
@@ -51,12 +51,12 @@ export class GridMappingService {
   }
 
   public addGridSection(bbox: number[], map: L.Map, 
-                                          monthYear, pres, grid, compareGrid, compare, displayGridParam,
+                                          monthYear, pres, grid, compareGrid, compare, paramMode,
                                           gridParam, lockRange: boolean) {
     const lonRange = [bbox[0], bbox[2]]
     const latRange = [bbox[1], bbox[3]]
 
-    if (compare && !displayGridParam) {
+    if (compare && !paramMode) {
       this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
       .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
         if (rasterGrids.length != 2) {
@@ -71,7 +71,7 @@ export class GridMappingService {
           console.log('error in getting grid', error )
         })
     }
-    else if (!compare && displayGridParam) {
+    else if (!compare && paramMode) {
       this.rasterService.getParamRaster(latRange, lonRange, pres, grid, gridParam).subscribe( (rasterParam: RasterParam[]) => {
         if (rasterParam.length == 0) {
           console.log('warning missing: a param')
@@ -84,7 +84,7 @@ export class GridMappingService {
           console.log('error in getting grid', error )
         })
     }
-    else if (compare && displayGridParam) {
+    else if (compare && paramMode) {
       this.rasterService.getTwoParamRaster(latRange, lonRange, pres, grid, gridParam, compareGrid).subscribe( (rasterParams: [RasterParam[], RasterParam[]]) => {
         if (rasterParams.length !=2 ) {
           console.log('warning missing: a param')
@@ -128,11 +128,11 @@ export class GridMappingService {
       const compareGrid = this.queryGridService.getCompareGrid()
       const compare = this.queryGridService.getCompare()
   
-      const displayGridParam = this.queryGridService.getDisplayGridParam()
+      const paramMode = this.queryGridService.getParamMode()
       const gridParam = this.queryGridService.getGridParam()
       
       bboxes.forEach( (bbox: number[]) => {
-        this.addGridSection(bbox, map, monthYear, pres, grid, compareGrid, compare, displayGridParam, gridParam, lockRange)
+        this.addGridSection(bbox, map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
       })
     }
   }
@@ -154,7 +154,7 @@ export class GridMappingService {
         }
         else {
           const range = layer._field.range
-          this.queryGridService.sendGridDomainMessage(range, false, true)
+          this.queryGridService.sendGridDomain(range, false, true)
         }
       })
       }

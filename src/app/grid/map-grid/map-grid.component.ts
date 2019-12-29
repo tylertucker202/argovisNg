@@ -171,13 +171,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const grid = this.queryGridService.getGrid()
     const compareGrid = this.queryGridService.getCompareGrid()
     const compare = this.queryGridService.getCompare()
-    const displayGridParam = this.queryGridService.getDisplayGridParam()
+    const paramMode = this.queryGridService.getParamMode()
     const gridParam = this.queryGridService.getGridParam()
     const lockRange = false
 
     
-    this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
-    this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, displayGridParam, gridParam, lockRange)
+    this.queryGridService.sendShape(shapes, broadcastLayer)
+    this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')
   }

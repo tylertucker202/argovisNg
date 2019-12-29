@@ -26,7 +26,7 @@ export class QueryGridService {
   private compareGrid: string
   private latLngShapes: FeatureCollection<Polygon>
   private compare = false
-  private displayGridParam = false
+  private paramMode = false
   private globalGrid = false
   private colorScale = 'OrRd'
   private gridDomain = [0, 1]
@@ -43,20 +43,20 @@ export class QueryGridService {
   public resetParams(): void{
     const broadcastChange = false
     const monthYear = moment('01-2007', 'MM-YYYY').utc(false)
-    this.sendMonthYearMessage(monthYear, broadcastChange)
+    this.sendmonthYear(monthYear, broadcastChange)
     const presLevel = 10
-    this.sendPresMessage(presLevel, broadcastChange)
+    this.sendPres(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
     this.gridDomain = [0, 1]
     this.param = 'total'
-    this.displayGridParam = false
+    this.paramMode = false
     this.compare = false
     this.clearShapes()
     this.setURL()
     this.resetToStart.emit('reset params pushed')
   }
 
-  public sendPresMessage(presLevel: number, broadcastChange=true): void {
+  public sendPres(presLevel: number, broadcastChange=true): void {
     const msg = 'pres level change'
     this.presLevel = presLevel
     if (broadcastChange){ this.change.emit(msg) }
@@ -70,7 +70,7 @@ export class QueryGridService {
     return this.gridDomain
   }
 
-  public sendGridDomainMessage(gridDomain: number[], broadcastChange=true, updateColorBar=true): void {
+  public sendGridDomain(gridDomain: number[], broadcastChange=true, updateColorBar=true): void {
     const msg = 'grid range changed'
     this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
     this.setURL()
@@ -78,7 +78,7 @@ export class QueryGridService {
     else if (broadcastChange) {this.change.emit(msg)}
   }
 
-  public sendColorScaleMessage(colorScale: string, broadcastChange=true): void {
+  public sendColorScale(colorScale: string, broadcastChange=true): void {
     let msg = 'color scale change'
     this.colorScale = colorScale
     if (broadcastChange) { this.change.emit(msg) }
@@ -88,7 +88,7 @@ export class QueryGridService {
     return this.colorScale
   }
 
-  public sendMonthYearMessage(monthYear: Moment, broadcastChange=true): void {
+  public sendmonthYear(monthYear: Moment, broadcastChange=true): void {
     const msg = 'month year change'
     if (!monthYear.isValid) {
       monthYear = moment('01-2007', 'MM-YYYY').utc(false)
@@ -101,7 +101,7 @@ export class QueryGridService {
     return this.monthYear
   }
 
-  public sendShapeMessage(features: FeatureCollection<Polygon>, broadcastChange=true): void {
+  public sendShape(features: FeatureCollection<Polygon>, broadcastChange=true): void {
     let msg = 'shape change'
     this.latLngShapes = features
     if (broadcastChange){ this.change.emit(msg) }
@@ -111,7 +111,7 @@ export class QueryGridService {
     return this.latLngShapes
   }
 
-  public sendGridMessage(grid: string, broadcastChange=true): void {
+  public sendGrid(grid: string, broadcastChange=true): void {
     let msg = 'grid change'
     this.grid = grid
     if (broadcastChange) { this.change.emit(msg) }
@@ -121,7 +121,7 @@ export class QueryGridService {
     return this.grid
   }
 
-  public sendGridParamMessage(grid: string, gridParam: string, broadcastChange=true): void {
+  public sendGridParam(grid: string, gridParam: string, broadcastChange=true): void {
     let msg = 'grid param change'
     this.grid = grid
     this.gridParam = gridParam
@@ -132,7 +132,7 @@ export class QueryGridService {
     return this.gridParam
   }
 
-  public sendParamMessage(param: string, broadcastChange=true): void {
+  public sendParam(param: string, broadcastChange=true): void {
     let msg = 'param change'
     this.param = param
     if (broadcastChange) { this.change.emit(msg) }
@@ -142,7 +142,7 @@ export class QueryGridService {
     return this.param
   }
 
-  public sendCompareGridMessage(grid: string, broadcastChange=true): void {
+  public sendCompareGrid(grid: string, broadcastChange=true): void {
     let msg = 'compare grid change'
     this.compareGrid = grid
     if (broadcastChange) { this.change.emit(msg) }
@@ -152,14 +152,14 @@ export class QueryGridService {
     return this.compareGrid
   }
 
-  public sendDisplayGridParamMessage(displayGridParam: boolean, broadcastChange=true): void {
+  public sendParamMode(paramMode: boolean, broadcastChange=true): void {
     let msg = 'display grid param change'
-    this.displayGridParam = displayGridParam
+    this.paramMode = paramMode
     if (broadcastChange) { this.change.emit(msg) }
   }
 
-  public getDisplayGridParam(): boolean {
-    return this.displayGridParam
+  public getParamMode(): boolean {
+    return this.paramMode
   }
 
   public clearShapes(): void {
@@ -238,7 +238,7 @@ export class QueryGridService {
                          'grid': this.grid,
                          'displayGlobalGrid': globalGrid,
                          'colorScale': this.colorScale,
-                         'displayGridParam': this.displayGridParam,
+                         'paramMode': this.paramMode,
                          'gridParam': this.gridParam,
                          'param': this.param,
                          'gridDomain': gridDomainStr
@@ -313,46 +313,46 @@ export class QueryGridService {
     switch(key) {
       case 'colorScale': {
         const colorScale = value
-        this.sendColorScaleMessage(colorScale, notifyChange)
+        this.sendColorScale(colorScale, notifyChange)
         break
       }
-      case 'displayGridParam': {
-        const displayGridParam = JSON.parse(value)
-        this.sendDisplayGridParamMessage(displayGridParam, notifyChange)
+      case 'paramMode': {
+        const paramMode = JSON.parse(value)
+        this.sendParamMode(paramMode, notifyChange)
         break
       }
       case 'gridParam': {
         const param = value
         //const grid = this.getGrid()
         const grid = 'ksSpaceTempTrend' //default grid if param but no grid
-        this.sendGridParamMessage(grid, param, notifyChange)
+        this.sendGridParam(grid, param, notifyChange)
         break
       }
       case 'param': {
         const param = value
-        this.sendParamMessage(param, notifyChange)
+        this.sendParam(param, notifyChange)
         break
       }
       case 'monthYear': {
         const monthYear = moment(value, 'MM-YYYY').utc()
-        if (monthYear.isValid)  { this.sendMonthYearMessage(monthYear, notifyChange) }
+        if (monthYear.isValid)  { this.sendmonthYear(monthYear, notifyChange) }
         break
       }
       case 'grid': {
         const grid = value
-        this.sendGridMessage(grid, notifyChange)
+        this.sendGrid(grid, notifyChange)
         break
       }
       case 'compareGrid': {
         const grid = value
         this.compare = true
-        this.sendCompareGridMessage(grid, notifyChange)
+        this.sendCompareGrid(grid, notifyChange)
         break
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const fc = this.convertShapeToFeatureCollection(arrays)
-        this.sendShapeMessage(fc, notifyChange)
+        this.sendShape(fc, notifyChange)
         break
       }
       case 'displayGlobalGrid': {
@@ -362,12 +362,12 @@ export class QueryGridService {
       }
       case 'presLevel': {
         const presLevel = JSON.parse(value)
-        this.sendPresMessage(presLevel, notifyChange)
+        this.sendPres(presLevel, notifyChange)
         break
       }
       case 'gridDomain': {
         const gridDomain = JSON.parse(value)
-        this.sendGridDomainMessage(gridDomain, notifyChange)
+        this.sendGridDomain(gridDomain, notifyChange)
         break
       }
       default: {

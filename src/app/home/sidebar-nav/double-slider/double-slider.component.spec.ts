@@ -40,7 +40,7 @@ describe('DoubleSliderComponent', () => {
 
     queryService.setParamsFromURL()
     
-    spy = spyOn(queryService, 'sendPresMessage');
+    spy = spyOn(queryService, 'sendPres');
     fixture.detectChanges();
   });
 

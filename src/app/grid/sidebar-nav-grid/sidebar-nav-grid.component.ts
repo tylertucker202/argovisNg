@@ -10,44 +10,44 @@ export class SidebarNavGridComponent implements OnInit {
 
   constructor(private queryGridService: QueryGridService) { }
   private globalGrid: boolean
-  private displayGridParam: boolean
+  private paramMode: boolean
   ngOnInit() {
 
-    this.queryGridService.urlBuild.subscribe(msg => {
-      //toggle if states have changed    
-      this.globalGrid = this.queryGridService.getGlobalGrid()
-      this.displayGridParam = this.queryGridService.getDisplayGridParam();
-    })
+    this.paramMode = this.queryGridService.getParamMode()
+    this.globalGrid = this.queryGridService.getGlobalGrid()
 
+    this.queryGridService.urlBuild.subscribe(msg => {
+      this.globalGrid = this.queryGridService.getGlobalGrid()
+      this.paramMode = this.queryGridService.getParamMode();
+    })
     
     this.queryGridService.change.subscribe(msg => {
-      this.displayGridParam = this.queryGridService.getDisplayGridParam();
+      this.paramMode = this.queryGridService.getParamMode();
     })
   }
 
-  clearGrids(): void {
-    console.log('clearProfiles Clicked')
+  private clearGrids(): void {
     this.queryGridService.triggerClearLayers();
   }
 
-  resetToStart(): void {
-    console.log('resetToStart Clicked')
+  private resetToStart(): void {
     this.queryGridService.triggerResetToStart();
   }
 
-  globalGridToggle(checked: boolean): void {
+  private globalGridToggle(checked: boolean): void {
     this.globalGrid = checked
-    this.queryGridService.sendGlobalGrid(this.globalGrid);
+    const broadcastChange = true
+    this.queryGridService.sendGlobalGrid(this.globalGrid, broadcastChange);
   }
 
-  displayGridParamToggle(checked: boolean): void {
-    this.displayGridParam = checked
-    if (this.displayGridParam) {
+  private paramModeToggle(checked: boolean): void {
+    this.paramMode = checked
+    if (this.paramMode) {
       const broadcastChange = false
       const param = 'anomaly'
-      this.queryGridService.sendParamMessage(param, broadcastChange)
+      this.queryGridService.sendParam(param, broadcastChange)
     }
-    this.queryGridService.sendDisplayGridParamMessage(this.displayGridParam);
+    this.queryGridService.sendParamMode(this.paramMode);
   }
 
 }

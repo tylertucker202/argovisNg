@@ -1,6 +1,6 @@
 
-<section *ngIf="!displayGridParam" class="mat-typography"><p>Parameter:</p></section>
-<div *ngIf="!displayGridParam" class='input-div'>
+<section *ngIf="!paramMode" class="mat-typography"><p>Parameter:</p></section>
+<div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Param</mat-label>
       <mat-select [(value)]="param" (selectionChange)="changeParams($event.value)">
@@ -10,8 +10,8 @@
     </mat-select>
   </mat-form-field>
 </div>
-<section *ngIf="!displayGridParam" class="mat-typography"><p>Grid Selected:</p></section>
-<div *ngIf="!displayGridParam" class='input-div'>
+<section *ngIf="!paramMode" class="mat-typography"><p>Grid Selected:</p></section>
+<div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
       <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">
@@ -21,8 +21,8 @@
     </mat-select>
   </mat-form-field>
 </div>
-<section *ngIf="displayGridParam" class="mat-typography"><p>Grid Param Selected:</p></section>
-<div *ngIf="displayGridParam" class='input-div'>
+<section *ngIf="paramMode" class="mat-typography"><p>Grid Param Selected:</p></section>
+<div *ngIf="paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
     <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">

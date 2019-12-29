@@ -88,7 +88,7 @@ export class ArDisplayComponent implements OnInit {
         const startDate = this.datetime.add(-1.5, 'h').toISOString()
         const endDate = this.datetime.add(1.5, 'h').toISOString()
         const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-        this.queryService.sendSelectedDateMessage(dateRange)
+        this.queryService.sendSelectedDate(dateRange)
         console.log('setting stuff')
         this.dialogRef.close();
       }
@@ -100,7 +100,7 @@ export class ArDisplayComponent implements OnInit {
     const startDate = this.datetime.add(-1.5, 'h').toISOString()
     const endDate = this.datetime.add(1.5, 'h').toISOString()
     const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-    this.queryService.sendSelectedDateMessage(dateRange, broadcastChange)
+    this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
 
   private setArShape(arShapes: ARShape[]) {
@@ -119,6 +119,6 @@ export class ArDisplayComponent implements OnInit {
     })
     const broadcastChange = true
     const toggleThreeDayOff = true
-    //this.queryService.sendShapeMessage(shapeArrays, broadcastChange, toggleThreeDayOff)
+    //this.queryService.sendShape(shapeArrays, broadcastChange, toggleThreeDayOff)
   }
 }

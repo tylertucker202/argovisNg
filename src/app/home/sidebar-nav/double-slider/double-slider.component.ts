@@ -43,7 +43,7 @@ export class DoubleSliderComponent implements OnInit {
   }
 
   private sendSliderRange(broadcastChange=true): void {
-    this.queryService.sendPresMessage(this.sliderRange, broadcastChange);
+    this.queryService.sendPres(this.sliderRange, broadcastChange);
   }
 
   public minValuechange(newLowPres: number ): void {

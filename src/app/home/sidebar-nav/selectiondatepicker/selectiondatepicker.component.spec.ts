@@ -43,7 +43,7 @@ describe('SelectionDatePicker', () => {
 
     queryService.setParamsFromURL()
     
-    spySend = spyOn(queryService, 'sendSelectedDateMessage');
+    spySend = spyOn(queryService, 'sendSelectedDate');
 
     const start = moment('1900-01-01').format('YYYY-MM-DD')
     const end = moment('1900-02-01').format('YYYY-MM-DD')

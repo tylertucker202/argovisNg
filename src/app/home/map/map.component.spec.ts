@@ -202,7 +202,7 @@
 //     let drawnItemsBefore = component.mapService.drawnItems.toGeoJSON()
 //     console.log(drawnItemsBefore)
 
-//     queryService.sendShapeMessage(shapes, notifiyChange)
+//     queryService.sendShape(shapes, notifiyChange)
 
 //     expect(ssomSpy).toHaveBeenCalledTimes(0);
 //     let drawnItems = component.mapService.drawnItems.toGeoJSON()

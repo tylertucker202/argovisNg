@@ -7,12 +7,12 @@ import { QueryGridService } from './../../query-grid.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 
-fdescribe('PresSliderComponent', () => {
+describe('PresSliderComponent', () => {
   let component: PresSliderComponent;
   let fixture: ComponentFixture<PresSliderComponent>;
   let debugElement: DebugElement;
   let queryGridService: QueryGridService;
-  let spySendPresMessage: jasmine.Spy;
+  let spysendPres: jasmine.Spy;
   let spyGetPresLevel: jasmine.Spy;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,7 +32,7 @@ fdescribe('PresSliderComponent', () => {
     queryGridService = debugElement.injector.get(QueryGridService)
     const pres = 10
     spyGetPresLevel = spyOn(queryGridService, 'getPresLevel').and.returnValue(pres)
-    spySendPresMessage = spyOn(queryGridService, 'sendPresMessage').and.callThrough()
+    spysendPres = spyOn(queryGridService, 'sendPres').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -40,7 +40,7 @@ fdescribe('PresSliderComponent', () => {
     expect(component).toBeTruthy();
     const pres = 10;
     expect(component['presLevel']).toEqual(pres)
-    expect(spySendPresMessage).toHaveBeenCalledTimes(0)
+    expect(spysendPres).toHaveBeenCalledTimes(0)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(1)
   });
 
@@ -66,12 +66,12 @@ fdescribe('PresSliderComponent', () => {
 
   it('should sendPresLevel', () => {
     component['sendPresLevel']
-    expect(spySendPresMessage).toHaveBeenCalledTimes(0)
+    expect(spysendPres).toHaveBeenCalledTimes(0)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(1)
 
     const pres = 200
     component['selChange'](pres)
-    expect(spySendPresMessage).toHaveBeenCalledTimes(1)
+    expect(spysendPres).toHaveBeenCalledTimes(1)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(2)
   });
 
@@ -80,7 +80,7 @@ fdescribe('PresSliderComponent', () => {
     const pres = 200
     component['selChange'](pres)
     expect(component['presLevel']).toEqual(pres)
-    expect(spySendPresMessage).toHaveBeenCalledTimes(1)
+    expect(spysendPres).toHaveBeenCalledTimes(1)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(2)
 
   });

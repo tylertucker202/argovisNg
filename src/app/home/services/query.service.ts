@@ -38,13 +38,13 @@ export class QueryService {
     this.sendThreeDayMsg(true, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
     const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-    this.sendGlobalDateMessage(globalDisplayDate, broadcastChange)
+    this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
-    this.sendPresMessage(presRange, broadcastChange)
+    this.sendPres(presRange, broadcastChange)
 
     const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-    this.sendSelectedDateMessage(selectionDateRange, broadcastChange)
+    this.sendSelectedDate(selectionDateRange, broadcastChange)
   }
 
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
@@ -128,7 +128,7 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShapeMessage(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
+  public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     
     let msg = 'shape';
     if (toggleThreeDayOff) {
@@ -164,7 +164,7 @@ export class QueryService {
     this.latLngShapes = null;
   }
 
-  public sendPresMessage(presRange: number[], broadcastChange=true): void {
+  public sendPres(presRange: number[], broadcastChange=true): void {
     const msg = 'presRange';
     this.presRange = presRange;
     if (broadcastChange){ this.change.emit(msg) }
@@ -174,7 +174,7 @@ export class QueryService {
     return this.presRange;
   }
 
-  public sendSelectedDateMessage(selectionDateRange: DateRange, broadcastChange=true): void {
+  public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {
     const msg = 'selection date';
     this.selectionDateRange = selectionDateRange;
     if (broadcastChange){ this.change.emit(msg) }
@@ -184,7 +184,7 @@ export class QueryService {
     return this.selectionDateRange;
   }
 
-  public sendGlobalDateMessage(globalDisplayDate: string, broadcastChange=true): void {
+  public sendGlobalDate(globalDisplayDate: string, broadcastChange=true): void {
     const msg = 'three day display date';
     this.globalDisplayDate = globalDisplayDate;
     if (broadcastChange){ this.change.emit(msg) }
@@ -267,28 +267,28 @@ export class QueryService {
       }
       case 'threeDayEndDate': {
         const globalDisplayDate = value
-        this.sendGlobalDateMessage(globalDisplayDate, notifyChange)
+        this.sendGlobalDate(globalDisplayDate, notifyChange)
         break;
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const toggleThreeDayOff = false
-        this.sendShapeMessage(arrays, notifyChange, toggleThreeDayOff)
+        this.sendShape(arrays, notifyChange, toggleThreeDayOff)
         break;
       }
       case 'selectionStartDate': {
         const stateDateRange = {start: value, end: this.selectionDateRange.end}
-        this.sendSelectedDateMessage(stateDateRange, notifyChange)
+        this.sendSelectedDate(stateDateRange, notifyChange)
         break;
       }
       case 'selectionEndDate': {
         const stateDateRange = {start: this.selectionDateRange.start, end: value}
-        this.sendSelectedDateMessage(stateDateRange, notifyChange)
+        this.sendSelectedDate(stateDateRange, notifyChange)
         break;
       }
       case 'presRange': {
         const presRange = JSON.parse(value)
-        this.sendPresMessage(presRange, notifyChange)
+        this.sendPres(presRange, notifyChange)
         break;
       }
       default: {

@@ -37,7 +37,7 @@ describe('ColorbarComponent', () => {
     const domain = [0, 1]
     const colorScale = 'OrRd'
 
-    spySDM = spyOn(queryGridService, 'sendGridDomainMessage')
+    spySDM = spyOn(queryGridService, 'sendGridDomain')
     spyGetColorScale = spyOn(queryGridService, 'getColorScale').and.returnValue(colorScale)
     spyGetGridDomain = spyOn(queryGridService, 'getGridDomain').and.returnValue(domain)
     fixture.detectChanges();

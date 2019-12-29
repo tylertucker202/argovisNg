@@ -127,7 +127,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const toggleThreeDayOff = false
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
       const shapes = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShapeMessage(shapes, broadcast, toggleThreeDayOff)
+      this.queryService.sendShape(shapes, broadcast, toggleThreeDayOff)
     })
 
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
@@ -139,7 +139,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
       const shapes = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShapeMessage(shapes, broadcast, toggleThreeDayOff)
+      this.queryService.sendShape(shapes, broadcast, toggleThreeDayOff)
     })
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -155,7 +155,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
       const shape = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff)
+      this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
     })
 
     this.invalidateSize()
@@ -184,7 +184,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     const drawnItems = this.mapService.drawnItems.toGeoJSON().features
     const shape = this.queryService.getShapesFromFeatures(drawnItems)
-    this.queryService.sendShapeMessage(shape, broadcast, toggleThreeDayOff)
+    this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
   }
 
   private setStartingProfiles(this): void {

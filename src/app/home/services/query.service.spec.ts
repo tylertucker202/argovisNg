@@ -48,7 +48,7 @@ describe('QueryService', () => {
 
     const broadcastChange=true
     const toggleThreeDayOff=false
-    service.sendShapeMessage(shape, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
+    service.sendShape(shape, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
   }));
 
   it('should be emit a change upon pressure change', inject([QueryService], (service: QueryService) => {
@@ -57,7 +57,7 @@ describe('QueryService', () => {
        expect(msg).toEqual('presRange');
     });
     const presRange = [0, 2000]
-    service.sendPresMessage(presRange)
+    service.sendPres(presRange)
   }));
 
   it('should be emit a change upon date change', inject([QueryService], (service: QueryService) => {
@@ -66,7 +66,7 @@ describe('QueryService', () => {
        expect(msg).toEqual('three day display date');
     });
     const globalDisplayDate = "2018-09-14"
-    service.sendGlobalDateMessage(globalDisplayDate)
+    service.sendGlobalDate(globalDisplayDate)
   }));
 
   it('should be emit a change upon toggle change', inject([QueryService], (service: QueryService) => {

@@ -18,7 +18,7 @@ describe('MonthPickerComponent', () => {
   let debugElement: DebugElement;
   let queryGridService: QueryGridService;
   let spyGetMonthYear: jasmine.Spy;
-  let spySendMonthYearMessage: jasmine.Spy;
+  let spySendmonthYear: jasmine.Spy;
   let spy: jasmine.Spy;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,13 +33,13 @@ describe('MonthPickerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MonthPickerComponent)
     component = fixture.componentInstance
-    component.displayGridParam = true
+    component.paramMode = true
     debugElement = fixture.debugElement
 
     queryGridService = debugElement.injector.get(QueryGridService)
 
     spyGetMonthYear = spyOn(queryGridService, 'getMonthYear').and.callThrough()
-    spySendMonthYearMessage = spyOn(queryGridService, 'sendMonthYearMessage').and.callThrough()
+    spySendmonthYear = spyOn(queryGridService, 'sendmonthYear').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -49,7 +49,7 @@ describe('MonthPickerComponent', () => {
     expect(component['monthYear']).toBeTruthy()
     expect(component['minDate']).toBeTruthy()
     expect(component['maxDate']).toBeTruthy()
-    expect(component['displayGridParam']).toBeTruthy()
+    expect(component['paramMode']).toBeTruthy()
 
     expect(spyGetMonthYear).toHaveBeenCalledTimes(1)
   });
@@ -83,20 +83,20 @@ describe('MonthPickerComponent', () => {
     cDate = component['date']
     expect(cDate.value.format('MM-YYYY')).toEqual(mys)
 
-    expect(spySendMonthYearMessage).toHaveBeenCalledTimes(3)  //somehow service is getting rewritten before message is called
+    expect(spySendmonthYear).toHaveBeenCalledTimes(3)  //somehow service is getting rewritten before message is called
     expect(spyGetMonthYear).toHaveBeenCalledTimes(1)
   });
 
-  it('should sendMonthYearMessage', () => {
-    component['sendMonthYearMessage']()
-    expect(spySendMonthYearMessage).toHaveBeenCalledTimes(1)
+  it('should sendmonthYear', () => {
+    component['sendmonthYear']()
+    expect(spySendmonthYear).toHaveBeenCalledTimes(1)
   });
 
   it('should chosenYearHandler', () => {
     const year = 2018
     component['chosenYearHandler'](year)
     expect(component['monthYear'].year()).toEqual(year);
-    expect(spySendMonthYearMessage).toHaveBeenCalledTimes(1)
+    expect(spySendmonthYear).toHaveBeenCalledTimes(1)
   });
 
   it('should chosenMonthHandler', () => {
@@ -104,14 +104,14 @@ describe('MonthPickerComponent', () => {
 
     component['chosenMonthHandler'](month)
     expect(component['monthYear'].month()).toEqual(month)
-    expect(spySendMonthYearMessage).toHaveBeenCalledTimes(1)
+    expect(spySendmonthYear).toHaveBeenCalledTimes(1)
   });
 
   it('should displayDateChanged', () => {
     const mys = moment('11-2015', 'MM-YYYY').utc(false)
     component['displayDateChanged'](mys)
     expect(component['monthYear'].format('MM-YYYY')).toEqual(mys.format('MM-YYYY'))
-    expect(spySendMonthYearMessage).toHaveBeenCalledTimes(1)
+    expect(spySendmonthYear).toHaveBeenCalledTimes(1)
   });
 
 });

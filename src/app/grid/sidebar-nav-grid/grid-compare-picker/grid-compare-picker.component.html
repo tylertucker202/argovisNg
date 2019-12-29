@@ -1,4 +1,4 @@
-<div *ngIf="!displayGridParam">
+<div *ngIf="!paramMode">
 <mat-slide-toggle matTooltip="toggle on to subtract another grid"
 color="accent" [checked]="compareGrid"
 (change)="compareGridToggle($event.checked)">Compare Grid

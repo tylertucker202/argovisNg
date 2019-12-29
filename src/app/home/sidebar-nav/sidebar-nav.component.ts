@@ -101,7 +101,7 @@ export class SidebarNavComponent implements OnInit {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const dateStr = year + '-' + month + '-' + day
-    this.queryService.sendGlobalDateMessage(dateStr)
+    this.queryService.sendGlobalDate(dateStr)
   }
 
   openARDialog(): void {
