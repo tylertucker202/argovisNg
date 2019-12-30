@@ -12,9 +12,10 @@ import '../../../ext-js/leaflet.draw-arc-src.js'
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
 import 'leaflet-ajax'
 
-declare let L;
+declare const L;
 import * as chroma from 'chroma'
-declare let chroma: any
+import { ChromaStatic } from "chroma-js"
+declare const chroma: ChromaStatic
 
 
 @Injectable()

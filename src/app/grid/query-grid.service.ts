@@ -6,7 +6,7 @@ import { SelectGridService} from './select-grid.service'
 
 import * as moment from 'moment'
 import {Moment} from 'moment'
-import { FeatureCollection, Feature, Polygon } from 'geojson'
+import { FeatureCollection, Feature, Polygon, Geometry } from 'geojson'
 
 @Injectable()
 export class QueryGridService {
@@ -210,9 +210,9 @@ export class QueryGridService {
     this.clearLayers.emit()
   }
 
-  public getBBoxes(fc: FeatureCollection): number[][]{
+  public getBBoxes(fc: FeatureCollection<Polygon>): number[][]{
     let bboxes = []
-    fc.features.forEach((feature: Feature) => {
+    fc.features.forEach((feature: Feature<Polygon>) => {
       const bbox = this.getBBox(feature)
       bboxes.push(bbox)
     })
@@ -254,8 +254,8 @@ export class QueryGridService {
       })
   }
 
-  public getBBox(feature: Feature): number[] {
-    var geom: any
+  public getBBox(feature: Feature<Polygon>): number[] {
+    var geom: Polygon
     geom = feature.geometry
     const coords = geom.coordinates.reduce(function(dump,part) {
       return dump.concat(part)
@@ -283,7 +283,8 @@ export class QueryGridService {
     }
 
     shapes.forEach( (shape) => {
-      let feature: Feature<any> = { type: 'Feature', geometry: {}, properties: {}}
+      let feature: Feature<Polygon> = {type: "Feature", geometry: null, properties: null}
+      
       let geom: Polygon = { type: 'Polygon', coordinates: [] }
       const ll = [shape[0], shape[1]]
       const ur = [shape[2], shape[3]]

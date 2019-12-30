@@ -24,7 +24,6 @@ export class GridMappingService {
 
   public updateGrids(map: L.Map): void {
     //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
-    console.log('redrawing grids')
     const broadcastChange = false
     const colorScale = this.queryGridService.getColorScale()
     const gridDomain = this.queryGridService.getGridDomain()

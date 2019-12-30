@@ -10,7 +10,8 @@ import * as L from "leaflet";
 import * as d3 from 'd3'; //needed for leaflet canvas layer
 import './../../ext-js/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
-declare let chroma: any
+import { ChromaStatic } from 'chroma-js';
+declare const chroma: ChromaStatic;
 
 @Injectable({
   providedIn: 'root'
@@ -159,7 +160,9 @@ export class RasterService {
 
   public getParamRaster(latRange: number[], lonRange: number[], pres: number,
                        gridName: string, gridParam: string): Observable<RasterParam[]> {
-    let url = '/griddedProducts/gridParams/window?'
+
+    let url = 'http://localhost:3000'
+    url += '/griddedProducts/gridParams/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
     url += '&presLevel=' + JSON.stringify(pres)
@@ -223,7 +226,7 @@ export class RasterService {
     return [dGrid]
   }
 
-  public makeScalarField(grid: RasterGrid | RasterParam): any {  //todo: create scalar field type
+  public makeScalarField(grid: RasterGrid | RasterParam): L.ScalarField {
     for (var i = 0; i < grid.zs.length; i++){
       if (grid.zs[i] == grid.noDataValue) {
           grid.zs[i] = null;
@@ -233,7 +236,7 @@ export class RasterService {
     return s
   }
 
-  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean, map: L.Map): any { //todo: create custom canvas Layer
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean, map: L.Map): L.ScalarField { 
     let s = this.makeScalarField(grid)
     const interpolate = !globalGrid
     
@@ -262,11 +265,6 @@ export class RasterService {
     let layer = this.makeCanvasLayer(grid, brewerColorScheme, globalGrid, map)
     gridLayers.addLayer(layer)
     return gridLayers
-  }
-
-  public buildGridFromLayer(layer: L.Layer | any): BaseRaster { //todo: create special layer with canvas object _field
-    let g = layer._field.params as BaseRaster
-    return g
   }
 
 }

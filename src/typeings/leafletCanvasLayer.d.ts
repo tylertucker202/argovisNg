@@ -4,11 +4,11 @@ interface NodeModule {
 }
 
 import 'leaflet';
+import 'leaflet-canvaslayer-field'
 import * as L from 'leaflet';
 
 declare module 'leaflet' {
 
-  
     export class ScalarField extends Field {
         static fromASCIIGrid(asc: any, scaleFactor: number);
         static fromGeoTIFF(data: any, bandIndex: number);
@@ -16,42 +16,17 @@ declare module 'leaflet' {
 
         zs: number[];
         grid: number[][];
+
+        //optional parameters for RasterGrid and RasterParam:
+        gridName?: string;
+        units?: string;
+        measurement?: string;
+        param?: string;
     }
   
-    //export class CanvasLayer extends L.Layer { }
+    var canvasLayer: any;
 
-    var CanvasLayer: any
-    var canvasLayer: any
-
-    //export class CanvasLayer.Field extends CanvasLayer { }
-
-    //export class CanvasLayer.ScalarField extends CanvasLayer.Field { }
-
-
-
-    namespace control {
-        var colorBar: any
-    }
-
-    export interface ColorBarOptions {
-        position: 'bottomleft' | 'topLeft' | 'bottomRight' | 'topRight',
-        width: number,
-        height: number,
-        margin: number,
-        background: string,
-        textColor: string,
-        steps: number,
-        decimals: number,
-        units: string,
-        title: string,
-        labels: number[], // empty for no labels
-        textLabels: string[], // empty for default labels. Custom labels ej: ['low', 'mid','high'] 
-        labelFontSize: number,
-        labelTextPosition: 'middle' | 'start' | 'end' // start | middle | end
-    }
-
-
-    export default class Field {
+    export default class Field extends L.Layer {
         constructor(params: any);
         numCells(): number;
         getCells(stride: any);
