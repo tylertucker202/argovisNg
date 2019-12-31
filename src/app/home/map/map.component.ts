@@ -70,6 +70,15 @@ export class MapComponent implements OnInit, OnDestroy {
          //this.setMockPoints()
         })
 
+    this.queryService.arEvent
+        .subscribe(msg => {
+          console.log('ar event emit')
+          this.markersLayer.clearLayers()
+          this.queryService.setURL()
+          const sendNotification = false
+          this.shapeSelectionOnMap(sendNotification)
+        })
+
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes()
@@ -274,7 +283,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
 
-  private shapeSelectionOnMap(): void {
+  private shapeSelectionOnMap(sendNotification=true): void {
     // Extract GeoJson from featureGroup
     let shapeArrays = this.queryService.getShapes()
 
@@ -294,17 +303,17 @@ export class MapComponent implements OnInit, OnDestroy {
           urlQuery += '&presRange='+JSON.stringify(presRange)
         }
         urlQuery += '&shape='+JSON.stringify(transformedShape)
-        console.log(urlQuery)
+        //console.log(urlQuery)
         this.pointsService.getSelectionPoints(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.displayProfiles(selectionPoints, 'normalMarker')
-              if (selectionPoints.length == 0) {
+              if (selectionPoints.length == 0 && sendNotification) {
                 this.notifier.notify( 'warning', 'no profile points found in shape' )
                 console.log('no points returned in shape')
               }
               }, 
             error => {
-            this.notifier.notify( 'error', 'error in getting profiles in shape' )
+              if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
               console.log('error occured when selecting points: ', error)
             })      
         })

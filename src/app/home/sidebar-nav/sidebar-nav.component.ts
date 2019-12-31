@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { QueryService } from '../services/query.service'
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { ArDisplayComponent } from './ar-display/ar-display.component'
@@ -28,6 +27,8 @@ export class SidebarNavComponent implements OnInit {
   @Input() private onlyDeep: boolean;
   @Input() private display3Day: boolean;
   @Input() private proj: string;
+  
+  private arMode: boolean
   private platformInput: string;
   private projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
@@ -36,6 +37,7 @@ export class SidebarNavComponent implements OnInit {
   ];
 
   ngOnInit() {
+    this.arMode = this.queryService.getArMode();
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
@@ -73,13 +75,16 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.sendDeepToggleMsg(this.onlyDeep);
   }
 
+  arModeChange(checked: boolean): void {
+    this.arMode = checked
+    this.queryService.sendArMode(this.arMode)
+  }
+
   clearProfiles(): void {
-    console.log('clearProfiles Clicked')
     this.queryService.triggerClearLayers();
   }
 
   resetToStart(): void {
-    console.log('resetToStart Clicked')
     this.queryService.triggerResetToStart();
   }
 
@@ -87,6 +92,8 @@ export class SidebarNavComponent implements OnInit {
     this.proj = proj
     this.queryService.sendProj(proj)
   }
+
+
 
   displayPlatformInputChanged(platformInput: string): void {
     this.platformInput = platformInput

@@ -74,31 +74,34 @@ export class ArDisplayComponent implements OnInit {
   private setArShapesAndDate(): void {
     console.log('getting shapes')
     console.log('this is the datetime', this.datetime)
+    this.queryService.sendThreeDayMsg(false, false)
+    this.mapService.drawnItems.clearLayers()
+
     const dateString = this.datetime.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
     console.log('this is the datetime string', dateString)
     const arShapes = this.arService.getArShapes(dateString)
     //const arShapes = this.arService.getMockShape(this.datetime)
     arShapes.subscribe((arShapes: ARShape[]) => {
-      if (arShapes.length == 0) {
-      }
-      else {
+      if (arShapes.length !== 0) {
         console.log('setting date range')
         this.setDateRange()
         this.setArShape(arShapes)
         const startDate = this.datetime.add(-1.5, 'h').toISOString()
         const endDate = this.datetime.add(1.5, 'h').toISOString()
         const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-        this.queryService.sendSelectedDate(dateRange)
+        const broadcastChange = false
+        this.queryService.sendArMode(true, broadcastChange)
+        this.queryService.sendSelectedDate(dateRange, broadcastChange)
         console.log('setting stuff')
-        this.dialogRef.close();
       }
+      this.dialogRef.close();
     })
   }
 
   private setDateRange(): void {
     const broadcastChange = false
-    const startDate = this.datetime.add(-1.5, 'h').toISOString()
-    const endDate = this.datetime.add(1.5, 'h').toISOString()
+    const startDate = this.datetime.add(-18, 'h').toISOString()
+    const endDate = this.datetime.add(18, 'h').toISOString()
     const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
@@ -109,7 +112,6 @@ export class ArDisplayComponent implements OnInit {
       let sa = arShapes[idx].geoLocation.coordinates
       sa = this.arService.swapCoords(sa)
       shapeArrays.push(sa)
-      console.log(sa.length)
     }
 
     const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays)
@@ -117,8 +119,10 @@ export class ArDisplayComponent implements OnInit {
       const polygon = layer
       this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems)
     })
-    const broadcastChange = true
+    const broadcastChange = false
     const toggleThreeDayOff = true
-    //this.queryService.sendShape(shapeArrays, broadcastChange, toggleThreeDayOff)
+
+    this.queryService.sendShape(shapeArrays, broadcastChange, toggleThreeDayOff)
+    this.queryService.arEvent.emit('ar changed')
   }
 }

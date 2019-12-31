@@ -15,6 +15,7 @@ export class QueryService {
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
+  @Output() arEvent: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000];
   private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
@@ -26,6 +27,7 @@ export class QueryService {
   private onlyDeep = false;
   private threeDayToggle = true;
   private proj = 'WM';
+  private arMode = true;
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -46,6 +48,7 @@ export class QueryService {
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
     this.sendSelectedDate(selectionDateRange, broadcastChange)
   }
+
 
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
@@ -108,6 +111,16 @@ export class QueryService {
 
   public getURL(): string {
     return location.pathname
+  }
+
+  public sendArMode(arMode: boolean, broadcastChange=false) {
+    const msg = 'arMode'
+    this.arMode = arMode;
+    if (broadcastChange) { this.change.emit(msg)}
+  }
+
+  public getArMode(): boolean {
+    return this.arMode
   }
 
   public triggerPlatformShow(platform: string): void {

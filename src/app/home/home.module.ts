@@ -29,6 +29,7 @@ import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
 import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bottom-sheet/help-bottom-sheet.component';
 import { ArDisplayComponent } from './sidebar-nav/ar-display/ar-display.component';
+import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.component';
 
 
 const customNotifierOptions: NotifierOptions = {
@@ -85,7 +86,8 @@ const customNotifierOptions: NotifierOptions = {
     DbOverviewComponent,
     HelpBottomSheetComponent,
     HelpBottomSheet,
-    ArDisplayComponent],
+    ArDisplayComponent,
+    ArDateRangeComponent],
   imports: [
     CommonModule,
     HttpClientModule,

@@ -27,7 +27,7 @@ export class DoubleSliderComponent implements OnInit {
     this.config = {
       start: this.sliderRange,
       range: { min: 0, max: 6000 },
-      step: 1,
+      step: 3,
       connect: true,
       orientation: 'vertical'
     }
