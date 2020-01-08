@@ -3,11 +3,7 @@ import { MapService } from '../../home/services/map.service'
 import { QueryGridService } from '../query-grid.service'
 import { GridMappingService } from '../grid-mapping.service'
 import { RasterService } from '../raster.service'
-import { RasterGrid, RasterParam } from '../../home/models/raster-grid'
-
 import * as L from "leaflet";
-import { FeatureCollection, Feature, Polygon } from 'geojson'
-import { Geometry } from 'ol/geom'
 
 @Component({
   selector: 'app-map-grid',
@@ -59,11 +55,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.change
       .subscribe(msg => {
-         console.log('query changed: ' + msg);
          let queryShapes = true
          if (msg === 'color scale change') {
            queryShapes = false
-           console.log('queryShapes?', queryShapes)
          }
          this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
         })
@@ -126,7 +120,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
       this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
-      this.mapService.drawnItems = this.getNewDrawnItems(event)
+      this.mapService.drawnItems = this.getNewDrawnItems(event.layers)
 
       const shapes = this.mapService.drawnItems.toGeoJSON()
       shapes.features.forEach(feature => {
@@ -138,10 +132,11 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.invalidateSize();
   }
 
-  private getNewDrawnItems(event: L.DrawEvents.Edited): L.FeatureGroup {
-    const layers = event.layers;
+  private getNewDrawnItems(layers: L.LayerGroup): L.FeatureGroup {
+
     let myNewShape = this.mapService.drawnItems;
-    layers.eachLayer(function(layer: any) {
+    layers.eachLayer(function(layer: L.Layer| any) { //todo get layer id
+      console.log(layer)
       const layer_id = layer._leaflet_id
       myNewShape.removeLayer(layer_id)
       myNewShape.addLayer(layer)
