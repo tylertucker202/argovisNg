@@ -30,7 +30,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.mapService.init(this.appRef);
 
-    this.mapService.shapeOptions = {  color: '#983fb2',
+    this.shapeOptions = {  color: '#983fb2',
                                       weight: 4, 
                                       fill: false,
                                       opacity: .5,
@@ -149,7 +149,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const displayGlobalGrid = this.queryGridService.getGlobalGrid()
     if (shapeFeature && !displayGlobalGrid) {
       const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
-      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
+      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray, this.shapeOptions)
       this.mapService.drawnItems.addLayer(initShapes)
       this.gridMappingService.drawGrids(this.map)
     }

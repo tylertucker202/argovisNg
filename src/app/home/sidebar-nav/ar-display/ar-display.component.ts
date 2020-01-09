@@ -72,27 +72,24 @@ export class ArDisplayComponent implements OnInit {
   }
 
   private setArShapesAndDate(): void {
-    console.log('getting shapes')
-    console.log('this is the datetime', this.datetime)
     this.queryService.sendThreeDayMsg(false, false)
     this.mapService.drawnItems.clearLayers()
+    this.mapService.arShapeItems.clearLayers()
 
     const dateString = this.datetime.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
-    console.log('this is the datetime string', dateString)
     const arShapes = this.arService.getArShapes(dateString)
     //const arShapes = this.arService.getMockShape(this.datetime)
     arShapes.subscribe((arShapes: ARShape[]) => {
       if (arShapes.length !== 0) {
-        console.log('setting date range')
         this.setDateRange()
         this.setArShape(arShapes)
         const startDate = this.datetime.add(-1.5, 'h').toISOString()
         const endDate = this.datetime.add(1.5, 'h').toISOString()
         const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
         const broadcastChange = false
-        this.queryService.sendArMode(true, broadcastChange)
+        const clearOtherShapes = false
+        this.queryService.sendArMode(true, broadcastChange, clearOtherShapes)
         this.queryService.sendSelectedDate(dateRange, broadcastChange)
-        console.log('setting stuff')
       }
       this.dialogRef.close();
     })
@@ -114,15 +111,13 @@ export class ArDisplayComponent implements OnInit {
       shapeArrays.push(sa)
     }
 
-    const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays)
+    const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.arShapeOptions)
+    const shapeType = 'atmospheric river shape'
     shapeFeatureGroup.eachLayer( layer => {
-      const polygon = layer
-      this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems)
+      const polygon = layer as L.Polygon
+      this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType)
     })
-    const broadcastChange = false
-    const toggleThreeDayOff = true
-
-    this.queryService.sendShape(shapeArrays, broadcastChange, toggleThreeDayOff)
-    this.queryService.arEvent.emit('ar changed')
+    //this.queryService.arEvent.emit('ar changed')
+    this.queryService.sendARShapes(shapeArrays)
   }
 }

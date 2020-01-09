@@ -20,7 +20,7 @@ export class GridMappingService {
 
   constructor(private queryGridService: QueryGridService,
               private rasterService: RasterService,
-              public mapService: MapService,) { }
+              public mapService: MapService) { }
 
   public updateGrids(map: L.Map): void {
     //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
@@ -36,7 +36,7 @@ export class GridMappingService {
     this.queryGridService.setURL(); //this should be the last thing
   }
 
-  public drawGrids(map: L.Map, setURL=true) {
+  public drawGrids(map: L.Map, setURL=true): void {
     const broadcastChange = false
     const lockRange = true
     this.gridLayers.clearLayers();

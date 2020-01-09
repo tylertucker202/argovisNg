@@ -1,5 +1,6 @@
 <section class="mat-typography">
-<p> Hello, I'm a shape!
+<p> Hello, I'm a {{message}}!
+  <br [hidden]="!arMode"/>  <button [hidden]="!arMode" matTooltip="Save as a shape and query for argo profiles" mat-raised-button color={{color}} (click)="queryARShape()" >Query for Argo profiles</button>
   <br /> <button matTooltip="hint: be sure to enable tabs on your browser" mat-raised-button color={{color}} (click)="goToSelectionPage(false)" >To selection page</button>
   <br /> <button matTooltip="hint: be sure to enable tabs on your browser" mat-raised-button color={{color}} (click)="goToSelectionPage(true)" >To selection page with pressure query</button>
 </p>

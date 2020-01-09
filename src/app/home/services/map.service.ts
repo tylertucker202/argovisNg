@@ -22,9 +22,9 @@ declare const chroma: ChromaStatic
 export class MapService {
   public baseMaps: any;
   public drawnItems = L.featureGroup();
+  public arShapeItems = L.featureGroup(); //non editable shapes which can be added to drawnItems.
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
-  public shapeOptions: any;
 
   private WMstartView = [20, -150]
   private WMstartZoom = 3
@@ -32,6 +32,14 @@ export class MapService {
   private SSPstartZoom = 4
   private NSPstartView =  [89, .1]
   private NSPstartZoom = 4
+
+  public shapeOptions =   {color: '#983fb2',
+  weight: 4,
+  opacity: .5}
+
+  public arShapeOptions = {color: '#15b01a',
+  weight: 4,
+  opacity: .5}
 
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
@@ -312,20 +320,23 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation = function(layer, drawnItems): void{
+  public popupWindowCreation = function(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape'): void{
     const feature = layer.toGeoJSON();
     const shape = this.getLatLngFromFeature(feature)
     const transformedShape = this.getTransformedShape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
-      layer.setPopupContent(
-        this.compileService.compile(ShapePopupComponent, (c) => { c.instance.shape = transformedShape; })
-      );
+      const popupContent = this.compileService.compile(ShapePopupComponent, (c) => { 
+        c.instance.shape = [shape];
+        c.instance.transformedShape = transformedShape;
+        c.instance.message = shapeType 
+      })
+      layer.setPopupContent(popupContent);
     });
     layer.on('add', (event) => { 
       layer.fire('click') // click generates popup object
     });
-    drawnItems.addLayer(layer);
+    featureGroup.addLayer(layer);
     }
 
   public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {
@@ -337,14 +348,14 @@ export class MapService {
     return shape
   }
 
-  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
+  public convertArrayToFeatureGroup(shapeArrays: number[][][], shapeOptions: any): L.FeatureGroup {
     let shapes = L.featureGroup()
     shapeArrays.forEach( (array) => {
       let coords = []
       array.forEach(coord => {
         coords.push(L.latLng(coord[0], coord[1]))
       })
-      const polygon = L.polygon(coords, this.shapeOptions)
+      const polygon = L.polygon(coords, shapeOptions)
       shapes.addLayer(polygon)
     })
     return(shapes)

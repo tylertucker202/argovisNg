@@ -5,6 +5,7 @@ import { DateRange } from '../../../typeings/daterange';
 import { ARShape } from './../models/ar-shape'
 import * as moment from 'moment';
 import { MapState } from '../../../typeings/mapState';
+import { TimeoutError } from 'rxjs';
 
 @Injectable()
 export class QueryService {
@@ -22,6 +23,7 @@ export class QueryService {
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
   private latLngShapes: number[][][];
+  private arShapes: number[][][];
   private includeRealtime = true;
   private onlyBGC = false;
   private onlyDeep = false;
@@ -98,7 +100,8 @@ export class QueryService {
                          'includeRealtime': this.includeRealtime,
                          'onlyBGC': this.onlyBGC,
                          'onlyDeep': this.onlyDeep,
-                         'threeDayToggle': this.threeDayToggle
+                         'threeDayToggle': this.threeDayToggle,
+                         'arMode': this.arMode
                         }
     this.router.navigate(
       [], 
@@ -113,10 +116,11 @@ export class QueryService {
     return location.pathname
   }
 
-  public sendArMode(arMode: boolean, broadcastChange=false) {
+  public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
     const msg = 'arMode'
     this.arMode = arMode;
-    if (broadcastChange) { this.change.emit(msg)}
+    if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
+    if (broadcastChange) { this.change.emit(msg) }
   }
 
   public getArMode(): boolean {
@@ -141,12 +145,21 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
+  public sendARShapes(data: number[][][]): void {
+    let msg = 'ar shape'
+    this.arShapes = data
+  }
+
+  public getARShapse(): number[][][] {
+    return this.arShapes
+  }
+
   public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     
-    let msg = 'shape';
+    let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
-      this.sendThreeDayMsg(false, broadcastThreeDayToggle)
+      this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }

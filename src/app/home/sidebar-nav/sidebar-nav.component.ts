@@ -77,7 +77,9 @@ export class SidebarNavComponent implements OnInit {
 
   arModeChange(checked: boolean): void {
     this.arMode = checked
-    this.queryService.sendArMode(this.arMode)
+    const broadcastChange = false
+    const clearOtherShapes = true
+    this.queryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
   }
 
   clearProfiles(): void {

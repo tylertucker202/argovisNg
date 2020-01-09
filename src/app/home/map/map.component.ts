@@ -36,9 +36,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
-    this.mapService.shapeOptions =   {color: '#983fb2',
-                                      weight: 4,
-                                      opacity: .5}
+
 
     this.queryService.setParamsFromURL()
 
@@ -55,6 +53,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map)
     this.mapService.scaleDisplay.addTo(this.map)
     this.mapService.drawControl.addTo(this.map)
+    this.mapService.arShapeItems.addTo(this.map) //special shapes for ar objects
     this.markersLayer.addTo(this.map)
 
     this.queryService.change
@@ -62,7 +61,7 @@ export class MapComponent implements OnInit, OnDestroy {
          console.log('query changed: ' + msg)
          this.queryService.setURL()
          this.markersLayer.clearLayers()
-         this.shapeSelectionOnMap()
+         this.setPointsOnMap()
          const showThreeDay = this.queryService.getThreeDayToggle()
          if (showThreeDay) {
             this.addDisplayProfiles()
@@ -72,11 +71,13 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.queryService.arEvent
         .subscribe(msg => {
-          console.log('ar event emit')
-          this.markersLayer.clearLayers()
-          this.queryService.setURL()
-          const sendNotification = false
-          this.shapeSelectionOnMap(sendNotification)
+          console.log('ar event emit ' + msg)
+          this.mapService.arShapeItems.clearLayers()
+          this.addShapesFromQueryService()
+          // this.queryService.clearShapes()
+          // this.markersLayer.clearLayers()
+          // this.mapService.drawnItems.clearLayers()
+          // this.queryService.setURL()
         })
 
     this.queryService.clearLayers
@@ -84,6 +85,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.queryService.clearShapes()
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
+        this.mapService.arShapeItems.clearLayers()
         this.queryService.setURL()
       })
     
@@ -141,7 +143,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       this.markersLayer.clearLayers()
-      const layer = event.layer
+      const layer = event.layer as L.Polygon<any>
       this.mapService.popupWindowCreation(layer, this.mapService.drawnItems)
       const broadcast = true
       const toggleThreeDayOff = true
@@ -170,7 +172,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.invalidateSize()
     //sets starting profiles from URL. Default is no params
     setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
-      this.addShapesFromURL()
+      this.addShapesFromQueryService()
      })
   }
 
@@ -179,12 +181,12 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.remove()
   }
 
-  private addShapesFromURL(): void {
+  private addShapesFromQueryService(): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
-      const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays)
+      const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.shapeOptions)
       shapeFeatureGroup.eachLayer( layer => {
-        const polygon = layer
+        const polygon = layer as L.Polygon
         this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems)
       })
     }
@@ -283,11 +285,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
 
-  private shapeSelectionOnMap(sendNotification=true): void {
-    // Extract GeoJson from featureGroup
+  private setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.queryService.getShapes()
-
-    
+    console.log('shapeArray length: ', shapeArrays.length)
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
