@@ -19,7 +19,7 @@
   color="accent" [checked]="display3Day"
   (change)="displayGlobalChange($event.checked)">Profiles in 3 days, globally
   </mat-slide-toggle>
-  <mat-form-field class="date-form">
+  <mat-form-field class="date-form" [hidden]="!display3Day">
     <input matInput 
     matTooltip="display three day window of profiles ending on the selected date" 
     [matDatepicker]="picker"
@@ -30,9 +30,9 @@
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  <mat-slide-toggle matTooltip="toggle on to switch to AR mode"
+  <mat-slide-toggle matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
                    color="accent" [checked]="arMode"
-                   (change)="arModeChange($event.checked)">AR Mode
+                   (change)="arModeChange($event.checked)">Atmospheric River Mode
   </mat-slide-toggle>
 
   <button id="ar-button" [hidden]="!arMode" mat-raised-button (click)="openARDialog()">AR Display</button>

@@ -1,6 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { QueryService } from '../../services/query.service'
 import { ViewEncapsulation } from '@angular/core';
+import { Options } from 'nouislider'
 
 @Component({
   selector: 'app-double-slider',
@@ -10,8 +11,7 @@ import { ViewEncapsulation } from '@angular/core';
 })
 export class DoubleSliderComponent implements OnInit {
 
-  private config: any;
-  private slider: any;
+  private config: Options;
   private sliderRange: number[];
   private lRange: number;
   private uRange: number;
@@ -58,7 +58,7 @@ export class DoubleSliderComponent implements OnInit {
     this.sendSliderRange();
   }
 
-  public sliderChange(newRange: number[]): void {
+  public sliderChange(newRange: number[]): void { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.lRange = newRange[0]
     this.uRange = newRange[1]
     this.sendSliderRange();

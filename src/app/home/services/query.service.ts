@@ -22,6 +22,7 @@ export class QueryService {
   private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+  private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0));
   private latLngShapes: number[][][];
   private arShapes: number[][][];
   private includeRealtime = true;
@@ -30,6 +31,7 @@ export class QueryService {
   private threeDayToggle = true;
   private proj = 'WM';
   private arMode = true;
+  private arDateRange = [-18, 18]
 
   constructor(private route: ActivatedRoute,
               private location: Location,
@@ -49,6 +51,10 @@ export class QueryService {
     const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
     this.sendSelectedDate(selectionDateRange, broadcastChange)
+    const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
+    this.sendArDate(arDate)
+    const arDateRange = [-18, 18]
+    this.sendArDateRange(arDateRange)
   }
 
 
@@ -116,6 +122,14 @@ export class QueryService {
     return location.pathname
   }
 
+  public getArDateRange(): number[] {
+    return this.arDateRange
+  }
+
+  public sendArDateRange(dateRange: number[]): void {
+    this.arDateRange = dateRange
+  }
+
   public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
     const msg = 'arMode'
     this.arMode = arMode;
@@ -125,6 +139,14 @@ export class QueryService {
 
   public getArMode(): boolean {
     return this.arMode
+  }
+
+  public sendArDate(date: moment.Moment) {
+    this.arDate = date
+  }
+
+  public getArDate(): moment.Moment {
+    return this.arDate
   }
 
   public triggerPlatformShow(platform: string): void {

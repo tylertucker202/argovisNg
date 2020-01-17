@@ -94,6 +94,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.queryService.clearShapes()
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
+        this.mapService.arShapeItems.clearLayers()
         this.setStartingProfiles()
         //this.setMockPoints()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)

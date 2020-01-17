@@ -78,7 +78,7 @@ export class SidebarNavComponent implements OnInit {
   arModeChange(checked: boolean): void {
     this.arMode = checked
     const broadcastChange = false
-    const clearOtherShapes = true
+    const clearOtherShapes = checked // remove other shape if checked
     this.queryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
   }
 
@@ -115,6 +115,7 @@ export class SidebarNavComponent implements OnInit {
 
   openARDialog(): void {
     console.log('inside AR dialog')
+    this.queryService.clearLayers.emit('inside AR Dialog')
     const dialogRef = this.dialog.open(ArDisplayComponent, {
       width: '300px',
       data: {}

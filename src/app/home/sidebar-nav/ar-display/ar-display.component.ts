@@ -26,8 +26,8 @@ export class ArDisplayComponent implements OnInit {
               private arService: ArServiceService,
               private queryService: QueryService,
               private mapService: MapService ) { }
-  private datetime: moment.Moment;
-  private arDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
+  private arDate: moment.Moment;
+  private arFormDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
   
   private hour: number
   private MIN_DATE = new Date(2007, 0, 1, 0, 0, 0, 0)
@@ -44,12 +44,13 @@ export class ArDisplayComponent implements OnInit {
   ];
 
   ngOnInit() { 
-    this.datetime = moment(this.arDate.value)
+    this.arDate = moment(this.arFormDate.value)
+    this.queryService.sendArDate(this.arDate)
     this.hour = 0
   }
 
   dateChanged(date: Date): void {
-    this.arDate = new FormControl(moment(date))
+    this.arFormDate = new FormControl(moment(date))
   }
 
   timeChange(hour: number): void {
@@ -57,18 +58,22 @@ export class ArDisplayComponent implements OnInit {
   }
 
   private incrementDay(increment: number): void {
-    this.datetime = this.datetime.add(increment, 'd')
-    this.arDate = new FormControl( this.datetime.toDate() )
+    this.arDate = this.arDate.add(increment, 'd')
+    this.arFormDate = new FormControl( this.arDate.toDate() )
   }
 
   private incrementHour(increment: number): void {
-    this.datetime = this.datetime.add(increment, 'h')
-    this.arDate = new FormControl( this.datetime.toDate() )
-    this.hour = this.datetime.hour()
+    this.arDate = this.arDate.add(increment, 'h')
+    this.arFormDate = new FormControl( this.arDate.toDate() )
+    this.hour = this.arDate.hour()
   }
 
   private onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  private formatDate(date: moment.Moment): string {
+    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
   }
 
   private setArShapesAndDate(): void {
@@ -76,16 +81,18 @@ export class ArDisplayComponent implements OnInit {
     this.mapService.drawnItems.clearLayers()
     this.mapService.arShapeItems.clearLayers()
 
-    const dateString = this.datetime.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+    const dateString = this.formatDate(this.arDate)
+    
     const arShapes = this.arService.getArShapes(dateString)
-    //const arShapes = this.arService.getMockShape(this.datetime)
+    const arDateRange = this.queryService.getArDateRange()
     arShapes.subscribe((arShapes: ARShape[]) => {
       if (arShapes.length !== 0) {
         this.setDateRange()
         this.setArShape(arShapes)
-        const startDate = this.datetime.add(-1.5, 'h').toISOString()
-        const endDate = this.datetime.add(1.5, 'h').toISOString()
+        const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h'))
+        const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
         const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
+        console.log('dateRange: ', dateRange)
         const broadcastChange = false
         const clearOtherShapes = false
         this.queryService.sendArMode(true, broadcastChange, clearOtherShapes)
@@ -97,8 +104,8 @@ export class ArDisplayComponent implements OnInit {
 
   private setDateRange(): void {
     const broadcastChange = false
-    const startDate = this.datetime.add(-18, 'h').toISOString()
-    const endDate = this.datetime.add(18, 'h').toISOString()
+    const startDate = this.arDate.add(-18, 'h').toISOString()
+    const endDate = this.arDate.add(18, 'h').toISOString()
     const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
