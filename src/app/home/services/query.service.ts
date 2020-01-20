@@ -52,6 +52,8 @@ export class QueryService {
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
+    const clearOtherShapes = false
+    this.sendArMode(false, broadcastChange, clearOtherShapes)
     this.sendArDate(arDate)
     const arDateRange = [-18, 18]
     this.sendArDateRange(arDateRange)
@@ -132,6 +134,7 @@ export class QueryService {
 
   public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
     const msg = 'arMode'
+    console.log('arMode in sendArMode: ', arMode)
     this.arMode = arMode;
     if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
     if (broadcastChange) { this.change.emit(msg) }
@@ -291,17 +294,17 @@ export class QueryService {
     switch(key) {
       case 'mapProj': {
         this.setProj(value)
-        break;
+        break
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
         this.sendRealtimeMsg(includeRealtime, notifyChange)
-        break;
+        break
       }
       case 'onlyBGC': {
         const onlyBGC = JSON.parse(value)
         this.sendBGCToggleMsg(onlyBGC, notifyChange)
-        break;
+        break
       }
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
@@ -311,36 +314,43 @@ export class QueryService {
       case 'threeDayToggle': {
         const threeDayToggle = JSON.parse(value)
         this.sendThreeDayMsg(threeDayToggle, notifyChange)
-        break;
+        break
       }
       case 'threeDayEndDate': {
         const globalDisplayDate = value
         this.sendGlobalDate(globalDisplayDate, notifyChange)
-        break;
+        break
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const toggleThreeDayOff = false
         this.sendShape(arrays, notifyChange, toggleThreeDayOff)
-        break;
+        break
       }
       case 'selectionStartDate': {
         const stateDateRange = {start: value, end: this.selectionDateRange.end}
         this.sendSelectedDate(stateDateRange, notifyChange)
-        break;
+        break
       }
       case 'selectionEndDate': {
         const stateDateRange = {start: this.selectionDateRange.start, end: value}
         this.sendSelectedDate(stateDateRange, notifyChange)
-        break;
+        break
       }
       case 'presRange': {
         const presRange = JSON.parse(value)
         this.sendPres(presRange, notifyChange)
-        break;
+        break
+      }
+      case 'arMode': {
+        const arMode = JSON.parse(value)
+        console.log('arMode from URL: ', arMode)
+        const clearOtherShapes = false
+        this.sendArMode(arMode, notifyChange, clearOtherShapes)
+        break
       }
       default: {
-        console.log('key not found. not doing anything')
+        console.log('key not found. not doing anything: ', key)
         break;
     }
   }

@@ -37,13 +37,14 @@ export class SidebarNavComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.arMode = this.queryService.getArMode();
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
+      this.arMode = this.queryService.getArMode()
+      console.log('arMode: ', this.arMode)
 
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()

@@ -116,6 +116,7 @@ export class GridMappingService {
   private generateGridSections(features: FeatureCollection<any>, map: L.Map, lockRange: boolean): void {
 
     const globalGrid = this.queryGridService.getGlobalGrid()
+    console.log('global grid: ', globalGrid)
     let bboxes = this.queryGridService.getBBoxes(features)
     if (globalGrid) {
       bboxes = [ [-180, -90, 180, 90] ]

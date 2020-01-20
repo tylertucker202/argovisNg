@@ -95,7 +95,7 @@ export class ArDisplayComponent implements OnInit {
         console.log('dateRange: ', dateRange)
         const broadcastChange = false
         const clearOtherShapes = false
-        this.queryService.sendArMode(true, broadcastChange, clearOtherShapes)
+        //this.queryService.sendArMode(true, broadcastChange, clearOtherShapes)
         this.queryService.sendSelectedDate(dateRange, broadcastChange)
       }
       this.dialogRef.close();
