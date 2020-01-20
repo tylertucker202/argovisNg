@@ -30,13 +30,13 @@
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  <mat-slide-toggle matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
+  <mat-slide-toggle [hidden]="!arModule" matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
                    color="accent" [checked]="arMode"
                    (change)="arModeChange($event.checked)">Atmospheric River Mode
   </mat-slide-toggle>
 
-  <button id="ar-button" [hidden]="!arMode" mat-raised-button (click)="openARDialog()">AR Display</button>
-  <app-ar-date-range [hidden]="!arMode"></app-ar-date-range>
+  <button id="ar-button" [hidden]="!arMode || !arModule" mat-raised-button (click)="openARDialog()">AR Display</button>
+  <app-ar-date-range [hidden]="!arMode || !arModule"></app-ar-date-range>
   <mat-form-field  [hidden]="arMode" class="platform-form">
     <input matInput 
            matTooltip="input platform number, and map will display its profile markers in orange. hint: try 4902911"

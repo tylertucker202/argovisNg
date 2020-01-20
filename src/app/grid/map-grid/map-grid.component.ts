@@ -57,7 +57,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
       .subscribe(msg => {
         console.log('msg: ', msg)
          if ((msg === 'grid change')) {
-           this.gridMappingService.drawGrids(this.map, true)
+           const updateURL = true
+           this.gridMappingService.drawGrids(this.map, updateURL)
          }
          else {
            this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
@@ -112,7 +113,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
       const feature = layer.toGeoJSON()
-      console.log('added layer:', feature)
       this.updateGridsOnAdd(feature, shapes)
      });
 
@@ -126,7 +126,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
       const shapes = this.mapService.drawnItems.toGeoJSON()
       shapes.features.forEach(feature => {
-      console.log('added layer:', feature)
       this.updateGridsOnAdd(feature, shapes)
       });
     });

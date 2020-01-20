@@ -18,24 +18,38 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
   @Output() arEvent: EventEmitter<string> = new EventEmitter
 
-  private presRange = [0, 2000];
+  private presRange = [0, 2000]
   private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-  private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0));
-  private latLngShapes: number[][][];
-  private arShapes: number[][][];
-  private includeRealtime = true;
-  private onlyBGC = false;
-  private onlyDeep = false;
-  private threeDayToggle = true;
-  private proj = 'WM';
-  private arMode = true;
+                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'}
+  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
+  private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
+  private latLngShapes: number[][][]
+  private arShapes: number[][][]
+  private includeRealtime = true
+  private onlyBGC = false
+  private onlyDeep = false
+  private threeDayToggle = true
+  private proj = 'WM'
+  private arMode = false
+  public arModule: boolean
   private arDateRange = [-18, 18]
 
   constructor(private route: ActivatedRoute,
               private location: Location,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
+
+  public checkArModule(route: ActivatedRoute): void {
+    if (route.data) {
+      route.data.subscribe(v => {
+        console.log('v:', v )
+        if(v['arModule']) {
+          this.arModule = v['arModule'] //ignore if undefined
+          console.log('arModule:', this.arModule, 'v:', v )
+        }
+        if (this.arModule) { this.sendArMode(false, false, false) }
+      })
+    }
+  }
 
   public resetParams(): void{
     const broadcastChange = false

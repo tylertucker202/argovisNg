@@ -33,7 +33,10 @@ export class MapComponent implements OnInit, OnDestroy {
               @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   ngOnInit() {
-
+    this.route.data.subscribe(v => {
+        console.log('v:', v )
+    })
+    this.queryService.checkArModule(this.route)
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
 

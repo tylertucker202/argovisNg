@@ -22,13 +22,15 @@ export class SidebarNavComponent implements OnInit {
   constructor( private queryService: QueryService,
                public dialog: MatDialog ) { }
 
-  @Input() private includeRT: boolean;
-  @Input() private onlyBGC: boolean;
+  @Input() private includeRT: boolean
+  @Input() private onlyBGC: boolean
   @Input() private onlyDeep: boolean;
-  @Input() private display3Day: boolean;
-  @Input() private proj: string;
+  @Input() private display3Day: boolean
+  @Input() private proj: string
+  @Input() private arModule: boolean
   
   private arMode: boolean
+
   private platformInput: string;
   private projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
@@ -44,7 +46,8 @@ export class SidebarNavComponent implements OnInit {
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
       this.arMode = this.queryService.getArMode()
-      console.log('arMode: ', this.arMode)
+      this.arModule = this.queryService.arModule
+      console.log('arMode: ', this.arMode, 'arModule: ', this.arModule)
 
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
