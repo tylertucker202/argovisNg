@@ -9,6 +9,15 @@ import * as L from 'leaflet';
 
 declare module 'leaflet' {
 
+    export class ScalarLayer extends L.Layer {
+
+        options: any
+        setColor(c: any)
+        needRedraw()
+
+
+    }
+
     export class ScalarField extends Field {
         static fromASCIIGrid(asc: any, scaleFactor: number);
         static fromGeoTIFF(data: any, bandIndex: number);

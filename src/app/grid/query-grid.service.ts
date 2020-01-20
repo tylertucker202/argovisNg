@@ -27,7 +27,7 @@ export class QueryGridService {
   private latLngShapes: FeatureCollection<Polygon>
   private compare = false
   private paramMode = false
-  private globalGrid = false
+  private interpolateBool = false
   private colorScale = 'OrRd'
   private gridDomain = [0, 1]
 
@@ -166,13 +166,13 @@ export class QueryGridService {
     this.latLngShapes = null
   }
 
-  public getGlobalGrid(): boolean {
-    return this.globalGrid
+  public getInterpolatoinBool(): boolean {
+    return this.interpolateBool
   }
 
-  public sendGlobalGrid(globalGrid: boolean, broadcastChange=true): void {
-    const msg = 'global grid toggle'
-    this.globalGrid = globalGrid
+  public sendInterpolateBool(interpolateBool: boolean, broadcastChange=true): void {
+    const msg = 'interpolateBool toggled'
+    this.interpolateBool = interpolateBool
     if (broadcastChange) { this.change.emit(msg)}
   }
 
@@ -229,14 +229,14 @@ export class QueryGridService {
       bboxes = this.getBBoxes(this.latLngShapes)
       shapesString = JSON.stringify(bboxes)
     }
-    const globalGrid = JSON.stringify(this.getGlobalGrid())
+    const interpolateBool = JSON.stringify(this.getInterpolatoinBool())
     const monthYearString = this.formatMonthYear(this.monthYear)
     let queryParams = {
                          'presLevel': presLevelString, 
                          'monthYear': monthYearString,
                          'shapes': shapesString,
                          'grid': this.grid,
-                         'displayGlobalGrid': globalGrid,
+                         'interpolateBool': interpolateBool,
                          'colorScale': this.colorScale,
                          'paramMode': this.paramMode,
                          'gridParam': this.gridParam,
@@ -356,9 +356,9 @@ export class QueryGridService {
         this.sendShape(fc, notifyChange)
         break
       }
-      case 'displayGlobalGrid': {
-        const globalGrid = JSON.parse(value)
-        this.sendGlobalGrid(globalGrid, notifyChange)
+      case 'interpolateBool': {
+        const interpolateBool = JSON.parse(value)
+        this.sendInterpolateBool(interpolateBool, notifyChange)
         break
       }
       case 'presLevel': {

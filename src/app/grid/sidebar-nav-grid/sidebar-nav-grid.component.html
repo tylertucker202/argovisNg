@@ -10,8 +10,8 @@
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
   <mat-slide-toggle matTooltip="toggle on to display grid globally"
-                   color="accent" [checked]="globalGrid"
-                   (change)="globalGridToggle($event.checked)">Global Grid
+                   color="accent" [checked]="interpolateBool"
+                   (change)="interpolateBoolToggle($event.checked)">Interpolate Grid
   </mat-slide-toggle>
   <mat-slide-toggle matTooltip="toggle on to display grid parameters"
   color="accent" [checked]="paramMode"

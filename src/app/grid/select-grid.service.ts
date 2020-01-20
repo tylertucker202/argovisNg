@@ -27,7 +27,7 @@ export class SelectGridService {
   
   ]
   private rgGrids: GridGroup[] = [
-    {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'Anomaly'}
+    {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'RG Anomaly'}
   ]
 
   private allAvailableGrids = this.rgGrids.concat(this.ksGrids)

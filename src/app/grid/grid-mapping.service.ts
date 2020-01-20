@@ -5,6 +5,7 @@ import { MapService } from './../home/services/map.service'
 import { QueryGridService } from './query-grid.service'
 import { RasterService } from './raster.service'
 import { RasterGrid, RasterParam } from './../home/models/raster-grid'
+
 import * as chroma from 'chroma'
 declare let chroma: any
 
@@ -23,13 +24,15 @@ export class GridMappingService {
               public mapService: MapService) { }
 
   public updateGrids(map: L.Map): void {
-    //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
-    const broadcastChange = false
+    //update grids with new colorscale and color domain, or interpolate
     const colorScale = this.queryGridService.getColorScale()
     const gridDomain = this.queryGridService.getGridDomain()
-    const c = chroma.scale(colorScale).domain(gridDomain);
-    this.gridLayers.eachLayer((layer: any) => {
+    const c = chroma.scale(colorScale).domain(gridDomain) //reverse color scale by reversing domain
+    const interpolateBool = this.queryGridService.getInterpolatoinBool()
+    this.gridLayers.eachLayer((layer: L.ScalarLayer) => { //scalar layer based off of leaflet Layer
       layer.setColor(c)
+      layer.options.interpolate = interpolateBool
+      layer.needRedraw()
     })
 
     this.queryGridService.updateColorbar.emit('redrawn grids')
@@ -37,6 +40,7 @@ export class GridMappingService {
   }
 
   public drawGrids(map: L.Map, setURL=true): void {
+     //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
     const lockRange = true
     this.gridLayers.clearLayers();
@@ -115,12 +119,10 @@ export class GridMappingService {
 
   private generateGridSections(features: FeatureCollection<any>, map: L.Map, lockRange: boolean): void {
 
-    const globalGrid = this.queryGridService.getGlobalGrid()
-    console.log('global grid: ', globalGrid)
+    const interpolation = this.queryGridService.getInterpolatoinBool()
+    console.log('interpolation: ', interpolation)
     let bboxes = this.queryGridService.getBBoxes(features)
-    if (globalGrid) {
-      bboxes = [ [-180, -90, 180, 90] ]
-    }
+
     if (bboxes) {
       const monthYear = this.queryGridService.getMonthYear()
       const pres = this.queryGridService.getPresLevel()
@@ -139,17 +141,17 @@ export class GridMappingService {
 
   public generateRasterGrids(map: L.Map, rasterGrids: RasterGrid[] | RasterParam[], lockRange: boolean): void {
     const colorScale = this.queryGridService.getColorScale()
-    const globalGrid = this.queryGridService.getGlobalGrid()
+    const interpolationBool = this.queryGridService.getInterpolatoinBool()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
 
-      this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, globalGrid, colorScale)
+      this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, interpolationBool, colorScale)
 
 
       this.gridLayers.eachLayer((layer: any) => {
         if (lockRange) {
           const gridDomain = this.queryGridService.getGridDomain()
-          const c = chroma.scale(colorScale).domain(gridDomain);
+          const c = chroma.scale(colorScale).domain(gridDomain); //reverse scale by reversing gridDomain
           layer.setColor(c)
         }
         else {

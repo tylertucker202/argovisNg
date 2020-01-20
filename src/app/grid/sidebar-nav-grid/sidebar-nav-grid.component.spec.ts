@@ -39,10 +39,10 @@ describe('SidebarNavGridComponent', () => {
     queryGridService = debugElement.injector.get(QueryGridService)
 
     spyGetParamMode = spyOn(queryGridService, 'getParamMode').and.callThrough()
-    spyGetGlobalGrid = spyOn(queryGridService, 'getGlobalGrid').and.callThrough()
+    spyGetGlobalGrid = spyOn(queryGridService, 'getInterpolatoinBool').and.callThrough()
     spySendParamMode = spyOn(queryGridService, 'sendParamMode').and.callThrough()
     spySendParam = spyOn(queryGridService, 'sendParam').and.callThrough()
-    spySendGlobalGrid = spyOn(queryGridService, 'sendGlobalGrid').and.callThrough()
+    spySendInterpolateBool = spyOn(queryGridService, 'sendInterpolateBool').and.callThrough()
     spyTriggerClearLayers = spyOn( queryGridService, 'triggerClearLayers').and.callThrough()
     spyTriggerResetToStart = spyOn( queryGridService, 'triggerResetToStart').and.callThrough()
     fixture.detectChanges();
@@ -51,7 +51,7 @@ describe('SidebarNavGridComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(spyGetParamMode).toHaveBeenCalled()
-    expect(spyGetGlobalGrid).toHaveBeenCalled()
+    expect(spySendInterpolateBool).toHaveBeenCalled()
   })
 
   it('should detect urlBuild', () => {
@@ -76,9 +76,9 @@ describe('SidebarNavGridComponent', () => {
 
   })
 
-  it('should globalGridToggle', () => {
-    const globalGrid = true
-    component['globalGridToggle'](globalGrid)
+  it('should interpolateBoolToggle', () => {
+    const interpolateBool = true
+    component['interpolateBoolToggle'](interpolateBool)
     expect(spySendGlobalGrid).toHaveBeenCalledTimes(1)
   })
 

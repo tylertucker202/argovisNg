@@ -46,10 +46,10 @@ describe('RasterService', () => {
 
   //     const brewerColorScheme = 'RdPu'
   //     const grid = grids[0]
-  //     const globalGrid = false;
+  //     const interpolateBool = false;
   //     const map = L.map('#map')
   //     const makeCanvasLayer = service['makeCanvasLayer']
-  //     const layer = makeCanvasLayer(grid, brewerColorScheme, globalGrid, map)
+  //     const layer = makeCanvasLayer(grid, brewerColorScheme, interpolateBool, map)
   //     expect(layer).toBeTruthy()
   //     expect(layer.options.interpolate).toEqual(false)
   //   },

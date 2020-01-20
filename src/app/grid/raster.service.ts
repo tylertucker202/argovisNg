@@ -236,14 +236,13 @@ export class RasterService {
     return s
   }
 
-  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, globalGrid: boolean, map: L.Map): L.ScalarField { 
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, interpolateBool: boolean, map: L.Map): L.ScalarField { 
     let s = this.makeScalarField(grid)
-    const interpolate = !globalGrid
     
-    let c = chroma.scale(brewerColorScheme).domain(s.range);
+    let c = chroma.scale(brewerColorScheme).domain(s.range); //reverse color scale by reversing domain
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
-        interpolate: interpolate
+        interpolate: interpolateBool
     });
     layer['gridName'] = grid['gridName']
     layer['units'] = grid['units']
@@ -261,8 +260,8 @@ export class RasterService {
   }
 
   public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup,
-                              map: L.Map, globalGrid: boolean, brewerColorScheme='OrRd'): L.LayerGroup {
-    let layer = this.makeCanvasLayer(grid, brewerColorScheme, globalGrid, map)
+                              map: L.Map, interpolateBool: boolean, brewerColorScheme='OrRd'): L.LayerGroup {
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme, interpolateBool, map)
     gridLayers.addLayer(layer)
     return gridLayers
   }

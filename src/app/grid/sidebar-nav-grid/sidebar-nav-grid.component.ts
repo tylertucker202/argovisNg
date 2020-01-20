@@ -9,15 +9,15 @@ import { QueryGridService } from '../query-grid.service'
 export class SidebarNavGridComponent implements OnInit {
 
   constructor(private queryGridService: QueryGridService) { }
-  private globalGrid: boolean
+  private interpolateBool: boolean
   private paramMode: boolean
   ngOnInit() {
 
     this.paramMode = this.queryGridService.getParamMode()
-    this.globalGrid = this.queryGridService.getGlobalGrid()
+    this.interpolateBool = this.queryGridService.getInterpolatoinBool()
 
     this.queryGridService.urlBuild.subscribe(msg => {
-      this.globalGrid = this.queryGridService.getGlobalGrid()
+      this.interpolateBool = this.queryGridService.getInterpolatoinBool()
       this.paramMode = this.queryGridService.getParamMode();
     })
     
@@ -34,10 +34,10 @@ export class SidebarNavGridComponent implements OnInit {
     this.queryGridService.triggerResetToStart();
   }
 
-  private globalGridToggle(checked: boolean): void {
-    this.globalGrid = checked
+  private interpolateBoolToggle(checked: boolean): void {
+    this.interpolateBool = checked
     const broadcastChange = true
-    this.queryGridService.sendGlobalGrid(this.globalGrid, broadcastChange);
+    this.queryGridService.sendInterpolateBool(this.interpolateBool, broadcastChange);
   }
 
   private paramModeToggle(checked: boolean): void {

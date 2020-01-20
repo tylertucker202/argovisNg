@@ -55,11 +55,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.change
       .subscribe(msg => {
-         let queryShapes = true
-         if (msg === 'color scale change') {
-           queryShapes = false
+        console.log('msg: ', msg)
+         if ((msg === 'grid change')) {
+           this.gridMappingService.drawGrids(this.map, true)
          }
-         this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
+         else {
+           this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
+         }
         })
 
     // this.rasterService.getMockGridRaster()
@@ -146,14 +148,10 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   private initGrids(): void{ 
     const shapeFeature = this.queryGridService.getShapes()
-    const displayGlobalGrid = this.queryGridService.getGlobalGrid()
-    if (shapeFeature && !displayGlobalGrid) {
+    if (shapeFeature) {
       const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
       const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray, this.shapeOptions)
       this.mapService.drawnItems.addLayer(initShapes)
-      this.gridMappingService.drawGrids(this.map)
-    }
-    else if (displayGlobalGrid) {
       this.gridMappingService.drawGrids(this.map)
     }
   }
