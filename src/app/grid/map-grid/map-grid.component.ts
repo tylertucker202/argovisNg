@@ -3,6 +3,7 @@ import { MapService } from '../../home/services/map.service'
 import { QueryGridService } from '../query-grid.service'
 import { GridMappingService } from '../grid-mapping.service'
 import { RasterService } from '../raster.service'
+import { SelectGridService } from '../select-grid.service'
 import * as L from "leaflet";
 
 @Component({
@@ -24,7 +25,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
               public mapService: MapService,
               public rasterService: RasterService,
               private queryGridService: QueryGridService,
-              private gridMappingService: GridMappingService ){ }
+              private gridMappingService: GridMappingService,
+              private selectGridService: SelectGridService ){ }
 
   ngOnInit() {
 
@@ -49,20 +51,37 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const startView = {lat: 0, lng: 0};
     const startZoom = 3
     this.map.setView(startView, startZoom)
-    this.mapService.drawnItems.addTo(this.map);
+    this.mapService.drawnItems.addTo(this.map)
 
     this.initGrids()
 
     this.queryGridService.change
       .subscribe(msg => {
         console.log('msg: ', msg)
-         if ((msg === 'grid change')) {
-           const updateURL = true
-           this.gridMappingService.drawGrids(this.map, updateURL)
-         }
-         else {
-           this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
-         }
+        const param = this.queryGridService.getParam()
+        const grid = this.queryGridService.getGrid()
+
+        const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
+        this.map.closePopup()
+        const updateURL = true
+        const lockRange = false //update colorbar
+        switch(msg) {
+          case 'grid change': {
+            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+            break
+          }
+          case 'param change': {
+            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+            break
+          }
+          case 'grid param change': {
+            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+            break
+          }
+          default: {
+            this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
+          }
+        }
         })
 
     // this.rasterService.getMockGridRaster()
@@ -81,6 +100,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.clearLayers
     .subscribe( () => {
+      this.map.closePopup()
       this.gridMappingService.gridLayers.clearLayers();
       this.mapService.drawnItems.clearLayers();
       this.queryGridService.clearShapes()
@@ -89,6 +109,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.resetToStart
       .subscribe( () => {
+        this.map.closePopup()
         //this.queryGridService.clearShapes();
         this.gridMappingService.gridLayers.clearLayers();
         this.mapService.drawnItems.clearLayers();

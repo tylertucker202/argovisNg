@@ -18,10 +18,10 @@ export class QueryGridService {
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
-  private monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+  private monthYear = moment('01-2012', 'MM-YYYY').utc(false)
   private mapState: MapState
   private grid = 'rgTempAnom'
-  private param = 'total'
+  private param = 'anomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
   private latLngShapes: FeatureCollection<Polygon>
@@ -42,13 +42,13 @@ export class QueryGridService {
 
   public resetParams(): void{
     const broadcastChange = false
-    const monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+    const monthYear = moment('01-2012', 'MM-YYYY').utc(false)
     this.sendmonthYear(monthYear, broadcastChange)
     const presLevel = 10
     this.sendPres(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
     this.gridDomain = [0, 1]
-    this.param = 'total'
+    this.param = 'anomaly'
     this.paramMode = false
     this.compare = false
     this.clearShapes()

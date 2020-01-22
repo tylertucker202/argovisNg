@@ -39,15 +39,16 @@ export class GridMappingService {
     this.queryGridService.setURL(); //this should be the last thing
   }
 
-  public drawGrids(map: L.Map, setURL=true): void {
+  public drawGrids(map: L.Map, setURL=true, lockRange=true): void {
      //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
-    const lockRange = true
     this.gridLayers.clearLayers();
     const shapes = this.mapService.drawnItems.toGeoJSON()
     this.queryGridService.sendShape(shapes, broadcastChange)
     let features = this.queryGridService.getShapes()
-    this.generateGridSections(features, map, lockRange);
+    const grid = this.queryGridService.getGrid()
+    //check if grid exists on current grid selection. If not dont draw.
+    this.generateGridSections(features, map, grid, lockRange);
     if(setURL){
       this.queryGridService.setURL(); //this should be the last thing
     }       
@@ -117,16 +118,14 @@ export class GridMappingService {
     }
   }
 
-  private generateGridSections(features: FeatureCollection<any>, map: L.Map, lockRange: boolean): void {
+  private generateGridSections(features: FeatureCollection<any>, map: L.Map, grid: string, lockRange: boolean): void {
 
     const interpolation = this.queryGridService.getInterpolatoinBool()
-    console.log('interpolation: ', interpolation)
     let bboxes = this.queryGridService.getBBoxes(features)
 
     if (bboxes) {
       const monthYear = this.queryGridService.getMonthYear()
       const pres = this.queryGridService.getPresLevel()
-      const grid = this.queryGridService.getGrid()
       const compareGrid = this.queryGridService.getCompareGrid()
       const compare = this.queryGridService.getCompare()
   
@@ -144,10 +143,7 @@ export class GridMappingService {
     const interpolationBool = this.queryGridService.getInterpolatoinBool()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
-
       this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, interpolationBool, colorScale)
-
-
       this.gridLayers.eachLayer((layer: any) => {
         if (lockRange) {
           const gridDomain = this.queryGridService.getGridDomain()

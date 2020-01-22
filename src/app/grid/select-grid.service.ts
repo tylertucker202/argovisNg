@@ -6,16 +6,16 @@ import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typ
 })
 export class SelectGridService {
 
-  private ksGrids: GridGroup[] = [
+  private readonly ksGrids: GridGroup[] = [
     {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
     {grid: 'ksSpaceTempTrend' , param: 'anomaly', viewValue: 'Space Trend Anomaly'  },
-    {grid: 'ksSpaceTempTrendJG' , param: 'anomaly',  viewValue: 'JG Space Trend Anomaly'},
+    //{grid: 'ksSpaceTempTrendJG' , param: 'anomaly',  viewValue: 'JG Space Trend Anomaly'},
     {grid: 'ksSpaceTempTrend2', param: 'anomaly', viewValue: 'Space Trend2 Anomaly'  },
     //{grid: 'ksSpaceTimeTempNoTrend', param: 'anomaly',viewValue: 'Space Time No Trend Anomaly'  },
     {grid: 'ksSpaceTimeTempTrend', param: 'anomaly', viewValue: 'Space Time Trend Anomaly'  },
     {grid: 'ksSpaceTimeTempTrend2', param: 'anomaly', viewValue: 'Space Time Trend2 Anomaly'  },
     {grid: 'ksTempTrend', param: 'mean',viewValue: 'Trend Mean Field'  },
-    {grid: 'ksTempTrendJG', param: 'mean',viewValue: 'JG Trend Mean Field'  },
+    //{grid: 'ksTempTrendJG', param: 'mean',viewValue: 'JG Trend Mean Field'  },
     {grid: 'ksTempNoTrend', param: 'mean',viewValue: 'No Trend Mean Field'  },
     {grid: 'ksTempTrend2', param: 'mean',viewValue: 'Trend 2 Mean Field'  },
     {grid: 'ksSpaceTempNoTrendTotal', param: 'total', viewValue: 'Space No Trend Total'  },
@@ -26,18 +26,18 @@ export class SelectGridService {
     {grid: 'ksSpaceTimeTempTrend2Total', param: 'total', viewValue: 'Space Time Trend2 Total'  },
   
   ]
-  private rgGrids: GridGroup[] = [
+  private readonly rgGrids: GridGroup[] = [
     {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'RG Anomaly'}
   ]
 
-  private allAvailableGrids = this.rgGrids.concat(this.ksGrids)
+  private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
 
-  private ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
-  private rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
-  private tempGridGroup: MeasGroup = {meas:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
-  public allGrids = [this.tempGridGroup]
-  private spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
-  private spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
+  private readonly ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
+  private readonly rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
+  private readonly tempGridGroup: MeasGroup = {meas:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
+  public readonly allGrids = [this.tempGridGroup]
+  private readonly spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
+  private readonly spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
   private ksParams: GridParamGroup[] = [
     {grid: 'ksSpaceTempNoTrend', param: 'param', viewValue: 'Space No Trend Anomaly', params: this.spaceParams  },
     {grid: 'ksSpaceTempTrend', param: 'param', viewValue: 'Space Trend Anomaly', params: this.spaceParams   },
@@ -47,12 +47,12 @@ export class SelectGridService {
     {grid: 'ksSpaceTimeTempTrend', param: 'param',viewValue: 'Space Time Trend Anomaly', params: this.spaceTimeParams   },
     {grid: 'ksSpaceTimeTempTrend2', param: 'param',viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
   ]
-  private ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
-  private tempParamGroup: any = {meas: 'Temperature', producers: [this.ksParamGroup]}
-  public allGridParams: any =  [this.tempParamGroup]
-  public params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
-                   {param:'anomaly', viewValue: 'Anomaly'},
-                   {param:'mean', viewValue: 'Mean'}]
+  private readonly ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
+  private readonly tempParamGroup: any = {meas: 'Temperature', producers: [this.ksParamGroup]}
+  public readonly allGridParams: any =  [this.tempParamGroup]
+  public readonly params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
+                            {param:'anomaly', viewValue: 'Anomaly'},
+                            {param:'mean', viewValue: 'Mean'}]
 
   public getAvailableGrids(param: string): GridGroup[] {
     let availableGrids = []
@@ -63,6 +63,18 @@ export class SelectGridService {
       }
     }
     return availableGrids
+  }
+
+  public checkIfGridAvailable(grid: string, param: string): boolean {
+    let obj = this.allAvailableGrids.find(g => (g.grid === grid) && (g.param === param));
+    let gridAvailable
+    obj ? gridAvailable = true: gridAvailable = false
+    console.log('grid: ', grid, 'param: ', param , 'obj: ', obj, 'gridAvailable: ', gridAvailable)
+    return gridAvailable
+  }
+
+  public swtichGridOnParamChange(param: string): void{
+
   }
 
   constructor() { }
