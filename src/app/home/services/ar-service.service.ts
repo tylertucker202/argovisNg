@@ -755,8 +755,9 @@ export class ArServiceService {
   }
 
   public getArShapes(dateString: string): Observable<ARShape[]> {
-    const url = 'http://localhost:3000/arShapes/findByDate?date='+dateString;
-    console.log('inside get AR Shapes, url: ', url)
+    //let url = 'http://localhost:3000/'
+    let url = ''
+    url += '/arShapes/findByDate?date='+dateString;
     return this.http.get<ARShape[]>(url)
   }
 

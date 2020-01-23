@@ -161,7 +161,8 @@ export class RasterService {
   public getParamRaster(latRange: number[], lonRange: number[], pres: number,
                        gridName: string, gridParam: string): Observable<RasterParam[]> {
 
-    let url = 'http://localhost:3000'
+    //let url = 'http://localhost:3000' //for testing
+    let url = ''
     url += '/griddedProducts/gridParams/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
@@ -182,7 +183,8 @@ export class RasterService {
 
   public getGridRaster(latRange: number[], lonRange: number[], monthYear: string,
                        pres: number, gridName: string): Observable<RasterGrid[]> {
-    let url = 'http://localhost:3000'
+    //let url = 'http://localhost:3000'
+    let url = ''
     url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
