@@ -15,6 +15,7 @@ declare let d3: any
 export class ColorbarComponent implements OnInit {
   private colorScale: string
   private colorArr: string[]
+  private inverseColorScale: boolean
   private domain: number[]
   private cbrange: number[]
   private cbarShift: string
@@ -35,8 +36,10 @@ export class ColorbarComponent implements OnInit {
     this.svgWidth = '95%'
     this.cbarShift = "10"
     this.colorScale = this.queryGridService.getColorScale()
+    this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
-    this.createColorbar(this.colorArr, this.domain)
+    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.createColorbar(this.colorArr, this.domain) }
 
     this.queryGridService.change
       .subscribe(msg => {
@@ -57,13 +60,16 @@ export class ColorbarComponent implements OnInit {
   private updateColorbar() {
     this.colorScale = this.queryGridService.getColorScale()
     this.domain = this.queryGridService.getGridDomain()
-    //todo: update domain here
+    this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
     this.svg.remove();
-    this.createColorbar(this.colorArr, this.domain)
+    
+    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.createColorbar(this.colorArr, this.domain) }
   }
 
   private createColorbar(colorArr: string[], domain: number[]) {
+
     this.svg = d3.select("app-colorbar").append("svg")
     .attr("width", this.svgWidth)
     .attr("height", this.svgHeight)
@@ -109,7 +115,8 @@ export class ColorbarComponent implements OnInit {
 
   public minChange(val: number ): void {
     const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
-    this.domain = [lRange, this.domain[1]]
+    const uRange = this.domain.sort()[1]
+    this.domain = [lRange, uRange]
     const broadcastChange = true
     const updateColorbar = false
     this.queryGridService.sendGridDomain(this.domain, broadcastChange, updateColorbar)
@@ -117,7 +124,8 @@ export class ColorbarComponent implements OnInit {
 
   public maxChange(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
-    this.domain = [this.domain[0], uRange];
+    const lRange = this.domain.sort()[0]
+    this.domain = [lRange, uRange];
     const broadcastChange = true
     const updateColorbar = false
     this.queryGridService.sendGridDomain(this.domain, broadcastChange, updateColorbar)

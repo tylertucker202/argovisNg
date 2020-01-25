@@ -61,26 +61,17 @@ export class MapGridComponent implements OnInit, OnDestroy {
         const param = this.queryGridService.getParam()
         const grid = this.queryGridService.getGrid()
 
-        const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
         this.map.closePopup()
         const updateURL = true
         const lockRange = false //update colorbar
-        switch(msg) {
-          case 'grid change': {
-            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
-            break
-          }
-          case 'param change': {
-            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
-            break
-          }
-          case 'grid param change': {
-            gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
-            break
-          }
-          default: {
-            this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
-          }
+        const redrawGridBool = this.checkIfRedraw(msg) // redraw grids or just update cosmetic items?
+
+        if (redrawGridBool) {
+          const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
+          gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+        }
+        else {
+          this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
         }
         })
 
@@ -152,6 +143,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
     });
 
     this.invalidateSize();
+  }
+
+  private checkIfRedraw(msg: string): boolean {
+    //this checks if change merits a complete redraw (true), or just update some cosmetic changes (false)
+    const redrawItems = ['grid change', 'param change', 'grid param change', 'display grid param change', 'compare grid toggled', 'compare grid change']
+    const redrawGridBool = redrawItems.includes(msg)
+    return redrawGridBool
   }
 
   private getNewDrawnItems(layers: L.LayerGroup): L.FeatureGroup {

@@ -6,4 +6,8 @@
     </mat-option>
   </mat-select>
 </mat-form-field>
+<mat-slide-toggle matTooltip="toggle on to invert color bar scale"
+color="accent" [checked]="inverseColorScale"
+(change)="inverseColorScaleToggle($event.checked)">Inverse color scale
+</mat-slide-toggle>
 <app-colorbar></app-colorbar>

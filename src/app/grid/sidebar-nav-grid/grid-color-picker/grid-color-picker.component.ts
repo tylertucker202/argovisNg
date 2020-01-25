@@ -11,6 +11,7 @@ export class GridColorPickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService) { }
   private availableColorscales: ColorScaleGroup[]
   private colorScale: string
+  private inverseColorScale: boolean
 
   ngOnInit() {
     this.availableColorscales = [
@@ -33,6 +34,7 @@ export class GridColorPickerComponent implements OnInit {
     ]
 
     this.colorScale = this.queryGridService.getColorScale()
+    this.inverseColorScale = this.queryGridService.getInverseColorScale()
 
     this.queryGridService.resetToStart
     .subscribe(msg => {
@@ -44,6 +46,12 @@ export class GridColorPickerComponent implements OnInit {
     const sendMessage = true
     this.colorScale = colorScale
     this.queryGridService.sendColorScale(this.colorScale, sendMessage)
+  }
+
+  private inverseColorScaleToggle(inverseColorScale: boolean): void {
+    const sendMessage = true
+    this.inverseColorScale = inverseColorScale
+    this.queryGridService.sendInverseColorScale(this.inverseColorScale, sendMessage)
   }
 
 }

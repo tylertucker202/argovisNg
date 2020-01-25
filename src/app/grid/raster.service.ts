@@ -10,7 +10,7 @@ import * as L from "leaflet";
 import * as d3 from 'd3'; //needed for leaflet canvas layer
 import './../../ext-js/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
-import { ChromaStatic } from 'chroma-js';
+import { ChromaStatic, Scale, Color } from 'chroma-js';
 declare const chroma: ChromaStatic;
 
 @Injectable({
@@ -234,14 +234,15 @@ export class RasterService {
           grid.zs[i] = null;
         }
     }
-    let s = new L.ScalarField(grid)
+    const s = new L.ScalarField(grid)
     return s
   }
 
-  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, interpolateBool: boolean, map: L.Map): L.ScalarField { 
-    let s = this.makeScalarField(grid)
-    
-    let c = chroma.scale(brewerColorScheme).domain(s.range); //reverse color scale by reversing domain
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, inverseColorScale, interpolateBool: boolean, map: L.Map): L.ScalarField { 
+    const s = this.makeScalarField(grid)
+    let c: Scale<Color>
+    if(interpolateBool) { c = chroma.scale(brewerColorScheme).domain(s.range.reverse()) }
+    else { c = chroma.scale(brewerColorScheme).domain(s.range) }
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
         interpolate: interpolateBool
@@ -262,8 +263,8 @@ export class RasterService {
   }
 
   public addCanvasToGridLayer(grid: RasterGrid | RasterParam, gridLayers: L.LayerGroup,
-                              map: L.Map, interpolateBool: boolean, brewerColorScheme='OrRd'): L.LayerGroup {
-    let layer = this.makeCanvasLayer(grid, brewerColorScheme, interpolateBool, map)
+                              map: L.Map, interpolateBool: boolean, brewerColorScheme='OrRd', inverseColorScale=false): L.LayerGroup {
+    let layer = this.makeCanvasLayer(grid, brewerColorScheme, inverseColorScale, interpolateBool, map)
     gridLayers.addLayer(layer)
     return gridLayers
   }

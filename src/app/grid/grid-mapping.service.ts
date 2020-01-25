@@ -6,11 +6,13 @@ import { QueryGridService } from './query-grid.service'
 import { RasterService } from './raster.service'
 import { RasterGrid, RasterParam } from './../home/models/raster-grid'
 
+import { Scale, Color } from 'chroma-js'
 import * as chroma from 'chroma'
 declare let chroma: any
 
 import * as d3 from 'd3'; //needed for leaflet canvas layer
 import * as L from "leaflet";
+import { ChromaStatic } from 'chroma-js';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +28,12 @@ export class GridMappingService {
   public updateGrids(map: L.Map): void {
     //update grids with new colorscale and color domain, or interpolate
     const colorScale = this.queryGridService.getColorScale()
-    const gridDomain = this.queryGridService.getGridDomain()
-    const c = chroma.scale(colorScale).domain(gridDomain) //reverse color scale by reversing domain
+    let gridDomain = this.queryGridService.getGridDomain()
+
+    const invertColorScale = this.queryGridService.getInverseColorScale()
+    let c: Scale<Color>
+    if (invertColorScale) { c = chroma.scale(colorScale).domain(gridDomain.reverse()) }
+    else { c = chroma.scale(colorScale).domain(gridDomain) }
     const interpolateBool = this.queryGridService.getInterpolatoinBool()
     this.gridLayers.eachLayer((layer: L.ScalarLayer) => { //scalar layer based off of leaflet Layer
       layer.setColor(c)
@@ -141,18 +147,21 @@ export class GridMappingService {
   public generateRasterGrids(map: L.Map, rasterGrids: RasterGrid[] | RasterParam[], lockRange: boolean): void {
     const colorScale = this.queryGridService.getColorScale()
     const interpolationBool = this.queryGridService.getInterpolatoinBool()
+    const invertColorScale = this.queryGridService.getInverseColorScale()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];
-      this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, interpolationBool, colorScale)
+      this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, interpolationBool, colorScale, invertColorScale)
       this.gridLayers.eachLayer((layer: any) => {
         if (lockRange) {
-          const gridDomain = this.queryGridService.getGridDomain()
-          const c = chroma.scale(colorScale).domain(gridDomain); //reverse scale by reversing gridDomain
+          let gridDomain = this.queryGridService.getGridDomain()
+          let c: Scale<Color>
+          if(invertColorScale) {c = chroma.scale(colorScale).domain(gridDomain.reverse()) }
+          else { c = chroma.scale(colorScale).domain(gridDomain) }
           layer.setColor(c)
         }
         else {
           const range = layer._field.range
-          this.queryGridService.sendGridDomain(range, false, true)
+          this.queryGridService.sendGridDomain(range.sort(), false, false)
         }
       })
       }

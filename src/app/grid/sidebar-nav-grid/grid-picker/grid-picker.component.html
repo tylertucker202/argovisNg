@@ -32,7 +32,7 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Params</mat-label>
+    <mat-label>Grid Params</mat-label>
     <mat-select [(value)]="gridParam" (selectionChange)="gridParamSelected($event.value)" >
       <mat-option *ngFor="let param of gridParams" [(value)]="param">
           {{param}}

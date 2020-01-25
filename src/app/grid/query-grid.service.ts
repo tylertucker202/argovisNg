@@ -7,6 +7,7 @@ import { SelectGridService} from './select-grid.service'
 import * as moment from 'moment'
 import {Moment} from 'moment'
 import { FeatureCollection, Feature, Polygon, Geometry } from 'geojson'
+import { not } from '@angular/compiler/src/output/output_ast'
 
 @Injectable()
 export class QueryGridService {
@@ -29,6 +30,7 @@ export class QueryGridService {
   private paramMode = false
   private interpolateBool = false
   private colorScale = 'OrRd'
+  private inverseColorScale = false
   private gridDomain = [0, 1]
 
   constructor(private route: ActivatedRoute,
@@ -47,6 +49,7 @@ export class QueryGridService {
     const presLevel = 10
     this.sendPres(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
+    this.inverseColorScale = false
     this.gridDomain = [0, 1]
     this.param = 'anomaly'
     this.paramMode = false
@@ -73,9 +76,10 @@ export class QueryGridService {
   public sendGridDomain(gridDomain: number[], broadcastChange=true, updateColorBar=true): void {
     const msg = 'grid range changed'
     this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
+    
     this.setURL()
-    if (updateColorBar) { this.updateColorbar.emit(msg) }
-    else if (broadcastChange) {this.change.emit(msg)}
+    //if (updateColorBar) { this.updateColorbar.emit(msg) }
+    if (broadcastChange) {this.change.emit(msg)}
   }
 
   public sendColorScale(colorScale: string, broadcastChange=true): void {
@@ -88,6 +92,15 @@ export class QueryGridService {
     return this.colorScale
   }
 
+  public sendInverseColorScale(inverseColorScale: boolean, broadcastChange=true): void {
+    let msg = 'color scale inverted'
+    this.inverseColorScale = inverseColorScale
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getInverseColorScale(): boolean {
+    return this.inverseColorScale
+  }
   public sendmonthYear(monthYear: Moment, broadcastChange=true): void {
     const msg = 'month year change'
     if (!monthYear.isValid) {
@@ -230,6 +243,7 @@ export class QueryGridService {
       shapesString = JSON.stringify(bboxes)
     }
     const interpolateBool = JSON.stringify(this.getInterpolatoinBool())
+    const inverseColorScale = JSON.stringify(this.getInverseColorScale())
     const monthYearString = this.formatMonthYear(this.monthYear)
     let queryParams = {
                          'presLevel': presLevelString, 
@@ -238,6 +252,7 @@ export class QueryGridService {
                          'grid': this.grid,
                          'interpolateBool': interpolateBool,
                          'colorScale': this.colorScale,
+                         'inverseColorScale': inverseColorScale,
                          'paramMode': this.paramMode,
                          'gridParam': this.gridParam,
                          'param': this.param,
@@ -317,6 +332,10 @@ export class QueryGridService {
         this.sendColorScale(colorScale, notifyChange)
         break
       }
+      case 'inverseColorScale': {
+        const inverseColorScale = JSON.parse(value)
+        this.sendInverseColorScale(inverseColorScale, notifyChange)
+      }
       case 'paramMode': {
         const paramMode = JSON.parse(value)
         this.sendParamMode(paramMode, notifyChange)
@@ -324,7 +343,6 @@ export class QueryGridService {
       }
       case 'gridParam': {
         const param = value
-        //const grid = this.getGrid()
         const grid = 'ksSpaceTempTrend' //default grid if param but no grid
         this.sendGridParam(grid, param, notifyChange)
         break
