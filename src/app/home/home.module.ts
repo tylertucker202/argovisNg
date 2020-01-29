@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Daterangepicker } from 'ng2-daterangepicker'
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NotifierModule, NotifierOptions } from 'angular-notifier';
 
 import { CommonModule } from '@angular/common';
 
@@ -30,49 +29,6 @@ import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-o
 import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bottom-sheet/help-bottom-sheet.component';
 import { ArDisplayComponent } from './sidebar-nav/ar-display/ar-display.component';
 import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.component';
-import { ArShapePopupComponent } from './ar-shape-popup/ar-shape-popup.component';
-
-
-const customNotifierOptions: NotifierOptions = {
-  position: {
-		horizontal: {
-			position: 'right',
-			distance: 12
-		},
-		vertical: {
-			position: 'top',
-			distance: 12,
-			gap: 10
-		}
-	},
-  theme: 'material',
-  behaviour: {
-    autoHide: 5000,
-    onClick: 'hide',
-    onMouseover: 'pauseAutoHide',
-    showDismissButton: true,
-    stacking: 4
-  },
-  animations: {
-    enabled: true,
-    show: {
-      preset: 'slide',
-      speed: 300,
-      easing: 'ease'
-    },
-    hide: {
-      preset: 'fade',
-      speed: 300,
-      easing: 'ease',
-      offset: 50
-    },
-    shift: {
-      speed: 300,
-      easing: 'ease'
-    },
-    overlap: 150
-  }
-};
 
 @NgModule({
   declarations: [
@@ -88,8 +44,7 @@ const customNotifierOptions: NotifierOptions = {
     HelpBottomSheetComponent,
     HelpBottomSheet,
     ArDisplayComponent,
-    ArDateRangeComponent,
-    ArShapePopupComponent],
+    ArDateRangeComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -98,7 +53,6 @@ const customNotifierOptions: NotifierOptions = {
     NouisliderModule,
     FormsModule,
     ReactiveFormsModule,
-    NotifierModule.withConfig(customNotifierOptions),
     MaterialModule,
   ],
   providers: [

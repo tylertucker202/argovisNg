@@ -320,7 +320,7 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation = function(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape'): void{
+  public popupWindowCreation = function(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
     const feature = layer.toGeoJSON();
     const shape = this.getLatLngFromFeature(feature)
     const transformedShape = this.getTransformedShape(shape);
@@ -330,6 +330,7 @@ export class MapService {
         c.instance.shape = [shape];
         c.instance.transformedShape = transformedShape;
         c.instance.message = shapeType 
+        c.instance.shape_id = shape_id
       })
       layer.setPopupContent(popupContent);
     });

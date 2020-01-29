@@ -25,7 +25,7 @@ export class QueryGridService {
   private param = 'anomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
-  private latLngShapes: FeatureCollection<Polygon>
+  private latLngShapes = [[-5, -5, 5, 5]]
   private compare = false
   private paramMode = false
   private interpolateBool = false
@@ -54,6 +54,7 @@ export class QueryGridService {
     this.param = 'anomaly'
     this.paramMode = false
     this.compare = false
+    this.latLngShapes = [[-5, -5, 5, 5]]
     this.clearShapes()
     this.setURL()
     this.resetToStart.emit('reset params pushed')
@@ -114,13 +115,13 @@ export class QueryGridService {
     return this.monthYear
   }
 
-  public sendShape(features: FeatureCollection<Polygon>, broadcastChange=true): void {
+  public sendShape(bboxes: number[][], broadcastChange=true): void {
     let msg = 'shape change'
-    this.latLngShapes = features
+    this.latLngShapes = bboxes
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getShapes(): FeatureCollection<Polygon> {
+  public getShapes(): number[][] {
     return this.latLngShapes
   }
 
@@ -239,7 +240,7 @@ export class QueryGridService {
     let shapesString = null
     let bboxes: number[][]
     if (this.latLngShapes) {
-      bboxes = this.getBBoxes(this.latLngShapes)
+      bboxes = this.latLngShapes
       shapesString = JSON.stringify(bboxes)
     }
     const interpolateBool = JSON.stringify(this.getInterpolatoinBool())
@@ -288,30 +289,6 @@ export class QueryGridService {
     }, bbox)
     
     return bbox
-  }
-
-  //todo: cast as Feature and FeatureCollection types
-  private convertShapeToFeatureCollection(shapes: number[][]): FeatureCollection<Polygon> {
-
-    let fc: FeatureCollection<Polygon> = { type: 'FeatureCollection',
-    features: [] 
-    }
-
-    shapes.forEach( (shape) => {
-      let feature: Feature<Polygon> = {type: "Feature", geometry: null, properties: null}
-      
-      let geom: Polygon = { type: 'Polygon', coordinates: [] }
-      const ll = [shape[0], shape[1]]
-      const ur = [shape[2], shape[3]]
-      const ul = [ll[0], ur[1]]
-      const lr = [ur[0], ll[1]]
-      const coordinates = [ll, ul, ur, lr, ll]
-      geom.coordinates = [coordinates]
-      feature.geometry = geom
-      fc.features.push(feature)
-    })
-
-    return(fc)
   }
 
   public setParamsFromURL(): void {
@@ -370,8 +347,7 @@ export class QueryGridService {
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
-        const fc = this.convertShapeToFeatureCollection(arrays)
-        this.sendShape(fc, notifyChange)
+        this.sendShape(arrays, notifyChange)
         break
       }
       case 'interpolateBool': {

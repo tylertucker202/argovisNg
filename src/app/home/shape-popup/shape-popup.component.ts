@@ -10,18 +10,20 @@ export class ShapePopupComponent implements OnInit {
   @Input() shape: number[][][]
   @Input() transformedShape: number[][]
   @Input() message: string
+  @Input() shape_id: string
   private color: string
   private arMode = false
   private presRangeToggle: boolean
   private pageToggle: boolean
-  private buttonText: string
+  private shapeButtonText: string
+  private jsonButtonText: string
   constructor(private queryService: QueryService) { }
 
   ngOnInit() {
     this.color = 'primary';
     this.presRangeToggle = true
-    this.pageToggle = true
-    this.updateButtonText()
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
     if (this.message ==='atmospheric river shape' ) {
       this.arMode = true
     }
@@ -29,37 +31,49 @@ export class ShapePopupComponent implements OnInit {
 
   private presRangeChange(presRangeToggle: boolean): void {
     this.presRangeToggle = presRangeToggle;
-    this.updateButtonText()
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
   }
 
   private pageChange(pageToggle: boolean): void {
     this.pageToggle = pageToggle
-    this.updateButtonText()
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
   }
 
-  private updateButtonText(): void {
-    let buttonText
-    this.pageToggle ? buttonText = 'To Selection Page': buttonText = 'Download JSON Data'
-    if (this.presRangeToggle) { buttonText += ' with pressure query' }
-    this.buttonText  = buttonText
+  private updateShapeButtonText(): void {
+    let shapeButtonText = "To Selection Page"
+    //if (this.presRangeToggle) { shapeButtonText += ' with pressure query' }
+    this.shapeButtonText  = shapeButtonText
   }
 
-  private goToSelectionPage(): void {
+  private updateJSONButtonText(): void {
+    let jsonButtonText = 'Download JSON Data'
+    //if (this.presRangeToggle) { jsonButtonText += ' with pressure query'}
+    this.jsonButtonText = jsonButtonText
+  }
 
-    let base = '/selection/profiles'
-    if (this.pageChange) {
-      base += '/page'
-    }
-    let dates = this.queryService.getSelectionDates();
-    let presRange = this.queryService.getPresRange();
+  private goToSelectionPage(goToPage: boolean): void {
 
-    let selectionPageUrl = base+'?startDate=' + dates.start + '&endDate=' + dates.end
-    if (this.presRangeToggle) {
-      selectionPageUrl += '&presRange='+JSON.stringify(presRange)
+    let windowURL: string
+    if (this.arMode) {
+      windowURL = '/arShapes/findByID?_id=' + this.shape_id
     }
-    selectionPageUrl += '&shape='+JSON.stringify(this.transformedShape)
-    //'&includeRT='+JSON.stringify(includeRealtime);
-    window.open(selectionPageUrl,"_blank")
+    else {
+      windowURL = '/selection/profiles'
+      if (goToPage) {
+        windowURL += '/page'
+      }
+      let dates = this.queryService.getSelectionDates();
+      windowURL += '?startDate=' + dates.start + '&endDate=' + dates.end
+      if (this.presRangeToggle) {
+        const presRange = this.queryService.getPresRange();
+        windowURL += '&presRange='+JSON.stringify(presRange)
+      }
+      windowURL += '&shape='+JSON.stringify(this.transformedShape) 
+    }
+
+    window.open(windowURL,"_blank")
   }
 
   private queryARShape(): void {

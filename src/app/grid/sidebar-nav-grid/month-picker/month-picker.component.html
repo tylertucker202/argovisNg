@@ -1,7 +1,7 @@
 
 <section class="mat-typography"><p>Month Selected:</p></section>
 <button mat-icon-button matTooltip="-1 month" (click)="incrementMonth(-1)"  id="minusOne">
-  <mat-icon class="icon" aria-label="increment month">exposure_neg_1</mat-icon>
+  <p>&ndash;</p>
 </button>
 <mat-form-field id="dateInput">
     <input matInput [matDatepicker]="dp"
@@ -21,5 +21,5 @@
     </mat-datepicker>
   </mat-form-field>
 <button mat-icon-button matTooltip="+1 month" (click)="incrementMonth(1)"  id="plusOne">
-  <mat-icon class="icon" aria-label="increment month">exposure_plus_1</mat-icon>
+  +
 </button>

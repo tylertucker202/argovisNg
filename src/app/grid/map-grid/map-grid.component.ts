@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core'
 import { MapService } from '../../home/services/map.service'
 import { QueryGridService } from '../query-grid.service'
 import { GridMappingService } from '../grid-mapping.service'
 import { RasterService } from '../raster.service'
 import { SelectGridService } from '../select-grid.service'
+
 import * as L from "leaflet";
 
 @Component({
@@ -26,7 +27,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
               public rasterService: RasterService,
               private queryGridService: QueryGridService,
               private gridMappingService: GridMappingService,
-              private selectGridService: SelectGridService ){ }
+              private selectGridService: SelectGridService) {}
 
   ngOnInit() {
 
@@ -65,7 +66,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
         const updateURL = true
         const lockRange = false //update colorbar
         const redrawGridBool = this.checkIfRedraw(msg) // redraw grids or just update cosmetic items?
-
         if (redrawGridBool) {
           const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
           gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
@@ -101,12 +101,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.resetToStart
       .subscribe( () => {
         this.map.closePopup()
-        //this.queryGridService.clearShapes();
         this.gridMappingService.gridLayers.clearLayers();
         this.mapService.drawnItems.clearLayers();
-        //this.queryGridService.clearShapes()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
-        //this.queryGridService.setURL()
       })
 
     this.startView = this.map.getCenter()
@@ -125,7 +122,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
       const feature = layer.toGeoJSON()
-      this.updateGridsOnAdd(feature, shapes)
+      const bboxes = this.queryGridService.getBBoxes(shapes)
+      this.updateGridsOnAdd(feature, bboxes)
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -138,7 +136,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
       const shapes = this.mapService.drawnItems.toGeoJSON()
       shapes.features.forEach(feature => {
-      this.updateGridsOnAdd(feature, shapes)
+      const bbox = this.queryGridService.getBBox(feature)
+      this.updateGridsOnAdd(feature, [bbox])
       });
     });
 
@@ -147,7 +146,10 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   private checkIfRedraw(msg: string): boolean {
     //this checks if change merits a complete redraw (true), or just update some cosmetic changes (false)
-    const redrawItems = ['grid change', 'param change', 'grid param change', 'display grid param change', 'compare grid toggled', 'compare grid change']
+    const redrawItems = [ 'grid change', 'pres level change', 'param change',
+                          'grid param change', 'display grid param change',
+                          'compare grid toggled', 'compare grid change',
+                          'month year change']
     const redrawGridBool = redrawItems.includes(msg)
     return redrawGridBool
   }
@@ -165,16 +167,21 @@ export class MapGridComponent implements OnInit, OnDestroy {
 }
 
   private initGrids(): void{ 
-    const shapeFeature = this.queryGridService.getShapes()
-    if (shapeFeature) {
-      const shapeArray = this.queryGridService.getShapeArray(shapeFeature)
-      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray, this.shapeOptions)
-      this.mapService.drawnItems.addLayer(initShapes)
-      this.gridMappingService.drawGrids(this.map)
+    let bboxes = this.queryGridService.getShapes()
+    if (bboxes) {
+      this.mapService.drawnItems.addLayer(this.makeRectanlge(bboxes))
+      this.gridMappingService.drawGrids(this.map, false, false) //todo: add shape is set twice
     }
   }
 
-  private updateGridsOnAdd(feature, shapes): void {
+  private makeRectanlge(bbox: number[][]): L.Rectangle {
+    const bounds = L.latLngBounds([bbox[0][1], bbox[0][0]], [bbox[0][2], bbox[0][3]]);
+    const rect = L.rectangle(bounds, this.shapeOptions)
+    return rect
+  }
+
+
+  private updateGridsOnAdd(feature, bboxes: number[][]): void {
     const broadcastLayer = false
     const bbox = this.queryGridService.getBBox(feature)
     const monthYear = this.queryGridService.getMonthYear()
@@ -187,7 +194,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const lockRange = false
 
     
-    this.queryGridService.sendShape(shapes, broadcastLayer)
+    this.queryGridService.sendShape(bboxes, broadcastLayer)
     this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')

@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { FeatureCollection, Feature, Polygon } from 'geojson'
 import { MapService } from './../home/services/map.service'
 import { QueryGridService } from './query-grid.service'
 import { RasterService } from './raster.service'
 import { RasterGrid, RasterParam } from './../home/models/raster-grid'
-
+import { NotifierService } from 'angular-notifier'
+import { DOCUMENT } from '@angular/common'
 import { Scale, Color } from 'chroma-js'
 import * as chroma from 'chroma'
 declare let chroma: any
@@ -20,10 +21,13 @@ import { ChromaStatic } from 'chroma-js';
 export class GridMappingService {
 
   public gridLayers = L.layerGroup();
+  private readonly notifier: NotifierService
 
   constructor(private queryGridService: QueryGridService,
               private rasterService: RasterService,
-              public mapService: MapService) { }
+              public mapService: MapService,
+              private notifierService: NotifierService,
+              @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
 
   public updateGrids(map: L.Map): void {
     //update grids with new colorscale and color domain, or interpolate
@@ -48,13 +52,14 @@ export class GridMappingService {
   public drawGrids(map: L.Map, setURL=true, lockRange=true): void {
      //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
-    this.gridLayers.clearLayers();
+    this.gridLayers.clearLayers()
     const shapes = this.mapService.drawnItems.toGeoJSON()
-    this.queryGridService.sendShape(shapes, broadcastChange)
+    let bboxes = this.queryGridService.getBBoxes(shapes)
+    this.queryGridService.sendShape(bboxes, broadcastChange)
     let features = this.queryGridService.getShapes()
     const grid = this.queryGridService.getGrid()
     //check if grid exists on current grid selection. If not dont draw.
-    this.generateGridSections(features, map, grid, lockRange);
+    this.generateGridSections(bboxes, map, grid, lockRange)
     if(setURL){
       this.queryGridService.setURL(); //this should be the last thing
     }       
@@ -70,7 +75,7 @@ export class GridMappingService {
       this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
       .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
         if (rasterGrids.length != 2) {
-          console.log('warning missing: a grid')
+          this.notifier.notify( 'warning', 'Missing a grid' )
         }
         else {
           let dGrid = this.rasterService.makeDiffGrid(rasterGrids)
@@ -78,26 +83,26 @@ export class GridMappingService {
         }
         },
         error => {
-          console.log('error in getting grid', error )
+          this.notifier.notify( 'error', 'error in getting grid' )
         })
     }
     else if (!compare && paramMode) {
       this.rasterService.getParamRaster(latRange, lonRange, pres, grid, gridParam).subscribe( (rasterParam: RasterParam[]) => {
         if (rasterParam.length == 0) {
-          console.log('warning missing: a param')
+          this.notifier.notify('warning', 'Missing a param')
         }
         else {
           this.generateRasterGrids(map, rasterParam, lockRange)
         }
         },
         error => {
-          console.log('error in getting grid', error )
+          this.notifier.notify( 'error', 'error in getting grid' )
         })
     }
     else if (compare && paramMode) {
       this.rasterService.getTwoParamRaster(latRange, lonRange, pres, grid, gridParam, compareGrid).subscribe( (rasterParams: [RasterParam[], RasterParam[]]) => {
         if (rasterParams.length !=2 ) {
-          console.log('warning missing: a param')
+          this.notifier.notify('warning', 'Missing a param')
         }
         else {
           let dGrid = this.rasterService.makeDiffGrid(rasterParams)
@@ -105,29 +110,28 @@ export class GridMappingService {
         }
         },
         error => {
-          console.log('error in getting grid', error )
+          this.notifier.notify( 'error', 'error in getting grid' )
         })
     }
     else {
       this.rasterService.getGridRaster(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
-          console.log('warning: no grid')
+          this.notifier.notify( 'warning', 'grid not found' )
         }
         else {
           this.generateRasterGrids(map, rasterGrids, lockRange)
         }
         },
         error => {
-          console.log('error in getting grid', error )
+          this.notifier.notify( 'error', 'error in getting grid' )
         })
     }
   }
 
-  private generateGridSections(features: FeatureCollection<any>, map: L.Map, grid: string, lockRange: boolean): void {
+  private generateGridSections(bboxes: number[][], map: L.Map, grid: string, lockRange: boolean): void {
 
     const interpolation = this.queryGridService.getInterpolatoinBool()
-    let bboxes = this.queryGridService.getBBoxes(features)
 
     if (bboxes) {
       const monthYear = this.queryGridService.getMonthYear()

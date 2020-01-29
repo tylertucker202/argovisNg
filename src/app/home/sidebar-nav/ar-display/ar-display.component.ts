@@ -50,7 +50,7 @@ export class ArDisplayComponent implements OnInit {
   }
 
   dateChanged(date: Date): void {
-    this.arFormDate = new FormControl(moment(date))
+    this.arFormDate = new FormControl(date)
   }
 
   timeChange(hour: number): void {
@@ -59,12 +59,12 @@ export class ArDisplayComponent implements OnInit {
 
   private incrementDay(increment: number): void {
     this.arDate = this.arDate.add(increment, 'd')
-    this.arFormDate = new FormControl( this.arDate.toDate() )
+    this.dateChanged(this.arDate.toDate())
   }
 
   private incrementHour(increment: number): void {
     this.arDate = this.arDate.add(increment, 'h')
-    this.arFormDate = new FormControl( this.arDate.toDate() )
+    this.dateChanged(this.arDate.toDate())
     this.hour = this.arDate.hour()
   }
 
@@ -92,10 +92,8 @@ export class ArDisplayComponent implements OnInit {
         const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h'))
         const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
         const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-        console.log('dateRange: ', dateRange)
         const broadcastChange = false
         const clearOtherShapes = false
-        //this.queryService.sendArMode(true, broadcastChange, clearOtherShapes)
         this.queryService.sendSelectedDate(dateRange, broadcastChange)
       }
       this.dialogRef.close();
@@ -112,19 +110,40 @@ export class ArDisplayComponent implements OnInit {
 
   private setArShape(arShapes: ARShape[]) {
     let shapeArrays = []
+    let shape_ids = []
     for(let idx=0; idx<arShapes.length; idx++){
       let sa = arShapes[idx].geoLocation.coordinates
       sa = this.arService.swapCoords(sa)
+      const shape_id = arShapes[idx]._id
+      shape_ids.push(shape_id)
       shapeArrays.push(sa)
     }
 
     const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.arShapeOptions)
     const shapeType = 'atmospheric river shape'
-    shapeFeatureGroup.eachLayer( layer => {
+
+    // let shapes = shape_ids.map( (shape_id: string, idx: number) => {
+    //   return [shape_id, shapeFeatureGroup[idx]];})
+
+    let shapes = []
+    let idx = 0
+    shapeFeatureGroup.eachLayer( (layer: unknown) => {
       const polygon = layer as L.Polygon
-      this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType)
+      shapes.push([shape_ids[idx], polygon])
+      idx += 1
     })
-    //this.queryService.arEvent.emit('ar changed')
+
+    console.log(shapes)
+
+    for(let idx=0; idx<shapes.length; idx++){
+      const shape_id = shapes[idx][0]
+      const polygon = shapes[idx][1] as L.Polygon
+      this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType, shape_id)
+    }
+    //   shapes.eachLayer( (shape_id: string, layer: L.FeatureGroup) => {
+    //   const polygon = layer as L.Polygon
+    //   this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType, shape_id)
+    // })
     this.queryService.sendARShapes(shapeArrays)
   }
 }
