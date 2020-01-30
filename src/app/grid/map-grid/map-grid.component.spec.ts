@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { QueryGridService } from './../query-grid.service';
 import { GridMappingService } from './../grid-mapping.service';
-
+import { NotifierModule } from 'angular-notifier';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 
 describe('MapGridComponent', () => {
@@ -27,7 +27,7 @@ describe('MapGridComponent', () => {
       declarations: [ MapGridComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [ MapService, PopupCompileService, QueryGridService, GridMappingService ],
-      imports: [ RouterTestingModule, HttpClientTestingModule ]
+      imports: [ RouterTestingModule, HttpClientTestingModule, NotifierModule ]
     })
     .compileComponents();
   }));

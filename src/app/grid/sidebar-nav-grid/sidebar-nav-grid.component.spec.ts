@@ -6,7 +6,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryGridService } from './../query-grid.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 describe('SidebarNavGridComponent', () => {
   let component: SidebarNavGridComponent;
@@ -16,8 +15,8 @@ describe('SidebarNavGridComponent', () => {
   let spyGetParamMode: jasmine.Spy;
   let spySendParamMode: jasmine.Spy;
   let spySendParam: jasmine.Spy;
-  let spySendGlobalGrid: jasmine.Spy;
-  let spyGetGlobalGrid: jasmine.Spy;
+  let spyGetInterpolateBool: jasmine.Spy;
+  let spySendInterpolateBool: jasmine.Spy;
   let spyTriggerClearLayers: jasmine.Spy;
   let spyTriggerResetToStart: jasmine.Spy;
 
@@ -39,7 +38,7 @@ describe('SidebarNavGridComponent', () => {
     queryGridService = debugElement.injector.get(QueryGridService)
 
     spyGetParamMode = spyOn(queryGridService, 'getParamMode').and.callThrough()
-    spyGetGlobalGrid = spyOn(queryGridService, 'getInterpolatoinBool').and.callThrough()
+    spyGetInterpolateBool = spyOn(queryGridService, 'getInterplateBool').and.callThrough()
     spySendParamMode = spyOn(queryGridService, 'sendParamMode').and.callThrough()
     spySendParam = spyOn(queryGridService, 'sendParam').and.callThrough()
     spySendInterpolateBool = spyOn(queryGridService, 'sendInterpolateBool').and.callThrough()
@@ -51,12 +50,10 @@ describe('SidebarNavGridComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(spyGetParamMode).toHaveBeenCalled()
-    expect(spySendInterpolateBool).toHaveBeenCalled()
   })
 
   it('should detect urlBuild', () => {
     queryGridService.urlBuild.emit('test change')
-    expect(spyGetParamMode).toHaveBeenCalledTimes(2)
     expect(spyGetParamMode).toHaveBeenCalledTimes(2)
   })
 
@@ -79,7 +76,7 @@ describe('SidebarNavGridComponent', () => {
   it('should interpolateBoolToggle', () => {
     const interpolateBool = true
     component['interpolateBoolToggle'](interpolateBool)
-    expect(spySendGlobalGrid).toHaveBeenCalledTimes(1)
+    expect(spySendInterpolateBool).toHaveBeenCalledTimes(1)
   })
 
   it('should paramModeToggle', () => {

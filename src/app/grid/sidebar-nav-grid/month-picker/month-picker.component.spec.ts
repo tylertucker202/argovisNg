@@ -55,7 +55,7 @@ describe('MonthPickerComponent', () => {
   });
 
   it('should set date', () => {
-    const monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+    const monthYear = moment('01-2012', 'MM-YYYY').utc(false)
     const date = new FormControl(monthYear)
     expect(component['monthYear']).toEqual(monthYear)
     const cDate = component['date']
@@ -66,19 +66,19 @@ describe('MonthPickerComponent', () => {
 
     component['incrementMonth'](1)
 
-    let mys = moment('02-2007', 'MM-YYYY').utc(false).format('MM-YYYY')
+    let mys = moment('02-2012', 'MM-YYYY').utc(false).format('MM-YYYY')
     expect(component['monthYear'].format('MM-YYYY')).toEqual(mys)
     let cDate = component['date']
     expect(cDate.value.format('MM-YYYY')).toEqual(mys)
 
     component['incrementMonth'](-1)
-    mys = moment('01-2007', 'MM-YYYY').utc(false).format('MM-YYYY')
+    mys = moment('01-2012', 'MM-YYYY').utc(false).format('MM-YYYY')
     expect(component['monthYear'].format('MM-YYYY')).toEqual(mys)
     cDate = component['date']
     expect(cDate.value.format('MM-YYYY')).toEqual(mys)
 
     component['incrementMonth'](-1)
-    mys = moment('12-2006', 'MM-YYYY').utc(false).format('MM-YYYY')
+    mys = moment('12-2011', 'MM-YYYY').utc(false).format('MM-YYYY')
     expect(component['monthYear'].format('MM-YYYY')).toEqual(mys)
     cDate = component['date']
     expect(cDate.value.format('MM-YYYY')).toEqual(mys)

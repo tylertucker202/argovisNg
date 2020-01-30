@@ -38,7 +38,7 @@ export class GridMappingService {
     let c: Scale<Color>
     if (invertColorScale) { c = chroma.scale(colorScale).domain(gridDomain.reverse()) }
     else { c = chroma.scale(colorScale).domain(gridDomain) }
-    const interpolateBool = this.queryGridService.getInterpolatoinBool()
+    const interpolateBool = this.queryGridService.getInterplateBool()
     this.gridLayers.eachLayer((layer: L.ScalarLayer) => { //scalar layer based off of leaflet Layer
       layer.setColor(c)
       layer.options.interpolate = interpolateBool
@@ -131,7 +131,7 @@ export class GridMappingService {
 
   private generateGridSections(bboxes: number[][], map: L.Map, grid: string, lockRange: boolean): void {
 
-    const interpolation = this.queryGridService.getInterpolatoinBool()
+    const interpolation = this.queryGridService.getInterplateBool()
 
     if (bboxes) {
       const monthYear = this.queryGridService.getMonthYear()
@@ -150,7 +150,7 @@ export class GridMappingService {
 
   public generateRasterGrids(map: L.Map, rasterGrids: RasterGrid[] | RasterParam[], lockRange: boolean): void {
     const colorScale = this.queryGridService.getColorScale()
-    const interpolationBool = this.queryGridService.getInterpolatoinBool()
+    const interpolationBool = this.queryGridService.getInterplateBool()
     const invertColorScale = this.queryGridService.getInverseColorScale()
     for( let idx in rasterGrids){
       let grid = rasterGrids[idx];

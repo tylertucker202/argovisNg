@@ -14,10 +14,10 @@ export class SidebarNavGridComponent implements OnInit {
   ngOnInit() {
 
     this.paramMode = this.queryGridService.getParamMode()
-    this.interpolateBool = this.queryGridService.getInterpolatoinBool()
+    this.interpolateBool = this.queryGridService.getInterplateBool()
 
     this.queryGridService.urlBuild.subscribe(msg => {
-      this.interpolateBool = this.queryGridService.getInterpolatoinBool()
+      this.interpolateBool = this.queryGridService.getInterplateBool()
       this.paramMode = this.queryGridService.getParamMode();
     })
     

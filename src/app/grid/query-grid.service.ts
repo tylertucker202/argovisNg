@@ -180,7 +180,7 @@ export class QueryGridService {
     this.latLngShapes = null
   }
 
-  public getInterpolatoinBool(): boolean {
+  public getInterplateBool(): boolean {
     return this.interpolateBool
   }
 
@@ -243,7 +243,7 @@ export class QueryGridService {
       bboxes = this.latLngShapes
       shapesString = JSON.stringify(bboxes)
     }
-    const interpolateBool = JSON.stringify(this.getInterpolatoinBool())
+    const interpolateBool = JSON.stringify(this.getInterplateBool())
     const inverseColorScale = JSON.stringify(this.getInverseColorScale())
     const monthYearString = this.formatMonthYear(this.monthYear)
     let queryParams = {
