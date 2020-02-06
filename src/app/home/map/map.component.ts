@@ -40,7 +40,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
 
-
+    console.log('map component: setting params from url')
     this.queryService.setParamsFromURL()
 
     this.proj = this.queryService.getProj()

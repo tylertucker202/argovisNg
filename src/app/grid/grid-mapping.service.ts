@@ -164,8 +164,8 @@ export class GridMappingService {
           layer.setColor(c)
         }
         else {
-          const range = layer._field.range
-          this.queryGridService.sendGridDomain(range.sort(), false, false)
+          const range = layer._field.range.sort()
+          this.queryGridService.sendGridDomain(range[0], range[1], false)
         }
       })
       }

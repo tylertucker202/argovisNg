@@ -71,15 +71,14 @@ export class QueryGridService {
   }
 
   public getGridDomain(): number[] {
-    return this.gridDomain
+    return [...this.gridDomain] //return immutable object
   }
 
-  public sendGridDomain(gridDomain: number[], broadcastChange=true, updateColorBar=true): void {
+  public sendGridDomain(lowerRange: number, upperRange: number , broadcastChange=true): void {
     const msg = 'grid range changed'
+    const gridDomain = [lowerRange, upperRange]
     this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
-    
     this.setURL()
-    //if (updateColorBar) { this.updateColorbar.emit(msg) }
     if (broadcastChange) {this.change.emit(msg)}
   }
 
@@ -301,7 +300,7 @@ export class QueryGridService {
     })
   }
 
-  public setMapState(this, key: string, value: string): void {
+  private setMapState(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'colorScale': {
@@ -362,7 +361,7 @@ export class QueryGridService {
       }
       case 'gridDomain': {
         const gridDomain = JSON.parse(value)
-        this.sendGridDomain(gridDomain, notifyChange)
+        this.sendGridDomain(gridDomain[0], gridDomain[1], notifyChange)
         break
       }
       default: {

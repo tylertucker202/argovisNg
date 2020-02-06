@@ -33,11 +33,11 @@ export class MapService {
   private NSPstartView =  [89, .1]
   private NSPstartZoom = 4
 
-  public shapeOptions =   {color: '#983fb2',
+  public shapeOptions =   {color: '#983fb2', //purple: #983fb2
   weight: 4,
   opacity: .5}
 
-  public arShapeOptions = {color: '#15b01a',
+  public arShapeOptions = {color: '#FF8C00', //pink: #C71585 orange: #FF8C00
   weight: 4,
   opacity: .5}
 
@@ -89,13 +89,42 @@ export class MapService {
     attribution: 'WMS for the GEBCO_2019 global bathymetric grid. This layers displays the GEBCO_2019 Grid as an image colour-shaded for elevation'
     });
 
+    private Hydda_Base = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
+      attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
 
+    private Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20,
+      ext: 'png'
+    });
 
-  public generateMap(this, proj: string): L.Map {
+    private Stamen_TonerBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20,
+      ext: 'png'
+    });
+
+    private Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      maxZoom: 16
+    });
+
+    private CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    });
+
+  public generateMap(this, proj: string, gridMap=false): L.Map {
     switch(proj) {
       case 'WM': {
         console.log('generating web mercator');
-        return  this.createWebMercator();
+        return  this.createWebMercator(gridMap);
       }
       case 'SSP': {
         console.log('generating south stereo');
@@ -107,12 +136,14 @@ export class MapService {
       }
       default: {
         console.log('proj not found, using web mercator')
-        return  this.createWebMercator();
+        return  this.createWebMercator(gridMap);
       }
     }
   }
 
-  public createWebMercator(this): L.Map {
+  public createWebMercator(this, gridMap: false): L.Map {
+    let baseLayer: L.TileLayer
+    gridMap? baseLayer = this.baseMaps.esriGrey: baseLayer = this.baseMaps.ocean
     let map = L.map('map',
                       {maxZoom: 13,
                       minZoom: 1,
@@ -120,7 +151,7 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       maxBounds: [[-180, -270], [180,180]],
-                      layers: [this.baseMaps.ocean]})
+                      layers: [baseLayer]})
                       .setView(this.WMstartView, this.WMstartZoom );
     L.control.layers(this.baseMaps).addTo(map);
     map.on('baselayerchange', (e: any) => {
@@ -229,6 +260,11 @@ export class MapService {
       google: this.googleMap,
       gebco: this.gebco,
       gebco2: this.gebco_2,
+      esriGrey: this.Esri_WorldGrayCanvas,
+      hydda: this.Hydda_Base,
+      StamenLite: this.Stamen_TonerLite,
+      StamenBlack: this.Stamen_TonerBackground,
+      cartoDB: this.CartoDB_Positron
     };
   }
 

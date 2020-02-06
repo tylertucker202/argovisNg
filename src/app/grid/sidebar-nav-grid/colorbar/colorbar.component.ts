@@ -118,8 +118,7 @@ export class ColorbarComponent implements OnInit {
     const uRange = this.domain.sort()[1]
     this.domain = [lRange, uRange]
     const broadcastChange = true
-    const updateColorbar = false
-    this.queryGridService.sendGridDomain(this.domain, broadcastChange, updateColorbar)
+    this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
   }
 
   public maxChange(val: number ): void {
@@ -127,8 +126,7 @@ export class ColorbarComponent implements OnInit {
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];
     const broadcastChange = true
-    const updateColorbar = false
-    this.queryGridService.sendGridDomain(this.domain, broadcastChange, updateColorbar)
+    this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
   }
   
 

@@ -47,8 +47,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
-
-    this.map = this.mapService.generateMap(this.proj);
+    const gridMap = true
+    this.map = this.mapService.generateMap(this.proj, gridMap);
     const startView = {lat: 0, lng: 0};
     const startZoom = 3
     this.map.setView(startView, startZoom)
@@ -158,7 +158,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     let myNewShape = this.mapService.drawnItems;
     layers.eachLayer(function(layer: L.Layer| any) { //todo get layer id
-      console.log(layer)
       const layer_id = layer._leaflet_id
       myNewShape.removeLayer(layer_id)
       myNewShape.addLayer(layer)
@@ -175,7 +174,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
   }
 
   private makeRectanlge(bbox: number[][]): L.Rectangle {
-    const bounds = L.latLngBounds([bbox[0][1], bbox[0][0]], [bbox[0][2], bbox[0][3]]);
+    const bounds = L.latLngBounds([bbox[0][1], bbox[0][0]], [bbox[0][3], bbox[0][2]]);
     const rect = L.rectangle(bounds, this.shapeOptions)
     return rect
   }
