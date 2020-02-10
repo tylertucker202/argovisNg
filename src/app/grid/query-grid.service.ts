@@ -25,7 +25,7 @@ export class QueryGridService {
   private param = 'anomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
-  private latLngShapes = [[-5, -5, 5, 5]]
+  private latLngShapes = [[-65, -5, -15, 15]]
   private compare = false
   private paramMode = false
   private interpolateBool = false

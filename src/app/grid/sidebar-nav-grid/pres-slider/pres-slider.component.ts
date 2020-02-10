@@ -12,9 +12,7 @@ export interface PressureLevels {
 })
 export class PresSliderComponent implements OnInit {
   private presLevels: PressureLevels[] = [
-    {value: 5},
     {value: 10},
-    {value: 200}
   ];
 
   private presArray: number[] = this.presLevels.map(function(x) {return x.value; })

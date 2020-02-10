@@ -7,12 +7,12 @@ import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typ
 export class SelectGridService {
 
   private readonly ksGrids: GridGroup[] = [
-    {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
-    {grid: 'ksSpaceTempTrend' , param: 'anomaly', viewValue: 'Space Trend Anomaly'  },
-    {grid: 'ksSpaceTempTrend2', param: 'anomaly', viewValue: 'Space Trend2 Anomaly'  },
-    {grid: 'ksSpaceTimeTempNoTrend', param: 'anomaly',viewValue: 'Space Time No Trend Anomaly'  },
-    {grid: 'ksSpaceTimeTempTrend', param: 'anomaly', viewValue: 'Space Time Trend Anomaly'  },
-    {grid: 'ksSpaceTimeTempTrend2', param: 'anomaly', viewValue: 'Space Time Trend2 Anomaly'  },
+    // {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
+    // {grid: 'ksSpaceTempTrend' , param: 'anomaly', viewValue: 'Space Trend Anomaly'  },
+    // {grid: 'ksSpaceTempTrend2', param: 'anomaly', viewValue: 'Space Trend2 Anomaly'  },
+    // {grid: 'ksSpaceTimeTempNoTrend', param: 'anomaly',viewValue: 'Space Time No Trend Anomaly'  },
+    // {grid: 'ksSpaceTimeTempTrend', param: 'anomaly', viewValue: 'Space Time Trend Anomaly'  },
+    // {grid: 'ksSpaceTimeTempTrend2', param: 'anomaly', viewValue: 'Space Time Trend2 Anomaly'  },
     {grid: 'ksTempTrend', param: 'mean',viewValue: 'Trend Mean Field'  },
     {grid: 'ksTempNoTrend', param: 'mean',viewValue: 'No Trend Mean Field'  },
     {grid: 'ksTempTrend2', param: 'mean',viewValue: 'Trend 2 Mean Field'  },
@@ -24,7 +24,8 @@ export class SelectGridService {
   ]
 
   private readonly rgGrids: GridGroup[] = [
-    {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'RG Anomaly'}
+    {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'RG Anomaly'},
+    {grid: 'rgTempTotal', param: 'total', viewValue: 'RG Total'}
   ]
 
   private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)

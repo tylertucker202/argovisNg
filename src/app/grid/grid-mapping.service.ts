@@ -49,7 +49,7 @@ export class GridMappingService {
     this.queryGridService.setURL(); //this should be the last thing
   }
 
-  public drawGrids(map: L.Map, setURL=true, lockRange=true): void {
+  public drawGrids(map: L.Map, setURL=true, lockRange=false): void {
      //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
     this.gridLayers.clearLayers()
@@ -60,9 +60,10 @@ export class GridMappingService {
     const grid = this.queryGridService.getGrid()
     //check if grid exists on current grid selection. If not dont draw.
     this.generateGridSections(bboxes, map, grid, lockRange)
+    this.queryGridService.updateColorbar.emit('new grid')
     if(setURL){
       this.queryGridService.setURL(); //this should be the last thing
-    }       
+    }
   }
 
   public addGridSection(bbox: number[], map: L.Map, 
@@ -164,8 +165,8 @@ export class GridMappingService {
           layer.setColor(c)
         }
         else {
-          const range = layer._field.range.sort()
-          this.queryGridService.sendGridDomain(range[0], range[1], false)
+          const range = layer._field.range.slice().sort()
+          this.queryGridService.sendGridDomain(range[0], range[1], true)
         }
       })
       }

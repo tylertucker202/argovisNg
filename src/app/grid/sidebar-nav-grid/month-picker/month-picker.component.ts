@@ -34,8 +34,8 @@ export class MonthPickerComponent implements OnInit {
 
   private date = new FormControl(moment());
   private monthYear: moment.Moment;
-  private minDate = new Date(2004, 0, 1);
-  private maxDate = new Date();
+  private minDate = new Date(2012, 0, 1);
+  private maxDate = new Date(2012, 11, 1);
   @Input() paramMode: boolean
   @ViewChild('dp') datepicker: MatDatepicker<any>;
 

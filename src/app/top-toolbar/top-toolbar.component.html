@@ -4,12 +4,6 @@
   <button mat-icon-button matTooltip="go to argovis profile page (home)" routerLink="ng/home">
     <mat-icon>home</mat-icon>
   </button>
-  <!-- <button mat-icon-button matTooltip="go to gridded page (in development)" routerLink="ng/grid">
-    <mat-icon>grid_on</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="go to argo trajectory forcast page (in development)" routerLink="ng/covar">
-    <mat-icon>scatter_plot</mat-icon>
-  </button> -->
   <a class="nav-link"
      matTooltip="link to about page"
      target='_blank'
@@ -17,25 +11,23 @@
      href="http://www.argo.ucsd.edu/Argovis_About.html">
      About Argovis</a>
   <a class="nav-link"
+     matTooltip="link to tutorial page"
+     target='_blank'
+     rel="noopener"
+     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
+     Tutorials</a>
+  <a class="nav-link"
      matTooltip="link to faq page"
      target='_blank'
      rel="noopener"
      href="http://www.argo.ucsd.edu/Argovis_FAQ.html">
      FAQ</a>
-  <a class="nav-link"
-     matTooltip="link to api tutorial"
-     target='_blank'
-     rel="noopener"
-     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
-     Link to API tutorial</a>
-  <a class="nav-link"
-     href="http://www.argo.ucsd.edu/Gridded_Argovis.html"
-     routerLinkActive="active"
-     matTooltip="link to gridded page (in development)">
-     Link to gridded Argo climatology</a>
-  <a class="nav-link"
-     href="https://argovis.colorado.edu/ng/covar"
-     routerLinkActive="active"
-     matTooltip="link to profile trajectory forcast">
-     Link to Argo profile trajectory forcast</a>
+     <button mat-button [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
+     <mat-menu #moduleMenu="matMenu">
+      <a mat-menu-item *ngFor="let module of avModules" 
+        href={{module.link}}
+        routerLinkActive="active"
+        matTooltip={{module.tooltip}}>{{module.viewValue}}
+      </a>
+    </mat-menu>
 </mat-toolbar>

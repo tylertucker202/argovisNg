@@ -39,7 +39,7 @@ export class ColorbarComponent implements OnInit {
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr, this.domain) }
+    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
 
     this.queryGridService.change
       .subscribe(msg => {
@@ -63,9 +63,8 @@ export class ColorbarComponent implements OnInit {
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
     this.svg.remove();
-    
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr, this.domain) }
+    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
   }
 
   private createColorbar(colorArr: string[], domain: number[]) {
@@ -86,7 +85,7 @@ export class ColorbarComponent implements OnInit {
       .attr("y2", "0%");
 
     //A color scale
-    const c = d3.scaleLinear().range(colorArr).domain(domain).nice();
+    const c = d3.scaleLinear().range(colorArr).domain(domain.sort()).nice();
     
     //Append multiple color stops by using D3's data/enter step
     linearGradient.selectAll("stop")
