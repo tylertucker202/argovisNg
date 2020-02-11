@@ -201,9 +201,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.sendShape(bboxes, broadcastLayer)
     bboxes.forEach( (bbox: number[]) => {
       this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
-    }
-    )
-    //this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+    })
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')
   }
