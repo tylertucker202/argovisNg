@@ -22,7 +22,7 @@
      rel="noopener"
      href="http://www.argo.ucsd.edu/Argovis_FAQ.html">
      FAQ</a>
-     <button mat-button [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
+     <button class="nav-link" mat-button [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
      <mat-menu #moduleMenu="matMenu">
       <a mat-menu-item *ngFor="let module of avModules" 
         href={{module.link}}
