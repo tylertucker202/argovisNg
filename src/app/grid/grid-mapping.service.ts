@@ -69,8 +69,14 @@ export class GridMappingService {
   public addGridSection(bbox: number[], map: L.Map, 
                                           monthYear, pres, grid, compareGrid, compare, paramMode,
                                           gridParam, lockRange: boolean) {
-    const lonRange = [bbox[0], bbox[2]]
+    let lonRange = [bbox[0], bbox[2]]
     const latRange = [bbox[1], bbox[3]]
+    const translateShape = lonRange[0] < -180
+
+    if (translateShape) {
+      lonRange[0] += 360
+      lonRange[1] += 360
+    }
 
     if (compare && !paramMode) {
       this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)

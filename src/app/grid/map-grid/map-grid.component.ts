@@ -182,7 +182,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
   private updateGridsOnAdd(feature, bboxes: number[][]): void {
     const broadcastLayer = false
-    const bbox = this.queryGridService.getBBox(feature)
+    //const bbox = this.queryGridService.getBBox(feature)
     const monthYear = this.queryGridService.getMonthYear()
     const pres = this.queryGridService.getPresLevel()
     const grid = this.queryGridService.getGrid()
@@ -192,9 +192,18 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const gridParam = this.queryGridService.getGridParam()
     const lockRange = false
 
+    if (bboxes[0][0] < -180) {
+      const wrappedBbox = [[bboxes[0][0], bboxes[0][1], -180, bboxes[0][3]], [-180, bboxes[0][1], bboxes[0][2], bboxes[0][3]]]
+      bboxes = wrappedBbox
+    }
+
     
     this.queryGridService.sendShape(bboxes, broadcastLayer)
-    this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+    bboxes.forEach( (bbox: number[]) => {
+      this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+    }
+    )
+    //this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')
   }

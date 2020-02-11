@@ -1,13 +1,9 @@
 import { Injectable, EventEmitter, Output } from '@angular/core'
-import { Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { MapState } from './../../typeings/mapState'
-import { SelectGridService} from './select-grid.service'
-
 import * as moment from 'moment'
 import {Moment} from 'moment'
-import { FeatureCollection, Feature, Polygon, Geometry } from 'geojson'
-import { not } from '@angular/compiler/src/output/output_ast'
+import { FeatureCollection, Feature, Polygon } from 'geojson'
 
 @Injectable()
 export class QueryGridService {
@@ -34,7 +30,6 @@ export class QueryGridService {
   private gridDomain = [0, 1]
 
   constructor(private route: ActivatedRoute,
-              private location: Location,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
   public formatMonthYear(monthYear: Moment): string {
