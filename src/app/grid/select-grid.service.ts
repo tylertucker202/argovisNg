@@ -49,7 +49,8 @@ export class SelectGridService {
   public readonly allGridParams: any =  [this.tempParamGroup]
   public readonly params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
                             {param:'anomaly', viewValue: 'Anomaly'},
-                            {param:'mean', viewValue: 'Mean'}]
+                            //{param:'mean', viewValue: 'Mean'}
+                          ]
 
   public getAvailableGrids(param: string): GridGroup[] {
     //select grids that have the following params: 'anomaly', 'mean', 'total'
