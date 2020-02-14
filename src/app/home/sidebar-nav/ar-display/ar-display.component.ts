@@ -78,8 +78,7 @@ export class ArDisplayComponent implements OnInit {
 
   private setArShapesAndDate(): void {
     this.queryService.sendThreeDayMsg(false, false)
-    this.mapService.drawnItems.clearLayers()
-    this.mapService.arShapeItems.clearLayers()
+    this.queryService.clearLayers.emit('ar shape button pressed')
 
     const dateString = this.formatDate(this.arDate)
     
@@ -87,23 +86,17 @@ export class ArDisplayComponent implements OnInit {
     const arDateRange = this.queryService.getArDateRange()
     arShapes.subscribe((arShapes: ARShape[]) => {
       if (arShapes.length !== 0) {
-        this.setDateRange()
+        this.setDateRange(arDateRange)
         this.setArShape(arShapes)
-        const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h'))
-        const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
-        const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-        const broadcastChange = false
-        const clearOtherShapes = false
-        this.queryService.sendSelectedDate(dateRange, broadcastChange)
       }
       this.dialogRef.close();
     })
   }
 
-  private setDateRange(): void {
+  private setDateRange(arDateRange: number[]): void {
     const broadcastChange = false
-    const startDate = this.arDate.add(-18, 'h').toISOString()
-    const endDate = this.arDate.add(18, 'h').toISOString()
+    const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h')) //make sure to clone and format date correctly
+    const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
     const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
@@ -122,9 +115,6 @@ export class ArDisplayComponent implements OnInit {
     const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.arShapeOptions)
     const shapeType = 'atmospheric river shape'
 
-    // let shapes = shape_ids.map( (shape_id: string, idx: number) => {
-    //   return [shape_id, shapeFeatureGroup[idx]];})
-
     let shapes = []
     let idx = 0
     shapeFeatureGroup.eachLayer( (layer: unknown) => {
@@ -132,18 +122,11 @@ export class ArDisplayComponent implements OnInit {
       shapes.push([shape_ids[idx], polygon])
       idx += 1
     })
-
-    console.log(shapes)
-
     for(let idx=0; idx<shapes.length; idx++){
       const shape_id = shapes[idx][0]
       const polygon = shapes[idx][1] as L.Polygon
       this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType, shape_id)
     }
-    //   shapes.eachLayer( (shape_id: string, layer: L.FeatureGroup) => {
-    //   const polygon = layer as L.Polygon
-    //   this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType, shape_id)
-    // })
     this.queryService.sendARShapes(shapeArrays)
   }
 }

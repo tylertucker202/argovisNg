@@ -2,10 +2,8 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
-import { ARShape } from './../models/ar-shape'
 import * as moment from 'moment';
 import { MapState } from '../../../typeings/mapState';
-import { TimeoutError } from 'rxjs';
 
 @Injectable()
 export class QueryService {
@@ -41,10 +39,8 @@ export class QueryService {
   public checkArModule(route: ActivatedRoute): void {
     if (route.data) {
       route.data.subscribe(v => {
-        console.log('v:', v )
         if(v['arModule']) {
           this.arModule = v['arModule'] //ignore if undefined
-          console.log('arModule:', this.arModule, 'v:', v )
         }
         if (this.arModule) { this.sendArMode(false, false, false) }
       })
@@ -110,8 +106,6 @@ export class QueryService {
     if (this.latLngShapes) {
       shapesString = JSON.stringify(this.latLngShapes)
     }
-
-    console.log('three day toggle in url', this.threeDayToggle)
     const queryParams = {
                          'mapProj': this.proj,
                          'presRange': presRangeString, 
@@ -139,7 +133,7 @@ export class QueryService {
   }
 
   public getArDateRange(): number[] {
-    return this.arDateRange
+    return [...this.arDateRange]
   }
 
   public sendArDateRange(dateRange: number[]): void {
@@ -148,7 +142,6 @@ export class QueryService {
 
   public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
     const msg = 'arMode'
-    console.log('arMode in sendArMode: ', arMode)
     this.arMode = arMode;
     if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
     if (broadcastChange) { this.change.emit(msg) }
@@ -200,6 +193,7 @@ export class QueryService {
       const broadcastThreeDayToggle = false
       this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
+    console.log('inside sendShape:', data)
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -272,7 +266,6 @@ export class QueryService {
   public sendThreeDayMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = '3 day toggle'
     this.threeDayToggle = toggleChecked
-    console.log('three day toggle changed', this.threeDayToggle)
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -303,8 +296,6 @@ export class QueryService {
 
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
-    // console.log(key)
-    // console.log(value)
     switch(key) {
       case 'mapProj': {
         this.setProj(value)
@@ -358,7 +349,6 @@ export class QueryService {
       }
       case 'arMode': {
         const arMode = JSON.parse(value)
-        console.log('arMode from URL: ', arMode)
         const clearOtherShapes = false
         this.sendArMode(arMode, notifyChange, clearOtherShapes)
         break

@@ -21,8 +21,8 @@ export class TopToolbarComponent implements OnInit {
   
   ngOnInit() {
     this.avModules = [
-      {name: "AR", viewValue: "Atmospheric River", link: "https://argovis.colorado.edu/ng/ar", tooltip: 'link to AR page'},
-      {name: "Grids", viewValue: "Gridded Products", link: "https://argovis.colorado.edu/ng/grid", tooltip: 'link to gridded page (Beta)'},
+      {name: "AR", viewValue: "Atmospheric River (Beta)", link: "https://argovis.colorado.edu/ng/ar", tooltip: 'link to AR page (Beta)'},
+      {name: "Grids", viewValue: "Gridded Products (Beta)", link: "https://argovis.colorado.edu/ng/grid", tooltip: 'link to gridded page (Beta)'},
       {name: "GridsOld", viewValue: "Gridded Products (old)", link: "http://www.argo.ucsd.edu/Gridded_Argovis.html", tooltip: 'link to old gridded page page'},
       {name: "Covar", viewValue: "Float Trajectory Forcast", link: "https://argovis.colorado.edu/ng/covar", tooltip: 'link to float trajectory forcast page'}
     ]

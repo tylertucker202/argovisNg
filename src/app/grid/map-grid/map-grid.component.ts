@@ -49,9 +49,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
     }
     const gridMap = true
     this.map = this.mapService.generateMap(this.proj, gridMap);
-    const startView = {lat: 0, lng: 0};
-    const startZoom = 3
-    this.map.setView(startView, startZoom)
+    this.startView = {lat: 0, lng: 60} as L.LatLng;
+    this.startZoom = 3
+    this.map.setView(this.startView, this.startZoom)
     this.mapService.drawnItems.addTo(this.map)
 
     this.initGrids()
@@ -92,8 +92,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.clearLayers
     .subscribe( () => {
       this.map.closePopup()
-      this.gridMappingService.gridLayers.clearLayers();
-      this.mapService.drawnItems.clearLayers();
+      this.gridMappingService.gridLayers.clearLayers()
+      this.mapService.drawnItems.clearLayers()
       this.queryGridService.clearShapes()
       this.queryGridService.setURL()
     })
@@ -101,13 +101,11 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.resetToStart
       .subscribe( () => {
         this.map.closePopup()
-        this.gridMappingService.gridLayers.clearLayers();
-        this.mapService.drawnItems.clearLayers();
-        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+        this.gridMappingService.gridLayers.clearLayers()
+        this.mapService.drawnItems.clearLayers()
+        this.map.setView(this.startView, this.startZoom)
+        this.initGrids()
       })
-
-    this.startView = this.map.getCenter()
-    this.startZoom = this.map.getZoom()
 
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);

@@ -47,7 +47,6 @@ export class SidebarNavComponent implements OnInit {
       this.onlyDeep = this.queryService.getDeepToggle()
       this.arMode = this.queryService.getArMode()
       this.arModule = this.queryService.arModule
-      console.log('arMode: ', this.arMode, 'arModule: ', this.arModule)
 
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()

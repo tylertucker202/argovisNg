@@ -49,8 +49,8 @@ export class QueryGridService {
     this.param = 'anomaly'
     this.paramMode = false
     this.compare = false
-    this.latLngShapes = [[-5, -5, 5, 5]]
-    this.clearShapes()
+    //this.clearShapes()
+    this.latLngShapes = [[-65, -5, -15, 15]]
     this.setURL()
     this.resetToStart.emit('reset params pushed')
   }

@@ -34,13 +34,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.route.data.subscribe(v => {
-        console.log('v:', v )
     })
     this.queryService.checkArModule(this.route)
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
-
-    console.log('map component: setting params from url')
     this.queryService.setParamsFromURL()
 
     this.proj = this.queryService.getProj()
@@ -77,10 +74,6 @@ export class MapComponent implements OnInit, OnDestroy {
           console.log('ar event emit ' + msg)
           this.mapService.arShapeItems.clearLayers()
           this.addShapesFromQueryService()
-          // this.queryService.clearShapes()
-          // this.markersLayer.clearLayers()
-          // this.mapService.drawnItems.clearLayers()
-          // this.queryService.setURL()
         })
 
     this.queryService.clearLayers
@@ -101,7 +94,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setStartingProfiles()
         //this.setMockPoints()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
-        //this.queryService.setURL()
       })
 
     this.queryService.displayPlatform
@@ -291,7 +283,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.queryService.getShapes()
-    console.log('shapeArray length: ', shapeArrays.length)
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'

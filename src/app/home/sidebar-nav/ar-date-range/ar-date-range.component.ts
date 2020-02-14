@@ -3,6 +3,8 @@ import { ViewEncapsulation } from '@angular/core';
 import { DateRange } from './../../../../typeings/daterange'
 import { Options } from 'nouislider'
 import { QueryService } from '../../services/query.service'
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-ar-date-range',
   templateUrl: './ar-date-range.component.html',
@@ -37,14 +39,15 @@ export class ArDateRangeComponent implements OnInit {
     }
   }
 
+  private formatDate(date: moment.Moment): string {
+    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+  }
+
   private updateSelectDates(): void {
     let arDate = this.queryService.getArDate()
-    console.log('arDate: ', arDate)
-
-    const startDate = arDate.clone().add(this.lRange, 'h').toISOString(false)
-    const endDate = arDate.clone().add(this.uRange, 'h').toISOString(false)
+    const startDate = this.formatDate(arDate.clone().add(this.lRange, 'h'))
+    const endDate = this.formatDate(arDate.clone().add(this.uRange, 'h'))
     const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
-    console.log('dateRange: ', dateRange)
     const broadcastChange = true
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
