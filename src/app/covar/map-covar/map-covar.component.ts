@@ -170,7 +170,7 @@ export class MapCovarComponent implements OnInit {
       const prob = featureOnClick.getProperties().Probability
       if (prob) {
         overlay.setPosition(evt.coordinate);
-        content.innerHTML = "<p>probability float drifted here:</p><code>" + prob +" </code>";
+        content.innerHTML = "<p>probability float drifted here:</p><code>" + prob.toFixed(6) +" </code>";
         container.style.display = 'block';
       }
       else {
