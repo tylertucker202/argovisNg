@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild} from '@angular/core';
 import * as moment from 'moment';
 import { QueryService } from '../../services/query.service'
 import { DateRange, DateRangeSel } from '../../../../typeings/daterange';
-import { DaterangePickerComponent } from 'ng2-daterangepicker';
+import { DaterangepickerComponent } from 'ng2-daterangepicker';
 
 
 @Component({
@@ -13,8 +13,8 @@ import { DaterangePickerComponent } from 'ng2-daterangepicker';
 export class SelectionDatePicker {
   constructor(private queryService: QueryService) {}
 
-  @ViewChild(DaterangePickerComponent)
-  private picker: DaterangePickerComponent;
+  @ViewChild(DaterangepickerComponent)
+  private picker: DaterangepickerComponent;
   private daterange: DateRange;
   private start: moment.Moment;
   private end: moment.Moment;

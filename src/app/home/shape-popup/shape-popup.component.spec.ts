@@ -14,7 +14,7 @@ import {
   MatTooltipModule,
   MatSelectModule,
   MatDatepickerModule,
-  MatNativeDateModule,
+  //MatNativeDateModule,
   MatBottomSheetModule,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,7 +40,7 @@ describe('ShapePopupComponent', () => {
         MatTooltipModule,
         MatSelectModule,
         MatDatepickerModule,
-        MatNativeDateModule,
+        //MatNativeDateModule,
         MatBottomSheetModule,
         RouterTestingModule,
       ]

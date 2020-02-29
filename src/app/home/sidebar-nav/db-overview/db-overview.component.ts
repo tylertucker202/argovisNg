@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { DatabaseOverview } from '../../models/db-overview'
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import {MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material';
+import {MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA} from '@angular/material/bottom-sheet';
 import * as moment from 'moment';
 
 
