@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpBottomSheetComponent } from './help-bottom-sheet.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
+import { MatBottomSheet } from '@angular/material';
 
 describe('HelpBottomSheetComponent', () => {
   let component: HelpBottomSheetComponent;
@@ -8,7 +11,10 @@ describe('HelpBottomSheetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HelpBottomSheetComponent ]
+      declarations: [ HelpBottomSheetComponent ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      providers: [
+                  { provide: MatBottomSheet, useValue: {}}]
     })
     .compileComponents();
   }));

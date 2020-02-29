@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core';
-import { MapService } from '../../home/services/map.service';
-import { QueryGridService } from '../query-grid.service';
-import { RasterService } from '../raster.service';
-import { RasterGrid } from '../../home/models/raster-grid'
-import { ActivatedRoute } from '@angular/router'
+import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core'
+import { MapService } from '../../home/services/map.service'
+import { QueryGridService } from '../query-grid.service'
+import { GridMappingService } from '../grid-mapping.service'
+import { RasterService } from '../raster.service'
+import { SelectGridService } from '../select-grid.service'
 
 import * as L from "leaflet";
-
 
 @Component({
   selector: 'app-map-grid',
@@ -16,7 +15,6 @@ import * as L from "leaflet";
 
 export class MapGridComponent implements OnInit, OnDestroy {
   public map: L.Map;
-  public gridLayers = L.layerGroup();
   public startView: L.LatLng;
   public startZoom: number;
   public graticule: any;
@@ -27,39 +25,54 @@ export class MapGridComponent implements OnInit, OnDestroy {
   constructor(private appRef: ApplicationRef,
               public mapService: MapService,
               public rasterService: RasterService,
-              private queryGridService: QueryGridService){ }
+              private queryGridService: QueryGridService,
+              private gridMappingService: GridMappingService,
+              private selectGridService: SelectGridService) {}
 
   ngOnInit() {
 
     this.mapService.init(this.appRef);
 
-    this.mapService.shapeOptions = {  color: '#983fb2',
+    this.shapeOptions = {  color: '#983fb2',
                                       weight: 4, 
                                       fill: false,
                                       opacity: .5,
                                       }
+
+    //set state from url
+    this.queryGridService.setParamsFromURL()
 
     //setup map
     this.proj = 'WM'
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
-    this.map = this.mapService.generateMap(this.proj);
+    const gridMap = true
+    this.map = this.mapService.generateMap(this.proj, gridMap);
+    this.startView = {lat: 0, lng: 60} as L.LatLng;
+    this.startZoom = 3
+    this.map.setView(this.startView, this.startZoom)
+    this.mapService.drawnItems.addTo(this.map)
 
-    //set state from url
-    this.queryGridService.subscribeToMapState()
-    const shapeArray = this.queryGridService.convertShapesToArray()
-    console.log(shapeArray)
-    if (shapeArray.length > 0) {
-      const initShapes = this.mapService.convertArrayToFeatureGroup(shapeArray)
-      this.mapService.drawnItems.addLayer(initShapes)
-      this.redrawShapes(false) // runs after map state is set
-    }
+    this.initGrids()
 
     this.queryGridService.change
       .subscribe(msg => {
-         console.log('query changed: ' + msg);
-         this.redrawShapes() //redraws shape with updated change
+        console.log('msg: ', msg)
+        const param = this.queryGridService.getParam()
+        const grid = this.queryGridService.getGrid()
+
+        this.map.closePopup()
+        const updateURL = true
+        const lockRange = false //update colorbar
+        const redrawGridBool = this.checkIfRedraw(msg) // redraw grids or just update cosmetic items?
+        if (redrawGridBool) {
+          const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
+          gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+        }
+        else {
+          this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
+        }
         })
 
     // this.rasterService.getMockGridRaster()
@@ -68,7 +81,8 @@ export class MapGridComponent implements OnInit, OnDestroy {
     //     console.log('warning: no grid')
     //   }
     //   else {
-    //     this.addRasterGridsToMap(rasterGrids)
+    //     console.log('adding mock grid')
+    //     this.gridMappingService.addRasterGridsToMap(this.map, rasterGrids)
     //   }
     //   },
     //   error => {
@@ -77,65 +91,117 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.queryGridService.clearLayers
     .subscribe( () => {
-      this.gridLayers.clearLayers();
-      this.mapService.drawnItems.clearLayers();
+      this.map.closePopup()
+      this.gridMappingService.gridLayers.clearLayers()
+      this.mapService.drawnItems.clearLayers()
       this.queryGridService.clearShapes()
       this.queryGridService.setURL()
     })
 
     this.queryGridService.resetToStart
       .subscribe( () => {
-        //this.queryGridService.clearShapes();
-        this.gridLayers.clearLayers();
-        this.mapService.drawnItems.clearLayers();
-        //this.queryGridService.clearShapes()
-        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
-        //this.queryGridService.setURL()
+        this.map.closePopup()
+        this.gridMappingService.gridLayers.clearLayers()
+        this.mapService.drawnItems.clearLayers()
+        this.map.setView(this.startView, this.startZoom)
+        this.initGrids()
       })
-
-    this.startView = this.map.getCenter()
-    this.startZoom = this.map.getZoom()
 
     this.mapService.coordDisplay.addTo(this.map);
     this.mapService.drawnItems.addTo(this.map);
     this.mapService.scaleDisplay.addTo(this.map);
     this.mapService.gridDrawControl.addTo(this.map);
-    this.gridLayers.addTo(this.map);
+    this.gridMappingService.gridLayers.addTo(this.map);
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
+      this.mapService.drawnItems.clearLayers() // allow only one drawn item at a time.
+      this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
-      const broadcastLayer = true
-      this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
+      const feature = layer.toGeoJSON()
+      const bboxes = this.queryGridService.getBBoxes(shapes)
+      this.updateGridsOnAdd(feature, bboxes)
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
-      const layers = event.layers;
-      let myNewShape = this.mapService.drawnItems;
-      layers.eachLayer(function(layer: any) {
-        const layer_id = layer._leaflet_id
-        myNewShape.removeLayer(layer)
-      });
-      this.mapService.drawnItems = myNewShape
-
-      this.redrawShapes()
+      this.queryGridService.clearLayers.emit('deleted event')
      });
 
-     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
-       const layers = event.layers; //layers that have changed
-       let myNewShape = this.mapService.drawnItems;
-       layers.eachLayer(function(layer: any) {
-         const layer_id = layer._leaflet_id
-         myNewShape.removeLayer(layer_id)
-         myNewShape.addLayer(layer)
-       })
-       this.mapService.drawnItems = myNewShape
-       this.redrawShapes() //may be a bit heavy handed, as it requeries db query.
-     })
+    this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
+      this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
+      this.mapService.drawnItems = this.getNewDrawnItems(event.layers)
+
+      const shapes = this.mapService.drawnItems.toGeoJSON()
+      shapes.features.forEach(feature => {
+      const bbox = this.queryGridService.getBBox(feature)
+      this.updateGridsOnAdd(feature, [bbox])
+      });
+    });
 
     this.invalidateSize();
+  }
 
+  private checkIfRedraw(msg: string): boolean {
+    //this checks if change merits a complete redraw (true), or just update some cosmetic changes (false)
+    const redrawItems = [ 'grid change', 'pres level change', 'param change',
+                          'grid param change', 'display grid param change',
+                          'compare grid toggled', 'compare grid change',
+                          'month year change']
+    const redrawGridBool = redrawItems.includes(msg)
+    return redrawGridBool
+  }
+
+  private getNewDrawnItems(layers: L.LayerGroup): L.FeatureGroup {
+
+    let myNewShape = this.mapService.drawnItems;
+    layers.eachLayer(function(layer: L.Layer| any) { //todo get layer id
+      const layer_id = layer._leaflet_id
+      myNewShape.removeLayer(layer_id)
+      myNewShape.addLayer(layer)
+    });
+    return myNewShape
+}
+
+  private initGrids(): void{ 
+    let bboxes = this.queryGridService.getShapes()
+    if (bboxes) {
+      this.mapService.drawnItems.addLayer(this.makeRectanlge(bboxes))
+      this.gridMappingService.drawGrids(this.map, false, false) //todo: add shape is set twice
+    }
+  }
+
+  private makeRectanlge(bbox: number[][]): L.Rectangle {
+    const bounds = L.latLngBounds([bbox[0][1], bbox[0][0]], [bbox[0][3], bbox[0][2]]);
+    const rect = L.rectangle(bounds, this.shapeOptions)
+    return rect
+  }
+
+
+  private updateGridsOnAdd(feature, bboxes: number[][]): void {
+    const broadcastLayer = false
+    //const bbox = this.queryGridService.getBBox(feature)
+    const monthYear = this.queryGridService.getMonthYear()
+    const pres = this.queryGridService.getPresLevel()
+    const grid = this.queryGridService.getGrid()
+    const compareGrid = this.queryGridService.getCompareGrid()
+    const compare = this.queryGridService.getCompare()
+    const paramMode = this.queryGridService.getParamMode()
+    const gridParam = this.queryGridService.getGridParam()
+    const lockRange = false
+
+    if (bboxes[0][0] < -180) {
+      const wrappedBbox = [[bboxes[0][0], bboxes[0][1], -180, bboxes[0][3]], [-180, bboxes[0][1], bboxes[0][2], bboxes[0][3]]]
+      bboxes = wrappedBbox
+    }
+
+    
+    this.queryGridService.sendShape(bboxes, broadcastLayer)
+    bboxes.forEach( (bbox: number[]) => {
+      this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+    })
+    this.gridMappingService.updateGrids(this.map)
+    this.queryGridService.updateColorbar.emit('new shape added')
   }
 
   ngOnDestroy() {
@@ -150,58 +216,4 @@ export class MapGridComponent implements OnInit, OnDestroy {
       },100);
     }
   }
-
-  private redrawShapes(setUrl=true): void {
-    //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
-    const shapes = this.mapService.drawnItems.toGeoJSON()
-    this.gridLayers.clearLayers();
-    const broadcastLayer = false
-    this.queryGridService.sendShapeMessage(shapes, broadcastLayer)
-    this.gridSelectionOnMap();
-    if(setUrl){
-      this.queryGridService.setURL(); //this should be the last thing
-    }
-  }
-
-  gridSelectionOnMap(): void {
-
-    const fc = this.queryGridService.getShapes()
-    const monthYear = this.queryGridService.getMonthYear()
-    const pres = this.queryGridService.getPresLevel()
-    const grid = this.queryGridService.getGrid()
-    if (fc) {
-      const bboxes = this.queryGridService.getBBoxes(fc)
-      bboxes.forEach( (bbox) => {
-        const lonRange = [bbox[0], bbox[2]]
-        const latRange = [bbox[1], bbox[3]]
-        this.rasterService.getGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
-        .subscribe( (rasterGrids: RasterGrid[]) => {
-          if (rasterGrids.length == 0) {
-            console.log('warning: no grid')
-          }
-          else {
-            this.addRasterGridsToMap(rasterGrids)
-          }
-          },
-          error => {
-            console.log('error in getting profiles' )
-          })
-      })
-    }
-
-  }
-
-  private addRasterGridsToMap(rasterGrids: RasterGrid[]): void {
-
-    for( let idx in rasterGrids){
-      let grid = rasterGrids[idx];
-      this.gridLayers = this.rasterService.addToGridLayer(grid, this.gridLayers, this.map)
-      this.gridLayers.eachLayer(function(layer: L.Layer | any) { // get around typescript not having _field as a property
-        const field = layer._field
-        const bbox = (({ xllCorner, yllCorner, xurCorner, yurCorner }) => ({ xllCorner, yllCorner, xurCorner, yurCorner }))(field);
-      })
-    }
-
-  }
-
 }

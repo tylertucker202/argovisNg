@@ -7,6 +7,7 @@ import { CovarComponent } from './covar/covar.component';
 const appRoutes: Routes = [
     { path: 'ng/home',
       component: HomeComponent,
+      data: {arModule: false}
     },
     { path: 'ng',
     redirectTo: 'ng/home',
@@ -21,6 +22,10 @@ const appRoutes: Routes = [
     },
     { path: 'ng/covar',
       component: CovarComponent,
+    }, 
+    { path: 'ng/ar',
+      component: HomeComponent,
+      data: {arModule: true}
     }
   ]
 

@@ -6,11 +6,11 @@ import { DaterangePickerComponent } from 'ng2-daterangepicker';
 
 
 @Component({
-  selector: 'app-daterangepicker',
-  templateUrl: './daterangepicker.component.html',
-  styleUrls: ['./daterangepicker.component.css']
+  selector: 'app-selectiondatepicker',
+  templateUrl: './selectiondatepicker.component.html',
+  styleUrls: ['./selectiondatepicker.component.css']
 })
-export class DaterangepickerComponent {
+export class SelectionDatePicker {
   constructor(private queryService: QueryService) {}
 
   @ViewChild(DaterangePickerComponent)
@@ -43,18 +43,27 @@ export class DaterangepickerComponent {
     this.queryService.resetToStart
     .subscribe( () => {
       this.daterange = this.queryService.getSelectionDates()
-      this.start = moment(this.daterange.start)
-      this.end = moment(this.daterange.end)
+      this.start = moment.utc(this.daterange.start)
+      this.end = moment.utc(this.daterange.end)
+      this.picker.datePicker.setStartDate(this.start);
+      this.picker.datePicker.setEndDate(this.end);
+    })
+
+    this.queryService.change
+    .subscribe( () => {
+      this.daterange = this.queryService.getSelectionDates()
+      this.start = moment.utc(this.daterange.start)
+      this.end = moment.utc(this.daterange.end)
       this.picker.datePicker.setStartDate(this.start);
       this.picker.datePicker.setEndDate(this.end);
     })
   }
 
   private sendDateRange(): void {
-    this.queryService.sendSelectedDateMessage(this.daterange);
+    this.queryService.sendSelectedDate(this.daterange);
   }
 
-  public selectedDate(daterangeSel: DateRangeSel) {
+  public selectedDate(daterangeSel: DateRangeSel):void {
     console.log(daterangeSel)
       this.daterange.start = daterangeSel.start.format('YYYY-MM-DD');
       this.daterange.end = daterangeSel.end.format('YYYY-MM-DD');

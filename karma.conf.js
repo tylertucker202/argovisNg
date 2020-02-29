@@ -5,6 +5,10 @@ module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    files: [
+      './node_modules/d3/dist/d3.js',
+      './node_modules/chroma-js/chroma.js',
+    ],
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),

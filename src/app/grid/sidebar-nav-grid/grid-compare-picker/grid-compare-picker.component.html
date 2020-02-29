@@ -1,0 +1,17 @@
+<div *ngIf="!paramMode">
+<mat-slide-toggle matTooltip="toggle on to subtract another grid"
+color="accent" [checked]="compareGrid"
+(change)="compareGridToggle($event.checked)">Compare Grid
+</mat-slide-toggle>
+<div class='input-div' [hidden]="!compareGrid" >
+  <section class="mat-typography"><p>Grid Subtrahend Selected:</p></section>
+    <mat-form-field>
+      <mat-label>Grid Subtrahend</mat-label>
+      <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">
+          <mat-option *ngFor="let grid of availableGrids" [(value)]="grid.grid">
+            {{grid.viewValue}}
+          </mat-option>
+      </mat-select>
+    </mat-form-field>
+</div>
+</div>  

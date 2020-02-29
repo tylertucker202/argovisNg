@@ -2,21 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DbOverviewComponent } from './db-overview.component';
 
-import {
-  MatButtonModule,
-  MatSlideToggleModule,
-  MatDividerModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatBottomSheetModule,
-} from '@angular/material';
+import { MaterialModule } from './../../../material/material.module'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,19 +14,7 @@ describe('DbOverviewComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ DbOverviewComponent ],
-      imports: [    MatButtonModule,
-        MatSlideToggleModule,
-        MatDividerModule,
-        MatIconModule,
-        MatInputModule,
-        MatMenuModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatTooltipModule,
-        MatSelectModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatBottomSheetModule,
+      imports: [ MaterialModule,
         RouterTestingModule,
         BrowserAnimationsModule,
         HttpClientModule]

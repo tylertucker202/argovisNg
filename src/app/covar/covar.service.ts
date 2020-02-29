@@ -13,7 +13,7 @@ export class CovarService {
 
   @Output() change: EventEmitter<string> = new EventEmitter
   private proj = 'EPSG:3857';
-  private longCovar = false;
+  private forcastDays = 60;
   private lngLat  = [0, 0];
   private dataUrl: string;
 
@@ -31,9 +31,9 @@ export class CovarService {
     if (this.lngLat) {
       lngLatString = JSON.stringify(this.lngLat)
     }
-    const longCovarString=JSON.stringify(this.longCovar)
+    const forcastDaysString=JSON.stringify(this.forcastDays)
     let queryParams = {
-                         'longCovar': longCovarString, 
+                         'forcastDays': forcastDaysString, 
                          'proj': this.proj,
                          'lngLat': lngLatString,
                         }
@@ -50,9 +50,9 @@ export class CovarService {
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
-      case 'longCovar': {
-        const longCovar = JSON.parse(value)
-        this.sendForcast(longCovar, notifyChange)
+      case 'forcastDays': {
+        const forcastDays = JSON.parse(value)
+        this.sendForcast(forcastDays, notifyChange)
         break;
       }
       case 'proj': {
@@ -80,13 +80,8 @@ export class CovarService {
     url += '/' + JSON.stringify(lngLat[0])
     url += '/' + JSON.stringify(lngLat[1])
 
-    const longCovar = this.getForcast()
-    if (longCovar===false) {
-      url += '/60days'
-    }
-    else {
-      url += '/140days'
-    }
+    const forcastDays = this.getForcast()
+    url += '/' + JSON.stringify(forcastDays)
     this.dataUrl = url
   }
 
@@ -103,13 +98,13 @@ export class CovarService {
     }
   }
 
-  public getForcast(): boolean {
-    return this.longCovar;
+  public getForcast(): number {
+    return this.forcastDays;
   }
 
-  public sendForcast(longCovar: boolean, notifyChange=true): void {
-    if (longCovar !== this.longCovar) {
-      this.longCovar = longCovar;
+  public sendForcast(forcastDays: number, notifyChange=true): void {
+    if (forcastDays !== this.forcastDays) {
+      this.forcastDays = forcastDays;
     }
     if (notifyChange) {
       this.change.emit('long Covar Changed');

@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { QueryService } from '../services/query.service';
+import { Component, OnInit, Input } from '@angular/core'
+import { QueryService } from '../services/query.service'
 
 @Component({
   selector: 'app-shape-popup',
@@ -7,26 +7,80 @@ import { QueryService } from '../services/query.service';
   styleUrls: ['./shape-popup.component.css']
 })
 export class ShapePopupComponent implements OnInit {
-  @Input() shape: number[][];
-  private color: string;
+  @Input() shape: number[][][]
+  @Input() transformedShape: number[][]
+  @Input() message: string
+  @Input() shape_id: string
+  private color: string
+  private arMode = false
+  private presRangeToggle: boolean
+  private pageToggle: boolean
+  private shapeButtonText: string
+  private jsonButtonText: string
   constructor(private queryService: QueryService) { }
 
   ngOnInit() {
     this.color = 'primary';
+    this.presRangeToggle = true
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
+    if (this.message ==='atmospheric river shape' ) {
+      this.arMode = true
+    }
   }
 
-  goToSelectionPage(includePresRange: boolean): void {
-    let base = '/selection/profiles/page'
-    let dates = this.queryService.getSelectionDates();
-    let presRange = this.queryService.getPresRange();
+  private presRangeChange(presRangeToggle: boolean): void {
+    this.presRangeToggle = presRangeToggle;
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
+  }
 
-    let selectionPageUrl = base+'?startDate=' + dates.start + '&endDate=' + dates.end
-    if (includePresRange) {
-      selectionPageUrl += '&presRange='+JSON.stringify(presRange)
+  private pageChange(pageToggle: boolean): void {
+    this.pageToggle = pageToggle
+    this.updateShapeButtonText()
+    this.updateJSONButtonText()
+  }
+
+  private updateShapeButtonText(): void {
+    let shapeButtonText = "To Selection Page"
+    //if (this.presRangeToggle) { shapeButtonText += ' with pressure query' }
+    this.shapeButtonText  = shapeButtonText
+  }
+
+  private updateJSONButtonText(): void {
+    let jsonButtonText = 'Download JSON Data'
+    //if (this.presRangeToggle) { jsonButtonText += ' with pressure query'}
+    this.jsonButtonText = jsonButtonText
+  }
+
+  private goToSelectionPage(goToPage: boolean): void {
+
+    let windowURL: string
+    if (this.arMode) {
+      windowURL = '/arShapes/findByID?_id=' + this.shape_id
     }
-    selectionPageUrl += '&shape='+JSON.stringify(this.shape)
-    //'&includeRT='+JSON.stringify(includeRealtime);
-    window.open(selectionPageUrl,"_blank")
+    else {
+      windowURL = '/selection/profiles'
+      if (goToPage) {
+        windowURL += '/page'
+      }
+      let dates = this.queryService.getSelectionDates();
+      windowURL += '?startDate=' + dates.start + '&endDate=' + dates.end
+      if (this.presRangeToggle) {
+        const presRange = this.queryService.getPresRange();
+        windowURL += '&presRange='+JSON.stringify(presRange)
+      }
+      windowURL += '&shape='+JSON.stringify(this.transformedShape) 
+    }
+
+    window.open(windowURL,"_blank")
+  }
+
+  private queryARShape(): void {
+    const broadcastChange = false
+    const toggle3DayOff = false // should already be off
+    this.queryService.sendShape(this.shape, broadcastChange, toggle3DayOff)
+    this.queryService.arEvent.emit('trasfering ar shape to drawn shape')
   }
 
 }

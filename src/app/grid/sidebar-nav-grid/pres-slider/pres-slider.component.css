@@ -1,0 +1,9 @@
+#minusOne, #plusOne{
+    display:inline-block;
+    transform: scale(1);
+}
+
+#presInput {
+    width: 135px;
+    display:inline-block;
+}

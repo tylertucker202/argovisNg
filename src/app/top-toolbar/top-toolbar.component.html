@@ -4,12 +4,6 @@
   <button mat-icon-button matTooltip="go to argovis profile page (home)" routerLink="ng/home">
     <mat-icon>home</mat-icon>
   </button>
-  <!-- <button mat-icon-button matTooltip="go to gridded page (in development)" routerLink="ng/grid">
-    <mat-icon>grid_on</mat-icon>
-  </button>
-  <button mat-icon-button matTooltip="go to argo trajectory forcast page (in development)" routerLink="ng/covar">
-    <mat-icon>scatter_plot</mat-icon>
-  </button> -->
   <a class="nav-link"
      matTooltip="link to about page"
      target='_blank'
@@ -17,20 +11,32 @@
      href="http://www.argo.ucsd.edu/Argovis_About.html">
      About Argovis</a>
   <a class="nav-link"
+     matTooltip="link to tutorial page"
+     target='_blank'
+     rel="noopener"
+     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
+     Tutorials</a>
+  <a class="nav-link"
      matTooltip="link to faq page"
      target='_blank'
      rel="noopener"
      href="http://www.argo.ucsd.edu/Argovis_FAQ.html">
      FAQ</a>
-  <a class="nav-link"
-     matTooltip="link to api tutorial"
-     target='_blank'
-     rel="noopener"
-     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
-     Link to API tutorial</a>
-  <a class="nav-link"
-     href="ng/grid"
-     routerLinkActive="active"
-     matTooltip="link to gridded page (in development)">
-     Link to gridded Argo climatology</a>
+     <button class="nav-link" 
+     mat-button 
+     matTooltip="we have expanded to include several new modules!"
+     [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
+     <mat-menu #moduleMenu="matMenu">
+      <a mat-menu-item *ngFor="let module of avModules" 
+        href={{module.link}}
+        routerLinkActive="active"
+        matTooltip={{module.tooltip}}>{{module.viewValue}}
+      </a>
+    </mat-menu>
+  <a class="nav-link-survey"
+    matTooltip="take a survey, comment, request features!"
+    target='_blank'
+    rel="noopener"
+    href="https://docs.google.com/forms/d/e/1FAIpQLSckbH8WJSHruoPZ72xlGJDegpzwYinTVCmyFLJsum_GYYIg3A/viewform">
+    Take a Survey</a>
 </mat-toolbar>

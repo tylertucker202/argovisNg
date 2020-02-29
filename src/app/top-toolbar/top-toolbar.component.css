@@ -1,3 +1,13 @@
 .nav-link {
-    color:  #F5F5F5
+    color:  #F5F5F5;
+    font-size: x-large;
   }
+
+.nav-link-survey {
+  color: rgb(255, 215, 64);
+  font-size: x-large;
+}
+
+#module-select {
+  width: 200px
+}

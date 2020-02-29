@@ -1,0 +1,22 @@
+.left-input, .right-input {
+    display:inline-block;
+    width: 45%;
+}
+
+#minInput {
+    float: left
+}
+
+#maxInput {
+    float: right
+}
+
+.input-div {
+    display:inline-block;
+}
+
+mat-form-field {
+    margin-right: 12px;
+    display:inline-block;
+    width: 40%;
+  }

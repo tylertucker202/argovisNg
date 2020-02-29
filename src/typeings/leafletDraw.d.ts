@@ -8,7 +8,6 @@ import 'leaflet';
 import 'leaflet-draw';
 import * as geojson from 'geojson';
 import * as L from 'leaflet';
-import * as proj4 from 'proj4';
 
 declare module 'leaflet' {
   namespace control {
@@ -23,10 +22,6 @@ declare module 'leaflet' {
     Draw: Control.DrawStatic;
   }
 
-  var ScalarField: any
-
-  var canvasLayer: any
-
   namespace GeoJSON {
      function AJAX(path: string,parameters?: any): void;
    }
@@ -36,6 +31,11 @@ declare module 'leaflet' {
     export interface DrawStatic {
       new(options?: DrawConstructorOptions): Draw;
     }
+
+    var ColorBar: any
+
+
+    var colorBar: any
 
     export interface DrawConstructorOptions {
       position?: string;

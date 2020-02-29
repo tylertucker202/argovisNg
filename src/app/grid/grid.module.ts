@@ -1,21 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  MatButtonModule,
-  MatSlideToggleModule,
-  MatDividerModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatSelectModule,
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatBottomSheetModule,
-} from '@angular/material';
+import { MaterialModule } from '../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import "leaflet";
@@ -25,11 +11,14 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { GridComponent } from './grid.component';
 import { MapGridComponent } from './map-grid/map-grid.component';
 import { SidebarNavGridComponent } from './sidebar-nav-grid/sidebar-nav-grid.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonthPickerComponent } from './sidebar-nav-grid/month-picker/month-picker.component';
 import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.component';
 import { QueryGridService } from './query-grid.service';
 import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.component';
+import { GridComparePickerComponent } from './sidebar-nav-grid/grid-compare-picker/grid-compare-picker.component';
+import { GridColorPickerComponent } from './sidebar-nav-grid/grid-color-picker/grid-color-picker.component';
+import { ColorbarComponent } from './sidebar-nav-grid/colorbar/colorbar.component';
 
 @NgModule({
   declarations: [
@@ -38,31 +27,22 @@ import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.
     SidebarNavGridComponent,
     MonthPickerComponent,
     PresSliderComponent,
-    GridPickerComponent
+    GridPickerComponent,
+    GridComparePickerComponent,
+    GridColorPickerComponent,
+    ColorbarComponent
     ],
   providers: [
     QueryGridService,
   ],
   imports: [
+    MaterialModule,
     NouisliderModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatSlideToggleModule,
-    MatDividerModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatBottomSheetModule,
   ],
 })
 export class GridModule { }

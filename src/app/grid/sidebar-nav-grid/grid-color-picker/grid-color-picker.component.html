@@ -1,0 +1,16 @@
+<mat-form-field>
+  <mat-label>Color scale</mat-label>
+  <mat-select [(value)]="colorScale" (selectionChange)="changeColorScale($event.value)">
+    <mat-option *ngFor="let avlColorScale of availableColorscales" [(value)]="avlColorScale.colorScale">
+      {{avlColorScale.viewValue}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-slide-toggle matTooltip="toggle on to invert color bar scale"
+color="accent" [checked]="inverseColorScale"
+(change)="inverseColorScaleToggle($event.checked)">Inverse color scale
+</mat-slide-toggle>
+<div>
+<app-colorbar></app-colorbar>
+</div>
+

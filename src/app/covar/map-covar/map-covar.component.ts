@@ -21,7 +21,6 @@ import {get as getProjection } from 'ol/proj.js';
 import { getCenter } from 'ol/extent'
 
 import proj4 from 'proj4';
-import { zip } from 'd3';
 
 export interface ZoomOptions {
   minZoom: number,
@@ -171,7 +170,7 @@ export class MapCovarComponent implements OnInit {
       const prob = featureOnClick.getProperties().Probability
       if (prob) {
         overlay.setPosition(evt.coordinate);
-        content.innerHTML = "<p>probability float drifted here:</p><code>" + prob +" </code>";
+        content.innerHTML = "<p>probability float drifted here:</p><code>" + prob.toFixed(6) +" </code>";
         container.style.display = 'block';
       }
       else {
@@ -206,14 +205,11 @@ export class MapCovarComponent implements OnInit {
 
   private addMap(): void {
     let layers = {}
-    // layers['osm'] = new TileLayer({
-    //   source: new OSM()
-    // });
 
     layers['wms4326'] = new TileLayer({
       source: new TileWMS({
         url: 'https://ahocevar.com/geoserver/wms',
-        crossOrigin: 'anonymous',
+        //crossOrigin: "use-credentials",
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
           'TILED': true
@@ -251,12 +247,14 @@ export class MapCovarComponent implements OnInit {
   };
 
   private addCovarField(covarPoints: CovarPoints): void {
-    let features = covarPoints.features;
-    let geoLocation = covarPoints.geoLocation;
+    let features = covarPoints.features
+    const dLat = covarPoints.dLat
+    const dLong = covarPoints.dLong
+    let geoLocation = covarPoints.geoLocation
 
     const floatLayer = this.mapCovarService.makeFloatPoint(geoLocation.coordinates, this.proj)
 
-    const gridLayer = this.mapCovarService.makeCovarPolygons(features, this.proj)
+    const gridLayer = this.mapCovarService.makeCovarPolygons(features, this.proj, dLat, dLong)
 
     this.map.addLayer(gridLayer);
     this.map.addLayer(floatLayer);

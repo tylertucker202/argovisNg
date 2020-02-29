@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import {FormControl} from '@angular/forms';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -7,9 +7,7 @@ import {MatDatepicker} from '@angular/material/datepicker';
 
 import { QueryGridService } from '../../query-grid.service'
 
-import * as _moment from 'moment';
-import {Moment} from 'moment';
-const moment = _moment;
+import * as moment from 'moment';
 
 export const MY_FORMATS = {
   parse: {
@@ -35,18 +33,25 @@ export const MY_FORMATS = {
 export class MonthPickerComponent implements OnInit {
 
   private date = new FormControl(moment());
-  private monthYear: _moment.Moment;
-  private minDate = new Date(2004, 0, 1);
-  private maxDate = new Date(2020, 0, 1);
+  private monthYear: moment.Moment;
+  private minDate = new Date(2012, 0, 1);
+  private maxDate = new Date(2012, 11, 1);
+  @Input() paramMode: boolean
+  @ViewChild('dp') datepicker: MatDatepicker<any>;
 
   constructor(private queryGridService: QueryGridService) { }
 
   ngOnInit() {
     this.setDate()
-
     this.queryGridService.resetToStart.subscribe((msg) => {
       this.setDate()
     })
+  }
+
+  private incrementMonth(increment: number): void {
+    this.monthYear = this.monthYear.add(increment, 'M')
+    this.date = new FormControl(this.monthYear)
+    this.sendmonthYear()
   }
 
   private setDate(): void {
@@ -54,36 +59,34 @@ export class MonthPickerComponent implements OnInit {
     this.date = new FormControl(this.monthYear)    
   }
 
-  private sendMonthYearMessage(): void {
+  private sendmonthYear(): void {
     const broadcastChange = true;
-    this.queryGridService.sendMonthYearMessage(this.monthYear, broadcastChange)
+    this.queryGridService.sendmonthYear(this.monthYear, broadcastChange)
   }
 
-  displayGridMonthChanged(event: MatDatepickerInputEvent<Date>): void {
-    //triggered when user changes date
-    const date = moment(event.value)
+  private displayDateChanged(date: moment.Moment): void {
+    //triggered when user changes date manually
     this.date.setValue(date)
     this.monthYear = date
-    console.log(this.monthYear)
-    this.sendMonthYearMessage()
+    this.sendmonthYear()
   }
 
-  chosenYearHandler(normalizedYear: Moment) {
-    //triggered when user selects year
+  private chosenYearHandler(year: number) {
+    //triggered when user selects on menu
     const ctrlValue = this.date.value;
-    ctrlValue.year(normalizedYear.year());
+    ctrlValue.year(year);
     this.date.setValue(ctrlValue);
     this.monthYear = ctrlValue
-    this.sendMonthYearMessage()
+    this.sendmonthYear()
   }
 
-  chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
-    //triggered when user selects month
+  private chosenMonthHandler(month: number) {
+    //triggered when user selects month on menu
     const ctrlValue = this.date.value;
-    ctrlValue.month(normalizedMonth.month());
+    ctrlValue.month(month);
     this.date.setValue(ctrlValue);
-    datepicker.close();
+    this.datepicker.close();
     this.monthYear = ctrlValue
-    this.sendMonthYearMessage()
+    this.sendmonthYear()
   }
 }

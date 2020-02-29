@@ -3,6 +3,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
 import * as moment from 'moment';
+import { MapState } from '../../../typeings/mapState';
 
 @Injectable()
 export class QueryService {
@@ -13,21 +14,38 @@ export class QueryService {
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
+  @Output() arEvent: EventEmitter<string> = new EventEmitter
 
-  private presRange = [0, 2000];
+  private presRange = [0, 2000]
   private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-  private latLngShapes: number[][][];
-  private includeRealtime = true;
-  private onlyBGC = false;
-  private onlyDeep = false;
-  private threeDayToggle = true;
-  private proj = 'WM';
+                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'}
+  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
+  private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
+  private latLngShapes: number[][][]
+  private arShapes: number[][][]
+  private includeRealtime = true
+  private onlyBGC = false
+  private onlyDeep = false
+  private threeDayToggle = true
+  private proj = 'WM'
+  private arMode = false
+  public arModule: boolean
+  private arDateRange = [-18, 18]
 
   constructor(private route: ActivatedRoute,
               private location: Location,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
+
+  public checkArModule(route: ActivatedRoute): void {
+    if (route.data) {
+      route.data.subscribe(v => {
+        if(v['arModule']) {
+          this.arModule = v['arModule'] //ignore if undefined
+        }
+        if (this.arModule) { this.sendArMode(false, false, false) }
+      })
+    }
+  }
 
   public resetParams(): void{
     const broadcastChange = false
@@ -36,14 +54,21 @@ export class QueryService {
     this.sendThreeDayMsg(true, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
     const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-    this.sendGlobalDateMessage(globalDisplayDate, broadcastChange)
+    this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
-    this.sendPresMessage(presRange, broadcastChange)
+    this.sendPres(presRange, broadcastChange)
 
     const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
                                 end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-    this.sendSelectedDateMessage(selectionDateRange, broadcastChange)
+    this.sendSelectedDate(selectionDateRange, broadcastChange)
+    const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
+    const clearOtherShapes = false
+    this.sendArMode(false, broadcastChange, clearOtherShapes)
+    this.sendArDate(arDate)
+    const arDateRange = [-18, 18]
+    this.sendArDateRange(arDateRange)
   }
+
 
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
@@ -61,6 +86,17 @@ export class QueryService {
     };
     return shapes
   }
+
+  public setParamsFromURL(): void{
+      let mapState: MapState
+      this.route.queryParams.subscribe(params => {
+        mapState = params
+        Object.keys(mapState).forEach(key => {
+          this.setMapState(key, mapState[key])
+        });
+        this.urlBuild.emit('got state from map component')
+      });
+    }
 
   public setURL(): void {
 
@@ -80,7 +116,8 @@ export class QueryService {
                          'includeRealtime': this.includeRealtime,
                          'onlyBGC': this.onlyBGC,
                          'onlyDeep': this.onlyDeep,
-                         'threeDayToggle': this.threeDayToggle
+                         'threeDayToggle': this.threeDayToggle,
+                         'arMode': this.arMode
                         }
     this.router.navigate(
       [], 
@@ -91,8 +128,35 @@ export class QueryService {
       });
   }
 
-  public getURL() {
+  public getURL(): string {
     return location.pathname
+  }
+
+  public getArDateRange(): number[] {
+    return [...this.arDateRange]
+  }
+
+  public sendArDateRange(dateRange: number[]): void {
+    this.arDateRange = dateRange
+  }
+
+  public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
+    const msg = 'arMode'
+    this.arMode = arMode;
+    if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
+    if (broadcastChange) { this.change.emit(msg) }
+  }
+
+  public getArMode(): boolean {
+    return this.arMode
+  }
+
+  public sendArDate(date: moment.Moment) {
+    this.arDate = date
+  }
+
+  public getArDate(): moment.Moment {
+    return this.arDate
   }
 
   public triggerPlatformShow(platform: string): void {
@@ -113,13 +177,23 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShapeMessage(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
+  public sendARShapes(data: number[][][]): void {
+    let msg = 'ar shape'
+    this.arShapes = data
+  }
+
+  public getARShapse(): number[][][] {
+    return this.arShapes
+  }
+
+  public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     
-    let msg = 'shape';
+    let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
-      this.sendThreeDayMsg(false, broadcastThreeDayToggle)
+      this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
+    console.log('inside sendShape:', data)
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -149,7 +223,7 @@ export class QueryService {
     this.latLngShapes = null;
   }
 
-  public sendPresMessage(presRange: number[], broadcastChange=true): void {
+  public sendPres(presRange: number[], broadcastChange=true): void {
     const msg = 'presRange';
     this.presRange = presRange;
     if (broadcastChange){ this.change.emit(msg) }
@@ -159,7 +233,7 @@ export class QueryService {
     return this.presRange;
   }
 
-  public sendSelectedDateMessage(selectionDateRange: DateRange, broadcastChange=true): void {
+  public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {
     const msg = 'selection date';
     this.selectionDateRange = selectionDateRange;
     if (broadcastChange){ this.change.emit(msg) }
@@ -169,7 +243,7 @@ export class QueryService {
     return this.selectionDateRange;
   }
 
-  public sendGlobalDateMessage(globalDisplayDate: string, broadcastChange=true): void {
+  public sendGlobalDate(globalDisplayDate: string, broadcastChange=true): void {
     const msg = 'three day display date';
     this.globalDisplayDate = globalDisplayDate;
     if (broadcastChange){ this.change.emit(msg) }
@@ -179,9 +253,9 @@ export class QueryService {
     return this.globalDisplayDate;
   }
 
-  public sendRealtimeMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendRealtimeMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'realtime'
-    this.includeRealtime = toggleChecked.valueOf()
+    this.includeRealtime = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -189,9 +263,9 @@ export class QueryService {
     return this.includeRealtime;
   }
 
-  public sendThreeDayMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  public sendThreeDayMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = '3 day toggle'
-    this.threeDayToggle = toggleChecked.valueOf()
+    this.threeDayToggle = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -200,9 +274,9 @@ export class QueryService {
   }
 
 
-  sendBGCToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  sendBGCToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'bgc only'
-    this.onlyBGC = toggleChecked.valueOf()
+    this.onlyBGC = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -210,9 +284,9 @@ export class QueryService {
     return this.onlyBGC
   }
 
-  sendDeepToggleMsg(toggleChecked: Boolean, broadcastChange=true): void {
+  sendDeepToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'deep only'
-    this.onlyDeep = toggleChecked.valueOf()
+    this.onlyDeep = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -225,17 +299,17 @@ export class QueryService {
     switch(key) {
       case 'mapProj': {
         this.setProj(value)
-        break;
+        break
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
         this.sendRealtimeMsg(includeRealtime, notifyChange)
-        break;
+        break
       }
       case 'onlyBGC': {
         const onlyBGC = JSON.parse(value)
         this.sendBGCToggleMsg(onlyBGC, notifyChange)
-        break;
+        break
       }
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
@@ -245,36 +319,42 @@ export class QueryService {
       case 'threeDayToggle': {
         const threeDayToggle = JSON.parse(value)
         this.sendThreeDayMsg(threeDayToggle, notifyChange)
-        break;
+        break
       }
       case 'threeDayEndDate': {
         const globalDisplayDate = value
-        this.sendGlobalDateMessage(globalDisplayDate, notifyChange)
-        break;
+        this.sendGlobalDate(globalDisplayDate, notifyChange)
+        break
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const toggleThreeDayOff = false
-        this.sendShapeMessage(arrays, notifyChange, toggleThreeDayOff)
-        break;
+        this.sendShape(arrays, notifyChange, toggleThreeDayOff)
+        break
       }
       case 'selectionStartDate': {
         const stateDateRange = {start: value, end: this.selectionDateRange.end}
-        this.sendSelectedDateMessage(stateDateRange, notifyChange)
-        break;
+        this.sendSelectedDate(stateDateRange, notifyChange)
+        break
       }
       case 'selectionEndDate': {
         const stateDateRange = {start: this.selectionDateRange.start, end: value}
-        this.sendSelectedDateMessage(stateDateRange, notifyChange)
-        break;
+        this.sendSelectedDate(stateDateRange, notifyChange)
+        break
       }
       case 'presRange': {
         const presRange = JSON.parse(value)
-        this.sendPresMessage(presRange, notifyChange)
-        break;
+        this.sendPres(presRange, notifyChange)
+        break
+      }
+      case 'arMode': {
+        const arMode = JSON.parse(value)
+        const clearOtherShapes = false
+        this.sendArMode(arMode, notifyChange, clearOtherShapes)
+        break
       }
       default: {
-        console.log('key not found. not doing anything')
+        console.log('key not found. not doing anything: ', key)
         break;
     }
   }

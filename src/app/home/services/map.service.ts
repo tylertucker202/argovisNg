@@ -1,27 +1,45 @@
-import { Injectable, ApplicationRef } from "@angular/core";
-import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
-import { PopupCompileService } from './popup-compile.service';
-import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson';
+import { Injectable, ApplicationRef } from "@angular/core"
+import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
+import { PopupCompileService } from './popup-compile.service'
+import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
 
-import 'leaflet';
-import 'proj4leaflet';
-import 'arc';
-import 'leaflet-arc';
+import 'leaflet'
+import 'proj4leaflet'
+import 'arc'
+import 'leaflet-arc'
 import 'leaflet-graticule'
-import '../../../ext-js/leaflet.draw-arc-src.js';
-import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min';
+import '../../../ext-js/leaflet.draw-arc-src.js'
+import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
 import 'leaflet-ajax'
 
-declare let L;
+declare const L;
+import * as chroma from 'chroma'
+import { ChromaStatic } from "chroma-js"
+declare const chroma: ChromaStatic
 
 
 @Injectable()
 export class MapService {
   public baseMaps: any;
   public drawnItems = L.featureGroup();
+  public arShapeItems = L.featureGroup(); //non editable shapes which can be added to drawnItems.
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
-  public shapeOptions: any;
+
+  private WMstartView = [20, -150]
+  private WMstartZoom = 3
+  private SSPstartView = [-89, .1]
+  private SSPstartZoom = 4
+  private NSPstartView =  [89, .1]
+  private NSPstartZoom = 4
+
+  public shapeOptions =   {color: '#983fb2', //purple: #983fb2
+  weight: 4,
+  opacity: .5}
+
+  public arShapeOptions = {color: '#FF8C00', //pink: #C71585 orange: #FF8C00
+  weight: 4,
+  opacity: .5}
 
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
@@ -61,11 +79,52 @@ export class MapService {
     {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
   });
 
-  public generateMap(this, proj: string): L.Map {
+  private gebco = L.tileLayer.wms('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
+    layers: 'GEBCO_2019_GRID',
+    attribution: 'WMS for the GEBCO_2019 global bathymetric grid'
+    });
+
+  private gebco_2 = L.tileLayer.wms('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
+    layers: 'GEBCO_2019_GRID_2',
+    attribution: 'WMS for the GEBCO_2019 global bathymetric grid. This layers displays the GEBCO_2019 Grid as an image colour-shaded for elevation'
+    });
+
+    private Hydda_Base = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
+      attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    private Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20,
+      ext: 'png'
+    });
+
+    private Stamen_TonerBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 20,
+      ext: 'png'
+    });
+
+    private Esri_WorldGrayCanvas = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      maxZoom: 16
+    });
+
+    private CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    });
+
+  public generateMap(this, proj: string, gridMap=false): L.Map {
     switch(proj) {
       case 'WM': {
         console.log('generating web mercator');
-        return  this.createWebMercator();
+        return  this.createWebMercator(gridMap);
       }
       case 'SSP': {
         console.log('generating south stereo');
@@ -77,14 +136,14 @@ export class MapService {
       }
       default: {
         console.log('proj not found, using web mercator')
-        return  this.createWebMercator();
+        return  this.createWebMercator(gridMap);
       }
     }
   }
 
-  public createWebMercator(this): L.Map {
-    const startView = [20, -150]
-    const startZoom = 3
+  public createWebMercator(this, gridMap: false): L.Map {
+    let baseLayer: L.TileLayer
+    gridMap? baseLayer = this.baseMaps.esriGrey: baseLayer = this.baseMaps.ocean
     let map = L.map('map',
                       {maxZoom: 13,
                       minZoom: 1,
@@ -92,8 +151,8 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       maxBounds: [[-180, -270], [180,180]],
-                      layers: [this.baseMaps.ocean]})
-                      .setView(startView, startZoom );
+                      layers: [baseLayer]})
+                      .setView(this.WMstartView, this.WMstartZoom );
     L.control.layers(this.baseMaps).addTo(map);
     map.on('baselayerchange', (e: any) => {
       const graticule = this.getGraticule(e.name)
@@ -107,8 +166,6 @@ export class MapService {
   };
   
   public createSouthernStereographic(this): L.Map {
-    const startView = [-89, .1]
-    const startZoom = 4
     let map = L.map('map',
                     {maxZoom: 13,
                       minZoom: 3,
@@ -116,7 +173,7 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       crs: this.sStereo})
-                      .setView(startView, startZoom);
+                      .setView(this.SSPstartView, this.SSPstartZoom);
     const geojsonLayer = new L.GeoJSON.AJAX("../../assets/world-countries.json", {style: this.worldStyle});
     geojsonLayer.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
@@ -124,8 +181,6 @@ export class MapService {
   };
   
   public createNorthernStereographic(this): L.Map {
-    const startView =  [89, .1]
-    const startZoom = 4
     let map = L.map('map',
                     {maxZoom: 13,
                       minZoom: 3,
@@ -133,7 +188,7 @@ export class MapService {
                       zoomSnap: 0,
                       zoomControl: false,
                       crs: this.nStereo})
-                      .setView(startView, startZoom);
+                      .setView(this.NSPstartView, this.NSPstartZoom);
     const geojsonLayerNoAntartica = new L.GeoJSON.AJAX("../../assets/world-contries-except-ant.json", {style: this.worldStyle}); 
     geojsonLayerNoAntartica.addTo(map);
     L.control.zoom({position:'topleft'}).addTo(map);
@@ -202,7 +257,14 @@ export class MapService {
     this.baseMaps = {
       esri: this.satelliteMap,
       ocean: this.esri_OceanBasemap,
-      google: this.googleMap
+      google: this.googleMap,
+      gebco: this.gebco,
+      gebco2: this.gebco_2,
+      esriGrey: this.Esri_WorldGrayCanvas,
+      hydda: this.Hydda_Base,
+      StamenLite: this.Stamen_TonerLite,
+      StamenBlack: this.Stamen_TonerBackground,
+      cartoDB: this.CartoDB_Positron
     };
   }
 
@@ -276,6 +338,7 @@ export class MapService {
   public scaleDisplay = L.control.scale();
 
   public getTransformedShape(shape: number[][]): number[][][] {
+    //takes [lat long] array and transforms it into a [lng lat] nested array 
     let transformedShape = [];
     for (let j = 0; j < shape.length; j++) {
         //transformation if shape is outside longitude.
@@ -293,23 +356,24 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation = function(layer, drawnItems): void{
+  public popupWindowCreation = function(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
     const feature = layer.toGeoJSON();
-    console.log('popup feature', feature)
     const shape = this.getLatLngFromFeature(feature)
-    console.log('shape before', shape)
     const transformedShape = this.getTransformedShape(shape);
-    console.log('transformed shape', transformedShape)
     layer.bindPopup(null);
     layer.on('click', (event) => {
-      layer.setPopupContent(
-        this.compileService.compile(ShapePopupComponent, (c) => { c.instance.shape = transformedShape; })
-      );
+      const popupContent = this.compileService.compile(ShapePopupComponent, (c) => { 
+        c.instance.shape = [shape];
+        c.instance.transformedShape = transformedShape;
+        c.instance.message = shapeType 
+        c.instance.shape_id = shape_id
+      })
+      layer.setPopupContent(popupContent);
     });
     layer.on('add', (event) => { 
       layer.fire('click') // click generates popup object
     });
-    drawnItems.addLayer(layer);
+    featureGroup.addLayer(layer);
     }
 
   public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {
@@ -321,14 +385,14 @@ export class MapService {
     return shape
   }
 
-  public convertArrayToFeatureGroup(shapeArrays: number[][][]): L.FeatureGroup {
+  public convertArrayToFeatureGroup(shapeArrays: number[][][], shapeOptions: any): L.FeatureGroup {
     let shapes = L.featureGroup()
     shapeArrays.forEach( (array) => {
       let coords = []
       array.forEach(coord => {
         coords.push(L.latLng(coord[0], coord[1]))
       })
-      const polygon = L.polygon(coords, this.shapeOptions)
+      const polygon = L.polygon(coords, shapeOptions)
       shapes.addLayer(polygon)
     })
     return(shapes)
