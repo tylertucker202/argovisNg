@@ -14,5 +14,5 @@ services:
     ports:
       - '127.0.0.1:27017:27017' # include localhost ip to restrict access to localhost
     volumes:
-      - /data/argovis/storage/mongodb:/data/db:Z
+      - /data/argovis/storage/mongodb:/data/db:Z # production
       - ./mongod.conf/mongod.conf:/etc/mongod.conf:Z

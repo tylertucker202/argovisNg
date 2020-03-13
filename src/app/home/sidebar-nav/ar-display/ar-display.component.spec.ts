@@ -7,7 +7,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ArServiceService } from './../../services/ar-service.service'
 import { MapService } from './../../services/map.service'
 import { MaterialModule } from './../../../material/material.module'
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 import { QueryService } from '../../services/query.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PopupCompileService } from './../../../home/services/popup-compile.service';

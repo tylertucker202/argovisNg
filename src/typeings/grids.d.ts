@@ -9,17 +9,25 @@ export interface ProducerGroup {
   producer: string;
   grids: GridGroup[]
   }
-  
+export interface GridParamGroup {
+  grid: string;
+  param: string;
+  viewValue: string;
+  params: ModelParam[];
+}
 export interface MeasGroup {
   meas: string;
   producers: ProducerGroup[] | GridParamGroup[];
 }
 
-export interface GridParamGroup {
-  grid: string;
+export interface ModelParam {
+  modelParamName: string;
+  viewValue: string;
+}
+
+export interface AvailableParams {
   param: string;
   viewValue: string;
-  params: string[];
 }
 
 export interface GridRange {

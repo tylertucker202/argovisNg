@@ -1,17 +1,15 @@
-import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SidebarNavComponent } from './sidebar-nav.component';
-import { FormControl } from '@angular/forms';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../services/query.service';
-import { of } from 'rxjs'; //use for observables
 import * as moment from 'moment';
 
 
 import { MaterialModule } from '../../material/material.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { query } from '@angular/core/src/render3';
 
 
 describe('SidebarNavComponent', () => {
@@ -34,7 +32,8 @@ describe('SidebarNavComponent', () => {
       providers: [ QueryService ], 
       imports: [    MaterialModule,
                     RouterTestingModule,
-                    BrowserAnimationsModule]
+                    BrowserAnimationsModule, 
+                    MatMomentDateModule]
     }).compileComponents();
   }));
 

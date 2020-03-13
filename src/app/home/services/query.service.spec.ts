@@ -9,7 +9,6 @@ import * as L from "leaflet";
 //import { geoJSON, GeoJSON } from 'leaflet';
 
 import { RouterTestingModule } from '@angular/router/testing';
-import { loadLContext } from '@angular/core/src/render3/discovery_utils';
 
 describe('QueryService', () => {
   beforeEach(() => {

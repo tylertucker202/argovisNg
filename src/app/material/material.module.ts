@@ -16,26 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
-//import { MatNativeDateModule } from '@angular/material/';
-
-// import {
-//   MatButtonModule,
-//   MatSlideToggleModule,
-//   MatDividerModule,
-//   MatIconModule,
-//   MatInputModule,
-//   MatMenuModule,
-//   MatSidenavModule,
-//   MatToolbarModule,
-//   MatTooltipModule,
-//   MatSelectModule,
-//   MatDatepickerModule,
-//   MatNativeDateModule,
-//   MatBottomSheetModule,
-//   MatRadioModule,
-//   MatDialogModule, 
-// } from '@angular/material';
-
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [],
@@ -51,7 +32,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatTooltipModule,
     MatSelectModule,
     MatDatepickerModule,
-    //MatNativeDateModule,
+    MatMomentDateModule,
     MatBottomSheetModule,
     MatRadioModule,
     MatDialogModule,
