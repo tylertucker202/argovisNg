@@ -1,18 +1,19 @@
 version: '2'
 
 services:
-  argo-express:
-    build: . #specify the directory of the Dockerfile
-    restart: always
-    ports: 
-    - '3000:3000' # specify port forwarding
-    links:
-    - database
+  # argo-express:
+  #   build: . #specify the directory of the Dockerfile
+  #   restart: always
+  #   ports: 
+  #   - '3000:3000' # specify port forwarding
+  #   links:
+  #   - database
   database:
     image: mongo  # specify image to build container from
     restart: always
     ports:
       - '127.0.0.1:27017:27017' # include localhost ip to restrict access to localhost
     volumes:
-      - /data/argovis/storage/mongodb:/data/db:Z # production
+      - /storage/:/storage/:Z
+      #- /data/argovis/storage/mongodb:/data/db:Z # production
       - ./mongod.conf/mongod.conf:/etc/mongod.conf:Z

@@ -9,7 +9,7 @@ RUN npm install && \
     npm install @angular/cli@9.0.4 -g && \
     npm install -g pm2
 COPY . .
-RUN ng build 
+RUN ng build
 #Install and run express app
 WORKDIR /usr/src/ng_argovis/backend_argovis
 RUN npm install

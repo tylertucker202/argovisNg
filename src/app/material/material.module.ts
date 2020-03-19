@@ -17,6 +17,10 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort'
+
 
 @NgModule({
   declarations: [],
@@ -36,6 +40,9 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatBottomSheetModule,
     MatRadioModule,
     MatDialogModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   imports: [
     CommonModule,
@@ -54,6 +61,9 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatBottomSheetModule,
     MatRadioModule,
     MatDialogModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ]
 })
 export class MaterialModule { }
