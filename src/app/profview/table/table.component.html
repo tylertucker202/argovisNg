@@ -1,6 +1,5 @@
-<p>table works!</p>
-<div class="mat-elevation-z8">
 
+<div class="mat-elevation-z8">
   <mat-form-field>
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
   </mat-form-field>
@@ -16,7 +15,7 @@
         <td mat-cell *matCellDef="let element"> {{element.dac}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="formatted_station_parameters">
+    <ng-container matColumnDef="float_measurements">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Parameters </th>
         <td mat-cell *matCellDef="let element"> {{element.formatted_station_parameters}} </td>
     </ng-container>
@@ -40,24 +39,16 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Core Data Mode </th>
         <td mat-cell *matCellDef="let element"> {{element.DATA_MODE}} </td>
     </ng-container>
-
-    <ng-container matColumnDef="count">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Num. of meas </th>
-        <td mat-cell *matCellDef="let element"> {{element.count}} </td>
-    </ng-container>
   
-    <ng-container matColumnDef="lat">
+    <ng-container matColumnDef="lat_str">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Lat </th>
-        <td mat-cell *matCellDef="let element"> {{element.lat}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.lat_str}} </td>
     </ng-container>
   
-    <ng-container matColumnDef="lon">
+    <ng-container matColumnDef="lon_str">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Lon </th>
-        <td mat-cell *matCellDef="let element"> {{element.lon}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.lon_str}} </td>
     </ng-container>
-
-
-  
     <tr mat-header-row *matHeaderRowDef="metaColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: metaColumns;"></tr>
   </table>

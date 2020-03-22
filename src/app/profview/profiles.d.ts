@@ -43,15 +43,41 @@ export interface ProfileMeta {
     }
 
 export interface Profile extends ProfileMeta {
-    measurements: coreMeasurements[]
+    measurements: CoreMeasurements[]
     bgcMeas?: bgcMeasurements[]
 }
 
-export interface coreMeasurements {
+export interface BgcProfileData {
+    _id: string;
+    cycle_number: number;
+    date: Date;
+    POSITIONING_SYSTEM;
+    bgcMeas: bgcMeasurements[]
+}
+
+export interface CoreProfileData {
+    _id: string;
+    cycle_number: number;
+    date: Date;
+    POSITIONING_SYSTEM;
+    measurements: CoreMeasurements[]
+}
+
+export interface CoreMeasurements {
     pres: number
     temp?: number | null, 
     psal?: number | null,
 }
+
+export interface StationParameters {
+    value: string,
+    viewValue: string
+  }
+
+export interface ColorScaleSelection {
+    value: string
+    viewValue: string
+  }
 
 export interface bgcMeasurements {
     pres?: number | null,

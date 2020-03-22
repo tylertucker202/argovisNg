@@ -1,2 +1,29 @@
-<p>color-chart works!</p>
-<plotly-plot id='test-chart' [data]="graph.data" [layout]="graph.layout" [updateOnlyWithRevision]="graph.updateOnlyWithRevision"></plotly-plot>
+<div class="mat-elevation-z8">
+    <p>color-chart works!</p>
+
+    <mat-form-field id="caxis">
+        <mat-select id="caxis-select"  matTooltip="select parameter"
+         [(value)]="colorLabel" (selectionChange)="cLabelChange($event.value)">
+          <mat-option *ngFor="let param of statParams" [value]="param.value">
+            {{param.viewValue}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select id="colorscale-select"  matTooltip="select colorscale to use"
+        [(value)]="cmapName" (selectionChange)="colorscaleChange($event.value)">
+         <mat-option *ngFor="let cmap of colorscaleSelections" [value]="cmap.value">
+           {{cmap.viewValue}}
+         </mat-option>
+       </mat-select>
+    </mat-form-field>
+    <div *ngIf="graphComplete">
+        <plotly-plot class='chart'
+        [data]="graph.data"
+        [layout]="graph.layout"
+        [updateOnlyWithRevision]="graph.updateOnlyWithRevision"
+        [revision]="revision"
+        (plotly_click)="onSelect($event.points[0])">
+        </plotly-plot>
+    </div>
+</div>
