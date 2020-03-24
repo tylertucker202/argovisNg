@@ -31,7 +31,7 @@ export class ProfviewService {
   }
 
   public getTestPlatformSelectionMetadata(): Observable<ProfileMeta[]> {
-    let mockProfiles = this.getProfileService.getTestPlaformMetadata()
+    let mockProfiles = this.getProfileService.getTestPlaformProfileMetadata()
     return mockProfiles
   }
 

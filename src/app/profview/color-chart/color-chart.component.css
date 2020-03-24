@@ -1,0 +1,14 @@
+#color-chart {
+    margin: 20px;
+    border: 30 px;
+    width: 1050px;
+}
+
+.fields {
+    padding: 5px;
+    border: 10px;
+}
+
+.field {
+    margin-left: 5px;
+}

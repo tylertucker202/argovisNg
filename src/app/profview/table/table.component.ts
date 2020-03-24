@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { ProfileMeta } from '../profiles'
 import { GetProfilesService } from '../get-profiles.service'
 import { ProfviewService } from '../profview.service'
-import {MatPaginator} from '@angular/material/paginator'
-import {MatTableDataSource} from '@angular/material/table'
-import {MatSort} from '@angular/material/sort'
+import { MatPaginator } from '@angular/material/paginator'
+import { MatTableDataSource } from '@angular/material/table'
+import { MatSort } from '@angular/material/sort'
 
 @Component({
   selector: 'app-table',
@@ -23,6 +23,7 @@ export class TableComponent implements OnInit {
                                     "DATA_MODE"]
   private dataSource: any
   private bgcTable: boolean = true
+  private tableComplete = false
 
   ngOnInit(): void {
     let statKey = 'station_parameters'
@@ -35,6 +36,7 @@ export class TableComponent implements OnInit {
       this.dataSource.data = profileMeta
       this.dataSource.paginator = this.paginator
       this.dataSource.sort = this.sort
+      this.tableComplete = true
     },  
     error => {  
       console.log('There was an error while retrieving Posts !!!' + error);  

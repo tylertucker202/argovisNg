@@ -51,6 +51,7 @@
     "leaflet-draw": "^1.0.4",
     "leaflet-graticule": "0.0.1",
     "leaflet.coordinates": "^0.1.5",
+    "mat-table-exporter": "^9.0.0",
     "moment": "^2.24.0",
     "ng2-daterangepicker": "^3.0.1",
     "ng2-nouislider": "^1.8.2",

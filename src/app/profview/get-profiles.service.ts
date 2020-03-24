@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Profile, BgcProfileData, ProfileMeta } from './profiles'
+import { Profile, BgcProfileData, ProfileMeta, PlatformMeta } from './profiles'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router'
@@ -68,19 +68,29 @@ export class GetProfilesService {
     return this.http.get<BgcProfileData[]>(url)
   }
 
-  public getTestPlaformMetadata(): Observable<ProfileMeta[]> {
+  public getTestPlaformProfileMetadata(): Observable<ProfileMeta[]> {
     const platform = '5903260'
+    return this.getPlaformProfileMetaData(platform)
+  }
+
+  public getPlaformProfileMetaData(platform: string): Observable<ProfileMeta[]> {
     let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/platform_metadata/'
+    url += 'catalog/platform_profile_metadata/'
     url += platform
     return this.http.get<ProfileMeta[]>(url)
   }
 
-  public getPlaformMetaData(platform: string): Observable<ProfileMeta[]> {
-    let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/platform_data/'
-    url += platform
-    return this.http.get<ProfileMeta[]>(url)
+  public getTestPlaformMetaData(): Observable<PlatformMeta[]> {
+    const platform = '5903260'
+    return this.getPlaformMetaData(platform)
   }
+
+  public getPlaformMetaData(platform: string): Observable<PlatformMeta[]> {
+    let url = 'http://localhost:3000/' //todo make relative
+    url += 'catalog/platform_metadata/'
+    url += platform
+    return this.http.get<PlatformMeta[]>(url)
+  }
+
 
 }

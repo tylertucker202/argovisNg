@@ -13,6 +13,7 @@ export class ColorChartComponent implements OnInit {
   constructor(private getProfileService: GetProfilesService,
               private chartService: ChartService) { }
   private graph: any
+  private chartTitle: string
   private colorLabel: string = 'temp'
   private yLabel: string = 'pres'
   private platformNumber: string = '5903260'
@@ -27,9 +28,13 @@ export class ColorChartComponent implements OnInit {
   private statParamKey: string = 'station_parameters'
   private colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
   private cmapName: string
+  private yAxisTitle: string
   ngOnInit(): void {
     if (this.bgcChart) { this.statParamKey = 'bgcMeasKeys'}
     this.makeChart()
+
+    const yParams = this.chartService.getTraceParams(this.yLabel)
+    this.yAxisTitle = yParams.title
   }
 
   // Upon click a new tab opens to the corresponding profile.
@@ -42,7 +47,6 @@ export class ColorChartComponent implements OnInit {
   } 
 
   makeChart(): void {
-    this.layout = this.chartService.makeLayout(this.yLabel, this.colorLabel)
     this.getProfileService.getPlaformData(this.platformNumber, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[]) => {
       this.profileData = profileData
       this.setChart(this.profileData)
@@ -53,6 +57,8 @@ export class ColorChartComponent implements OnInit {
 
   setChart(profileData: BgcProfileData[] | CoreProfileData[], defaultColorScale=true) {
     const colorParams = this.chartService.getTraceParams(this.colorLabel)
+    this.layout = this.chartService.makeLayout(this.yAxisTitle)
+    this.chartTitle = colorParams.title
     let colorscale = colorParams.colorscale
     if (defaultColorScale) { 
       this.cmapName = colorParams.colorscale 

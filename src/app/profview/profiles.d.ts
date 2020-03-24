@@ -47,6 +47,17 @@ export interface Profile extends ProfileMeta {
     bgcMeas?: bgcMeasurements[]
 }
 
+export interface PlatformMeta {
+    _id: number,
+    platform_number: number,
+    most_recent_date: Date,
+    most_recent_date_added: Date,
+    number_of_profiles: number,
+    POSITIONING_SYSTEM: string,
+    PI_NAME: string,
+    dac: string
+}
+
 export interface BgcProfileData {
     _id: string;
     cycle_number: number;

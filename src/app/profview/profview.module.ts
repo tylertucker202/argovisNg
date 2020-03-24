@@ -5,7 +5,6 @@ import { TableComponent } from './table/table.component';
 import { MaterialModule } from '../material/material.module';
 import { ColorChartComponent } from './color-chart/color-chart.component';
 
-
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule } from 'angular-plotly.js';
  
@@ -16,7 +15,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
   imports: [
     CommonModule,
     MaterialModule,
-    PlotlyModule
+    PlotlyModule,
   ]
 })
 export class ProfviewModule { }
