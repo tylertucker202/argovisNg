@@ -31,20 +31,19 @@ export class ColorChartComponent implements OnInit {
   private revision: number = 0
   private readonly reduceMeas = 200
   ngOnInit(): void {
-    this.statParamKey = this.queryProfviewService.statParamKey
-    this.platform_number = this.queryProfviewService.platform_number
-    this.measKey = this.queryProfviewService.measKey
-    this.bgcPlatform = this.queryProfviewService.bgcPlatform
-    this.statParams = this.queryProfviewService.statParams
+    this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
+      this.statParamKey = this.queryProfviewService.statParamKey
+      this.platform_number = this.queryProfviewService.platform_number
+      this.measKey = this.queryProfviewService.measKey
+      this.bgcPlatform = this.queryProfviewService.bgcPlatform
+      this.makeChart()
+      const yParams = this.chartService.getTraceParams(this.yLabel)
+      this.yAxisTitle = yParams.title
+    })
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
       this.statParams = this.queryProfviewService.statParams
     })
-    
-    this.makeChart()
-
-    const yParams = this.chartService.getTraceParams(this.yLabel)
-    this.yAxisTitle = yParams.title
   }
 
   // Upon click a new tab opens to the corresponding profile.

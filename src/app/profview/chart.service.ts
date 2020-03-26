@@ -119,7 +119,7 @@ export class ChartService {
   roundArray(value){ return(Number(value).toFixed(3)) }
 
   makeColorChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
-                            yLabel: string, colorLabel: string, measField: string,
+                            yLabel: string, colorLabel: string, measKey: string,
                             reduceMeas: number, statParamsKey: string, includeQC?: boolean) {
     let yMeas = []
     let cMeas = []
@@ -127,13 +127,12 @@ export class ChartService {
     let time = []
     let cycles = []
     let ids = []
-    let stat_params = []
     let _ids = []
     const colorQCLabel = colorLabel+'_qc'
     for(let idx=0; idx < profileData.length; idx++) {
         const pdat = profileData[idx]
-        if (!pdat[measField]) { continue }
-        let meas = this.reduceGPSMeasurements(pdat, reduceMeas, measField)
+        if (!pdat[measKey]) { continue }
+        let meas = this.reduceGPSMeasurements(pdat, reduceMeas, measKey)
         meas = this.collateProfileMeasurements(meas, yLabel, colorLabel, includeQC)
         yMeas = yMeas.concat(meas[yLabel])
         cMeas = cMeas.concat(meas[colorLabel])
@@ -143,7 +142,6 @@ export class ChartService {
         const timeStr = moment.utc(pdat.date).format('YYYY-MM-DD HH:mm')
         const cycle = pdat.cycle_number
         const station_parameters = pdat[statParamsKey]
-        stat_params = stat_params.concat(station_parameters)
         ids.push(_id)
         const plen = meas[yLabel].length
         const id_array = Array.apply(null, Array(plen)).map(String.prototype.valueOf,_id)
@@ -162,7 +160,6 @@ export class ChartService {
     dataArrays['_ids'] = _ids
     dataArrays['cycle'] = cycles
     dataArrays['time'] = time
-    dataArrays[statParamsKey] = stat_params
     return (dataArrays)
   }
 

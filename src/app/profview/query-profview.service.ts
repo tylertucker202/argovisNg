@@ -12,6 +12,7 @@ import * as moment from 'moment';
 export class QueryProfviewService {
 
   @Output() changeStatParams: EventEmitter<string> = new EventEmitter
+  @Output() urlParsed: EventEmitter<string> = new EventEmitter
   public platform_number: string = "5903260"
   public topChart: string = 'temp'
   public bottomChart: string = 'psal'
@@ -64,7 +65,6 @@ export class QueryProfviewService {
         }
       })
     })
-    console.log(uStatParam)
     uStatParam = uStatParam.filter( elem => elem !== 'pres')
     let statParams = [] as StationParameters[]
     uStatParam.forEach( (statParam: string) => {
@@ -122,6 +122,7 @@ export class QueryProfviewService {
         this.setMapState(key, params[key])
       });
     });
+    this.urlParsed.emit('url parsed. safe to build chart and window')
   }
 
   public setURL(): void {
@@ -163,8 +164,8 @@ export class QueryProfviewService {
           this.measKey = 'station_parameters'
         }
         else{
-          this.statParamsKey = 'bgcMeas'
-          this.measKey = 'bgcMeasKeys'
+          this.statParamsKey = 'bgcMeasKeys'
+          this.measKey = 'bgcMeas'
         }
         break
       }
