@@ -1,5 +1,5 @@
 <div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
-<mat-grid-list id=platform-grid cols="2" gutterSize="5px" rowHeight="50px">
+<mat-grid-list id=platform-grid cols="2" gutterSize="5px" rowHeight="35px">
     <mat-grid-tile
         [colspan]="2"
         [rowspan]="1"><h4>Platform Number: {{platMeta.platform_number}}</h4>
@@ -27,6 +27,14 @@
         <mat-grid-tile
         [colspan]="1"
         [rowspan] ="1"><p>Primary Investigator: {{platMeta.PI_NAME}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><a href={{platMeta.jcommopsLink}}>link to JCOMMOPS</a>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><a href={{platMeta.fleetMonitoringLink}}>link to Fleet Monitor</a>
     </mat-grid-tile>
 </mat-grid-list>
 <mat-list *ngIf="statParams">

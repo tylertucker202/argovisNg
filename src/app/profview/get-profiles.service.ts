@@ -53,16 +53,14 @@ export class GetProfilesService {
     const platform = '5903260'
     const xaxis = 'pres'
     const yaxis = 'temp'
-    let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/bgc_platform_data/'
+    let url = 'catalog/bgc_platform_data/'
     url += platform + '/?'
     url += 'xaxis=' + xaxis + '&' + 'yaxis=' + yaxis
     return this.http.get<BgcProfileData[]>(url)
   }
 
   public getPlaformData(platform: string, xaxis: string, yaxis: string): Observable<BgcProfileData[]> {
-    let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/bgc_platform_data/'
+    let url = 'catalog/bgc_platform_data/'
     url += platform + '/?'
     url += 'xaxis=' + xaxis + '&' + 'yaxis=' + yaxis
     return this.http.get<BgcProfileData[]>(url)
@@ -74,8 +72,7 @@ export class GetProfilesService {
   }
 
   public getPlaformProfileMetaData(platform: string): Observable<ProfileMeta[]> {
-    let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/platform_profile_metadata/'
+    let url = 'catalog/platform_profile_metadata/'
     url += platform
     return this.http.get<ProfileMeta[]>(url)
   }
@@ -86,8 +83,7 @@ export class GetProfilesService {
   }
 
   public getPlaformMetaData(platform: string): Observable<PlatformMeta[]> {
-    let url = 'http://localhost:3000/' //todo make relative
-    url += 'catalog/platform_metadata/'
+    let url = 'catalog/platform_metadata/'
     url += platform
     return this.http.get<PlatformMeta[]>(url)
   }

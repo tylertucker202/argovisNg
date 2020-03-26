@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ProfviewService } from './profview.service';
+import { QueryProfviewService } from './query-profview.service';
 
-describe('ProfviewService', () => {
-  let service: ProfviewService;
+describe('QueryProfviewService', () => {
+  let service: QueryProfviewService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ProfviewService);
+    service = TestBed.inject(QueryProfviewService);
   });
 
   it('should be created', () => {

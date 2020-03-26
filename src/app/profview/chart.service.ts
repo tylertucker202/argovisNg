@@ -21,15 +21,10 @@ export class ChartService {
 
   constructor() { }
 
-  @Output() changeStatParams: EventEmitter<string> = new EventEmitter
   public readonly cmaps: Cmap[] = cmaps
-
   public statParams: StationParameters[]
-
-
   public colorscaleSelections: ColorScaleSelection[] = this.makeColorScaleSelections()
   
-
   public makeLayout(yLabel: string) {
     const layout = {
       height: 175, 
@@ -68,26 +63,6 @@ export class ChartService {
     if (qc) { box += "<br>qc: " + qc }
     box += "<br>click to see profile page"
     return(box)
-  }
-
-  makeUniqueStationParameters(strArray: string[]): StationParameters[] {
-    const s = new Set();
-    const uStatParam = [];
-    strArray.forEach(el => {
-      if(!s.has(el)) {
-        s.add(el);
-        uStatParam.push(el)
-      }
-    })
-    let statParams = []
-    uStatParam.forEach( (statParam: string) => {
-      statParams.push({value: statParam, viewValue: statParam})
-    })
-
-    // remove pres from list
-    this.statParams = statParams.filter(e => e.value !== 'pres')
-    this.changeStatParams.emit('station param change') //todo: trigger this on a platform change instead of initing a chart.
-    return this.statParams
   }
 
   makeColorScaleSelections(): ColorScaleSelection[] {
@@ -187,7 +162,7 @@ export class ChartService {
     dataArrays['_ids'] = _ids
     dataArrays['cycle'] = cycles
     dataArrays['time'] = time
-    dataArrays['station_parameters'] = stat_params
+    dataArrays[statParamsKey] = stat_params
     return (dataArrays)
   }
 

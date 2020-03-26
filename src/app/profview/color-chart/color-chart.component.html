@@ -18,7 +18,7 @@
     </mat-form-field>
     </div>
     <h5 align="center">{{chartTitle}}</h5>
-    <plotly-plot *ngIf="graphComplete" class='chart'
+    <plotly-plot *ngIf="graph" class='chart'
     [data]="graph.data"
     [layout]="graph.layout"
     [updateOnlyWithRevision]="graph.updateOnlyWithRevision"

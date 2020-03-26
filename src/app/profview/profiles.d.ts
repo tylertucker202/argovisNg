@@ -57,6 +57,8 @@ export interface PlatformMeta {
     POSITIONING_SYSTEM: string,
     PI_NAME: string,
     dac: string,
+    jcomoppsLink?: string,
+    fleetMonitoringLink?: string
 }
 
 export interface BgcProfileData {
