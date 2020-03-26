@@ -126,12 +126,12 @@ describe('SidebarNavComponent', () => {
   it('should set date string', () => {
     const dateStr = '1900-01-01'
     const momentDate = moment(dateStr, 'YYYY-MM-DD').utc()
-    let date = momentDate.toDate()
+    let date = momentDate
 
     component.displayGlobalDateChanged(date)
     const outDate = component['date'];
     const outDateMoment = moment(outDate.value)
-    expect(outDateMoment.toDate()).toEqual(date)
+    expect(outDateMoment).toEqual(date)
   });
 
 });

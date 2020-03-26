@@ -44,7 +44,7 @@ describe('SelectionDatePicker', () => {
     const start = moment('1900-01-01').format('YYYY-MM-DD')
     const end = moment('1900-02-01').format('YYYY-MM-DD')
 
-    var dr = {start: start, end: end, label: ''}
+    var dr = {startDate: start, endDate: end, label: ''}
 
     spyGet = spyOn(queryService, 'getSelectionDates').and.returnValue(dr)
 
