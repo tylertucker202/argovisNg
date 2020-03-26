@@ -58,6 +58,7 @@ export class ProfviewService {
     profileMeta.forEach( (row: ProfileMeta) => {
       row['lat_str'] = this.make_str_lat(row['lat'])
       row['lon_str'] = this.make_str_lat(row['lon'])
+      row['date'] = moment(row['date']).format("dddd, MMMM Do YYYY, h:mm:ss a"); 
       const stat_params = row[statKey]
       row['formatted_station_parameters'] = this.make_formatted_station_parameters(stat_params)
     })

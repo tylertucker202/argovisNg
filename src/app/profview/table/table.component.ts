@@ -19,7 +19,7 @@ export class TableComponent implements OnInit {
   constructor(private getProfileService: GetProfilesService, 
               private profviewService: ProfviewService ) { }
   private metaColumns: string[] = ["_id", "dac", 'float_measurements', "date",
-                                   'cycle_number', "POSITIONING_SYSTEM", "lat_str", "lon_str",
+                                   'cycle_number', "lat_str", "lon_str",
                                     "DATA_MODE"]
   private dataSource: any
   private bgcTable: boolean = true

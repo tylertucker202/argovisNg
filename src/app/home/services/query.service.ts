@@ -17,8 +17,8 @@ export class QueryService {
   @Output() arEvent: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000]
-  private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'}
+  private selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                           endDate: moment().utc().format('YYYY-MM-DD')}
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private latLngShapes: number[][][]
@@ -58,8 +58,8 @@ export class QueryService {
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
 
-    const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    const selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const clearOtherShapes = false
@@ -109,8 +109,8 @@ export class QueryService {
     const queryParams = {
                          'mapProj': this.proj,
                          'presRange': presRangeString, 
-                         'selectionStartDate': this.selectionDateRange.start,
-                         'selectionEndDate': this.selectionDateRange.end,
+                         'selectionStartDate': this.selectionDateRange.startDate,
+                         'selectionEndDate': this.selectionDateRange.endDate,
                          'threeDayEndDate': this.globalDisplayDate,
                          'shapes': shapesString,
                          'includeRealtime': this.includeRealtime,
@@ -333,12 +333,12 @@ export class QueryService {
         break
       }
       case 'selectionStartDate': {
-        const stateDateRange = {start: value, end: this.selectionDateRange.end}
+        const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }
       case 'selectionEndDate': {
-        const stateDateRange = {start: this.selectionDateRange.start, end: value}
+        const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }

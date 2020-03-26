@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from './profiles'
 import * as moment from 'moment';
-import { quickselect } from 'd3';
+
 import { Cmap, cmaps } from './colorscales'
 
 export interface TraceParam {
@@ -20,7 +20,11 @@ export interface TraceParam {
 export class ChartService {
 
   constructor() { }
+
+  @Output() changeStatParams: EventEmitter<string> = new EventEmitter
   public readonly cmaps: Cmap[] = cmaps
+
+  public statParams: StationParameters[]
 
 
   public colorscaleSelections: ColorScaleSelection[] = this.makeColorScaleSelections()
@@ -81,8 +85,9 @@ export class ChartService {
     })
 
     // remove pres from list
-    statParams = statParams.filter(e => e.value !== 'pres')
-    return statParams
+    this.statParams = statParams.filter(e => e.value !== 'pres')
+    this.changeStatParams.emit('station param change') //todo: trigger this on a platform change instead of initing a chart.
+    return this.statParams
   }
 
   makeColorScaleSelections(): ColorScaleSelection[] {

@@ -1,4 +1,5 @@
 import { Point } from 'geojson'
+import * as moment from 'moment';
 
 export interface ProfileMeta {
       _id: string;
@@ -6,7 +7,7 @@ export interface ProfileMeta {
       position_qc: number,
       cycle_number: number,
       dac: string,
-      date: Date,
+      date: Date | moment.Moment | string
       date_added?: Date,
       date_qc?: number,
       max_pres?: number,
@@ -50,12 +51,12 @@ export interface Profile extends ProfileMeta {
 export interface PlatformMeta {
     _id: number,
     platform_number: number,
-    most_recent_date: Date,
-    most_recent_date_added: Date,
+    most_recent_date: Date | moment.Moment | string,
+    most_recent_date_added: Date | moment.Moment | string,
     number_of_profiles: number,
     POSITIONING_SYSTEM: string,
     PI_NAME: string,
-    dac: string
+    dac: string,
 }
 
 export interface BgcProfileData {

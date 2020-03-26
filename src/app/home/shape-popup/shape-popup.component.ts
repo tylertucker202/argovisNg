@@ -65,7 +65,7 @@ export class ShapePopupComponent implements OnInit {
         windowURL += '/page'
       }
       let dates = this.queryService.getSelectionDates();
-      windowURL += '?startDate=' + dates.start + '&endDate=' + dates.end
+      windowURL += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
       if (this.presRangeToggle) {
         const presRange = this.queryService.getPresRange();
         windowURL += '&presRange='+JSON.stringify(presRange)

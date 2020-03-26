@@ -97,7 +97,7 @@ export class ArDisplayComponent implements OnInit {
     const broadcastChange = false
     const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h')) //make sure to clone and format date correctly
     const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
-    const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
+    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }
 

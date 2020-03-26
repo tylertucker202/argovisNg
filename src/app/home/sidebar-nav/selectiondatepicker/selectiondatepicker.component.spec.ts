@@ -3,12 +3,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SelectionDatePicker } from './selectiondatepicker.component';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../../services/query.service';
-import { Daterangepicker } from 'ng2-daterangepicker';
 
 import * as moment from 'moment';
-
-import { By } from '@angular/platform-browser';
-
 import { MaterialModule } from '../../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,7 +24,7 @@ describe('SelectionDatePicker', () => {
       providers: [ QueryService ], 
       imports: [    MaterialModule,
                     RouterTestingModule,
-                    BrowserAnimationsModule, Daterangepicker
+                    BrowserAnimationsModule
                    ]
     }).compileComponents();
   }));

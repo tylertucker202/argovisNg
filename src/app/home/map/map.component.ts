@@ -286,14 +286,14 @@ export class MapComponent implements OnInit, OnDestroy {
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
-      let dates = this.queryService.getSelectionDates()
+      let daterange = this.queryService.getSelectionDates()
       let presRange = this.queryService.getPresRange()
       let includeRealtime = this.queryService.getRealtimeToggle()
       let onlyBGC = this.queryService.getBGCToggle()
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.mapService.getTransformedShape(shape)
-        let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
         if (presRange) {
           urlQuery += '&presRange='+JSON.stringify(presRange)
         }

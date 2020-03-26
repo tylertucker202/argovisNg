@@ -3,6 +3,7 @@ import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { ArDisplayComponent } from './ar-display/ar-display.component'
+import moment from 'moment';
 
 export interface Projections {
   value: string;
@@ -107,12 +108,9 @@ export class SidebarNavComponent implements OnInit {
     }
   }
 
-  displayGlobalDateChanged(date: Date): void {
+  displayGlobalDateChanged(date: moment.Moment): void {
     this.date = new FormControl(date)
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const dateStr = year + '-' + month + '-' + day
+    const dateStr = date.format('YYYY-MM-DD')
     this.queryService.sendGlobalDate(dateStr)
   }
 

@@ -47,7 +47,7 @@ export class ArDateRangeComponent implements OnInit {
     let arDate = this.queryService.getArDate()
     const startDate = this.formatDate(arDate.clone().add(this.lRange, 'h'))
     const endDate = this.formatDate(arDate.clone().add(this.uRange, 'h'))
-    const dateRange: DateRange = {start: startDate, end: endDate, label: ''}
+    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     const broadcastChange = true
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
   }

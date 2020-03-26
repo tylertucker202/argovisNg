@@ -1,0 +1,45 @@
+<div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
+<mat-grid-list id=platform-grid cols="2" gutterSize="5px" rowHeight="50px">
+    <mat-grid-tile
+        [colspan]="2"
+        [rowspan]="1"><h4>Platform Number: {{platMeta.platform_number}}</h4>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="2"
+        [rowspan] ="1"><p class="thick">Dac: {{platMeta.dac}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="2"><p>Most recent profile date: <br> {{platMeta.most_recent_date}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="2"><p>Most recent date added: <br> {{platMeta.most_recent_date_added}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p>Number of profiles: {{platMeta.number_of_profiles}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p>Positioning System: {{platMeta.POSITIONING_SYSTEM}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p>Primary Investigator: {{platMeta.PI_NAME}}</p>
+    </mat-grid-tile>
+</mat-grid-list>
+<mat-list *ngIf="statParams">
+  <div mat-subheader>Station Parameters:</div>
+  <mat-list-item *ngFor="let param of statParams">
+    <div mat-line>{{param.viewValue}}</div>
+  </mat-list-item>
+</mat-list>
+
+<!-- <div *ngIf="statParams">
+    <div
+    *ngFor="let param of statParams">
+    {{param.viewvalue}}
+    </div>
+</div> -->
+</div>

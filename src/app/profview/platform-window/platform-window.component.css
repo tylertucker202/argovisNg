@@ -1,0 +1,12 @@
+#platform-window {
+    width: 500px;
+}
+
+#platform-grid {
+    margin: 20px;
+    border: 20px;
+}
+
+.thick {
+    font-weight: bold;
+}

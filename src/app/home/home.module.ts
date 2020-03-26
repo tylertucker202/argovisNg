@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { Daterangepicker } from 'ng2-daterangepicker'
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -7,6 +6,7 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from '../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 import "leaflet";
 import "leaflet-draw";
@@ -49,10 +49,10 @@ import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.
     CommonModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    Daterangepicker,
     NouisliderModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxDaterangepickerMd.forRoot(),
     MaterialModule,
   ],
   providers: [

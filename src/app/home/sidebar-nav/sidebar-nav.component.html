@@ -29,12 +29,11 @@
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-
+  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
   <mat-slide-toggle [hidden]="!arModule" matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
                    color="accent" [checked]="arMode"
                    (change)="arModeChange($event.checked)">Atmospheric River Mode
   </mat-slide-toggle>
-
   <button id="ar-button" [hidden]="!arMode || !arModule" mat-raised-button (click)="openARDialog()">AR Display</button>
   <app-ar-date-range [hidden]="!arMode || !arModule"></app-ar-date-range>
   <mat-form-field  [hidden]="arMode" class="platform-form">
@@ -60,7 +59,5 @@
   </mat-slide-toggle>
   
   <div  [hidden]="arMode" ><b>Box selection:</b></div>
-  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
-
   <app-double-slider></app-double-slider>
 </div>

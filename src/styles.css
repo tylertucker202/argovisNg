@@ -8,6 +8,7 @@
 @import '../node_modules/angular-notifier/styles/types/type-success.css';
 @import '~nouislider/distribute/nouislider.min.css';
 
+
 .notifier__container * {
   box-sizing: border-box;
 }

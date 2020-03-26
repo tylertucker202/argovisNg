@@ -4,6 +4,10 @@ table {
   }
 
 #prof-table { 
-  margin: 20px;
-  border: 30px;
+  margin-left: 27px;
+  margin-top: 15px;
+}
+
+#form-field {
+  margin-left: 5px;
 }

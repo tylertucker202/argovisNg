@@ -7,11 +7,12 @@ import { ColorChartComponent } from './color-chart/color-chart.component';
 
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule } from 'angular-plotly.js';
+import { PlatformWindowComponent } from './platform-window/platform-window.component';
  
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
-  declarations: [ProfviewComponent, TableComponent, ColorChartComponent],
+  declarations: [ProfviewComponent, TableComponent, ColorChartComponent, PlatformWindowComponent],
   imports: [
     CommonModule,
     MaterialModule,
