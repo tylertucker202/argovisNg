@@ -1,5 +1,6 @@
 <section class="mat-typography">Selection Date Range:</section>
-<input id="daterange-picker"
+<input
+       id="daterange-picker"
        matInput
        type="text" 
        placeholder="Date Range:"
@@ -14,4 +15,4 @@
        drops="down"
        [showCustomRangeLabel]="true"
        [alwaysShowCalendars]="true"
-       (selected)="selectedDate($event)" />
+       (change)="selectedDate($event)" />
