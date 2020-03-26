@@ -1,13 +1,13 @@
 version: '2'
 
 services:
-  # argo-express:
-  #   build: . #specify the directory of the Dockerfile
-  #   restart: always
-  #   ports: 
-  #   - '3000:3000' # specify port forwarding
-  #   links:
-  #   - database
+  argo-express:
+    build: . #specify the directory of the Dockerfile
+    restart: always
+    ports: 
+    - '3000:3000' # specify port forwarding
+    links:
+    - database
   database:
     image: mongo  # specify image to build container from
     restart: always
