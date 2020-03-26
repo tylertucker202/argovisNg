@@ -17,3 +17,4 @@ services:
       - /storage/:/storage/:Z
       #- /data/argovis/storage/mongodb:/data/db:Z # production
       - ./mongod.conf/mongod.conf:/etc/mongod.conf:Z
+    entrypoint: ["mongod","--config","/etc/mongod.conf"]
