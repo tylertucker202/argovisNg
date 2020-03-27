@@ -34,7 +34,6 @@ export class PlatformWindowComponent implements OnInit {
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
       this.statParams = this.queryProfviewService.statParams
-      console.log('msg: ', msg, this.statParams)
     })
   }
 
