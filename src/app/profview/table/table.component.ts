@@ -32,7 +32,6 @@ export class TableComponent implements OnInit {
 
     this.platform_number = this.queryProfviewService.platform_number
     this.statParamKey = this.queryProfviewService.statParamKey
-    console.log('statParamsKey: ', this.statParamKey)
     
     this.getProfileService.getPlaformProfileMetaData(this.platform_number).subscribe( (profileMeta: ProfileMeta[]) => {
       profileMeta = this.queryProfviewService.applyFormatting(profileMeta, this.statParamKey)

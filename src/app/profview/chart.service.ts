@@ -28,7 +28,7 @@ export class ChartService {
   public makeLayout(yLabel: string) {
     const layout = {
       height: 175, 
-      width: 1000,
+      width: 750,
       margin: {
         l: 5,
         r: 5,

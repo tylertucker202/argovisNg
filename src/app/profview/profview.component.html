@@ -1,18 +1,18 @@
-<mat-grid-list cols="10" gutterSize="0px" rowHeight="300px">
-    <mat-grid-tile
-    [colspan]="7"
-    [rowspan] ="1">
-        <app-color-chart colorLabel={{topChart}}></app-color-chart>
-    </mat-grid-tile>
+<mat-grid-list id=chart-and-window cols="5" gutterSize="0px" rowHeight="300px">
     <mat-grid-tile
     [colspan]="3"
+    [rowspan] ="1">
+        <app-color-chart axis="topChart"></app-color-chart>
+    </mat-grid-tile>
+    <mat-grid-tile
+    [colspan]="2"
     [rowspan]="2">
         <app-platform-window></app-platform-window>
     </mat-grid-tile>
     <mat-grid-tile
-    [colspan]="7"
+    [colspan]="3"
     [rowspan] ="1">
-        <app-color-chart colorLabel={{bottomChart}}></app-color-chart>
+        <app-color-chart axis="bottomChart"></app-color-chart>
     </mat-grid-tile>
 </mat-grid-list>
 <app-table></app-table>

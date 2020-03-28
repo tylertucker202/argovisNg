@@ -1,20 +1,16 @@
 <div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
-<mat-grid-list id=platform-grid cols="2" gutterSize="5px" rowHeight="50px">
+<mat-grid-list id=platform-grid cols="1" gutterSize="0px" rowHeight="50px">
     <mat-grid-tile
-        [colspan]="2"
+        [colspan]="1"
         [rowspan]="1"><h4>Platform Number: {{platMeta.platform_number}}</h4>
     </mat-grid-tile>
     <mat-grid-tile
-        [colspan]="2"
+        [colspan]="1"
         [rowspan] ="1"><p class="thick">Dac: {{platMeta.dac}}</p>
     </mat-grid-tile>
         <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="2"><p>Most recent profile date: <br> {{platMeta.most_recent_date}}</p>
-    </mat-grid-tile>
-        <mat-grid-tile
-        [colspan]="1"
-        [rowspan] ="2"><p>Most recent date added: <br> {{platMeta.most_recent_date_added}}</p>
+        [rowspan] ="1"><p>Most recent update: <br> {{platMeta.most_recent_date_added}}</p>
     </mat-grid-tile>
         <mat-grid-tile
         [colspan]="1"
@@ -36,18 +32,9 @@
         [colspan]="1"
         [rowspan] ="1"><a href={{platMeta.fleetMonitoringLink}}>link to Fleet Monitor</a>
     </mat-grid-tile>
+    <mat-grid-tile
+    [colspan]="1"
+    [rowspan] ="1"><p *ngIf="statParamsList">Station Parameters: {{statParamsList}}</p>
+</mat-grid-tile>
 </mat-grid-list>
-<mat-list *ngIf="statParams">
-  <div mat-subheader>Station Parameters:</div>
-  <mat-list-item style="padding: 0px;" *ngFor="let param of statParams">
-    <div mat-line>{{param.viewValue}}</div>
-  </mat-list-item>
-</mat-list>
-
-<!-- <div *ngIf="statParams">
-    <div
-    *ngFor="let param of statParams">
-    {{param.viewvalue}}
-    </div>
-</div> -->
 </div>

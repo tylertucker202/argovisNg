@@ -26,12 +26,14 @@ export class ColorChartComponent implements OnInit {
   private colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
   private cmapName: string
   private yAxisTitle: string
-  @Input() colorLabel: string
+  private colorLabel: string
+  @Input() axis: string
   private yLabel: string = 'pres'
   private revision: number = 0
   private readonly reduceMeas = 200
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
+      this.colorLabel = this.queryProfviewService[this.axis] 
       this.statParamKey = this.queryProfviewService.statParamKey
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
@@ -50,7 +52,7 @@ export class ColorChartComponent implements OnInit {
   onSelect(points: any): void {
     const xidx = points.pointNumber
     const profile_id = points.data['profile_ids'][xidx]
-    const url = '/catalog/profiles/' + profile_id + '/page'
+    const url = '/catalog/profiles/' + profile_id + '/bgcPage'
     window.open(url,'_blank')
   } 
 
@@ -86,6 +88,8 @@ export class ColorChartComponent implements OnInit {
   cLabelChange(colorLabel: string): void {
     this.colorLabel = colorLabel
     this.makeChart()
+    this.queryProfviewService[this.axis] = this.colorLabel
+    this.queryProfviewService.setURL()
   }
 
   colorscaleChange(cmapName: string): void {
@@ -93,6 +97,14 @@ export class ColorChartComponent implements OnInit {
     const defaultColorScale = false
     this.setChart(this.profileData, defaultColorScale)
     this.revision += 1;
+  }
+
+  downloadChartData(): void {
+    let url = '/catalog/bgc_platform_data/'
+    url += this.platform_number 
+    url += '?xaxis=' + this.yLabel
+    url += '&yaxis=' + this.colorLabel
+    window.open(url,'_blank')
   }
 
 }

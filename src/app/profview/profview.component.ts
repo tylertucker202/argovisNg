@@ -6,13 +6,9 @@ import { QueryProfviewService } from './query-profview.service'
   styleUrls: ['./profview.component.css']
 })
 export class ProfviewComponent implements OnInit {
-  private topChart: string
-  private bottomChart: string
-  constructor(private profViewService: QueryProfviewService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.topChart = this.profViewService.topChart
-    this.bottomChart = this.profViewService.bottomChart
   }
 
 }

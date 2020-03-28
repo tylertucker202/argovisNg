@@ -27,7 +27,7 @@ export class QueryProfviewService {
 
   // Virtual fields for table
   public make_profile_link (_id: string): string {
-    return '/catalog/profiles/' + _id;
+    return '/catalog/profiles/' + _id + '/bgcPage';
   }
 
   public make_core_data_mode(DATA_MODE: string, PARAMETER_DATA_MODE): string {
@@ -48,7 +48,7 @@ export class QueryProfviewService {
     profileMeta.forEach( (row: ProfileMeta) => {
       row['lat_str'] = this.make_str_lat(row['lat'])
       row['lon_str'] = this.make_str_lat(row['lon'])
-      row['date'] = moment(row['date']).format("dddd, MMMM Do YYYY, h:mm:ss a");
+      row['date'] = moment(row['date']).format("MMMM Do YYYY");
     })
     return profileMeta
   }
