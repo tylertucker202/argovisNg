@@ -58,12 +58,14 @@ export class QueryProfviewService {
     let uStatParam = [] as string[]
     profiles.forEach(prof => {
       const station_parameters = prof[statParamsKey]
-      station_parameters.forEach( param => {
-        if(!statParamSet.has(param)) {
-          statParamSet.add(param);
-          uStatParam.push(param)
-        }
-      })
+      if (station_parameters) { 
+        station_parameters.forEach( param => {
+          if(!statParamSet.has(param)) {
+            statParamSet.add(param);
+            uStatParam.push(param)
+          }
+        })
+      }
     })
     uStatParam = uStatParam.filter( elem => elem !== 'pres')
     let statParams = [] as StationParameters[]
