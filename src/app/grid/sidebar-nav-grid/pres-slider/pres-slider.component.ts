@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service'
+import { GridMeta } from '../../../../typeings/grids'
+import { SelectGridService } from '../../select-grid.service';
 
 export interface PressureLevels {
   value: number;
@@ -11,25 +13,40 @@ export interface PressureLevels {
   styleUrls: ['./pres-slider.component.css'],
 })
 export class PresSliderComponent implements OnInit {
-  private presLevels: PressureLevels[] = [
-    {value: 5},
-    {value: 10},
-    {value: 200},
-  ];
+  private presLevels: PressureLevels[]
 
-  private presArray: number[] = this.presLevels.map(function(x) {return x.value; })
+  private presArray: number[]
 
 
-  constructor(private queryGridService: QueryGridService) { }
+  constructor(private queryGridService: QueryGridService,
+              private selectGridService: SelectGridService) { }
 
   private presLevel: number;
 
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
+    this.makePressureLevels()
 
     this.queryGridService.resetToStart.subscribe((msg) => {
       this.presLevel = this.queryGridService.getPresLevel()
     })
+  }
+
+  private makePressureLevels(): void {
+    let presLevels = []
+    this.selectGridService.getGridMeta(this.queryGridService.getGrid())
+      .subscribe((gridMeta: GridMeta[]) => {
+        console.log(gridMeta)
+        this.presArray = gridMeta[0]['presLevels']
+        this.presArray.sort(function(a, b){return a-b})
+        console.log(this.presArray)
+        for (let idx=0; idx < this.presArray.length; ++idx) {
+          presLevels.push({value: this.presArray[idx]})
+        }
+        console.log('presLevels: ', presLevels, 'presArray: ', this.presArray)
+      })
+    
+    this.presLevels = presLevels
   }
 
   private incrementLevel(increment: number): void {

@@ -29,7 +29,7 @@ export class PlatformWindowComponent implements OnInit {
         this.platMeta = platMeta[0]
         this.platMeta['most_recent_date'] = moment(this.platMeta['most_recent_date']).format(this.dateFormat); 
         this.platMeta['most_recent_date_added'] = moment(this.platMeta['most_recent_date_added']).format(this.dateFormat);
-        this.platMeta['jcommopsLink'] = this.queryProfviewService.make_jcomps_platform(this.platMeta['platform_number'].toString())
+        this.platMeta['jcommopsLink'] = this.queryProfviewService.make_jcommops_platform(this.platMeta['platform_number'].toString())
         this.platMeta['fleetMonitoringLink'] = this.queryProfviewService.make_fleet_monitoring_platform(this.platMeta['platform_number'].toString())
       })
     })

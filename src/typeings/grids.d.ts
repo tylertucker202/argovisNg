@@ -41,3 +41,8 @@ export interface ColorScaleGroup {
   colorScale: string,
   viewValue: string
 }
+
+export interface GridMeta {
+  _id: string,
+  presLevels: number[]
+}

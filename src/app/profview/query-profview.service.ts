@@ -76,12 +76,8 @@ export class QueryProfviewService {
     this.changeStatParams.emit('station param change')
   }
 
-  public make_jcomps_platform(platform_number: string): string {
+  public make_jcommops_platform(platform_number: string): string {
     return 'http://www.jcommops.org/board/wa/Platform?ref=' + platform_number
-  }
-
-  public make_ifremer_profile(platform_number: string, cycle_number: number) {
-    return 'http://www.ifremer.fr/co-argoFloats/cycle?detail=false&ptfCode='+platform_number+'&cycleNum='+cycle_number.toString()
   }
 
   public make_fleet_monitoring_platform(platform_number: string): string {

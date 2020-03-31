@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam } from './../../typeings/grids'
-
+import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam, GridMeta } from './../../typeings/grids'
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class SelectGridService {
+
+  constructor(private http: HttpClient) { }
 
   private readonly ksGrids: GridGroup[] = [
     // {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
@@ -87,5 +90,9 @@ export class SelectGridService {
 
   }
 
-  constructor() { }
+  public getGridMeta(gridName: string): Observable<GridMeta[]> {
+    const url = '/griddedProducts/grid/pressureLayers?gridName=' + gridName
+    return this.http.get<GridMeta[]>(url)
+  }
+
 }
