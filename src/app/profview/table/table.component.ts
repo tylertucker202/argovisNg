@@ -18,9 +18,9 @@ export class TableComponent implements OnInit {
 
   constructor(private getProfileService: GetProfilesService, 
               private queryProfviewService: QueryProfviewService ) { }
-  private metaColumns: string[] = ["_id", "dac", "date",
-                                   'cycle_number', "lat_str", "lon_str",
-                                    "DATA_MODE"]
+  private metaColumns: string[] = ['cycle_number', '_id', 'dac', 'date',
+                                   'lat_str', 'lon_str',
+                                    'DATA_MODE']
   private dataSource: any
   private platform_number: string
   private statParamKey: string

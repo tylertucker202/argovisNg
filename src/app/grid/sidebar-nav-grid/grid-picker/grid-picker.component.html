@@ -3,7 +3,7 @@
 <div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Param</mat-label>
-      <mat-select [(value)]="param" (selectionChange)="changeParams($event.value)">
+      <mat-select [(value)]="selectedParam" (selectionChange)="changeParams($event.value)">
           <mat-option *ngFor="let param of availableParams"  [(value)]="param.param">
             {{param.viewValue}}
           </mat-option>

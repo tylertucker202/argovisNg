@@ -13,7 +13,7 @@ export class GridPickerComponent implements OnInit {
               private selectGridService: SelectGridService) { }
 
   private grid: string
-  private myparam: string
+  private selectedParam: string
   private gridParam: string
   private gridParams: ModelParam[]
   private availableGrids: GridGroup[]
@@ -22,8 +22,8 @@ export class GridPickerComponent implements OnInit {
   @Input() paramMode: boolean
 
   ngOnInit() {
-    this.myparam = this.queryGridService.getParam()
-    this.availableGrids = this.selectGridService.getAvailableGrids(this.myparam)
+    this.selectedParam = this.queryGridService.getParam()
+    this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
     this.availableParams = this.selectGridService.params
     this.availableGridParams = this.selectGridService.ksParams
     this.grid = this.queryGridService.getGrid()
@@ -35,8 +35,8 @@ export class GridPickerComponent implements OnInit {
     this.queryGridService.resetToStart.subscribe(msg => {
       this.grid = this.queryGridService.getGrid()
       this.changeGridParams(this.grid)
-      this.myparam = this.queryGridService.getParam()
-      this.availableGrids = this.selectGridService.getAvailableGrids(this.myparam)
+      this.selectedParam = this.queryGridService.getParam()
+      this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
 
       this.gridParam = this.queryGridService.getGridParam()
     })
@@ -45,10 +45,10 @@ export class GridPickerComponent implements OnInit {
     .subscribe(msg => {
       const paramMode = this.queryGridService.getParamMode()
       if (msg === 'display grid param change' && paramMode) {
-        this.myparam = this.queryGridService.getParam()
+        this.selectedParam = this.queryGridService.getParam()
         this.grid = this.queryGridService.getGrid()
         this.gridParam = this.queryGridService.getGridParam()
-        this.availableGrids = this.selectGridService.getAvailableGrids(this.myparam)
+        this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
        }
       })
   }
@@ -67,9 +67,9 @@ export class GridPickerComponent implements OnInit {
   }
 
   private changeParams(param: string): void {
-    this.myparam = param
-    this.availableGrids = this.selectGridService.getAvailableGrids(this.myparam)
-    this.queryGridService.sendParam(this.myparam)
+    this.selectedParam = param
+    this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
+    this.queryGridService.sendParam(this.selectedParam)
 
   }
 

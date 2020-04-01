@@ -31,13 +31,14 @@ export class SelectGridService {
     {grid: 'rgTempTotal', param: 'total', viewValue: 'RG Total'}
   ]
 
-  private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
+  // private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
+  private readonly allAvailableGrids = this.rgGrids //only allow rg grids for now
 
   private readonly ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
   private readonly rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
   private readonly tempGridGroup: MeasGroup = {meas:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
   public readonly allGrids = [this.tempGridGroup]
-  private readonly spaceTimeParams: ModelParam[]  = [{modelParamName: 'nResGrid', viewValue: 'N Profiles'},
+  private readonly spaceTimeParams: ModelParam[]  = [ {modelParamName: 'nResGrid', viewValue: 'N Profiles'},
                                                       {modelParamName: 'nll', viewValue: 'Neg log liklihood'},
                                                       {modelParamName: 'thetaLatOpt', viewValue: 'Lat weight'},
                                                       {modelParamName: 'thetaLongOpt', viewValue: 'Lon weight'},

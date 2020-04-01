@@ -48,7 +48,7 @@ export class QueryProfviewService {
     profileMeta.forEach( (row: ProfileMeta) => {
       row['lat_str'] = this.make_str_lat(row['lat'])
       row['lon_str'] = this.make_str_lat(row['lon'])
-      row['date'] = moment(row['date']).format("MMMM Do YYYY");
+      row['date'] = moment(row['date']).format("YYYY-M-D");
     })
     return profileMeta
   }
