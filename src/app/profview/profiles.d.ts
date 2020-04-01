@@ -65,6 +65,9 @@ export interface BgcProfileData {
     _id: string;
     cycle_number: number;
     date: Date;
+    lat: number;
+    lon: number;
+    bgcMeasKeys;
     POSITIONING_SYSTEM;
     bgcMeas: bgcMeasurements[]
 }
