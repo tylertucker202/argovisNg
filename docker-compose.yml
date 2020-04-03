@@ -8,16 +8,15 @@ services:
     links:
     - database
   database:
-    image: mongo  # specify image to build container from
+    image: mongo:4.2.3  # specify image to build container from
     restart: always
     ports:
       - '127.0.0.1:27017:27017' # include localhost ip to restrict access to localhost
     volumes:
-      - /storage/:/storage/:Z # development
-      #- /data/argovis/storage/mongodb:/data/db:Z # production
-      - /data/argovis/argovisNg/mongod.conf/mongod.conf:/etc/mongod.conf:Z
+      - /data/argovis/storage/mongodb:/data/db:Z # production
   netdata:
     image: netdata/netdata
+    restart: always
     hostname: example.com # set to fqdn of host
     ports:
       - 19999:19999
