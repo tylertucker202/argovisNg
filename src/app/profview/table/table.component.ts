@@ -42,7 +42,7 @@ export class TableComponent implements OnInit {
       this.dataSource.sort = this.sort
     },  
     error => {  
-      console.log('There was an error while retrieving profiles metadata.' + error);  
+      console.log('There was an error while retrieving profiles metadata.',  error);  
     })
   }
 

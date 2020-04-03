@@ -1,5 +1,4 @@
-version: '2'
-
+version: '3'
 services:
   argo-express:
     build: . #specify the directory of the Dockerfile
@@ -14,10 +13,10 @@ services:
     ports:
       - '127.0.0.1:27017:27017' # include localhost ip to restrict access to localhost
     volumes:
-      #- /storage/:/storage/:Z # development
-      - /data/argovis/storage/mongodb:/data/db:Z # production
+      - /storage/:/storage/:Z # development
+      #- /data/argovis/storage/mongodb:/data/db:Z # production
       - /data/argovis/argovisNg/mongod.conf/mongod.conf:/etc/mongod.conf:Z
-  netdata: #used to monitor system
+  netdata:
     image: netdata/netdata
     hostname: example.com # set to fqdn of host
     ports:
