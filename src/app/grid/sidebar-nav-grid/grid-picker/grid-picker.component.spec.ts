@@ -5,6 +5,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { QueryGridService } from './../../query-grid.service';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpErrorResponse, HttpClientModule, HttpHandler } from '@angular/common/http';
+
 describe('GridPickerComponent', () => {
   let component: GridPickerComponent;
   let fixture: ComponentFixture<GridPickerComponent>;
@@ -13,7 +16,13 @@ describe('GridPickerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ GridPickerComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      providers: [QueryGridService],
+      providers: [
+        QueryGridService, 
+        HttpClientTestingModule, 
+        HttpTestingController, 
+        HttpClient, 
+        HttpClientModule, 
+        HttpHandler, ],
       imports: [ RouterTestingModule ]
     })
     .compileComponents();

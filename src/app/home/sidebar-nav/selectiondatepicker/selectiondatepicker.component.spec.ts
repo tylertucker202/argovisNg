@@ -56,10 +56,10 @@ describe('SelectionDatePicker', () => {
   });
 
   it('should set dates from query service', () => {
-      const start = moment('1900-01-01')
-      const end = moment('1900-02-01')
-      expect(component['start']).toEqual(start)
-      expect(component['end']).toEqual(end)
+      const start = moment('1900-01-01').format('YYYY-MM-DD')
+      const end = moment('1900-02-01').format('YYYY-MM-DD')
+      expect(component['daterange']['startDate']).toEqual(start)
+      expect(component['daterange']['endDate']).toEqual(end)
   });
 
   it('should get dates once', () => {

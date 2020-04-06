@@ -1,36 +1,53 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PresSliderComponent } from './pres-slider.component';
+import { GridMeta } from '../../../../typeings/grids'
+import { PresSelComponent } from './pres-sel.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 //import { MatInputModule } from '@angular/material';
-import { QueryGridService } from './../../query-grid.service';
-import { RouterTestingModule } from '@angular/router/testing';
+import { QueryGridService } from '../../query-grid.service';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient, HttpErrorResponse, HttpClientModule, HttpHandler } from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SelectGridService } from '../../select-grid.service';
+import { Observable, of } from 'rxjs'
 
-describe('PresSliderComponent', () => {
-  let component: PresSliderComponent;
-  let fixture: ComponentFixture<PresSliderComponent>;
+describe('PresSelComponent', () => {
+  let component: PresSelComponent;
+  let fixture: ComponentFixture<PresSelComponent>;
   let debugElement: DebugElement;
   let queryGridService: QueryGridService;
+  let selectGridService: SelectGridService
   let spysendPres: jasmine.Spy;
   let spyGetPresLevel: jasmine.Spy;
+  let spyGetGridMeta: jasmine.Spy;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PresSliderComponent ], 
+      declarations: [ PresSelComponent ], 
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      providers: [QueryGridService],
+      providers: [
+        QueryGridService, 
+        HttpClientTestingModule, 
+        HttpTestingController, 
+        HttpClient, 
+        HttpClientModule, 
+        HttpHandler, ],
       imports: [ RouterTestingModule ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PresSliderComponent);
+    fixture = TestBed.createComponent(PresSelComponent);
     component = fixture.componentInstance;
     debugElement = fixture.debugElement
 
     queryGridService = debugElement.injector.get(QueryGridService)
+    selectGridService = debugElement.injector.get(SelectGridService)
+
     const pres = 10
+    const dummyGridMeta: Observable<GridMeta[]> = of([{_id: 'dummyGrid', presLevels: [5, 10, 200]}])
+    spyGetGridMeta = spyOn(selectGridService, 'getGridMeta').and.returnValue(dummyGridMeta)
     spyGetPresLevel = spyOn(queryGridService, 'getPresLevel').and.returnValue(pres)
     spysendPres = spyOn(queryGridService, 'sendPres').and.callThrough()
     fixture.detectChanges();
@@ -50,7 +67,11 @@ describe('PresSliderComponent', () => {
   });
 
   it('should incrementLevel', () => {
-    const pres = 10;
+    const pres = 10
+    // component['presArray'] = [5, 10, 200]
+    // component['presLevel'] = pres
+    // component['presLevels'] = [{value: 5}, {value: 10}, {value: 200}]
+    // component['makePressureLevels']()
     expect(component['presLevel']).toEqual(pres)
     let inc = 1
     component['incrementLevel'](inc)

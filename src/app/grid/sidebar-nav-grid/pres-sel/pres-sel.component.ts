@@ -8,20 +8,17 @@ export interface PressureLevels {
 }
 
 @Component({
-  selector: 'app-pres-slider',
-  templateUrl: './pres-slider.component.html',
-  styleUrls: ['./pres-slider.component.css'],
+  selector: 'app-pres-sel',
+  templateUrl: './pres-sel.component.html',
+  styleUrls: ['./pres-sel.component.css'],
 })
-export class PresSliderComponent implements OnInit {
+export class PresSelComponent implements OnInit {
   private presLevels: PressureLevels[]
-
   private presArray: number[]
-
-
+  private presLevel: number;
+  
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
-
-  private presLevel: number;
 
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
