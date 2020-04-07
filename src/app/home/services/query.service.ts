@@ -39,10 +39,15 @@ export class QueryService {
   public checkArModule(route: ActivatedRoute): void {
     if (route.data) {
       route.data.subscribe(v => {
-        if(v['arModule']) {
-          this.arModule = v['arModule'] //ignore if undefined
+        if(v['arModule']) { this.arModule = v['arModule'] } //ignore if undefined
+        if (this.arModule) { 
+          const broadcastChange = false
+          const clearOtherShapes = false
+          const selectionDateRange: DateRange = {startDate: this.arDate.add(this.arDateRange[0], 'hours').format('YYYY-MM-DD'),
+          endDate: this.arDate.add(this.arDateRange[1], 'hours').format('YYYY-MM-DD'), label: 'initial arMode date range'};
+          this.sendSelectedDate(selectionDateRange, broadcastChange)
+          this.sendArMode(true, broadcastChange, clearOtherShapes) 
         }
-        if (this.arModule) { this.sendArMode(false, false, false) }
       })
     }
   }
@@ -51,21 +56,33 @@ export class QueryService {
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
-    this.sendThreeDayMsg(true, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
     const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
-
-    const selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-    this.sendSelectedDate(selectionDateRange, broadcastChange)
-    const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const clearOtherShapes = false
-    this.sendArMode(false, broadcastChange, clearOtherShapes)
-    this.sendArDate(arDate)
+    let arMode: boolean
+    const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arDateRange = [-18, 18]
+    let selectionDateRange: DateRange
+    let sendThreeDayMsg: boolean
+    if (this.arModule) {
+      arMode = true
+      sendThreeDayMsg = false
+      selectionDateRange = {startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
+      endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'), label: 'initial arMode date range'};
+    }
+    else {
+      arMode = false
+      sendThreeDayMsg = true
+      selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+      endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    }
+    this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
+    this.sendSelectedDate(selectionDateRange, broadcastChange)
+    this.sendArMode(arMode, broadcastChange, clearOtherShapes)
+    this.sendArDate(arDate)
     this.sendArDateRange(arDateRange)
   }
 
@@ -102,6 +119,8 @@ export class QueryService {
 
     //this is reversing the order of this.latLngShapes()
     const presRangeString = JSON.stringify(this.presRange)
+    const arDateRangeString = JSON.stringify(this.arDateRange)
+    const arDateString = this.arDate.toISOString()
     let shapesString = null
     if (this.latLngShapes) {
       shapesString = JSON.stringify(this.latLngShapes)
@@ -117,7 +136,9 @@ export class QueryService {
                          'onlyBGC': this.onlyBGC,
                          'onlyDeep': this.onlyDeep,
                          'threeDayToggle': this.threeDayToggle,
-                         'arMode': this.arMode
+                         'arMode': this.arMode,
+                         'arDateRange': arDateRangeString,
+                         'arDate': arDateString
                         }
     this.router.navigate(
       [], 
@@ -151,7 +172,7 @@ export class QueryService {
     return this.arMode
   }
 
-  public sendArDate(date: moment.Moment) {
+  public sendArDate(date: moment.Moment): void {
     this.arDate = date
   }
 
@@ -187,13 +208,11 @@ export class QueryService {
   }
 
   public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
-    
     let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
       this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
-    console.log('inside sendShape:', data)
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -351,6 +370,16 @@ export class QueryService {
         const arMode = JSON.parse(value)
         const clearOtherShapes = false
         this.sendArMode(arMode, notifyChange, clearOtherShapes)
+        break
+      }
+      case 'arDateRange': {
+        const arDateRange = JSON.parse(value)
+        this.sendArDateRange(arDateRange, notifyChange)
+        break
+      }
+      case 'arDate': {
+        const arDate = moment(value)
+        this.sendArDate(arDate)
         break
       }
       default: {

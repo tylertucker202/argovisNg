@@ -114,12 +114,4 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.sendGlobalDate(dateStr)
   }
 
-  openARDialog(): void {
-    console.log('inside AR dialog')
-    this.queryService.clearLayers.emit('inside AR Dialog')
-    const dialogRef = this.dialog.open(ArDisplayComponent, {
-      width: '300px',
-      data: {}
-    });
-  }
 }

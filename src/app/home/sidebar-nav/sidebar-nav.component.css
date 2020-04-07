@@ -1,6 +1,7 @@
 .sidebar-nav {
     height: 900px;
     padding: 5px;
+    overflow-y: scroll;
 }
 
 #three-day-toggle {

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core'
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { FormControl } from '@angular/forms'
 import { ArServiceService } from './../../services/ar-service.service'
 import { QueryService } from './../../services/query.service'
@@ -22,8 +21,7 @@ export interface DropDownSelection {
 })
 export class ArDisplayComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<ArDisplayComponent>, 
-              private arService: ArServiceService,
+  constructor(private arService: ArServiceService,
               private queryService: QueryService,
               private mapService: MapService ) { }
   private arDate: moment.Moment;
@@ -47,10 +45,20 @@ export class ArDisplayComponent implements OnInit {
     this.arDate = moment(this.arFormDate.value)
     this.queryService.sendArDate(this.arDate)
     this.hour = 0
+    if(this.queryService.arModule) { this.setArShapesAndDate() } //set shapes up on map.
+
+    this.queryService.resetToStart.subscribe( (msg: string) => {
+      this.arDate = this.queryService.getArDate()
+      this.arFormDate = new FormControl(this.arDate.toDate())
+      this.hour = this.arDate.hour()
+      this.setArShapesAndDate()
+    })
   }
 
-  dateChanged(date: Date): void {
-    this.arFormDate = new FormControl(date)
+  dateChanged(): void {
+    this.arFormDate = new FormControl(this.arDate.toDate())
+    this.queryService.sendArDate(this.arDate)
+    this.queryService.setURL()
   }
 
   timeChange(hour: number): void {
@@ -59,24 +67,20 @@ export class ArDisplayComponent implements OnInit {
 
   private incrementDay(increment: number): void {
     this.arDate = this.arDate.add(increment, 'd')
-    this.dateChanged(this.arDate.toDate())
+    this.dateChanged()
   }
 
   private incrementHour(increment: number): void {
     this.arDate = this.arDate.add(increment, 'h')
-    this.dateChanged(this.arDate.toDate())
+    this.dateChanged()
     this.hour = this.arDate.hour()
-  }
-
-  private onNoClick(): void {
-    this.dialogRef.close();
   }
 
   private formatDate(date: moment.Moment): string {
     return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
   }
 
-  private setArShapesAndDate(): void {
+  public setArShapesAndDate(): void {
     this.queryService.sendThreeDayMsg(false, false)
     this.queryService.clearLayers.emit('ar shape button pressed')
 
@@ -89,7 +93,6 @@ export class ArDisplayComponent implements OnInit {
         this.setDateRange(arDateRange)
         this.setArShape(arShapes)
       }
-      this.dialogRef.close();
     })
   }
 

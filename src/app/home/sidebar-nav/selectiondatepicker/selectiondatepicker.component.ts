@@ -17,7 +17,6 @@ export class SelectionDatePicker {
   ngOnInit() {
     this.daterange = this.queryService.getSelectionDates()
     this.selected = this.convertToMoment(this.daterange)
-    console.log('init selected', this.selected)
     this.options = {
                     locale: { format: 'MM/DD/YYYY' },
                     alwaysShowCalendars: true,
@@ -55,7 +54,6 @@ export class SelectionDatePicker {
   }
 
   private selectedDate(daterangeSel: DateRangeSel):void {
-    console.log('selected daterange change', daterangeSel)
     if (daterangeSel.startDate) {
       this.daterange.startDate = daterangeSel.startDate.format('YYYY-MM-DD');
       this.daterange.endDate = daterangeSel.endDate.format('YYYY-MM-DD');

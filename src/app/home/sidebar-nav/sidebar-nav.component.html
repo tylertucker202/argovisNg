@@ -29,12 +29,11 @@
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
   <mat-slide-toggle [hidden]="!arModule" matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
                    color="accent" [checked]="arMode"
                    (change)="arModeChange($event.checked)">Atmospheric River Mode
   </mat-slide-toggle>
-  <button id="ar-button" [hidden]="!arMode || !arModule" mat-raised-button (click)="openARDialog()">AR Display</button>
+  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
   <app-ar-date-range [hidden]="!arMode || !arModule"></app-ar-date-range>
   <mat-form-field  [hidden]="arMode" class="platform-form">
     <input matInput 
@@ -43,7 +42,7 @@
            (keyup)="displayPlatformInputChanged($event.target.value)"
            id='platformInput'>
   </mat-form-field>
-
+  <app-ar-display [hidden]="!arMode || !arModule"></app-ar-display>
   <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"

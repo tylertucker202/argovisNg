@@ -20,9 +20,7 @@ export class ArDateRangeComponent implements OnInit {
 
   ngOnInit() {
 
-    this.sliderRange = this.queryService.getArDateRange()
-    this.lRange = this.sliderRange[0]
-    this.uRange = this.sliderRange[1]
+    this.setSliderRange()
 
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
@@ -37,6 +35,16 @@ export class ArDateRangeComponent implements OnInit {
         density: 4
       }
     }
+
+    this.queryService.resetToStart.subscribe( (msg: string) => {
+      this.setSliderRange()
+    })
+  }
+
+  private setSliderRange(): void {
+    this.sliderRange = this.queryService.getArDateRange()
+    this.lRange = this.sliderRange[0]
+    this.uRange = this.sliderRange[1]    
   }
 
   private formatDate(date: moment.Moment): string {
@@ -44,12 +52,14 @@ export class ArDateRangeComponent implements OnInit {
   }
 
   private updateSelectDates(): void {
+    this.queryService.sendArDateRange(this.sliderRange)
     let arDate = this.queryService.getArDate()
     const startDate = this.formatDate(arDate.clone().add(this.lRange, 'h'))
     const endDate = this.formatDate(arDate.clone().add(this.uRange, 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     const broadcastChange = true
     this.queryService.sendSelectedDate(dateRange, broadcastChange)
+    this.queryService.setURL()
   }
 
   private sliderChange() { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
