@@ -14,6 +14,8 @@ export class ShapePopupComponent implements OnInit {
   private color: string
   private arMode = false
   private presRangeToggle: boolean
+  private bgcOnlyToggle: boolean
+  private deepOnlyToggle: boolean
   private pageToggle: boolean
   private shapeButtonText: string
   private jsonButtonText: string
@@ -22,8 +24,10 @@ export class ShapePopupComponent implements OnInit {
   ngOnInit() {
     this.color = 'primary';
     this.presRangeToggle = true
-    this.updateShapeButtonText()
-    this.updateJSONButtonText()
+    this.bgcOnlyToggle = false
+    this.deepOnlyToggle = false
+    this.shapeButtonText = "To Selection Page"
+    this.jsonButtonText = "Download JSON Data"
     if (this.message ==='atmospheric river shape' ) {
       this.arMode = true
     }
@@ -31,26 +35,18 @@ export class ShapePopupComponent implements OnInit {
 
   private presRangeChange(presRangeToggle: boolean): void {
     this.presRangeToggle = presRangeToggle;
-    this.updateShapeButtonText()
-    this.updateJSONButtonText()
+  }
+
+  private bgcOnlyChange(bgcOnlyToggle: boolean): void {
+    this.bgcOnlyToggle = bgcOnlyToggle
+  }
+
+  private deepOnlyChange(deepOnlyToggle: boolean): void {
+    this.deepOnlyToggle = deepOnlyToggle
   }
 
   private pageChange(pageToggle: boolean): void {
     this.pageToggle = pageToggle
-    this.updateShapeButtonText()
-    this.updateJSONButtonText()
-  }
-
-  private updateShapeButtonText(): void {
-    let shapeButtonText = "To Selection Page"
-    //if (this.presRangeToggle) { shapeButtonText += ' with pressure query' }
-    this.shapeButtonText  = shapeButtonText
-  }
-
-  private updateJSONButtonText(): void {
-    let jsonButtonText = 'Download JSON Data'
-    //if (this.presRangeToggle) { jsonButtonText += ' with pressure query'}
-    this.jsonButtonText = jsonButtonText
   }
 
   private goToSelectionPage(goToPage: boolean): void {
@@ -69,6 +65,12 @@ export class ShapePopupComponent implements OnInit {
       if (this.presRangeToggle) {
         const presRange = this.queryService.getPresRange();
         windowURL += '&presRange='+JSON.stringify(presRange)
+      }
+      if (this.bgcOnlyToggle) {
+        windowURL += '&bgcOnly=true'
+      }
+      if (this.deepOnlyToggle) {
+        windowURL += '&deepOnly=true'
       }
       windowURL += '&shape='+JSON.stringify(this.transformedShape) 
     }

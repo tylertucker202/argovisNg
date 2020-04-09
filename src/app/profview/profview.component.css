@@ -1,4 +1,8 @@
 #chart-and-window {
     height: 550px;
-    width: 1400px;
+    width: 1900px;
+}
+
+#color-chart {
+    margin: 20px;
 }

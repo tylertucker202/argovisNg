@@ -31,6 +31,7 @@ export class ColorChartComponent implements OnInit {
   private yLabel: string = 'pres'
   private revision: number = 0
   private readonly reduceMeas = 200
+
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
       this.colorLabel = this.queryProfviewService[this.axis] 

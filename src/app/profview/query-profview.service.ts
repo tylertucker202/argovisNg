@@ -13,6 +13,7 @@ export class QueryProfviewService {
 
   @Output() changeStatParams: EventEmitter<string> = new EventEmitter
   @Output() urlParsed: EventEmitter<string> = new EventEmitter
+  @Output() profileMetaChanged: EventEmitter<string> = new EventEmitter
   public platform_number: string = "5903260"
   public topChart: string = 'temp'
   public bottomChart: string = 'psal'
@@ -20,6 +21,7 @@ export class QueryProfviewService {
   public statParamKey: string = 'bgcMeasKeys'
   public statParams: StationParameters[]
   public measKey: string = 'bgcMeas'
+  public profileMeta:  ProfileMeta[]
 
   constructor(private route: ActivatedRoute,
               private getProfileService: GetProfilesService,
@@ -28,6 +30,11 @@ export class QueryProfviewService {
   // Virtual fields for table
   public make_profile_link (_id: string): string {
     return '/catalog/profiles/' + _id + '/bgcPage';
+  }
+
+  public sendProfileMeta(profileMeta: ProfileMeta[]): void {
+    this.profileMeta = profileMeta
+    this.profileMetaChanged.emit('profileMeta set')
   }
 
   public make_core_data_mode(DATA_MODE: string, PARAMETER_DATA_MODE): string {

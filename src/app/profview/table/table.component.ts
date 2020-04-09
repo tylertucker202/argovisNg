@@ -35,6 +35,7 @@ export class TableComponent implements OnInit {
     
     this.getProfileService.getPlaformProfileMetaData(this.platform_number).subscribe( (profileMeta: ProfileMeta[]) => {
       profileMeta = this.queryProfviewService.applyFormatting(profileMeta, this.statParamKey)
+      this.queryProfviewService.sendProfileMeta(profileMeta)
       const statParams = this.queryProfviewService.makeUniqueStationParameters(profileMeta, this.statParamKey)
       this.dataSource = new MatTableDataSource()
       this.dataSource.data = profileMeta
