@@ -46,12 +46,11 @@ export class ArDisplayComponent implements OnInit {
     this.queryService.sendArDate(this.arDate)
     this.hour = 0
     if(this.queryService.arModule) { this.setArShapesAndDate() } //set shapes up on map.
-
     this.queryService.resetToStart.subscribe( (msg: string) => {
       this.arDate = this.queryService.getArDate()
       this.arFormDate = new FormControl(this.arDate.toDate())
       this.hour = this.arDate.hour()
-      this.setArShapesAndDate()
+      if (this.queryService.arModule) { this.setArShapesAndDate() }
     })
   }
 
