@@ -86,7 +86,6 @@ export class QueryService {
     this.sendArDateRange(arDateRange)
   }
 
-
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
     let shapes = []
