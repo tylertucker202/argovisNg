@@ -75,16 +75,13 @@ export class ChartService {
   }
   
 
-  collateProfileMeasurements = function(profileData: BgcProfileData[] | CoreProfileData[], yLabel: string, colorLabel: string, includeQC?: boolean) {
+  collateProfileMeasurements = function(profileData: BgcProfileData[] | CoreProfileData[], yLabel: string, colorLabel: string, includeQC?: boolean) { 
     let collatedProfiles = {};
     const num_measurements = profileData.length;
     collatedProfiles[yLabel] = new Array(num_measurements)
     collatedProfiles[colorLabel] = new Array(num_measurements)
     const colorQCLabel = colorLabel + '_qc'
-    if (includeQC) {
-      collatedProfiles[colorQCLabel] = new Array(num_measurements)
-    }
-
+    if (includeQC) { collatedProfiles[colorQCLabel] = new Array(num_measurements) }
     for (var i = 0; i < num_measurements; ++i) {
         collatedProfiles[yLabel][i] = profileData[i][yLabel]
         collatedProfiles[colorLabel][i] = profileData[i][colorLabel]
@@ -93,7 +90,7 @@ export class ChartService {
         }
     }
     return collatedProfiles;
-}
+  }
 
   reduceGPSMeasurements = function(profileData: BgcProfileData | CoreProfileData, maxLength: number, measField: string) {
     if (profileData.POSITIONING_SYSTEM === 'GPS') {
@@ -151,7 +148,6 @@ export class ChartService {
         time = time.concat(time_array)
         cycles = cycles.concat(cycle_array)
     }
-
     let dataArrays  = {}
     dataArrays[colorLabel] = cMeas
     if (includeQC) { dataArrays[colorQCLabel] = cQc }
@@ -162,8 +158,6 @@ export class ChartService {
     dataArrays['time'] = time
     return (dataArrays)
   }
-
-
 
   makeColorChartMeasurements(dataArrays, yLabel: string, colorLabel: string, units: string, cmapName: string) {
       const measurements =  {
@@ -178,18 +172,16 @@ export class ChartService {
           cycle: dataArrays.cycle,
           colorscale: this.getColorScale(cmapName),
           id: dataArrays._ids,
-          //'data_modes: dataArrays.data_modesForTemp,
           colorbar: {
-                  //title: "Temp. [Celsius]", 
                   len: 1, 
                   yanchor: "middle",
                   titleside: "right",
                   xpad: 10,
                   }
           }
-
   return measurements
   }
+
   makeColorChartTrace(meas, key: string, includeQC?: boolean) {
       let hovorText = []
       if (includeQC) {
