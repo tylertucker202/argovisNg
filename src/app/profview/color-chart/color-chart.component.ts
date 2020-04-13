@@ -78,7 +78,6 @@ export class ColorChartComponent implements OnInit {
     }
     const dataArrays = this.chartService.makeColorChartDataArrays(profileData, this.yLabel, this.colorLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
     const measurements = this.chartService.makeColorChartMeasurements(dataArrays, this.yLabel, this.colorLabel, colorParams.units, colorscale)
-    console.log('colorscale: ', colorscale, 'colorbar: ', measurements.colorbar, 'colorscale:', measurements.colorscale)
     const trace = this.chartService.makeColorChartTrace(measurements, this.colorLabel, this.bgcPlatform)
 
     this.graph = { data: trace,
@@ -90,7 +89,7 @@ export class ColorChartComponent implements OnInit {
   cLabelChange(colorLabel: string): void {
     this.colorLabel = colorLabel
     this.queryProfviewService[this.axis] = this.colorLabel
-    this.graph = false // destroy element and rebuild it entirely. needed for some browsers don't update colorbar.
+    this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
     this.queryProfviewService.setURL()
   }
