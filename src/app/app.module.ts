@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeModule } from './home/home.module';
 import { GridModule } from './grid/grid.module';
 import { CovarModule } from './covar/covar.module';
+import { ArModule } from './ar/ar.module';
 import { ProfviewModule } from './profview/profview.module';
 
 import { MaterialModule } from './material/material.module';
@@ -66,6 +67,7 @@ const customNotifierOptions: NotifierOptions = {
     HomeModule,
     GridModule,
     CovarModule,
+    ArModule,
     ProfviewModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -75,6 +77,7 @@ const customNotifierOptions: NotifierOptions = {
     MaterialModule,
     AppRoutingModule,
     HomeModule,
+    ArModule,
     GridModule,
     CovarModule,
     ProfviewModule,

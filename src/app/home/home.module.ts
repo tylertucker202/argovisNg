@@ -68,5 +68,20 @@ import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.
     HelpBottomSheet,
     ArDisplayComponent
   ],
+  exports: [
+    HomeComponent,
+    SidebarNavComponent,
+    SelectionDatePicker,
+    MapComponent,
+    DoubleSliderComponent,
+    ProfPopupComponent,
+    BottomSheet,
+    ShapePopupComponent,
+    DbOverviewComponent,
+    HelpBottomSheetComponent,
+    HelpBottomSheet,
+    ArDisplayComponent,
+    ArDateRangeComponent,
+  ]
 })
 export class HomeModule { }

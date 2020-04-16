@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { TopToolbarService } from '../top-toolbar.service'
 import { ActivatedRoute } from '@angular/router';
 @Component({
@@ -8,10 +8,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private toolbarService: TopToolbarService,
-    private route: ActivatedRoute) { }
+  constructor(public toolbarService: TopToolbarService,
+              public route: ActivatedRoute) { }
 
-  private sidebarOpen: boolean
+  @Output() sidebarOpen: boolean
 
   ngOnInit() {
 
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  private getSidebarState(): boolean {
+  public getSidebarState(): boolean {
     return this.sidebarOpen
   }
 
