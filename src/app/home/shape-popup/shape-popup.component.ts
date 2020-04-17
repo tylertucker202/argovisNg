@@ -12,7 +12,6 @@ export class ShapePopupComponent implements OnInit {
   @Input() message: string
   @Input() shape_id: string
   private color: string
-  private arMode = false
   private presRangeToggle: boolean
   private bgcOnlyToggle: boolean
   private deepOnlyToggle: boolean
@@ -28,9 +27,6 @@ export class ShapePopupComponent implements OnInit {
     this.deepOnlyToggle = false
     this.shapeButtonText = "To Selection Page"
     this.jsonButtonText = "Download JSON Data"
-    if (this.message ==='atmospheric river shape' ) {
-      this.arMode = true
-    }
   }
 
   private presRangeChange(presRangeToggle: boolean): void {
@@ -51,38 +47,26 @@ export class ShapePopupComponent implements OnInit {
 
   private goToSelectionPage(goToPage: boolean): void {
 
-    let windowURL: string
-    if (this.arMode) {
-      windowURL = '/arShapes/findByID?_id=' + this.shape_id
+    let windowURL = '/selection/profiles'
+    if (goToPage) {
+      windowURL += '/page'
     }
-    else {
-      windowURL = '/selection/profiles'
-      if (goToPage) {
-        windowURL += '/page'
-      }
-      let dates = this.queryService.getSelectionDates();
-      windowURL += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
-      if (this.presRangeToggle) {
-        const presRange = this.queryService.getPresRange();
-        windowURL += '&presRange='+JSON.stringify(presRange)
-      }
-      if (this.bgcOnlyToggle) {
-        windowURL += '&bgcOnly=true'
-      }
-      if (this.deepOnlyToggle) {
-        windowURL += '&deepOnly=true'
-      }
-      windowURL += '&shape='+JSON.stringify(this.transformedShape) 
+    let dates = this.queryService.getSelectionDates();
+    windowURL += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
+    if (this.presRangeToggle) {
+      const presRange = this.queryService.getPresRange();
+      windowURL += '&presRange='+JSON.stringify(presRange)
     }
-
+    if (this.bgcOnlyToggle) {
+      windowURL += '&bgcOnly=true'
+    }
+    if (this.deepOnlyToggle) {
+      windowURL += '&deepOnly=true'
+    }
+    windowURL += '&shape='+JSON.stringify(this.transformedShape) 
     window.open(windowURL,"_blank")
   }
 
-  private queryARShape(): void {
-    const broadcastChange = false
-    const toggle3DayOff = false // should already be off
-    this.queryService.sendShape(this.shape, broadcastChange, toggle3DayOff)
-    this.queryService.arEvent.emit('trasfering ar shape to drawn shape')
-  }
+
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { DateRange } from '../../../../typeings/daterange'
 import { Options } from 'nouislider'
-import { QueryService } from '../../../home/services/query.service'
+import { ArQueryService } from './../../ar-query.service'
 import * as moment from 'moment';
 
 @Component({
@@ -16,7 +16,7 @@ export class ArDateRangeComponent implements OnInit {
   private sliderRange: number[];
   private lRange: number;
   private uRange: number;
-  constructor( private queryService: QueryService) { }
+  constructor( private ArQueryService: ArQueryService) { }
 
   ngOnInit() {
 
@@ -36,13 +36,13 @@ export class ArDateRangeComponent implements OnInit {
       }
     }
 
-    this.queryService.resetToStart.subscribe( (msg: string) => {
+    this.ArQueryService.resetToStart.subscribe( (msg: string) => {
       this.setSliderRange()
     })
   }
 
   private setSliderRange(): void {
-    this.sliderRange = this.queryService.getArDateRange()
+    this.sliderRange = this.ArQueryService.getArDateRange()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]    
   }
@@ -52,14 +52,14 @@ export class ArDateRangeComponent implements OnInit {
   }
 
   private updateSelectDates(): void {
-    this.queryService.sendArDateRange(this.sliderRange)
-    let arDate = this.queryService.getArDate()
+    this.ArQueryService.sendArDateRange(this.sliderRange)
+    let arDate = this.ArQueryService.getArDate()
     const startDate = this.formatDate(arDate.clone().add(this.lRange, 'h'))
     const endDate = this.formatDate(arDate.clone().add(this.uRange, 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     const broadcastChange = true
-    this.queryService.sendSelectedDate(dateRange, broadcastChange)
-    this.queryService.setURL()
+    this.ArQueryService.sendSelectedDate(dateRange, broadcastChange)
+    this.ArQueryService.setURL()
   }
 
   private sliderChange() { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.

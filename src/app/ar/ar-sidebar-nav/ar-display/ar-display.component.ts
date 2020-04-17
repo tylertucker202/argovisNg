@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { ArServiceService } from '../../ar-service.service'
-import { QueryService } from '../../../home/services/query.service'
-import { MapService } from '../../../home/services/map.service'
+import { ArQueryService } from '../../ar-query.service'
+import { ArMapService } from './../../ar-map.service'
 import { ARShape } from '../../../home/models/ar-shape'
 import { DateRange } from '../../../../typeings/daterange'
 
@@ -22,8 +22,8 @@ export interface DropDownSelection {
 export class ArDisplayComponent implements OnInit {
 
   constructor(private arService: ArServiceService,
-              private queryService: QueryService,
-              private mapService: MapService ) { }
+              private arQueryService: ArQueryService,
+              private arMapService: ArMapService ) { }
   private arDate: moment.Moment;
   private arFormDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
   
@@ -43,21 +43,21 @@ export class ArDisplayComponent implements OnInit {
 
   ngOnInit() { 
     this.arDate = moment(this.arFormDate.value)
-    this.queryService.sendArDate(this.arDate)
+    this.arQueryService.sendArDate(this.arDate)
     this.hour = 0
-    if(this.queryService.arModule) { this.setArShapesAndDate() } //set shapes up on map.
-    this.queryService.resetToStart.subscribe( (msg: string) => {
-      this.arDate = this.queryService.getArDate()
+    this.setArShapesAndDate()
+    this.arQueryService.resetToStart.subscribe( (msg: string) => {
+      this.arDate = this.arQueryService.getArDate()
       this.arFormDate = new FormControl(this.arDate.toDate())
       this.hour = this.arDate.hour()
-      if (this.queryService.arModule) { this.setArShapesAndDate() }
+      this.setArShapesAndDate()
     })
   }
 
   dateChanged(): void {
     this.arFormDate = new FormControl(this.arDate.toDate())
-    this.queryService.sendArDate(this.arDate)
-    this.queryService.setURL()
+    this.arQueryService.sendArDate(this.arDate)
+    this.arQueryService.setURL()
   }
 
   timeChange(hour: number): void {
@@ -80,14 +80,15 @@ export class ArDisplayComponent implements OnInit {
   }
 
   public setArShapesAndDate(): void {
-    this.queryService.sendThreeDayMsg(false, false)
-    this.queryService.clearLayers.emit('ar shape button pressed')
+    this.arQueryService.sendThreeDayMsg(false, false)
+    this.arQueryService.clearLayers.emit('ar shape button pressed')
 
     const dateString = this.formatDate(this.arDate)
     
     const arShapes = this.arService.getArShapes(dateString)
-    const arDateRange = this.queryService.getArDateRange()
+    const arDateRange = this.arQueryService.getArDateRange()
     arShapes.subscribe((arShapes: ARShape[]) => {
+      console.log('ar shapes length:', arShapes.length)
       if (arShapes.length !== 0) {
         this.setDateRange(arDateRange)
         this.setArShape(arShapes)
@@ -100,7 +101,7 @@ export class ArDisplayComponent implements OnInit {
     const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h')) //make sure to clone and format date correctly
     const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
-    this.queryService.sendSelectedDate(dateRange, broadcastChange)
+    this.arQueryService.sendSelectedDate(dateRange, broadcastChange)
   }
 
   private setArShape(arShapes: ARShape[]) {
@@ -114,7 +115,7 @@ export class ArDisplayComponent implements OnInit {
       shapeArrays.push(sa)
     }
 
-    const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.arShapeOptions)
+    const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.arShapeOptions)
     const shapeType = 'atmospheric river shape'
 
     let shapes = []
@@ -127,8 +128,8 @@ export class ArDisplayComponent implements OnInit {
     for(let idx=0; idx<shapes.length; idx++){
       const shape_id = shapes[idx][0]
       const polygon = shapes[idx][1] as L.Polygon
-      this.mapService.popupWindowCreation(polygon, this.mapService.arShapeItems, shapeType, shape_id)
+      this.arMapService.arPopupWindowCreation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
     }
-    this.queryService.sendARShapes(shapeArrays)
+    this.arQueryService.sendARShapes(shapeArrays)
   }
 }

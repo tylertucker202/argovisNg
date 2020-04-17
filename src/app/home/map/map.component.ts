@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, Inject, ApplicationRef, Injector } from '@angular/core'
 import { MapService } from '../services/map.service'
 import { PointsService } from '../services/points.service'
 import { ProfilePoints } from '../models/profile-points'
 import { QueryService } from '../services/query.service'
-import { DOCUMENT } from '@angular/common'
 import * as L from "leaflet"
 import { NotifierService } from 'angular-notifier'
-import { ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'app-map',
@@ -23,18 +21,19 @@ export class MapComponent implements OnInit, OnDestroy {
   private wrapCoordinates: boolean
   private proj: string
   private readonly notifier: NotifierService
-  
-  constructor(private appRef: ApplicationRef,
-              public mapService: MapService,
-              public pointsService: PointsService,
-              private queryService: QueryService,
-              private notifierService: NotifierService,
-              private route: ActivatedRoute,
-              @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
+  private appRef: ApplicationRef
+  public mapService: MapService
+  public pointsService: PointsService
+  private queryService: QueryService
+  private notifierService: NotifierService
+  constructor(public injector: Injector) {  this.notifierService = injector.get(NotifierService)
+                                            this.notifier = this.notifierService
+                                            this.mapService = injector.get(MapService)
+                                            this.pointsService = injector.get(PointsService)
+                                            this.queryService = injector.get(QueryService)
+                                            }
 
   ngOnInit() {
-    this.route.data.subscribe(v => {})
-    this.queryService.checkArModule(this.route)
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
     this.queryService.setParamsFromURL()
@@ -52,7 +51,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map)
     this.mapService.scaleDisplay.addTo(this.map)
     this.mapService.drawControl.addTo(this.map)
-    this.mapService.arShapeItems.addTo(this.map) //special shapes for ar objects
+    
     this.markersLayer.addTo(this.map)
 
     this.queryService.change
@@ -68,19 +67,13 @@ export class MapComponent implements OnInit, OnDestroy {
          //this.setMockPoints()
         })
 
-    this.queryService.arEvent
-        .subscribe(msg => {
-          console.log('ar event emit ' + msg)
-          this.mapService.arShapeItems.clearLayers()
-          this.addShapesFromQueryService()
-        })
+
 
     this.queryService.clearLayers
       .subscribe( () => {
         this.queryService.clearShapes()
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
-        this.mapService.arShapeItems.clearLayers()
         this.queryService.setURL()
       })
     
@@ -89,7 +82,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.queryService.clearShapes()
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
-        this.mapService.arShapeItems.clearLayers()
         this.setStartingProfiles()
         //this.setMockPoints()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
@@ -176,7 +168,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.remove()
   }
 
-  private addShapesFromQueryService(): void {
+  public addShapesFromQueryService(): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
       const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.shapeOptions)

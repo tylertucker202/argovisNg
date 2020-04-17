@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injector } from '@angular/core';
 import { SidebarNavComponent } from './../../home/sidebar-nav/sidebar-nav.component'
-import { QueryService } from './../../home/services/query.service'
+import { ArQueryService } from './../ar-query.service'
 import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-ar-sidebar-nav',
@@ -8,9 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./ar-sidebar-nav.component.css']
 })
 export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit {
-
-  constructor( public queryService: QueryService,
-               public dialog: MatDialog ) {super(queryService, dialog)  }
+  public queryService: ArQueryService
+  public dialog: MatDialog
+  constructor( public injector: Injector ) { super(injector)
+                                             this.queryService = this.injector.get(ArQueryService) }
   private arMode: boolean = true
 
   ngOnInit(): void {

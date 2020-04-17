@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Injector } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
@@ -19,9 +19,12 @@ export interface Projections {
 export class SidebarNavComponent implements OnInit {
 
   private date = new FormControl(new Date());
-
-  constructor( public queryService: QueryService,
-               public dialog: MatDialog ) { }
+  public queryService: QueryService
+  public dialog: MatDialog 
+  constructor( public injector: Injector ) { 
+                                             this.queryService = this.injector.get(QueryService)
+                                             this.dialog = this.injector.get(MatDialog)
+                                           }
 
   @Input() private includeRT: boolean
   @Input() private onlyBGC: boolean
@@ -85,8 +88,6 @@ export class SidebarNavComponent implements OnInit {
     this.proj = proj
     this.queryService.sendProj(proj)
   }
-
-
 
   displayPlatformInputChanged(platformInput: string): void {
     this.platformInput = platformInput

@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef } from "@angular/core"
+import { Injectable, ApplicationRef, Injector } from "@angular/core"
 import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
 import { PopupCompileService } from './popup-compile.service'
 import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
@@ -22,7 +22,7 @@ declare const chroma: ChromaStatic
 export class MapService {
   public baseMaps: any;
   public drawnItems = L.featureGroup();
-  public arShapeItems = L.featureGroup(); //non editable shapes which can be added to drawnItems.
+
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
 
@@ -37,9 +37,6 @@ export class MapService {
   weight: 4,
   opacity: .5}
 
-  public arShapeOptions = {color: '#FF8C00', //pink: #C71585 orange: #FF8C00
-  weight: 4,
-  opacity: .5}
 
   public sStereo = new L.Proj.CRS('EPSG:3411',
                                   '+proj=stere '+
@@ -253,7 +250,9 @@ export class MapService {
     }
   }
 
-  constructor(private compileService: PopupCompileService) { 
+  public compileService: PopupCompileService
+
+  constructor(public injector: Injector) { 
     this.baseMaps = {
       esri: this.satelliteMap,
       ocean: this.esri_OceanBasemap,
@@ -266,6 +265,7 @@ export class MapService {
       StamenBlack: this.Stamen_TonerBackground,
       cartoDB: this.CartoDB_Positron
     };
+    this.compileService = this.injector.get(PopupCompileService)
   }
 
   public appRef: ApplicationRef;

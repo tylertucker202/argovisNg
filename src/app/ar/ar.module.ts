@@ -9,13 +9,17 @@ import "leaflet";
 import "leaflet-draw";
 import "proj4leaflet";
 import { ArSidebarNavComponent } from './ar-sidebar-nav/ar-sidebar-nav.component';
+import { ArShapePopupComponent } from './ar-shape-popup/ar-shape-popup.component';
+import { ArMapComponent } from './ar-map/ar-map.component';
 
 @NgModule({
   declarations: [ 
     ArComponent,
     ArSidebarNavComponent,
     ArDateRangeComponent,
-    ArDisplayComponent
+    ArDisplayComponent,
+    ArShapePopupComponent,
+    ArMapComponent
   ],
   imports: [
     CommonModule,
