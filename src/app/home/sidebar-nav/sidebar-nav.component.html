@@ -29,12 +29,7 @@
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <mat-slide-toggle [hidden]="!arModule" matTooltip="toggle on to query profiles that fall under Atmospheric Rivers"
-                   color="accent" [checked]="arMode"
-                   (change)="arModeChange($event.checked)">Atmospheric River Mode
-  </mat-slide-toggle>
   <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
-  <app-ar-date-range [hidden]="!arMode || !arModule"></app-ar-date-range>
   <mat-form-field  [hidden]="arMode" class="platform-form">
     <input matInput 
            matTooltip="input platform number, and map will display its profile markers in orange. hint: try 4902911"
@@ -42,7 +37,6 @@
            (keyup)="displayPlatformInputChanged($event.target.value)"
            id='platformInput'>
   </mat-form-field>
-  <app-ar-display [hidden]="!arMode || !arModule"></app-ar-display>
   <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"
@@ -56,7 +50,7 @@
                     color="accent" [checked]="onlyDeep"
                     (change)="deepChange($event.checked)">Show only Deep
   </mat-slide-toggle>
-  
+
   <div  [hidden]="arMode" ><b>Box selection:</b></div>
   <app-double-slider></app-double-slider>
 </div>

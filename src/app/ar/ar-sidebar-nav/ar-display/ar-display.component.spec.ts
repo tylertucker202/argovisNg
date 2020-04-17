@@ -4,13 +4,13 @@ import { ArDisplayComponent } from './ar-display.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient, HttpErrorResponse, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ArServiceService } from './../../services/ar-service.service'
-import { MapService } from './../../services/map.service'
-import { MaterialModule } from './../../../material/material.module'
+import { ArServiceService } from '../../ar-service.service'
+import { MapService } from '../../../home/services/map.service'
+import { MaterialModule } from '../../../material/material.module'
 import { MatDialogRef } from '@angular/material/dialog';
-import { QueryService } from '../../services/query.service';
+import { QueryService } from '../../../home/services/query.service';
 import { RouterTestingModule } from '@angular/router/testing';
-import { PopupCompileService } from './../../../home/services/popup-compile.service';
+import { PopupCompileService } from '../../../home/services/popup-compile.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ArDisplayComponent', () => {

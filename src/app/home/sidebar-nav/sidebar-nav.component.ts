@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
-import { ArDisplayComponent } from './ar-display/ar-display.component'
+import { ArDisplayComponent } from '../../ar/ar-sidebar-nav/ar-display/ar-display.component'
 import moment from 'moment';
 
 export interface Projections {
@@ -20,7 +20,7 @@ export class SidebarNavComponent implements OnInit {
 
   private date = new FormControl(new Date());
 
-  constructor( private queryService: QueryService,
+  constructor( public queryService: QueryService,
                public dialog: MatDialog ) { }
 
   @Input() private includeRT: boolean
@@ -28,9 +28,6 @@ export class SidebarNavComponent implements OnInit {
   @Input() private onlyDeep: boolean;
   @Input() private display3Day: boolean
   @Input() private proj: string
-  @Input() private arModule: boolean
-  
-  private arMode: boolean
 
   private platformInput: string;
   private projections: Projections[] = [
@@ -46,9 +43,6 @@ export class SidebarNavComponent implements OnInit {
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
-      this.arMode = this.queryService.getArMode()
-      this.arModule = this.queryService.arModule
-
       this.display3Day = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
@@ -77,13 +71,6 @@ export class SidebarNavComponent implements OnInit {
   deepChange(checked: boolean): void {
     this.onlyDeep = checked
     this.queryService.sendDeepToggleMsg(this.onlyDeep);
-  }
-
-  arModeChange(checked: boolean): void {
-    this.arMode = checked
-    const broadcastChange = false
-    const clearOtherShapes = checked // remove other shape if checked
-    this.queryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
   }
 
   clearProfiles(): void {

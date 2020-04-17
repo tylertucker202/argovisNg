@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-import { DateRange } from './../../../../typeings/daterange'
+import { DateRange } from '../../../../typeings/daterange'
 import { Options } from 'nouislider'
-import { QueryService } from '../../services/query.service'
+import { QueryService } from '../../../home/services/query.service'
 import * as moment from 'moment';
 
 @Component({

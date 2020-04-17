@@ -27,8 +27,6 @@ import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
 import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bottom-sheet/help-bottom-sheet.component';
-import { ArDisplayComponent } from './sidebar-nav/ar-display/ar-display.component';
-import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.component';
 
 @NgModule({
   declarations: [
@@ -43,8 +41,7 @@ import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.
     DbOverviewComponent,
     HelpBottomSheetComponent,
     HelpBottomSheet,
-    ArDisplayComponent,
-    ArDateRangeComponent],
+    ],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -66,7 +63,6 @@ import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.
     ShapePopupComponent, 
     BottomSheet, 
     HelpBottomSheet,
-    ArDisplayComponent
   ],
   exports: [
     HomeComponent,
@@ -80,8 +76,8 @@ import { ArDateRangeComponent } from './sidebar-nav/ar-date-range/ar-date-range.
     DbOverviewComponent,
     HelpBottomSheetComponent,
     HelpBottomSheet,
-    ArDisplayComponent,
-    ArDateRangeComponent,
+    NouisliderModule,
+    NgxDaterangepickerMd
   ]
 })
 export class HomeModule { }
