@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QueryService } from './../../home/services/query.service'
 import { ArQueryService } from './../ar-query.service'
 @Component({
   selector: 'app-ar-shape-popup',
@@ -13,7 +12,7 @@ export class ArShapePopupComponent implements OnInit {
   @Input() shape_id: string
   private color: string
   private jsonButtonText: string
-  
+
   constructor( public arQueryService: ArQueryService) { }
   
   ngOnInit(): void {

@@ -8,10 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./ar-sidebar-nav.component.css']
 })
 export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit {
-  public queryService: ArQueryService
+  public arQueryService: ArQueryService
   public dialog: MatDialog
   constructor( public injector: Injector ) { super(injector)
-                                             this.queryService = this.injector.get(ArQueryService) }
+                                             this.arQueryService = this.injector.get(ArQueryService) }
   private arMode: boolean = true
 
   ngOnInit(): void {
@@ -22,7 +22,15 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arMode = checked
     const broadcastChange = false
     const clearOtherShapes = checked // remove other shape if checked
-    this.queryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
+    this.arQueryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
+  }
+
+  clearProfiles(): void {
+    this.arQueryService.triggerClearLayers();
+  }
+
+  resetToStart(): void {
+    this.arQueryService.triggerResetToStart();
   }
 
 

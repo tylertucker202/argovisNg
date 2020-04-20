@@ -88,7 +88,6 @@ export class ArDisplayComponent implements OnInit {
     const arShapes = this.arService.getArShapes(dateString)
     const arDateRange = this.arQueryService.getArDateRange()
     arShapes.subscribe((arShapes: ARShape[]) => {
-      console.log('ar shapes length:', arShapes.length)
       if (arShapes.length !== 0) {
         this.setDateRange(arDateRange)
         this.setArShape(arShapes)

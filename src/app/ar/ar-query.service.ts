@@ -1,9 +1,10 @@
-import { Injectable, Output, EventEmitter, Injector } from '@angular/core';
+import { Injectable, Output, EventEmitter, Injector } from '@angular/core'
 import { QueryService } from './../home/services/query.service'
-import { Location } from '@angular/common';
+import { Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import * as moment from 'moment';
+import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
+import { MapState } from './../../typeings/mapState'
 @Injectable({
   providedIn: 'root'
 })
@@ -33,10 +34,12 @@ export class ArQueryService extends QueryService {
   }
 
   public resetParams(): void{
+    console.log('reset params pressed')
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
+    this.sendThreeDayMsg(false, broadcastChange)
     const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
@@ -45,16 +48,23 @@ export class ArQueryService extends QueryService {
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arDateRange = [-18, 18]
     let selectionDateRange: DateRange
-    let sendThreeDayMsg: boolean
     const arMode = true
-    sendThreeDayMsg = false
     selectionDateRange = {startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
     endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'), label: 'initial arMode date range'};
-    this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     this.sendArMode(arMode, broadcastChange, clearOtherShapes)
     this.sendArDate(arDate)
     this.sendArDateRange(arDateRange)
+  }
+
+  public triggerClearLayers(): void {
+    this.clearLayers.emit()
+  }
+
+  public triggerResetToStart(): void {
+    this.resetParams()
+    this.resetToStart.emit()
+    this.setURL()
   }
 
   public setURL(): void {
@@ -127,7 +137,19 @@ export class ArQueryService extends QueryService {
     return this.arShapes
   }
 
-  public setMapState(this, key: string, value: string): void {
+  public setParamsFromURL(): void{
+    let mapState: MapState
+    this.route.queryParams.subscribe(params => {
+      mapState = params
+      Object.keys(mapState).forEach(key => {
+        this.arSetMapState(key, mapState[key])
+      });
+      this.urlBuild.emit('got state from map component')
+    });
+  }
+ 
+
+  public arSetMapState(key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'mapProj': {
@@ -166,12 +188,12 @@ export class ArQueryService extends QueryService {
         break
       }
       case 'selectionStartDate': {
-        const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
+        const stateDateRange = {startDate: value, endDate: this.getSelectionDates().endDate}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }
       case 'selectionEndDate': {
-        const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
+        const stateDateRange = {startDate: this.getSelectionDates().startDate, endDate: value}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }
@@ -188,7 +210,7 @@ export class ArQueryService extends QueryService {
       }
       case 'arDateRange': {
         const arDateRange = JSON.parse(value)
-        this.sendArDateRange(arDateRange, notifyChange)
+        this.sendArDateRange(arDateRange)
         break
       }
       case 'arDate': {

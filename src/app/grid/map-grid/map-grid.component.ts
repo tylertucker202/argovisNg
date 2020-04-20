@@ -209,7 +209,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.map.remove();
   }
 
-  private invalidateSize(this): void {
+  public invalidateSize(this): void {
     if (this.map) {
       setTimeout(() => {
         this.map.invalidateSize(true);

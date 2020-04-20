@@ -15,8 +15,6 @@ export class ArComponent extends HomeComponent implements OnInit {
     
     ngOnInit() {
       super.ngOnInit()
-      console.log('inside init')
-      console.log('sidebar state: ', super.getSidebarState())
     }
 
 }
