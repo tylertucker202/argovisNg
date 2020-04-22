@@ -29,10 +29,6 @@ const appRoutes: Routes = [
       component: HomeComponent,
       data: {arModule: true}
     },
-    { path: 'ng/arc',
-      component: ArComponent,
-      data: {arModule: true}
-    },
     { path: 'ng/profview',
     component: ProfviewComponent,
     data: {arModule: true}
