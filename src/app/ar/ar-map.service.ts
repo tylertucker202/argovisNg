@@ -19,7 +19,8 @@ export class ArMapService extends MapService {
   constructor(public injector: Injector) { super(injector) }
 
   public arShapeItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
-  public arShapeOptions = { color: '#FF8C00', //pink: #C71585 orange: #FF8C00
+  public arShapeOptions = { 
+                            color: '#FF8C00', //pink: #C71585 orange: #FF8C00
                             weight: 4,
                             opacity: .5
                           }
@@ -37,9 +38,6 @@ export class ArMapService extends MapService {
         c.instance.shape_id = shape_id
       })
       layer.setPopupContent(popupContent)
-    });
-    layer.on('add', (event) => { 
-      layer.fire('click') // click generates popup object
     });
     featureGroup.addLayer(layer)
   }

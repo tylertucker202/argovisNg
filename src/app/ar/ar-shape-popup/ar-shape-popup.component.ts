@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core'
 import { ArQueryService } from './../ar-query.service'
+
 @Component({
   selector: 'app-ar-shape-popup',
   templateUrl: './ar-shape-popup.component.html',
@@ -23,7 +24,7 @@ export class ArShapePopupComponent implements OnInit {
     const broadcastChange = false
     const toggle3DayOff = false // should already be off
     this.arQueryService.sendShape(this.shape, broadcastChange, toggle3DayOff)
-    this.arQueryService.arEvent.emit('trasfering ar shape to drawn shape')
+    this.arQueryService.arEvent.emit(this.shape)
   }
 
   private goToSelectionPage(goToPage: boolean): void {

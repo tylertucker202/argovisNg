@@ -5,7 +5,7 @@ import { ArQueryService } from '../../ar-query.service'
 import { ArMapService } from './../../ar-map.service'
 import { ARShape } from '../../../home/models/ar-shape'
 import { DateRange } from '../../../../typeings/daterange'
-
+import { NotifierService } from 'angular-notifier'
 
 import * as moment from 'moment';
 
@@ -20,11 +20,13 @@ export interface DropDownSelection {
   styleUrls: ['./ar-display.component.css']
 })
 export class ArDisplayComponent implements OnInit {
-
+  
   constructor(private arService: ArServiceService,
               private arQueryService: ArQueryService,
-              private arMapService: ArMapService ) { }
+              private arMapService: ArMapService,
+              private notifierService: NotifierService ) { this.notifier = notifierService }
   private arDate: moment.Moment;
+  private readonly notifier: NotifierService
   private arFormDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
   
   private hour: number
@@ -58,10 +60,17 @@ export class ArDisplayComponent implements OnInit {
     this.arFormDate = new FormControl(this.arDate.toDate())
     this.arQueryService.sendArDate(this.arDate)
     this.arQueryService.setURL()
+    this.setArShapesAndDate() //remove if you don't want to fire ar event
   }
 
   timeChange(hour: number): void {
     this.hour = hour
+  }
+
+  calendarDateChanged(calDate: any): void {
+    this.arDate = moment(calDate)
+    this.dateChanged()
+
   }
 
   private incrementDay(increment: number): void {
@@ -91,6 +100,9 @@ export class ArDisplayComponent implements OnInit {
       if (arShapes.length !== 0) {
         this.setDateRange(arDateRange)
         this.setArShape(arShapes)
+      }
+      else {
+          this.notifier.notify( 'warning', 'no ar shapes found for date selected' )
       }
     })
   }

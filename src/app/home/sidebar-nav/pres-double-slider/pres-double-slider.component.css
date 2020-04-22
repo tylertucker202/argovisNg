@@ -42,10 +42,6 @@
     height: 350px;
   }
 
-.noUi-connect {
-    background: #673ab7;
-  }
-
 #minPres, #maxPres {
     margin:5px;
     font-size: 14px;

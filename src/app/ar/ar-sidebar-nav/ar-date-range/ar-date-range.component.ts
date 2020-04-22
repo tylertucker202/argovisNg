@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
-import { DateRange } from '../../../../typeings/daterange'
 import { Options } from 'nouislider'
 import { ArQueryService } from './../../ar-query.service'
 import * as moment from 'moment';
@@ -14,14 +13,12 @@ import * as moment from 'moment';
 export class ArDateRangeComponent implements OnInit {
   private config: Options;
   private sliderRange: number[];
-  private lRange: number;
-  private uRange: number;
-  constructor( private ArQueryService: ArQueryService) { }
+  
+  constructor( private arQueryService: ArQueryService ) { }
 
   ngOnInit() {
 
     this.setSliderRange()
-
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
       range: { min: -36, max: 36 },
@@ -36,35 +33,24 @@ export class ArDateRangeComponent implements OnInit {
       }
     }
 
-    this.ArQueryService.resetToStart.subscribe( (msg: string) => {
+    this.arQueryService.resetToStart.subscribe( (msg: string) => {
       this.setSliderRange()
     })
   }
 
   private setSliderRange(): void {
-    this.sliderRange = this.ArQueryService.getArDateRange()
-    this.lRange = this.sliderRange[0]
-    this.uRange = this.sliderRange[1]    
-  }
-
-  private formatDate(date: moment.Moment): string {
-    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+    this.sliderRange = this.arQueryService.getArDateRange()
+    console.log('slider range: ', this.sliderRange)
   }
 
   private updateSelectDates(): void {
-    this.ArQueryService.sendArDateRange(this.sliderRange)
-    let arDate = this.ArQueryService.getArDate()
-    const startDate = this.formatDate(arDate.clone().add(this.lRange, 'h'))
-    const endDate = this.formatDate(arDate.clone().add(this.uRange, 'h'))
-    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
-    const broadcastChange = true
-    this.ArQueryService.sendSelectedDate(dateRange, broadcastChange)
-    this.ArQueryService.setURL()
+    this.arQueryService.sendArDateRange(this.sliderRange)
   }
 
-  private sliderChange() { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
-    this.lRange = this.sliderRange[0]
-    this.uRange = this.sliderRange[1]
+  private sliderChange(sliderRange: number[]) {
+    //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
+    console.log(sliderRange, this.sliderRange)
+    this.sliderRange = sliderRange
     this.updateSelectDates()
   }
 }

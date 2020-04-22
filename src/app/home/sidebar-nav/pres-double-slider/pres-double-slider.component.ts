@@ -4,12 +4,12 @@ import { ViewEncapsulation } from '@angular/core';
 import { Options } from 'nouislider'
 
 @Component({
-  selector: 'app-double-slider',
-  templateUrl: './double-slider.component.html',
-  styleUrls: ['./double-slider.component.css'],
+  selector: 'app-pres-double-slider',
+  templateUrl: './pres-double-slider.component.html',
+  styleUrls: ['./pres-double-slider.component.css'],
   encapsulation: ViewEncapsulation.None //add to set styles as global
 })
-export class DoubleSliderComponent implements OnInit {
+export class PresDoubleSliderComponent implements OnInit {
 
   private config: Options;
   private sliderRange: number[];

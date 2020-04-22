@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject, ApplicationRef, Injector } from '@angular/core'
+import { Component, OnInit, OnDestroy, ApplicationRef, Injector } from '@angular/core'
 import { MapService } from '../services/map.service'
 import { PointsService } from '../services/points.service'
 import { ProfilePoints } from '../models/profile-points'
@@ -18,14 +18,14 @@ export class MapComponent implements OnInit, OnDestroy {
   public startView: L.LatLng
   public startZoom: number
   public graticule: any
-  private wrapCoordinates: boolean
-  private proj: string
+  public wrapCoordinates: boolean
+  public proj: string
   public readonly notifier: NotifierService
-  private appRef: ApplicationRef
+  public appRef: ApplicationRef
   public mapService: MapService
   public pointsService: PointsService
-  private queryService: QueryService
-  private notifierService: NotifierService
+  public queryService: QueryService
+  public notifierService: NotifierService
   constructor(public injector: Injector) {  this.notifierService = injector.get(NotifierService)
                                             this.notifier = this.notifierService
                                             this.appRef = this.injector.get(ApplicationRef)
@@ -37,13 +37,26 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
-    this.setParamsAndEvents()
 
+    this.setParamsAndEvents()
     this.proj = this.queryService.getProj()
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
 
+    this.invalidateSize()
+    //sets starting profiles from URL. Default is no params
+    setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
+      this.addShapesFromQueryService()
+     })
+  }
+
+  ngOnDestroy() {
+    this.map.off()
+    this.map.remove()
+  }
+
+  public setMap(): void {
     this.map = this.mapService.generateMap(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
@@ -52,10 +65,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map)
     this.mapService.scaleDisplay.addTo(this.map)
     this.mapService.drawControl.addTo(this.map)
-    
-    this.markersLayer.addTo(this.map)
-
-
+    this.markersLayer.addTo(this.map)   
 
     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
       this.markersLayer.clearLayers()
@@ -93,21 +103,12 @@ export class MapComponent implements OnInit, OnDestroy {
       const shape = this.queryService.getShapesFromFeatures(drawnItems)
       this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
     })
-
-    this.invalidateSize()
-    //sets starting profiles from URL. Default is no params
-    setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
-      this.addShapesFromQueryService()
-     })
-  }
-
-  ngOnDestroy() {
-    this.map.off()
-    this.map.remove()
   }
 
   public setParamsAndEvents(): void {
     //can be overwritten in child components
+    this.setMap()
+    console.log('setting params from map component')
     this.queryService.setParamsFromURL()
     this.queryService.change
       .subscribe(msg => {
@@ -207,7 +208,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addDisplayProfiles(this): void {
+  public addDisplayProfiles(): void {
     if (!this.queryService.getThreeDayToggle()) {return}
     const startDate = this.queryService.getGlobalDisplayDate()
     this.pointsService.getLastThreeDaysProfiles(startDate)
@@ -224,7 +225,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
     }
   
-  public setMockPoints(this): void {
+  public setMockPoints(): void {
     this.pointsService.getMockPoints()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
@@ -239,7 +240,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
   }
 
-  public invalidateSize(this): void {
+  public invalidateSize(): void {
     if (this.map) {
       setTimeout(() => {
         this.map.invalidateSize(true)
@@ -247,7 +248,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public displayProfiles = function(this, profilePoints, markerType): void {
+  public displayProfiles(profilePoints, markerType): void {
 
     const includeRT = this.queryService.getRealtimeToggle()
     const bgcOnly = this.queryService.getBGCToggle()
@@ -272,7 +273,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }
@@ -283,10 +284,8 @@ export class MapComponent implements OnInit, OnDestroy {
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
-      let daterange = this.queryService.getSelectionDates()
-      let presRange = this.queryService.getPresRange()
-      let includeRealtime = this.queryService.getRealtimeToggle()
-      let onlyBGC = this.queryService.getBGCToggle()
+      const daterange = this.queryService.getSelectionDates()
+      const presRange = this.queryService.getPresRange()
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.mapService.getTransformedShape(shape)

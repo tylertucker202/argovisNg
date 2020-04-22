@@ -1,6 +1,6 @@
 import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { DoubleSliderComponent } from './double-slider.component';
+import { PresDoubleSliderComponent } from './pres-double-slider.component';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../../services/query.service';
 
@@ -11,16 +11,16 @@ import { NouisliderModule } from 'ng2-nouislider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
-describe('DoubleSliderComponent', () => {
-  let component: DoubleSliderComponent;
-  let fixture: ComponentFixture<DoubleSliderComponent>;
+describe('PresDoubleSliderComponent', () => {
+  let component: PresDoubleSliderComponent;
+  let fixture: ComponentFixture<PresDoubleSliderComponent>;
   let debugElement: DebugElement;
   let queryService: QueryService;
   let spy: jasmine.Spy;
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DoubleSliderComponent ],
+      declarations: [ PresDoubleSliderComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [ QueryService ], 
       imports: [    MaterialModule,
@@ -32,7 +32,7 @@ describe('DoubleSliderComponent', () => {
 
   beforeEach(() => {
 
-    fixture = TestBed.createComponent(DoubleSliderComponent);
+    fixture = TestBed.createComponent(PresDoubleSliderComponent);
     component = fixture.componentInstance;
     debugElement = fixture.debugElement;
 

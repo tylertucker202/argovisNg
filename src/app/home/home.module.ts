@@ -22,7 +22,7 @@ import { PointsService } from './services/points.service';
 import { PopupCompileService } from './services/popup-compile.service';
 import { MapComponent } from './map/map.component';
 import { NouisliderModule } from 'ng2-nouislider';
-import { DoubleSliderComponent } from './sidebar-nav/double-slider/double-slider.component';
+import { PresDoubleSliderComponent } from './sidebar-nav/pres-double-slider/pres-double-slider.component';
 import { ProfPopupComponent } from './prof-popup/prof-popup.component';
 import { ShapePopupComponent } from './shape-popup/shape-popup.component';
 import { DbOverviewComponent, BottomSheet } from './sidebar-nav/db-overview/db-overview.component';
@@ -34,7 +34,7 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     SidebarNavComponent,
     SelectionDatePicker,
     MapComponent,
-    DoubleSliderComponent,
+    PresDoubleSliderComponent,
     ProfPopupComponent,
     BottomSheet,
     ShapePopupComponent,
@@ -69,7 +69,7 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     SidebarNavComponent,
     SelectionDatePicker,
     MapComponent,
-    DoubleSliderComponent,
+    PresDoubleSliderComponent,
     ProfPopupComponent,
     BottomSheet,
     ShapePopupComponent,

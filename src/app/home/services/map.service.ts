@@ -158,7 +158,6 @@ export class MapService {
       });
     L.control.zoom({position:'topleft'}).addTo(map);
     const graticule = this.getGraticule('ocean')
-    console.log('graticule', graticule)
     graticule.addTo(map);
     return map
   };
@@ -375,7 +374,6 @@ export class MapService {
       layer.fire('click') // click generates popup object
     });
     featureGroup.addLayer(layer);
-    console.log('featureGroup: ', featureGroup)
     }
 
   public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {

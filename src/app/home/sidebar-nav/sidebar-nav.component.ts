@@ -2,8 +2,6 @@ import { Component, OnInit, Input, Injector } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
-import { ArDisplayComponent } from '../../ar/ar-sidebar-nav/ar-display/ar-display.component'
-import moment from 'moment';
 
 export interface Projections {
   value: string;
@@ -18,7 +16,7 @@ export interface Projections {
 
 export class SidebarNavComponent implements OnInit {
 
-  private date = new FormControl(new Date());
+  public date = new FormControl(new Date());
   public queryService: QueryService
   public dialog: MatDialog 
   constructor( public injector: Injector ) { 
@@ -26,20 +24,23 @@ export class SidebarNavComponent implements OnInit {
                                              this.dialog = this.injector.get(MatDialog)
                                            }
 
-  @Input() private includeRT: boolean
-  @Input() private onlyBGC: boolean
-  @Input() private onlyDeep: boolean;
-  @Input() private display3Day: boolean
-  @Input() private proj: string
-
-  private platformInput: string;
-  private projections: Projections[] = [
+  @Input() public includeRT: boolean
+  @Input() public onlyBGC: boolean
+  @Input() public onlyDeep: boolean;
+  @Input() public display3Day: boolean
+  @Input() public proj: string
+  public platformInput: string;
+  public projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
     {value: 'SSP', viewValue: 'Southern stereo projection'},
     {value: 'NSP', viewValue: 'Northern stereo projection'}
   ];
 
   ngOnInit() {
+    this.setSubscriptions()
+  }
+
+  setSubscriptions() {
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
@@ -50,6 +51,7 @@ export class SidebarNavComponent implements OnInit {
       this.proj = this.queryService.getProj()
 
       let displayDate = new Date(this.queryService.getGlobalDisplayDate())
+      console.log(displayDate)
       displayDate.setDate(displayDate.getDate())
       displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
@@ -96,9 +98,12 @@ export class SidebarNavComponent implements OnInit {
     }
   }
 
-  displayGlobalDateChanged(date: moment.Moment): void {
+  displayGlobalDateChanged(date: Date): void {
     this.date = new FormControl(date)
-    const dateStr = date.format('YYYY-MM-DD')
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const dateStr = year + '-' + month + '-' + day
     this.queryService.sendGlobalDate(dateStr)
   }
 

@@ -1,7 +1,5 @@
 import { Injectable, Output, EventEmitter, Injector } from '@angular/core'
 import { QueryService } from './../home/services/query.service'
-import { Location } from '@angular/common'
-import { ActivatedRoute, Router } from '@angular/router'
 import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
 import { MapState } from './../../typeings/mapState'
@@ -10,28 +8,14 @@ import { MapState } from './../../typeings/mapState'
 })
 export class ArQueryService extends QueryService {
 
-  @Output() arEvent: EventEmitter<string> = new EventEmitter
-
+  @Output() arEvent: EventEmitter<number[][][]> = new EventEmitter
 
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private arShapes: number[][][]
-  private arMode = false
+  private arMode = true
   private arDateRange = [-18, 18]
 
   constructor( public injector: Injector ) { super(injector) }
-
-  public checkArModule(route: ActivatedRoute): void {
-    if (route.data) {
-      route.data.subscribe(v => {
-          const broadcastChange = false
-          const clearOtherShapes = false
-          const selectionDateRange: DateRange = {startDate: this.arDate.add(this.arDateRange[0], 'hours').format('YYYY-MM-DD'),
-          endDate: this.arDate.add(this.arDateRange[1], 'hours').format('YYYY-MM-DD'), label: 'initial arMode date range'};
-          this.sendSelectedDate(selectionDateRange, broadcastChange)
-          this.sendArMode(true, broadcastChange, clearOtherShapes) 
-      })
-    }
-  }
 
   public resetParams(): void{
     console.log('reset params pressed')
@@ -40,7 +24,7 @@ export class ArQueryService extends QueryService {
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
     this.sendThreeDayMsg(false, broadcastChange)
-    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
@@ -49,8 +33,11 @@ export class ArQueryService extends QueryService {
     const arDateRange = [-18, 18]
     let selectionDateRange: DateRange
     const arMode = true
-    selectionDateRange = {startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
-    endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'), label: 'initial arMode date range'};
+    selectionDateRange = {
+                          startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
+                          endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'),
+                          label: 'initial arMode date range'
+                        };
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     this.sendArMode(arMode, broadcastChange, clearOtherShapes)
     this.sendArDate(arDate)
@@ -69,26 +56,17 @@ export class ArQueryService extends QueryService {
 
   public setURL(): void {
 
-    //this is reversing the order of this.latLngShapes()
-    const presRangeString = JSON.stringify(this.getPresRange())
     const arDateRangeString = JSON.stringify(this.arDateRange)
     const arDateString = this.arDate.toISOString()
     let shapesString = null
-    const shapes = this.getShapes()
-    if (shapes) {
-      shapesString = JSON.stringify(shapes)
+     const shapes = this.getShapes()
+     if (shapes) {
+       shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'mapProj': this.getProj(),
-                         'presRange': presRangeString, 
-                         'selectionStartDate': this.getSelectionDates().startDate,
-                         'selectionEndDate': this.getSelectionDates().endDate,
-                         'threeDayEndDate': this.getThreeDayToggle(),
-                         'shapes': shapesString,
                          'includeRealtime': this.getRealtimeToggle(),
                          'onlyBGC': this.getBGCToggle(),
                          'onlyDeep': this.getDeepToggle(),
-                         'threeDayToggle': this.getThreeDayToggle(),
                          'arMode': this.arMode,
                          'arDateRange': arDateRangeString,
                          'arDate': arDateString
@@ -98,7 +76,6 @@ export class ArQueryService extends QueryService {
       {
         relativeTo: this.route,
         queryParams: queryParams,
-        //queryParamsHandling: "merge"
       });
   }
 
@@ -106,10 +83,22 @@ export class ArQueryService extends QueryService {
     return [...this.arDateRange]
   }
 
-  public sendArDateRange(dateRange: number[]): void {
+  public sendArDateRange(dateRange: number[], broadcastChange=true): void {
     this.arDateRange = dateRange
+    if (broadcastChange) { this.change.emit('ar date range change') }
   }
 
+  private formatDate(date: moment.Moment): string {
+    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+  }
+
+  public getArDateAsDateRange(): DateRange {
+    const startDate = this.formatDate(this.arDate.clone().add(this.arDateRange[0], 'h'))
+    const endDate = this.formatDate(this.arDate.clone().add(this.arDateRange[1], 'h'))
+    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
+    return dateRange
+  }
+ 
   public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
     const msg = 'arMode'
     this.arMode = arMode;
@@ -128,23 +117,24 @@ export class ArQueryService extends QueryService {
   public getArDate(): moment.Moment {
     return this.arDate
   }
-  public sendARShapes(data: number[][][]): void {
+  public sendARShapes(data: number[][][], broadcastChange=true): void {
     let msg = 'ar shape'
     this.arShapes = data
+    if (broadcastChange) { this.change.emit('ar shape change')}
   }
 
-  public getARShapse(): number[][][] {
+  public getArShapes(): number[][][] {
     return this.arShapes
   }
 
-  public setParamsFromURL(): void{
+  public setParamsFromURL(msg='got state from map component'): void{
     let mapState: MapState
     this.route.queryParams.subscribe(params => {
       mapState = params
       Object.keys(mapState).forEach(key => {
         this.arSetMapState(key, mapState[key])
       });
-      this.urlBuild.emit('got state from map component')
+      this.urlBuild.emit(msg)
     });
   }
  
@@ -152,10 +142,6 @@ export class ArQueryService extends QueryService {
   public arSetMapState(key: string, value: string): void {
     const notifyChange = false
     switch(key) {
-      case 'mapProj': {
-        this.setProj(value)
-        break
-      }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
         this.sendRealtimeMsg(includeRealtime, notifyChange)
@@ -171,42 +157,9 @@ export class ArQueryService extends QueryService {
         this.sendDeepToggleMsg(onlyDeep, notifyChange)
         break;
       }
-      case 'threeDayToggle': {
-        const threeDayToggle = JSON.parse(value)
-        this.sendThreeDayMsg(threeDayToggle, notifyChange)
-        break
-      }
-      case 'threeDayEndDate': {
-        const globalDisplayDate = value
-        this.sendGlobalDate(globalDisplayDate, notifyChange)
-        break
-      }
-      case 'shapes': {
-        const arrays = JSON.parse(value)
-        const toggleThreeDayOff = false
-        this.sendShape(arrays, notifyChange, toggleThreeDayOff)
-        break
-      }
-      case 'selectionStartDate': {
-        const stateDateRange = {startDate: value, endDate: this.getSelectionDates().endDate}
-        this.sendSelectedDate(stateDateRange, notifyChange)
-        break
-      }
-      case 'selectionEndDate': {
-        const stateDateRange = {startDate: this.getSelectionDates().startDate, endDate: value}
-        this.sendSelectedDate(stateDateRange, notifyChange)
-        break
-      }
-      case 'presRange': {
-        const presRange = JSON.parse(value)
-        this.sendPres(presRange, notifyChange)
-        break
-      }
       case 'arMode': {
         const arMode = JSON.parse(value)
-        const clearOtherShapes = false
-        this.sendArMode(arMode, notifyChange, clearOtherShapes)
-        break
+        this.sendArMode(arMode, notifyChange)
       }
       case 'arDateRange': {
         const arDateRange = JSON.parse(value)

@@ -12,6 +12,7 @@ import { ArSidebarNavComponent } from './ar-sidebar-nav/ar-sidebar-nav.component
 import { ArShapePopupComponent } from './ar-shape-popup/ar-shape-popup.component';
 import { ArMapComponent } from './ar-map/ar-map.component';
 
+
 @NgModule({
   declarations: [ 
     ArComponent,
@@ -24,13 +25,13 @@ import { ArMapComponent } from './ar-map/ar-map.component';
   imports: [
     CommonModule,
     HomeModule,
-    MaterialModule
+    MaterialModule,
   ],
   entryComponents: [
     ArDisplayComponent
   ],
   exports: [
-    HomeModule
+    HomeModule,
   ]
 })
 export class ArModule { }

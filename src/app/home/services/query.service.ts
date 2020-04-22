@@ -95,7 +95,7 @@ export class QueryService {
                          'presRange': presRangeString, 
                          'selectionStartDate': this.getSelectionDates().startDate,
                          'selectionEndDate': this.getSelectionDates().endDate,
-                         'threeDayEndDate': this.getThreeDayToggle(),
+                         'threeDayEndDate': this.getGlobalDisplayDate(),
                          'shapes': shapesString,
                          'includeRealtime': this.getRealtimeToggle(),
                          'onlyBGC': this.getBGCToggle(),
@@ -140,6 +140,7 @@ export class QueryService {
       this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
+    console.log('inside sendShape', this.latLngShapes, 'broadcastChange', broadcastChange)
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -175,7 +176,7 @@ export class QueryService {
   }
 
   public getPresRange(): number[] {
-    return this.presRange;
+    return [...this.presRange];
   }
 
   public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {

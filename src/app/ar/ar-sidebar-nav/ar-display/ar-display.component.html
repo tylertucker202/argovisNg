@@ -11,7 +11,7 @@
     [max]="MAX_DATE"
     [value]="arFormDate.value"
     placeholder="AR date"
-    (dateChange)="dateChanged($event.value)">
+    (dateChange)="calendarDateChanged($event.value)">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
@@ -29,6 +29,4 @@
   </mat-form-field>
   <button mat-icon-button matTooltip="+3 hours" (click)="incrementHour(3)"  id="plusThree">+3</button>
 </div>
-<div mat-dialog-actions  id="row">
-  <button mat-button (click)="setArShapesAndDate()">Chart AR shapes</button>
-</div>
+

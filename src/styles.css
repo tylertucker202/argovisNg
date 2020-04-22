@@ -8,12 +8,6 @@
 @import '../node_modules/angular-notifier/styles/types/type-success.css';
 @import '~nouislider/distribute/nouislider.min.css';
 
-/* .md-drppicker {
-  position: relative !important;
-  z-index: 1000000 !important;
-  width: 500px !important;
-} */
-
 .notifier__container * {
   box-sizing: border-box;
 }
@@ -79,3 +73,8 @@ html, body {
 .mat-tab-body-wrapper {
   height:100%;
 }
+
+.noUi-connect {
+    background: #673ab7 !important;
+  }
+
