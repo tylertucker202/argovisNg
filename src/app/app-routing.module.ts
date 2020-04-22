@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { ArComponent } from './ar/ar.component'
 import { ProfviewComponent } from './profview/profview.component'
 import { GridComponent } from './grid/grid.component';
 import { CovarComponent } from './covar/covar.component';
