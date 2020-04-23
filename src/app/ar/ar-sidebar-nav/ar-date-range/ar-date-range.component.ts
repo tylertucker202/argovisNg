@@ -12,8 +12,9 @@ import * as moment from 'moment';
 })
 export class ArDateRangeComponent implements OnInit {
   private config: Options;
-  private sliderRange: number[];
-  
+  public sliderRange: number[];
+  private lRange: number;
+  private uRange: number;
   constructor( private arQueryService: ArQueryService ) { }
 
   ngOnInit() {
@@ -32,14 +33,32 @@ export class ArDateRangeComponent implements OnInit {
         density: 4
       }
     }
+    const newRange = this.arQueryService.getArDateRange()
+    const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
+    this.sliderRange[0] = nRange[0]
+    this.sliderRange[1] = nRange[1]
 
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
       this.setSliderRange()
     })
   }
 
+  public minValuechange(newLowPres: number ): void {
+    this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
+    this.sliderRange = [this.lRange, this.sliderRange[1]];
+    this.updateSelectDates();
+  }
+
+  public maxValuechange(newUpPres: number ): void {
+    this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
+    this.sliderRange = [this.sliderRange[0], this.uRange];
+    this.updateSelectDates();
+  }
+
   private setSliderRange(): void {
     this.sliderRange = this.arQueryService.getArDateRange()
+    this.lRange = this.sliderRange[0]
+    this.uRange = this.sliderRange[1]
     console.log('slider range: ', this.sliderRange)
   }
 
