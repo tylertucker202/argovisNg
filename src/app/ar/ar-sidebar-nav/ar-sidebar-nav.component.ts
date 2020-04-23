@@ -14,7 +14,6 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
   public dialog: MatDialog
   constructor( public injector: Injector ) { super(injector)
                                              this.arQueryService = this.injector.get(ArQueryService) }
-  private arMode: boolean = true
 
   ngOnInit(): void {
     super.ngOnInit()
@@ -37,12 +36,6 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     })
   }
 
-  arModeChange(checked: boolean): void {
-    this.arMode = checked
-    const broadcastChange = false
-    const clearOtherShapes = checked // remove other shape if checked
-    this.arQueryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
-  }
 
   clearProfiles(): void {
     this.arQueryService.triggerClearLayers();

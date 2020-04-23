@@ -15,7 +15,7 @@
   color="accent" [checked]="deepOnlyToggle"
   (change)="deepOnlyChange($event.checked)">Filter deep profiles only
   </mat-slide-toggle>
-  <br /> <button [hidden]="arMode"
+  <br /> <button
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
     (click)="goToSelectionPage(true)" >

@@ -29,8 +29,8 @@
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
-  <mat-form-field  [hidden]="arMode" class="platform-form">
+  <app-selectiondatepicker ></app-selectiondatepicker>
+  <mat-form-field  class="platform-form">
     <input matInput 
            matTooltip="input platform number, and map will display its profile markers in orange. hint: try 4902911"
            class="show-platform-input" placeholder="Search platform #" type="string"
@@ -51,6 +51,6 @@
                     (change)="deepChange($event.checked)">Show only Deep
   </mat-slide-toggle>
 
-  <div  [hidden]="arMode" ><b>Box selection:</b></div>
+  <div><b>Box selection:</b></div>
   <app-pres-double-slider></app-pres-double-slider>
 </div>

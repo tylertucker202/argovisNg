@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { ArQueryService } from './../ar-query.service'
+import { map } from 'leaflet'
 
 @Component({
   selector: 'app-ar-shape-popup',
@@ -27,9 +28,20 @@ export class ArShapePopupComponent implements OnInit {
     this.arQueryService.arEvent.emit(this.shape)
   }
 
-  private goToSelectionPage(goToPage: boolean): void {
+  private goToSelectionPage(): void {
     const windowURL = '/arShapes/findByID?_id=' + this.shape_id
-
     window.open(windowURL,"_blank")
   } 
+
+  private goToHomePage(): void {
+    let url = '/ng/home?'
+    const dateRange = this.arQueryService.getArDateAsDateRange()
+    url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
+    url += '&includeRealtime=' + JSON.stringify(this.arQueryService.getRealtimeToggle()) +
+     '&onlyBGC=' + JSON.stringify(this.arQueryService.getBGCToggle()) + 
+     '&onlyDeep=' + JSON.stringify(this.arQueryService.getDeepToggle()) + '&threeDayToggle=false'
+    const shapeString = JSON.stringify(this.shape)
+    url += '&shapes=' + shapeString
+    window.open(url, "_blank")
+  }
 }

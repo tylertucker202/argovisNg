@@ -12,7 +12,6 @@ export class ArQueryService extends QueryService {
 
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private arShapes: number[][][]
-  private arMode = true
   private arDateRange = [-18, 18]
 
   constructor( public injector: Injector ) { super(injector) }
@@ -32,14 +31,12 @@ export class ArQueryService extends QueryService {
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arDateRange = [-18, 18]
     let selectionDateRange: DateRange
-    const arMode = true
     selectionDateRange = {
                           startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
                           endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'),
                           label: 'initial arMode date range'
                         };
     this.sendSelectedDate(selectionDateRange, broadcastChange)
-    this.sendArMode(arMode, broadcastChange, clearOtherShapes)
     this.sendArDate(arDate)
     this.sendArDateRange(arDateRange)
   }
@@ -67,7 +64,6 @@ export class ArQueryService extends QueryService {
                          'includeRealtime': this.getRealtimeToggle(),
                          'onlyBGC': this.getBGCToggle(),
                          'onlyDeep': this.getDeepToggle(),
-                         'arMode': this.arMode,
                          'arDateRange': arDateRangeString,
                          'arDate': arDateString
                         }
@@ -88,7 +84,7 @@ export class ArQueryService extends QueryService {
     if (broadcastChange) { this.change.emit('ar date range change') }
   }
 
-  private formatDate(date: moment.Moment): string {
+  public formatDate(date: moment.Moment): string {
     return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
   }
 
@@ -99,17 +95,6 @@ export class ArQueryService extends QueryService {
     return dateRange
   }
  
-  public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
-    const msg = 'arMode'
-    this.arMode = arMode;
-    if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
-    if (broadcastChange) { this.change.emit(msg) }
-  }
-
-  public getArMode(): boolean {
-    return this.arMode
-  }
-
   public sendArDate(date: moment.Moment): void {
     this.arDate = date
   }
@@ -156,10 +141,6 @@ export class ArQueryService extends QueryService {
         const onlyDeep = JSON.parse(value)
         this.sendDeepToggleMsg(onlyDeep, notifyChange)
         break;
-      }
-      case 'arMode': {
-        const arMode = JSON.parse(value)
-        this.sendArMode(arMode, notifyChange)
       }
       case 'arDateRange': {
         const arDateRange = JSON.parse(value)

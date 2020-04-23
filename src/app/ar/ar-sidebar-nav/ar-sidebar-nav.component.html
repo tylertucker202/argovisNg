@@ -6,9 +6,8 @@
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
-  <app-selectiondatepicker  [hidden]="arMode"></app-selectiondatepicker>
-  <app-ar-date-range [hidden]="!arMode"></app-ar-date-range>
-  <app-ar-display [hidden]="!arMode"></app-ar-display>
+  <app-ar-date-range ></app-ar-date-range>
+  <app-ar-display ></app-ar-display>
   <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"
