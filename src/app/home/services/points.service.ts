@@ -110,6 +110,13 @@ public argoIconDeep = L.icon({
     return this.http.get<ProfilePoints[]>(url);
   }
 
+  public getGlobalMapProfiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
+    let url = '/selection/globalMapProfiles/'
+    url += startDate + '/'
+    url += endDate
+    return this.http.get<ProfilePoints[]>(url)
+  }
+
   // plots the markers on the map three times. 
   public makeWrappedCoordinates(coordinates): number[][] {
       const lat = coordinates[1];

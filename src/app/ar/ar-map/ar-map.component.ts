@@ -23,6 +23,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
     this.setParamsAndEvents()
     this.proj = 'WM'
     this.wrapCoordinates = true
+    this.setPointsOnMap()
 
     this.invalidateSize()
   }
@@ -34,9 +35,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
 
     this.arMapService.coordDisplay.addTo(this.map)
     this.arMapService.arShapeItems.addTo(this.map) //special shapes for ar objects
-    //this.arMapService.drawnItems.addTo(this.map)
     this.arMapService.scaleDisplay.addTo(this.map)
-    //this.arMapService.drawControl.addTo(this.map)
     this.markersLayer.addTo(this.map)   
   }
 
@@ -45,14 +44,6 @@ export class ArMapComponent extends MapComponent implements OnInit {
     console.log('setting params from ar map component')
     this.arQueryService.setParamsFromURL()
 
-    // this.arQueryService.arEvent
-    //   .subscribe((shape: number[][][]) => {
-    //     console.log('ar event emit', shape)
-    //     //this.arQueryService.sendShape(shape, true, true)
-    //     //this.arQueryService.change.emit('ar shape transform')
-    //     //this.arMapService.arShapeItems.clearLayers()
-    //     //this.arAddShapesFromQueryService()
-    //   })
     this.arQueryService.change
       .subscribe(msg => {
         console.log('query changed in ar component: ' + msg)
@@ -77,24 +68,6 @@ export class ArMapComponent extends MapComponent implements OnInit {
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
   }
-
-  // private arAddShapesFromQueryService(): void {
-  //   let shapeArrays = this.arQueryService.getShapes()
-  //   if (shapeArrays) {
-  //     console.log('ar shape arrays', shapeArrays)
-  //     const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.shapeOptions)
-  //     shapeFeatureGroup.eachLayer( layer => {
-  //       const polygon = layer as L.Polygon
-  //       this.arMapService.popupWindowCreation(polygon, this.arMapService.drawnItems)
-  //     })
-  //   }
-  //   const broadcast = true // set to true to set page initially
-  //   const toggleThreeDayOff = false
-
-  //   const drawnItems = this.arMapService.drawnItems.toGeoJSON().features
-  //   const shape = this.arQueryService.getShapesFromFeatures(drawnItems)
-  //   this.arQueryService.sendShape(shape, broadcast, toggleThreeDayOff)
-  // }
   
   public setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.arQueryService.getShapes()
@@ -124,7 +97,27 @@ export class ArMapComponent extends MapComponent implements OnInit {
             })      
         })
     }
+    if (this.arQueryService.getDisplayGlobally()) {
+      this.setGlobalProfiles()
+    }
   }
+
+  private setGlobalProfiles(): void {
+
+    const dateRange = this.arQueryService.getArDateAsDateRange()
+    this.pointsService.getGlobalMapProfiles(dateRange.startDate, dateRange.endDate)
+      .subscribe((profilePoints: ProfilePoints[]) => {
+        if (profilePoints.length == 0) {
+          this.notifier.notify( 'warning', 'zero profile points returned' )
+        }
+        else {
+          this.displayProfiles(profilePoints, 'normalMarker')
+        }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting last three day profiles' )
+        })
+}
 
   public displayProfiles = function(profilePoints, markerType): void {
 
