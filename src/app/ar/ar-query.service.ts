@@ -13,6 +13,7 @@ export class ArQueryService extends QueryService {
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private arShapes: number[][][]
   private arDateRange = [-18, 18]
+  private displayGlobally = true
 
   constructor( public injector: Injector ) { super(injector) }
 
@@ -22,15 +23,13 @@ export class ArQueryService extends QueryService {
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
-    this.sendThreeDayMsg(false, broadcastChange)
-    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
-    this.sendGlobalDate(globalDisplayDate, broadcastChange)
-    const presRange = [0, 2000]
-    this.sendPres(presRange, broadcastChange)
-    const clearOtherShapes = false
+
+    // const presRange = [0, 2000]
+    // this.sendPres(presRange, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arDateRange = [-18, 18]
     let selectionDateRange: DateRange
+    this.sendDisplayGlobally(true, broadcastChange)
     selectionDateRange = {
                           startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
                           endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'),
@@ -54,7 +53,7 @@ export class ArQueryService extends QueryService {
   public setURL(): void {
 
     const arDateRangeString = JSON.stringify(this.arDateRange)
-    const arDateString = this.arDate.toISOString()
+    const arDateString = this.arDate.format('YYYY-MM-DDTHH')
     let shapesString = null
      const shapes = this.getShapes()
      if (shapes) {
@@ -65,7 +64,8 @@ export class ArQueryService extends QueryService {
                          'onlyBGC': this.getBGCToggle(),
                          'onlyDeep': this.getDeepToggle(),
                          'arDateRange': arDateRangeString,
-                         'arDate': arDateString
+                         'arDate': arDateString,
+                         'displayGlobally': this.getDisplayGlobally()
                         }
     this.router.navigate(
       [], 
@@ -73,6 +73,15 @@ export class ArQueryService extends QueryService {
         relativeTo: this.route,
         queryParams: queryParams,
       });
+  }
+
+  public getDisplayGlobally(): boolean {
+    return this.displayGlobally
+  }
+
+  public sendDisplayGlobally(displayGlobally: boolean, broadcastChange=true): void {
+    this.displayGlobally = displayGlobally
+    if (broadcastChange) { this.change.emit('displayGlobally changed')}
   }
 
   public getArDateRange(): number[] {
@@ -141,6 +150,12 @@ export class ArQueryService extends QueryService {
         const onlyDeep = JSON.parse(value)
         this.sendDeepToggleMsg(onlyDeep, notifyChange)
         break;
+      }
+      case 'displayGlobally': {
+        const displayGlobally = JSON.parse(value)
+        this.sendDisplayGlobally(displayGlobally, notifyChange)
+        break;
+
       }
       case 'arDateRange': {
         const arDateRange = JSON.parse(value)

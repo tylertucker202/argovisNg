@@ -12,6 +12,7 @@ import { FormControl } from '@angular/forms';
 export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit {
   public arQueryService: ArQueryService
   public dialog: MatDialog
+  public displayGlobally: boolean
   constructor( public injector: Injector ) { super(injector)
                                              this.arQueryService = this.injector.get(ArQueryService) }
 
@@ -22,11 +23,11 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
   setSubscriptions() {
     this.arQueryService.urlBuild
     .subscribe(msg => {
-      //toggle if states have changed    
+      //toggle if states have changed 
       this.includeRT = this.arQueryService.getRealtimeToggle()
       this.onlyBGC = this.arQueryService.getBGCToggle()
       this.onlyDeep = this.arQueryService.getDeepToggle()
-      this.display3Day = this.arQueryService.getThreeDayToggle()
+      this.displayGlobally = this.arQueryService.getDisplayGlobally()
       this.proj = this.arQueryService.getProj()
 
       let displayDate = new Date(this.arQueryService.getGlobalDisplayDate())
@@ -36,6 +37,10 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     })
   }
 
+  displayGlobalChange(checked: boolean): void {
+    this.displayGlobally = checked
+    this.arQueryService.sendDisplayGlobally(this.displayGlobally, true)
+  }
 
   clearProfiles(): void {
     this.arQueryService.triggerClearLayers();
@@ -48,11 +53,6 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
   realtimeChange(checked: boolean): void {
     this.includeRT = checked
     this.arQueryService.sendRealtimeMsg(this.includeRT);
-  }
-
-  displayGlobalChange(checked: boolean): void {
-    this.display3Day = checked
-    this.arQueryService.sendThreeDayMsg(this.display3Day);
   }
 
   bgcChange(checked: boolean): void {

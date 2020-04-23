@@ -6,6 +6,12 @@
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
     <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
   </button>
+  <mat-slide-toggle 
+  id="three-day-toggle" 
+  matTooltip="toggle on query global profiles within hour range below"
+  color="accent" [checked]="displayGlobally"
+  (change)="displayGlobalChange($event.checked)">Query profiles globally
+  </mat-slide-toggle>
   <app-ar-date-range ></app-ar-date-range>
   <app-ar-display ></app-ar-display>
   <div><b>Display options:</b></div>

@@ -26,10 +26,10 @@ export class SidebarNavComponent implements OnInit {
 
   @Input() public includeRT: boolean
   @Input() public onlyBGC: boolean
-  @Input() public onlyDeep: boolean;
+  @Input() public onlyDeep: boolean
   @Input() public display3Day: boolean
   @Input() public proj: string
-  public platformInput: string;
+  public platformInput: string
   public projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
     {value: 'SSP', viewValue: 'Southern stereo projection'},
