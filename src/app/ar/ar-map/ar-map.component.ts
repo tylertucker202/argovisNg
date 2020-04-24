@@ -71,7 +71,6 @@ export class ArMapComponent extends MapComponent implements OnInit {
   
   public setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.arQueryService.getShapes()
-    console.log('shapes', shapeArrays)
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
@@ -84,8 +83,8 @@ export class ArMapComponent extends MapComponent implements OnInit {
 
         this.pointsService.getSelectionPoints(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
-              if (selectionPoints.length == 0) {
-                this.notifier.notify( 'warning', 'no profile points inside this shape' )
+              if (selectionPoints.length == 0 && !this.arQueryService.getDisplayGlobally()) {
+                this.notifier.notify( 'info', 'no profile points found inside a shape' )
               }
               else {
                 this.displayProfiles(selectionPoints, 'normalMarker')

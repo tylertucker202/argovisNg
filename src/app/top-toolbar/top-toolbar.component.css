@@ -11,3 +11,11 @@
 #module-select {
   width: 200px
 }
+
+.fill-space {
+  flex: 1 1 auto;
+}
+
+#logo {
+  height: 60px;
+}
