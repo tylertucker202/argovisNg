@@ -1,41 +1,25 @@
 #slider {
-    position: relative;
-    height: 150px;
-    margin: 0px;
+    height: 10px;
+    width: 90%;
+    margin-left: 10px;
 }
     
-#slider-div {
-    height: 350px;
-    margin: 0px;
-    }
 #input-div {
-        height: 350px;
         margin: 10px;
         width: 100%;
         }
 
 .slider-container{
-    display:flex;
-    height: 390px;
+    height: 90px;
 }
-
-.pressure-form {
-    width: 90%;
-    height: 390px;
-  }
   
-.pressure-full-width, .pressure-full-width-bot {
-    width: 100%;
-  }
-
+.pressure-half-width{
+    width: 40%;
+    margin: 5px;
+    }
 .pressure-input {
     width: 100%;
 }
-
-.pressure-full-width-bot {
-    position:relative;
-    margin-top:220px;
-  }
 
 .noUi-vertical {
     margin: 10px;

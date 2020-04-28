@@ -29,7 +29,7 @@ export class PresDoubleSliderComponent implements OnInit {
       range: { min: 0, max: 6000 },
       step: 3,
       connect: true,
-      orientation: 'vertical'
+      orientation: 'horizontal'
     }
     const newRange = this.queryService.getPresRange()
     const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
