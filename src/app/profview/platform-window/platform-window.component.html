@@ -1,16 +1,12 @@
 <div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
-<mat-grid-list id=platform-grid cols="1" gutterSize="0px" rowHeight="50px">
+<mat-grid-list id=platform-grid cols="3" gutterSize="0px" rowHeight="50px">
     <mat-grid-tile
         [colspan]="1"
         [rowspan]="1"><h4>Platform Number: {{platMeta.platform_number}}</h4>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="1"><p class="thick">Dac: {{platMeta.dac}}</p>
-    </mat-grid-tile>
-        <mat-grid-tile
-        [colspan]="1"
-        [rowspan] ="1"><p>Most recent update: <br> {{platMeta.most_recent_date_added}}</p>
+        [rowspan] ="1"><p>Updated on: {{platMeta.most_recent_date_added}}</p>
     </mat-grid-tile>
         <mat-grid-tile
         [colspan]="1"
@@ -18,11 +14,19 @@
     </mat-grid-tile>
         <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="1"><p>Positioning System: {{platMeta.POSITIONING_SYSTEM}}</p>
+        [rowspan] ="1"><p class="thick">Dac: {{platMeta.dac}}</p>
     </mat-grid-tile>
         <mat-grid-tile
         [colspan]="1"
         [rowspan] ="1"><p>PI: {{platMeta.PI_NAME}}</p>
+    </mat-grid-tile>
+        <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p>Positioning System: {{platMeta.POSITIONING_SYSTEM}}</p>
+    </mat-grid-tile>   
+    <mat-grid-tile
+    [colspan]="3"
+    [rowspan] ="1"><p *ngIf="statParamsList">Station Parameters: {{statParamsList}}</p>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
@@ -33,8 +37,8 @@
         [rowspan] ="1"><a href={{platMeta.fleetMonitoringLink}}>link to Fleet Monitor</a>
     </mat-grid-tile>
     <mat-grid-tile
-    [colspan]="1"
-    [rowspan] ="2"><p *ngIf="statParamsList">Station Parameters: {{statParamsList}}</p>
-</mat-grid-tile>
+        [colspan]="1"
+        [rowspan] ="1"><p>See table below for profile information.</p>
+    </mat-grid-tile>
 </mat-grid-list>
 </div>
