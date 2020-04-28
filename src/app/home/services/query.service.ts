@@ -140,7 +140,6 @@ export class QueryService {
       this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
-    console.log('inside sendShape', this.latLngShapes, 'broadcastChange', broadcastChange)
     if (broadcastChange){ this.change.emit(msg) }
   }
 

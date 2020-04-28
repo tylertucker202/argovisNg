@@ -33,14 +33,11 @@ export class PresSelComponent implements OnInit {
     let presLevels = []
     this.selectGridService.getGridMeta(this.queryGridService.getGrid())
       .subscribe((gridMeta: GridMeta[]) => {
-        console.log(gridMeta)
         this.presArray = gridMeta[0]['presLevels']
         this.presArray.sort(function(a, b){return a-b})
-        console.log(this.presArray)
         for (let idx=0; idx < this.presArray.length; ++idx) {
           presLevels.push({value: this.presArray[idx]})
         }
-        console.log('presLevels: ', presLevels, 'presArray: ', this.presArray)
       })
     
     this.presLevels = presLevels
@@ -49,7 +46,6 @@ export class PresSelComponent implements OnInit {
   private incrementLevel(increment: number): void {
     const idx = this.presArray.indexOf(this.presLevel)
     const inc = idx + increment
-    console.log('increment', increment, 'idx', idx, 'inc', inc, 'new pres level', this.presLevels[inc].value)
     if( inc >= 0 && inc < this.presLevels.length) {
       this.presLevel = this.presLevels[inc].value
       this.sendPresLevel()

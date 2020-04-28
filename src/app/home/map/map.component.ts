@@ -104,7 +104,6 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public setParamsAndEvents(): void {
     //can be overwritten in child components
-    console.log('setting params from map component')
     this.queryService.setParamsFromURL()
     this.proj = this.queryService.getProj()
     if ( this.proj === 'WM' ){
@@ -113,7 +112,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.setMap()
     this.queryService.change
       .subscribe(msg => {
-         console.log('query changed: ' + msg)
          this.queryService.setURL()
          this.markersLayer.clearLayers()
          this.setPointsOnMap()

@@ -59,7 +59,6 @@ export class ArDateRangeComponent implements OnInit {
     this.sliderRange = this.arQueryService.getArDateRange()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
-    console.log('slider range: ', this.sliderRange)
   }
 
   private updateSelectDates(): void {
@@ -68,7 +67,6 @@ export class ArDateRangeComponent implements OnInit {
 
   private sliderChange(sliderRange: number[]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
-    console.log(sliderRange, this.sliderRange)
     this.sliderRange = sliderRange
     this.updateSelectDates()
   }

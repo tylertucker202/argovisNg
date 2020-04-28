@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Injector } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
+import moment from 'moment';
 
 export interface Projections {
   value: string;
@@ -51,7 +52,6 @@ export class SidebarNavComponent implements OnInit {
       this.proj = this.queryService.getProj()
 
       let displayDate = new Date(this.queryService.getGlobalDisplayDate())
-      console.log(displayDate)
       displayDate.setDate(displayDate.getDate())
       displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
@@ -98,12 +98,9 @@ export class SidebarNavComponent implements OnInit {
     }
   }
 
-  displayGlobalDateChanged(date: Date): void {
+  displayGlobalDateChanged(date: moment.Moment): void {
     this.date = new FormControl(date)
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const dateStr = year + '-' + month + '-' + day
+    const dateStr = date.format('YYYY-MM-DD')
     this.queryService.sendGlobalDate(dateStr)
   }
 

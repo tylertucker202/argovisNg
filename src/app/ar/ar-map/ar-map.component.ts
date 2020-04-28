@@ -118,7 +118,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
         })
 }
 
-  public displayProfiles = function(profilePoints, markerType): void {
+  public displayProfiles(profilePoints: ProfilePoints[], markerType: string): void {
 
     const includeRT = this.arQueryService.getRealtimeToggle()
     const bgcOnly = this.arQueryService.getBGCToggle()
@@ -143,7 +143,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }

@@ -28,7 +28,6 @@ export class GlobeScatterComponent implements OnInit {
   }
 
   private onSelect(profile_id: string) {
-    console.log('onSelect data:', profile_id)
     const url = '/catalog/profiles/' + profile_id + '/page';
     window.open(url,'_blank');
   }
