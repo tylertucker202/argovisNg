@@ -8,7 +8,7 @@ import { HomeModule } from './home/home.module';
 import { GridModule } from './grid/grid.module';
 import { CovarModule } from './covar/covar.module';
 import { ProfviewModule } from './profview/profview.module';
-
+import { ArModule } from './ar/ar.module';
 import { MaterialModule } from './material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
@@ -66,6 +66,7 @@ const customNotifierOptions: NotifierOptions = {
     HomeModule,
     GridModule,
     CovarModule,
+    ArModule,
     ProfviewModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -77,6 +78,7 @@ const customNotifierOptions: NotifierOptions = {
     HomeModule,
     GridModule,
     CovarModule,
+    ArModule,
     ProfviewModule,
     BrowserModule,
     BrowserAnimationsModule,

@@ -39,10 +39,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.init(this.appRef)
 
     this.setParamsAndEvents()
-    this.proj = this.queryService.getProj()
-    if ( this.proj === 'WM' ){
-      this.wrapCoordinates = true
-    }
+
 
     this.invalidateSize()
     //sets starting profiles from URL. Default is no params
@@ -107,9 +104,13 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public setParamsAndEvents(): void {
     //can be overwritten in child components
-    this.setMap()
     console.log('setting params from map component')
     this.queryService.setParamsFromURL()
+    this.proj = this.queryService.getProj()
+    if ( this.proj === 'WM' ){
+      this.wrapCoordinates = true
+    }
+    this.setMap()
     this.queryService.change
       .subscribe(msg => {
          console.log('query changed: ' + msg)
@@ -120,7 +121,6 @@ export class MapComponent implements OnInit, OnDestroy {
          if (showThreeDay) {
             this.addDisplayProfiles()
          }
-         //this.setMockPoints()
         })
 
     this.queryService.clearLayers
@@ -137,7 +137,6 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
         this.setStartingProfiles()
-        //this.setMockPoints()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
 

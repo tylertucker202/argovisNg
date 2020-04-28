@@ -4,7 +4,6 @@ import { TopToolbarService } from '../top-toolbar.service'
 import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-ar',
-  //templateUrl: './../home/home.component.html',
   templateUrl: './ar.component.html',
   styleUrls: ['./../home/home.component.css']
 })
