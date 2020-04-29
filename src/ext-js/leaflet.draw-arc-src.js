@@ -127,13 +127,13 @@ L.drawLocal = {
 			marker: {
 				tooltip: {
 					start: 'Click map to place marker.'
-				}
+				} 
 			},
 			polygon: {
 				tooltip: {
-					start: 'Click to start drawing shape.',
-					cont: 'Click to continue drawing shape.',
-					end: 'Click first point to close this shape.'
+					start: 'Click to start drawing shape. Hint: avoid long segments > 160 deg long',
+					cont: 'Click to continue drawing shape. Hint: avoid long segments > 160 deg long',
+					end: 'Click first point to close this shape. Hint: avoid long segments > 160 deg long'
 				}
 			},
 			polyline: {

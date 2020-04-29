@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HomeModule } from './../home/home.module';
 import { ArComponent } from './ar.component'
 import { MaterialModule } from '../material/material.module';
-import { ArDateRangeComponent } from './ar-sidebar-nav/ar-date-range/ar-date-range.component'
+import { ArHourRangeComponent } from './ar-sidebar-nav/ar-hour-range/ar-hour-range.component'
 import { ArDisplayComponent } from './ar-sidebar-nav/ar-display/ar-display.component'
 import "leaflet";
 import "leaflet-draw";
@@ -17,7 +17,7 @@ import { ArMapComponent } from './ar-map/ar-map.component';
   declarations: [ 
     ArComponent,
     ArSidebarNavComponent,
-    ArDateRangeComponent,
+    ArHourRangeComponent,
     ArDisplayComponent,
     ArShapePopupComponent,
     ArMapComponent

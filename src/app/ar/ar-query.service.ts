@@ -12,7 +12,7 @@ export class ArQueryService extends QueryService {
 
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private arShapes: number[][][]
-  private arDateRange = [-18, 18]
+  private arHourRange = [-18, 18]
   private displayGlobally = true
 
   constructor( public injector: Injector ) { super(injector) }
@@ -27,17 +27,17 @@ export class ArQueryService extends QueryService {
     // const presRange = [0, 2000]
     // this.sendPres(presRange, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
-    const arDateRange = [-18, 18]
+    const arHourRange = [-18, 18]
     let selectionDateRange: DateRange
     this.sendDisplayGlobally(true, broadcastChange)
     selectionDateRange = {
-                          startDate: arDate.add(arDateRange[0], 'hours').format('YYYY-MM-DD'),
-                          endDate: arDate.add(arDateRange[1], 'hours').format('YYYY-MM-DD'),
+                          startDate: arDate.add(arHourRange[0], 'hours').format('YYYY-MM-DD'),
+                          endDate: arDate.add(arHourRange[1], 'hours').format('YYYY-MM-DD'),
                           label: 'initial arMode date range'
                         };
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     this.sendArDate(arDate)
-    this.sendArDateRange(arDateRange)
+    this.sendArDateRange(arHourRange)
   }
 
   public triggerClearLayers(): void {
@@ -52,7 +52,7 @@ export class ArQueryService extends QueryService {
 
   public setURL(): void {
 
-    const arDateRangeString = JSON.stringify(this.arDateRange)
+    const arDateRangeString = JSON.stringify(this.arHourRange)
     const arDateString = this.arDate.format('YYYY-MM-DDTHH')
     let shapesString = null
      const shapes = this.getShapes()
@@ -63,7 +63,7 @@ export class ArQueryService extends QueryService {
                          'includeRealtime': this.getRealtimeToggle(),
                          'onlyBGC': this.getBGCToggle(),
                          'onlyDeep': this.getDeepToggle(),
-                         'arDateRange': arDateRangeString,
+                         'arHourRange': arDateRangeString,
                          'arDate': arDateString,
                          'displayGlobally': this.getDisplayGlobally()
                         }
@@ -85,11 +85,11 @@ export class ArQueryService extends QueryService {
   }
 
   public getArDateRange(): number[] {
-    return [...this.arDateRange]
+    return [...this.arHourRange]
   }
 
   public sendArDateRange(dateRange: number[], broadcastChange=true): void {
-    this.arDateRange = dateRange
+    this.arHourRange = dateRange
     if (broadcastChange) { this.change.emit('ar date range change') }
   }
 
@@ -98,8 +98,8 @@ export class ArQueryService extends QueryService {
   }
 
   public getArDateAsDateRange(): DateRange {
-    const startDate = this.formatDate(this.arDate.clone().add(this.arDateRange[0], 'h'))
-    const endDate = this.formatDate(this.arDate.clone().add(this.arDateRange[1], 'h'))
+    const startDate = this.formatDate(this.arDate.clone().add(this.arHourRange[0], 'h'))
+    const endDate = this.formatDate(this.arDate.clone().add(this.arHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     return dateRange
   }
@@ -157,9 +157,9 @@ export class ArQueryService extends QueryService {
         break;
 
       }
-      case 'arDateRange': {
-        const arDateRange = JSON.parse(value)
-        this.sendArDateRange(arDateRange)
+      case 'arHourRange': {
+        const arHourRange = JSON.parse(value)
+        this.sendArDateRange(arHourRange)
         break
       }
       case 'arDate': {

@@ -2,15 +2,14 @@
 <input
        id="daterange-picker"
        matInput
+       ngxDaterangepickerMd
        type="text" 
        placeholder="Date Range:"
-       ngxDaterangepickerMd 
        [(ngModel)]="selected" 
        class="form-control"
        matTooltip="determines date range for selections" 
        name="daterangeInput"
        [ranges]="options.ranges"
-       [timepicker]="true"
        opens="right"
        drops="down"
        [showCustomRangeLabel]="true"

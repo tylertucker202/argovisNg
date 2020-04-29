@@ -30,7 +30,7 @@ export class ArDisplayComponent implements OnInit {
   private arFormDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
   
   private hour: number
-  private MIN_DATE = new Date(2007, 0, 1, 0, 0, 0, 0)
+  private MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
   private MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
   private hours: DropDownSelection[] = [
     {value: 0, viewValue: '0:00'},
@@ -70,7 +70,6 @@ export class ArDisplayComponent implements OnInit {
   calendarDateChanged(calDate: any): void {
     this.arDate = moment(calDate)
     this.dateChanged()
-
   }
 
   private incrementDay(increment: number): void {
@@ -84,21 +83,17 @@ export class ArDisplayComponent implements OnInit {
     this.hour = this.arDate.hour()
   }
 
-  private formatDate(date: moment.Moment): string {
-    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
-  }
-
-  public setArShapesAndDate(): void {
+  private setArShapesAndDate(): void {
     this.arQueryService.sendThreeDayMsg(false, false)
     this.arQueryService.clearLayers.emit('ar shape button pressed')
 
-    const dateString = this.formatDate(this.arDate)
+    const dateString = this.arQueryService.formatDate(this.arDate)
     
     const arShapes = this.arService.getArShapes(dateString)
-    const arDateRange = this.arQueryService.getArDateRange()
+    const arHourRange = this.arQueryService.getArDateRange()
     arShapes.subscribe((arShapes: ARShape[]) => {
       if (arShapes.length !== 0) {
-        this.setDateRange(arDateRange)
+        this.setDateRange(arHourRange)
         this.setArShape(arShapes)
       }
       else {
@@ -107,10 +102,10 @@ export class ArDisplayComponent implements OnInit {
     })
   }
 
-  private setDateRange(arDateRange: number[]): void {
+  private setDateRange(arHourRange: number[]): void {
     const broadcastChange = false
-    const startDate = this.formatDate(this.arDate.clone().add(arDateRange[0], 'h')) //make sure to clone and format date correctly
-    const endDate = this.formatDate(this.arDate.clone().add(arDateRange[1], 'h'))
+    const startDate = this.arQueryService.formatDate(this.arDate.clone().add(arHourRange[0], 'h')) //make sure to clone and format date correctly
+    const endDate = this.arQueryService.formatDate(this.arDate.clone().add(arHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     this.arQueryService.sendSelectedDate(dateRange, broadcastChange)
   }

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { Options } from 'nouislider'
-import { ArQueryService } from './../../ar-query.service'
+import { ArQueryService } from '../../ar-query.service'
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-ar-date-range',
-  templateUrl: './ar-date-range.component.html',
-  styleUrls: ['./ar-date-range.component.css'],
+  selector: 'app-ar-hour-range',
+  templateUrl: './ar-hour-range.component.html',
+  styleUrls: ['./ar-hour-range.component.css'],
   encapsulation: ViewEncapsulation.Emulated //add to set styles as global
 })
-export class ArDateRangeComponent implements OnInit {
+export class ArHourRangeComponent implements OnInit {
   private config: Options;
   public sliderRange: number[];
   private lRange: number;

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArShapePopupComponent } from './ar-shape-popup.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ArShapePopupComponent', () => {
   let component: ArShapePopupComponent;
@@ -8,7 +9,8 @@ describe('ArShapePopupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ArShapePopupComponent ]
+      declarations: [ ArShapePopupComponent ],
+      imports: [ RouterTestingModule ]
     })
     .compileComponents();
   }));

@@ -65,10 +65,4 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arQueryService.sendDeepToggleMsg(this.onlyDeep);
   }
 
-  mapProjChange(proj: string): void {
-    this.proj = proj
-    this.arQueryService.sendProj(proj)
-  }
-
-
 }
