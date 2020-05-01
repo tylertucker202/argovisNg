@@ -9,18 +9,55 @@ import * as L from "leaflet";
 //import { geoJSON, GeoJSON } from 'leaflet';
 
 import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
 
 describe('QueryService', () => {
+  let route: ActivatedRoute;
+  let queryParamsDefault: Object;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ QueryService ],
       imports: [ RouterTestingModule ]
     });
+
+    route = TestBed.get(ActivatedRoute)
+    queryParamsDefault = {
+                         mapProj: 'WM',
+                         presRange: '[0,2000]', 
+                         selectionStartDate: "2010-01-01T00",
+                         selectionEndDate: "2010-01-14T00", 
+                         threeDayEndDate: "2010-01-14",
+                         includeRealtime: "true",
+                         onlyBGC: "true", 
+                         onlyDeep: "true",
+                         threeDayToggle: "true",
+                       } 
   });
 
   it('should be created', inject([QueryService], (service: QueryService) => {
     expect(service).toBeTruthy();
   }));
+
+  it('should set url with state', done => {
+    const queryParamsDefaultKeys = Object.keys(queryParamsDefault)
+    const qpdkStr = JSON.stringify(queryParamsDefaultKeys.sort())
+    inject([QueryService], (service: QueryService) => {
+      service.setURL()
+      route.queryParamMap.subscribe( params => {
+        const paramsStr = JSON.stringify(params.keys.sort())
+        const equal = paramsStr === qpdkStr 
+        if (params.keys.length == 0 ) {
+          console.log('no parameters set. not testing')
+        }
+        else {
+          console.log('here be parameter keys')
+          expect(paramsStr).toEqual(qpdkStr)
+        }
+        done();
+      })
+    })();
+  });
+
 
   it('should be emit a change upon emit', inject([QueryService], (service: QueryService) => {
     service.change

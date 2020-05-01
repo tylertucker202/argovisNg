@@ -43,13 +43,13 @@ export class ArHourRangeComponent implements OnInit {
     })
   }
 
-  public minValuechange(newLowPres: number ): void {
+  private minValuechange(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.updateSelectDates();
   }
 
-  public maxValuechange(newUpPres: number ): void {
+  private maxValuechange(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
     this.updateSelectDates();

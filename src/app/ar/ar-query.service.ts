@@ -23,14 +23,10 @@ export class ArQueryService extends QueryService {
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
-
-    // const presRange = [0, 2000]
-    // this.sendPres(presRange, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arHourRange = [-18, 18]
-    let selectionDateRange: DateRange
     this.sendDisplayGlobally(true, broadcastChange)
-    selectionDateRange = {
+    const selectionDateRange: DateRange = {
                           startDate: arDate.add(arHourRange[0], 'hours').format('YYYY-MM-DD'),
                           endDate: arDate.add(arHourRange[1], 'hours').format('YYYY-MM-DD'),
                           label: 'initial arMode date range'
@@ -38,10 +34,6 @@ export class ArQueryService extends QueryService {
     this.sendSelectedDate(selectionDateRange, broadcastChange)
     this.sendArDate(arDate)
     this.sendArDateRange(arHourRange)
-  }
-
-  public triggerClearLayers(): void {
-    this.clearLayers.emit()
   }
 
   public triggerResetToStart(): void {
