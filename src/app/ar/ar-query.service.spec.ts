@@ -4,6 +4,7 @@ import { ArQueryService } from './ar-query.service';
 import { Router, ActivatedRoute} from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing';
 import { query } from '@angular/animations';
+import { filter } from 'rxjs/operators';
 
 describe('ArQueryService', () => {
   let service: ArQueryService;
@@ -34,7 +35,7 @@ describe('ArQueryService', () => {
     expect(service).toBeTruthy();
   });  
 
-  it('should be emit a change upon emit', inject([ArQueryService], (service: ArQueryService) => {
+  it('should be emit a change upon emit', () => {
     service.change
     .subscribe(msg => {
        expect(msg).toEqual('hello');
@@ -42,24 +43,17 @@ describe('ArQueryService', () => {
 
     service.change.emit('hello')
 
-  }));
+  });
 
   it('should set url with state', done => {
     const queryParamsDefaultKeys = Object.keys(queryParamsDefault)
-    inject([ArQueryService], (service: ArQueryService) => {
       service.setURL()
-      route.queryParamMap.subscribe( params => {
-        const equal = params.keys === queryParamsDefaultKeys 
-        if (params.keys.length == 0 ) {
-          console.log('no parameters set. not testing')
-        }
-        else {
-          console.log('here be parameter keys')
-          expect(params.keys).toEqual(queryParamsDefaultKeys)
-        }
+      route.queryParamMap.pipe(
+        filter(params => !!params.keys.length), // filter out any emissions where keys is an empty array.
+      ).subscribe( params => {
+        expect(params.keys).toEqual(queryParamsDefaultKeys);
         done();
       })
-    })();
-  });
+  })
 
 });
