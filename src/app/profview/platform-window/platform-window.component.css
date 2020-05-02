@@ -1,5 +1,5 @@
 #platform-window {
-    width: 1400px;
+    width: 1200px;
     margin-left: 20px;
 }
 
@@ -10,4 +10,8 @@
 
 .thick {
     font-weight: bold;
+}
+
+.left-align-forced {
+    width: 100%;
 }
