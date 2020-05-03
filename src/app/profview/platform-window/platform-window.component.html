@@ -1,8 +1,8 @@
 <div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
-<mat-grid-list id=platform-grid cols="4" gutterSize="0px" rowHeight="30px">
+<mat-grid-list id=platform-grid cols="4" gutterSize="0px" rowHeight="50px">
     <mat-grid-tile
         [colspan]="1"
-        [rowspan]="1"><h4 class="left-align-forced">Platform Number: {{platMeta.platform_number}}</h4>
+        [rowspan]="1"><p id="thick" class="left-align-forced">Platform Number: {{platMeta.platform_number}}</p>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
@@ -10,7 +10,9 @@
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="1"><p class="left-align-forced">Number of profiles: {{platMeta.number_of_profiles}}</p>
+        [rowspan] ="1"><p class="left-align-forced">Number of profiles: {{platMeta.number_of_profiles}}
+                       <br /> See table below for profile information.
+        </p>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
@@ -18,11 +20,11 @@
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="1"><p class="left-align-forced">Dac: {{platMeta.dac}}</p>
+        [rowspan] ="1"><p class="left-align-forced">PI: {{platMeta.PI_NAME}}</p>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
-        [rowspan] ="1"><p class="left-align-forced">PI: {{platMeta.PI_NAME}}</p>
+        [rowspan] ="1"><p class="left-align-forced">Dac: {{platMeta.dac}}</p>
     </mat-grid-tile>
     <mat-grid-tile
         [colspan]="1"
@@ -37,5 +39,4 @@
     [rowspan] ="1"><p class="left-align-forced" *ngIf="statParamsList">Station Parameters: {{statParamsList}}</p>
     </mat-grid-tile>
 </mat-grid-list>
-<p class="left-align-forced">See table below for profile information.</p>
 </div>

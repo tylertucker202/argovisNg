@@ -1,13 +1,5 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { QueryService } from './query.service';
-
-import "leaflet";
-import "leaflet-draw";
-import "proj4leaflet";
-
-import * as L from "leaflet";
-//import { geoJSON, GeoJSON } from 'leaflet';
-
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators'
