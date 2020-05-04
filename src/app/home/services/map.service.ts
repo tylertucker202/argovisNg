@@ -4,117 +4,124 @@ import { PopupCompileService } from './popup-compile.service'
 import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
 
 import 'leaflet'
-import 'proj4leaflet'
-import 'arc'
-import 'leaflet-arc'
-import 'leaflet-graticule'
 import '../../../ext-js/leaflet.draw-arc-src.js'
-import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
-import 'leaflet-ajax'
-
+import * as msp from './map.service.parameters'
 declare const L;
-import { ChromaStatic } from "chroma-js"
-declare const chroma: ChromaStatic
-
 
 @Injectable()
 export class MapService {
   public baseMaps: any;
   public drawnItems = L.featureGroup();
-
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
-
   private WMstartView = [20, -150]
   private WMstartZoom = 3
   private SSPstartView = [-89, .1]
   private SSPstartZoom = 4
   private NSPstartView =  [89, .1]
   private NSPstartZoom = 4
+  public shapeOptions =   {color: '#983fb2', weight: 4, opacity: .5}
+  private worldStyle = msp.worldStyle
+  public sStereo = msp.sStereo 
+  public nStereo = msp.nStereo
+  private satelliteMap = msp.satelliteMap
+  private googleMap = msp.googleMap
+  private esri_OceanBasemap = msp.esri_OceanBasemap
+  private gebco = msp.gebco
+  private gebco_2 = msp.gebco_2 
+  private Hydda_Base = msp.Hydda_Base
+  private Stamen_TonerLite = msp.Stamen_TonerLite
+  private Stamen_TonerBackground = msp.Stamen_TonerBackground
+  private Esri_WorldGrayCanvas = msp.Esri_WorldGrayCanvas
+  private CartoDB_Positron = msp.CartoDB_Positron
+  private graticuleDark = msp.graticuleDark
+  private graticuleLight = msp.graticuleLight
+  private curvedGraticule = msp.curvedGraticule
+  public compileService: PopupCompileService
 
-  public shapeOptions =   {color: '#983fb2', //purple: #983fb2
-  weight: 4,
-  opacity: .5}
+  public gridDrawOptions = {
+    position: 'topright',
+    draw: {
+      polygon: <false> false,
+      rectangle: { shapeOptions: {
+                    color: '#983fb2',
+                    weight: 4, 
+                    fill: false,
+                    opacity: .5,
+                    }
+                  },
+      polyline: <false> false,
+      lineString: <false> false,
+      marker: <false> false,
+      circlemarker: <false> false, 
+      circle: <false> false
+    },
+    edit: {
+      featureGroup: this.drawnItems,
+      polygon: {
+        allowIntersection: <false> false
+      }
+    },
+  }
 
+  public drawOptions = {
+    position: 'topleft',
+    draw: {
+      polygon: {
+          allowIntersection: <false> false,
+          shapeOptions: {
+            color: '#983fb2',
+            weight: 4
+          },
+      },
+      rectangle: <false> false,
+      polyline: <false> false,
+      lineString: <false> false,
+      marker: <false> false,
+      circlemarker: <false> false, 
+      circle: <false> false
+    },
+    edit: {
+      featureGroup: this.drawnItems,
+      polygon: {
+        allowIntersection: <false> false
+      }
+    },
+  }
 
-  public sStereo = new L.Proj.CRS('EPSG:3411',
-                                  '+proj=stere '+
-                                  '+lat_0=-90 +lon_0=-45 +lat_ts=80'+
-                                  '+k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
-                                  {
-                                      resolutions: [
-                                      4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
-                                      ],
-                                      origin: [.1,.1]
-                                  });
-  public nStereo = new L.Proj.CRS('EPSG:3411',
-                                  '+proj=stere' +
-                                  '+lat_0=90 +lon_0=-45 +lat_ts=-80' +
-                                  ' +k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs',
-                                  {
-                                      resolutions: [
-                                      4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8
-                                      ],
-                                      origin: [.1,.1]
-                                  });
-  private worldStyle = {
-    "color": "#15b01a",
-    "fill-rule": "evenodd",
-    "weight": 1,
-    "fillColor": "#033500",
-    "opacity": 1,
-    "fillOpacity": .9,
+  public drawControl = new L.Control.Draw(this.drawOptions);
+  public gridDrawControl = new L.Control.Draw(this.gridDrawOptions);
+
+  public coordDisplay = L.control.coordinates({ position:"topright",
+                                                useDMS:true,
+                                                labelTemplateLat:"N {y}",
+                                                labelTemplateLng:"E {x}",
+                                                decimals:2,
+                                              });
+  
+  public scaleDisplay = L.control.scale();
+  constructor(public injector: Injector) { 
+    this.baseMaps = {
+      esri: this.satelliteMap,
+      ocean: this.esri_OceanBasemap,
+      google: this.googleMap,
+      gebco: this.gebco,
+      gebco2: this.gebco_2,
+      esriGrey: this.Esri_WorldGrayCanvas,
+      hydda: this.Hydda_Base,
+      StamenLite: this.Stamen_TonerLite,
+      StamenBlack: this.Stamen_TonerBackground,
+      cartoDB: this.CartoDB_Positron
     };
-  private satelliteMap = new L.TileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-  });
-  private googleMap = new L.TileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}',
-    {attribution: 'google'
-  });
-  private esri_OceanBasemap = new L.TileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
-    {attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-  });
+    this.compileService = this.injector.get(PopupCompileService)
+  }
 
-  private gebco = new L.TileLayer.WMS('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
-    layers: 'GEBCO_2019_GRID',
-    attribution: 'WMS for the GEBCO_2019 global bathymetric grid'
-    });
+  public appRef: ApplicationRef;
 
-  private gebco_2 = new L.TileLayer.WMS('https://www.gebco.net/data_and_products/gebco_web_services/2019/mapserv?', {
-    layers: 'GEBCO_2019_GRID_2',
-    attribution: 'WMS for the GEBCO_2019 global bathymetric grid. This layers displays the GEBCO_2019 Grid as an image colour-shaded for elevation'
-    });
-
-  private Hydda_Base = new L.TileLayer('https://{s}.tile.openstreetmap.se/hydda/base/{z}/{x}/{y}.png', {
-    attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  });
-
-  private Stamen_TonerLite = new L.TileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-  });
-
-  private Stamen_TonerBackground = new L.TileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}{r}.{ext}', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-  });
-
-  private Esri_WorldGrayCanvas = new L.TileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-    maxZoom: 16
-  });
-
-  private CartoDB_Positron = new L.TileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
-  });
+  public init(appRef: ApplicationRef): void {
+    this.appRef = appRef;
+    this.compileService.configure(this.appRef);
+  }
 
   public generateMap(this, proj: string, gridMap=false): L.Map {
     switch(proj) {
@@ -191,43 +198,6 @@ export class MapService {
     return map
   };
 
-  private graticuleDark = L.latlngGraticule({
-  showLabel: true,
-  color: '#000000',
-  opacity: .5,
-  zoomInterval: [
-    {start: 0, end: 4, interval: 30},
-    {start: 4, end: 5, interval: 10},
-    {start: 5, end: 7.5, interval: 5},
-    {start: 7.5, end: 12, interval: 1}
-    ]
-  });
-  
-  private graticuleLight = L.latlngGraticule({
-    showLabel: true,
-    color: '#aaa',
-    opacity: 1,
-    zoomInterval: [
-      {start: 0, end: 4, interval: 30},
-      {start: 4, end: 5, interval: 10},
-      {start: 5, end: 7.5, interval: 5},
-      {start: 7.5, end: 12, interval: 1}
-      ]
-  });
-
-  private curvedGraticule = L.latlngGraticule({
-    showLabel: true,
-    latLineCurved: 1,
-    weight: 3,
-    lngLineCurved: 1,
-    zoomInterval: [
-      {start: 0, end: 4, interval: 30},
-      {start: 4, end: 5, interval: 10},
-      {start: 5, end: 7.5, interval: 5},
-      {start: 7.5, end: 13, interval: 1}
-      ]
-    });
-
   public getGraticule(basemapName: string) {
     switch(basemapName) {
       case 'esri': {
@@ -248,93 +218,6 @@ export class MapService {
       }
     }
   }
-
-  public compileService: PopupCompileService
-
-  constructor(public injector: Injector) { 
-    this.baseMaps = {
-      esri: this.satelliteMap,
-      ocean: this.esri_OceanBasemap,
-      google: this.googleMap,
-      gebco: this.gebco,
-      gebco2: this.gebco_2,
-      esriGrey: this.Esri_WorldGrayCanvas,
-      hydda: this.Hydda_Base,
-      StamenLite: this.Stamen_TonerLite,
-      StamenBlack: this.Stamen_TonerBackground,
-      cartoDB: this.CartoDB_Positron
-    };
-    this.compileService = this.injector.get(PopupCompileService)
-  }
-
-  public appRef: ApplicationRef;
-
-  public init(appRef: ApplicationRef): void {
-    this.appRef = appRef;
-    this.compileService.configure(this.appRef);
-  }
-
-  public gridDrawOptions = {
-    position: 'topright',
-    draw: {
-      polygon: <false> false,
-      rectangle: { shapeOptions: {
-                    color: '#983fb2',
-                    weight: 4, 
-                    fill: false,
-                    opacity: .5,
-                    }
-                  },
-      polyline: <false> false,
-      lineString: <false> false,
-      marker: <false> false,
-      circlemarker: <false> false, 
-      circle: <false> false
-    },
-    edit: {
-      featureGroup: this.drawnItems,
-      polygon: {
-        allowIntersection: <false> false
-      }
-    },
-  }
-
-  public drawOptions = {
-    position: 'topleft',
-    draw: {
-      polygon: {
-          allowIntersection: <false> false,
-          shapeOptions: {
-            color: '#983fb2',
-            weight: 4
-          },
-      },
-      rectangle: <false> false,
-      polyline: <false> false,
-      lineString: <false> false,
-      marker: <false> false,
-      circlemarker: <false> false, 
-      circle: <false> false
-    },
-    edit: {
-      featureGroup: this.drawnItems,
-      polygon: {
-        allowIntersection: <false> false
-      }
-    },
-  }
-
-  public drawControl = new L.Control.Draw(this.drawOptions);
-  public gridDrawControl = new L.Control.Draw(this.gridDrawOptions);
-
-  public coordDisplay = L.control.coordinates({ position:"topright",
-                                                useDMS:true,
-                                                labelTemplateLat:"N {y}",
-                                                labelTemplateLng:"E {x}",
-                                                decimals:2,
-                                              });
-  
-  public scaleDisplay = L.control.scale();
 
   public getTransformedShape(shape: number[][]): number[][][] {
     //takes [lat long] array and transforms it into a [lng lat] nested array 

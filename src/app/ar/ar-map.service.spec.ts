@@ -5,7 +5,7 @@ import { PopupCompileService } from '../home/services/popup-compile.service';
 import 'leaflet'
 declare const L
 
-fdescribe('ArMapService', () => {
+describe('ArMapService', () => {
   let service: ArMapService
   let fGroup: L.FeatureGroup
   beforeEach(() => {

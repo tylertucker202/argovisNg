@@ -4,7 +4,7 @@ import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
 import 'leaflet'
 declare const L
-fdescribe('MapService', () => {
+describe('MapService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ MapService, ShapePopupComponent, PopupCompileService]
