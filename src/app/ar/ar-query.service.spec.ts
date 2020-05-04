@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators';
 
 import * as moment from 'moment'
 
-fdescribe('ArQueryService', () => {
+describe('ArQueryService', () => {
   let service: ArQueryService;
   let router: Router;
   let route: ActivatedRoute;

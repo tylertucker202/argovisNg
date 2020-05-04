@@ -2,8 +2,9 @@ import { TestBed, inject } from '@angular/core/testing';
 import { MapService } from './map.service';
 import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
 import { PopupCompileService } from './popup-compile.service';
-
-describe('MapService', () => {
+import 'leaflet'
+declare const L
+fdescribe('MapService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ MapService, ShapePopupComponent, PopupCompileService]
@@ -54,5 +55,17 @@ describe('MapService', () => {
     expect(tShape3).toEqual(eShape3);
   }));
 
-
+  it('should create and add popup window to feature group',  inject([MapService], (service: MapService)=> {
+    const shape2 = [[ -192.65625, 26.74561 ],
+                    [ -192.65625, 37.300275 ],
+                    [ -162.773438, 37.300275 ],
+                    [ -162.773438, 26.74561 ],
+                    [ -192.65625, 26.74561 ]]
+    const latLngs = shape2.map( coord => {return L.latLng(coord[1], coord[1])})
+    const lshape = L.polygon(latLngs)
+    let fGroup = L.featureGroup()
+    expect(fGroup.getLayers().length).toEqual(0)    
+    service.popupWindowCreation(lshape, fGroup)
+    expect(fGroup.getLayers().length).toEqual(1)
+  }))
 });

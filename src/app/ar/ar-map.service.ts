@@ -10,6 +10,7 @@ import './../../ext-js/leaflet.draw-arc-src.js'
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
 import 'leaflet-ajax'
 
+import { Feature, Polygon } from 'geojson'
 declare const L
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,8 @@ export class ArMapService extends MapService {
                             opacity: .5
                           }
 
-  public arPopupWindowCreation = function(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
-    const feature = layer.toGeoJSON()
+  public arPopupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void {
+    const feature = layer.toGeoJSON() as Feature<Polygon>
     const shape = this.getLatLngFromFeature(feature)
     const transformedShape = this.getTransformedShape(shape);
     layer.bindPopup(null);
