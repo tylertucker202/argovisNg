@@ -45,26 +45,30 @@ export class ShapePopupComponent implements OnInit {
     this.pageToggle = pageToggle
   }
 
-  private goToSelectionPage(goToPage: boolean): void {
-
-    let windowURL = '/selection/profiles'
+  private generateURL(goToPage: boolean): string {
+    let url = '/selection/profiles'
     if (goToPage) {
-      windowURL += '/page'
+      url += '/page'
     }
     let dates = this.queryService.getSelectionDates();
-    windowURL += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
+    url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
     if (this.presRangeToggle) {
       const presRange = this.queryService.getPresRange();
-      windowURL += '&presRange='+JSON.stringify(presRange)
+      url += '&presRange='+JSON.stringify(presRange)
     }
     if (this.bgcOnlyToggle) {
-      windowURL += '&bgcOnly=true'
+      url += '&bgcOnly=true'
     }
     if (this.deepOnlyToggle) {
-      windowURL += '&deepOnly=true'
+      url += '&deepOnly=true'
     }
-    windowURL += '&shape='+JSON.stringify(this.transformedShape) 
-    window.open(windowURL,"_blank")
+    url += '&shape='+JSON.stringify(this.transformedShape)
+    return url 
+  }
+
+  private goToSelectionPage(goToPage: boolean): void {
+    const url = this.generateURL(goToPage)
+    window.open(url,"_blank")
   }
 
 

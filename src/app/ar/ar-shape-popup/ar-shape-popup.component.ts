@@ -47,31 +47,24 @@ export class ArShapePopupComponent implements OnInit {
     this.arQueryService.arEvent.emit(this.shape)
   }
 
-  private goToSelectionPage(goToPage: boolean): void {
- 
-    let windowURL = '/selection/profiles'
+  private generateURL(goToPage: boolean): string {
+    let url = '/selection/profiles'
     if (goToPage) {
-      windowURL += '/page'
+      url += '/page'
     }
-    let dates = this.arQueryService.getArDateAsDateRange()
-    windowURL += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
+    let dates = this.arQueryService.getSelectionDates();
+    url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
     if (this.bgcOnlyToggle) {
-      windowURL += '&bgcOnly=true'
+      url += '&bgcOnly=true'
     }
     if (this.deepOnlyToggle) {
-      windowURL += '&deepOnly=true'
+      url += '&deepOnly=true'
     }
-
-    windowURL += '&shape='+JSON.stringify(this.transformedShape) 
-    window.open(windowURL,"_blank")
+    url += '&shape='+JSON.stringify(this.transformedShape)
+    return url 
   }
 
-  private goToShapeJson(): void {
-    const windowURL = '/arShapes/findByID?_id=' + this.shape_id
-    window.open(windowURL,"_blank")
-  } 
-
-  private goToHomePage(): void {
+  private generateHomepageURL(): string {
     let url = '/ng/home?'
     const dateRange = this.arQueryService.getArDateAsDateRange()
     url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
@@ -80,6 +73,21 @@ export class ArShapePopupComponent implements OnInit {
      '&onlyDeep=' + JSON.stringify(this.arQueryService.getDeepToggle()) + '&threeDayToggle=false'
     const shapeString = JSON.stringify(this.shape)
     url += '&shapes=' + shapeString
+     return url
+  }
+
+  private goToSelectionPage(goToPage: boolean): void {
+    const url = this.generateURL(goToPage)
+    window.open(url,"_blank")
+  }
+
+  private goToShapeJson(): void {
+    const windowURL = '/arShapes/findByID?_id=' + this.shape_id
+    window.open(windowURL,"_blank")
+  } 
+
+  private goToHomePage(): void {
+    const url = this.generateHomepageURL()
     window.open(url, "_blank")
   }
 }

@@ -26,4 +26,25 @@ describe('ShapePopupComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should generate selection page url properly', () => {
+    let url = component['generateURL'](false)
+
+    expect(url.includes('startDate=')).toEqual(true)
+    expect(url.includes('endDate')).toEqual(true)
+    expect(url.includes('/page')).toEqual(false)
+    url = component['generateURL'](true)
+    expect(url.includes('/page')).toEqual(true)
+    expect(url.includes('&presRange=[0,2000]')).toEqual(true)
+    expect(url.includes('&bgcOnly=true')).toEqual(false)
+    expect(url.includes('&deepOnly=true')).toEqual(false)
+
+    component['presRangeChange'](false)
+    component['bgcOnlyChange'](true)
+    component['deepOnlyChange'](true)
+    url = component['generateURL'](true)
+    expect(url.includes('&presRange=[0,2000]')).toEqual(false)
+    expect(url.includes('&bgcOnly=true')).toEqual(true)
+    expect(url.includes('&deepOnly=true')).toEqual(true)
+  })
 });
