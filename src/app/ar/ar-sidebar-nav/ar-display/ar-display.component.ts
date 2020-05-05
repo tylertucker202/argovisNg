@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { ArServiceService } from '../../ar-service.service'
+import { ArShapeService } from '../../ar-shape.service'
 import { ArQueryService } from '../../ar-query.service'
 import { ArMapService } from './../../ar-map.service'
 import { ARShape } from '../../../home/models/ar-shape'
@@ -21,7 +21,7 @@ export interface DropDownSelection {
 })
 export class ArDisplayComponent implements OnInit {
   
-  constructor(private arService: ArServiceService,
+  constructor(private arService: ArShapeService,
               private arQueryService: ArQueryService,
               private arMapService: ArMapService,
               private notifierService: NotifierService ) { this.notifier = notifierService }
@@ -117,7 +117,7 @@ export class ArDisplayComponent implements OnInit {
     let shape_ids = []
     for(let idx=0; idx<arShapes.length; idx++){
       let sa = arShapes[idx].geoLocation.coordinates
-      sa = this.arService.swapCoords(sa)
+      sa = sa.map(coord => ([coord[1], coord[0]]))
       const shape_id = arShapes[idx]._id
       shape_ids.push(shape_id)
       shapeArrays.push(sa)
@@ -138,6 +138,6 @@ export class ArDisplayComponent implements OnInit {
       const polygon = shapes[idx][1] as L.Polygon
       this.arMapService.arPopupWindowCreation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
     }
-    this.arQueryService.sendARShapes(shapeArrays)
+    this.arQueryService.sendArShapes(shapeArrays)
   }
 }

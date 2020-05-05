@@ -1,4 +1,16 @@
 import { ARShape } from '../home/models/ar-shape'
+
+
+  export const mockShapeSimple: ARShape = {
+    _id: "1_262992.0",
+    shapeId: 1,
+    geoLocation: {
+      "type" : "Polygon",
+      "coordinates" : [[-5, -5],[-5, 5],[5, 5],[5, -5],[-5,-5]]
+    },
+    date: new Date("2010-01-01T00:00:00Z")
+  }
+
   export const mockShapeComplex: ARShape = {_id: "18_262992.0",
   shapeId: 18,
   geoLocation: {

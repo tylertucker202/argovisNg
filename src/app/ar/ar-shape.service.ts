@@ -3,20 +3,12 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ARShape } from '../home/models/ar-shape'
 import * as moment from 'moment';
-import { mockShapeComplex } from './ar-service.parameters'
+import { mockShapeComplex } from './ar-shape.parameters'
 @Injectable({
   providedIn: 'root'
 })
-export class ArServiceService {
-  private mockShapeSimple: ARShape = {
-    _id: "1_262992.0",
-    shapeId: 1,
-    geoLocation: {
-      "type" : "Polygon",
-      "coordinates" : [[-5, -5],[-5, 5],[5, 5],[5, -5],[-5,-5]]
-    },
-    date: new Date("2010-01-01T00:00:00Z")
-  }
+
+export class ArShapeService {
 
   private mockShapeComplex: ARShape = mockShapeComplex
 
@@ -32,9 +24,4 @@ export class ArServiceService {
     return this.http.get<ARShape[]>(url)
   }
 
-  public swapCoords(shape: number[][]): number[][] {
-    //takes [lng lat] array and transforms it into a [lat lng] nested array 
-    const ts = shape.map(coord => ([coord[1], coord[0]]))
-    return(ts)
-  }
 }

@@ -103,7 +103,7 @@ export class ArQueryService extends QueryService {
   public getArDate(): moment.Moment {
     return this.arDate
   }
-  public sendARShapes(data: number[][][], broadcastChange=true): void {
+  public sendArShapes(data: number[][][], broadcastChange=true): void {
     let msg = 'ar shape'
     this.arShapes = data
     if (broadcastChange) { this.change.emit('ar shape change')}

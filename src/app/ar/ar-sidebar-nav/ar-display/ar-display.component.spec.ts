@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArDisplayComponent } from './ar-display.component';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { ArServiceService } from '../../ar-service.service'
+import { ArShapeService } from '../../ar-shape.service'
 import { MapService } from '../../../home/services/map.service'
 import { MaterialModule } from '../../../material/material.module'
 import { MatDialogRef } from '@angular/material/dialog';
@@ -12,6 +12,8 @@ import { PopupCompileService } from '../../../home/services/popup-compile.servic
 import { NotifierService, NotifierModule } from 'angular-notifier';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { mockShapeComplex, mockShapeSimple } from './../../ar-shape.parameters'
 import * as moment from 'moment'
 fdescribe('ArDisplayComponent', () => {
   let component: ArDisplayComponent;
@@ -22,7 +24,7 @@ fdescribe('ArDisplayComponent', () => {
   let spySendArDateRange: jasmine.Spy;
   let spySetUrl: jasmine.Spy;
   let spySendThreeDayMsg: jasmine.Spy;
-  let spySendArShapes: jasmine.Spy;
+  let spyGetArShapes: jasmine.Spy;
   let spyGetArDate: jasmine.Spy;
   let spyReset: jasmine.Spy
   let defaultHour: number
@@ -34,7 +36,7 @@ fdescribe('ArDisplayComponent', () => {
       imports: [ MaterialModule, RouterTestingModule, NotifierModule, HttpClientTestingModule, BrowserAnimationsModule ],
       providers: [ {provide : MatDialogRef, useValue : {}},
          PopupCompileService,
-         ArServiceService, 
+         ArShapeService, 
          ArQueryService, 
          MapService,
          NotifierService
@@ -49,7 +51,7 @@ fdescribe('ArDisplayComponent', () => {
     spySendArDateRange = spyOn(arQueryService, 'sendArDateRange').and.callThrough()
     spySetUrl = spyOn(arQueryService, 'setURL').and.callThrough()
     spySendThreeDayMsg = spyOn(arQueryService, 'sendThreeDayMsg').and.callThrough()
-    spySendArShapes = spyOn(arQueryService, 'sendARShapes').and.callThrough()
+    spyGetArShapes = spyOn(arQueryService, 'getArShapes').and.callThrough()
     spyGetArDate = spyOn(arQueryService, 'getArDate').and.callThrough()
     spyReset = spyOn(arQueryService, 'triggerResetToStart').and.callThrough()
     arDateDefault = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
@@ -79,6 +81,8 @@ fdescribe('ArDisplayComponent', () => {
     component['incrementDay'](-1)
     expect(component['arDate']).toEqual(arDateDefault.add(-1, 'd'))
     expect(spySendArDate).toHaveBeenCalledTimes(2)
+
+    expect(component['arDate']).toEqual(arQueryService.getArDate())
   })
 
   it('should change date on drop down menu select', () => {
@@ -87,6 +91,8 @@ fdescribe('ArDisplayComponent', () => {
     component['timeChange'](21)
     expect(component['hour']).toEqual(21)
     expect(component['arDate']).toEqual(arDateDefault.add(21, 'h'))
+
+    expect(component['arDate']).toEqual(arQueryService.getArDate())
   })
 
   it('should change date on date select, preserving hour', () => {
@@ -99,6 +105,8 @@ fdescribe('ArDisplayComponent', () => {
     //check if the hour carried over
     expect(component['hour']).toEqual(hour)
     expect(component['arDate'].hour()).toEqual(hour)
+
+    expect(component['arDate']).toEqual(arQueryService.getArDate())
   })
 
   it('should change date on increment hour', () => {
@@ -108,6 +116,9 @@ fdescribe('ArDisplayComponent', () => {
     component['incrementHour'](-3)
     expect(component['arDate']).toEqual(arDateDefault.add(-3, 'h'))
     expect(spySendArDate).toHaveBeenCalledTimes(2)
+
+
+    expect(component['arDate']).toEqual(arQueryService.getArDate())
   })
 
   it('should reset to default on resetEvent', () => {
@@ -119,5 +130,17 @@ fdescribe('ArDisplayComponent', () => {
 
     expect(component['arDate']).toEqual(arDateDefault)
     expect(component['hour']).toEqual(defaultHour)
+  })
+
+  it('should set mock ar shapes in query service', () => {
+    console.log(spyGetArShapes)
+    console.log(arQueryService.getArShapes())
+    //expect(arQueryService.getArShapes().length).toEqual(0)
+    //component['setArShape']([mockShapeSimple, mockShapeComplex])
+    //expect(arQueryService.getArShapes().length).toEqual(2)
+  })
+
+  it('time should maintain local offset, ', () => {
+    expect(component['arDate']).toEqual(arQueryService.getArDate())
   })
 });
