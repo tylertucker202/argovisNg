@@ -11,12 +11,7 @@ addons:
     packages:
       - google-chrome-stable
       addons:
-        apt:
-          update: true
-          sources:
-            - google-chrome
-          packages:
-            - google-chrome-beta
+        chrome: stable
 
 cache:
   directories:
