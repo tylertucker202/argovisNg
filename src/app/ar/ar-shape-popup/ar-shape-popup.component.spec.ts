@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ArQueryService } from '../ar-query.service';
 import { DebugElement } from '@angular/core';
 
-fdescribe('ArShapePopupComponent', () => {
+describe('ArShapePopupComponent', () => {
   let component: ArShapePopupComponent;
   let fixture: ComponentFixture<ArShapePopupComponent>;
   let arQueryService: ArQueryService;

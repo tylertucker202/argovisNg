@@ -27,7 +27,7 @@ export class ArDisplayComponent implements OnInit {
               private notifierService: NotifierService ) { this.notifier = notifierService }
   private arDate: moment.Moment;
   private readonly notifier: NotifierService
-  private arFormDate = new FormControl( new Date( 2010, 0, 1, 0, 0, 0, 0) ) 
+  private arFormDate: FormControl
   
   private hour: number
   private MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
@@ -44,9 +44,9 @@ export class ArDisplayComponent implements OnInit {
   ];
 
   ngOnInit() { 
-    this.arDate = moment(this.arFormDate.value)
-    this.arQueryService.sendArDate(this.arDate)
-    this.hour = 0
+    this.arDate = this.arQueryService.getArDate()
+    this.arFormDate = new FormControl( this.arDate.toDate() )
+    this.hour = this.arDate.hour() 
     this.setArShapesAndDate()
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
       this.arDate = this.arQueryService.getArDate()
@@ -65,10 +65,12 @@ export class ArDisplayComponent implements OnInit {
 
   timeChange(hour: number): void {
     this.hour = hour
+    this.arDate.hour(this.hour)
+    this.dateChanged()
   }
 
-  calendarDateChanged(calDate: any): void {
-    this.arDate = moment(calDate)
+  calendarDateChanged(calDate: Date): void {
+    this.arDate = moment(calDate).hour(this.hour)
     this.dateChanged()
   }
 
