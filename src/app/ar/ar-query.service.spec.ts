@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators';
 import { DateRange } from './../../typeings/daterange'
 import * as moment from 'moment'
 
-describe('ArQueryService', () => {
+fdescribe('ArQueryService', () => {
   let service: ArQueryService;
   let router: Router;
   let route: ActivatedRoute;
