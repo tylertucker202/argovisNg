@@ -3,7 +3,7 @@ sudo: false
 
 language: node_js
 node_js:
-  - '12'
+  - '8'
 
 addons:
   apt:
@@ -11,6 +11,13 @@ addons:
       - google-chrome
     packages:
       - google-chrome-stable
+      addons:
+        apt:
+          update: true
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-beta
 
 cache:
   directories:
