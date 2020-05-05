@@ -44,7 +44,6 @@ export class ArShapePopupComponent implements OnInit {
     shapes? shapes.push(this.shape[0]) : shapes = this.shape
 
     this.arQueryService.sendShape(shapes, broadcastChange, toggle3DayOff)
-    this.arQueryService.arEvent.emit(this.shape)
   }
 
   private generateURL(goToPage: boolean): string {

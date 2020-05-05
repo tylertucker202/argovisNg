@@ -3,12 +3,13 @@ import { QueryService } from './../home/services/query.service'
 import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
 import { MapState } from './../../typeings/mapState'
+import { ARShape } from '../home/models/ar-shape'
 @Injectable({
   providedIn: 'root'
 })
 export class ArQueryService extends QueryService {
 
-  @Output() arEvent: EventEmitter<number[][][]> = new EventEmitter
+  @Output() arEvent: EventEmitter<string> = new EventEmitter
 
   private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private arShapes: number[][][]
@@ -41,6 +42,15 @@ export class ArQueryService extends QueryService {
     this.resetToStart.emit()
     this.setURL()
   }
+
+  public setSelectionDateRange(): void {
+    const broadcastChange = false
+    const startDate = this.formatDate(this.arDate.clone().add(this.arHourRange[0], 'h')) //make sure to clone and format date correctly
+    const endDate = this.formatDate(this.arDate.clone().add(this.arHourRange[1], 'h'))
+    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
+    this.sendSelectedDate(dateRange, broadcastChange)
+  }
+
 
   public setURL(): void {
 

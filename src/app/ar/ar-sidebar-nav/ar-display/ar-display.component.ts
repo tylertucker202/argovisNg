@@ -3,8 +3,6 @@ import { FormControl } from '@angular/forms'
 import { ArShapeService } from '../../ar-shape.service'
 import { ArQueryService } from '../../ar-query.service'
 import { ArMapService } from './../../ar-map.service'
-import { ARShape } from '../../../home/models/ar-shape'
-import { DateRange } from '../../../../typeings/daterange'
 import { NotifierService } from 'angular-notifier'
 
 import * as moment from 'moment';
@@ -47,12 +45,12 @@ export class ArDisplayComponent implements OnInit {
     this.arDate = this.arQueryService.getArDate()
     this.arFormDate = new FormControl( this.arDate.toDate() )
     this.hour = this.arDate.hour() 
-    this.setArShapesAndDate()
+    this.setArShapes()
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
       this.arDate = this.arQueryService.getArDate()
       this.arFormDate = new FormControl(this.arDate.toDate())
       this.hour = this.arDate.hour()
-      this.setArShapesAndDate()
+      this.setArShapes()
     })
   }
 
@@ -60,7 +58,7 @@ export class ArDisplayComponent implements OnInit {
     this.arFormDate = new FormControl(this.arDate.toDate())
     this.arQueryService.sendArDate(this.arDate)
     this.arQueryService.setURL()
-    this.setArShapesAndDate() //remove if you don't want to fire ar event
+    this.setArShapes() //remove if you don't want to fire ar event
   }
 
   timeChange(hour: number): void {
@@ -85,59 +83,11 @@ export class ArDisplayComponent implements OnInit {
     this.hour = this.arDate.hour()
   }
 
-  private setArShapesAndDate(): void {
+  private setArShapes(): void {
     this.arQueryService.sendThreeDayMsg(false, false)
-    this.arQueryService.clearLayers.emit('ar shape button pressed')
-
-    const dateString = this.arQueryService.formatDate(this.arDate)
+    this.arQueryService.clearLayers.emit('ar shapes being drawn')
+    this.arQueryService.arEvent.emit('ar shapes being drawn')
+  }
     
-    const arShapes = this.arService.getArShapes(dateString)
-    const arHourRange = this.arQueryService.getArDateRange()
-    arShapes.subscribe((arShapes: ARShape[]) => {
-      if (arShapes.length !== 0) {
-        this.setDateRange(arHourRange)
-        this.setArShape(arShapes)
-      }
-      else {
-          this.notifier.notify( 'warning', 'no ar shapes found for date selected' )
-      }
-    })
-  }
 
-  private setDateRange(arHourRange: number[]): void {
-    const broadcastChange = false
-    const startDate = this.arQueryService.formatDate(this.arDate.clone().add(arHourRange[0], 'h')) //make sure to clone and format date correctly
-    const endDate = this.arQueryService.formatDate(this.arDate.clone().add(arHourRange[1], 'h'))
-    const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
-    this.arQueryService.sendSelectedDate(dateRange, broadcastChange)
-  }
-
-  private setArShape(arShapes: ARShape[]) {
-    let shapeArrays = []
-    let shape_ids = []
-    for(let idx=0; idx<arShapes.length; idx++){
-      let sa = arShapes[idx].geoLocation.coordinates
-      sa = sa.map(coord => ([coord[1], coord[0]]))
-      const shape_id = arShapes[idx]._id
-      shape_ids.push(shape_id)
-      shapeArrays.push(sa)
-    }
-
-    const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.arShapeOptions)
-    const shapeType = 'atmospheric river shape'
-
-    let shapes = []
-    let idx = 0
-    shapeFeatureGroup.eachLayer( (layer: unknown) => {
-      const polygon = layer as L.Polygon
-      shapes.push([shape_ids[idx], polygon])
-      idx += 1
-    })
-    for(let idx=0; idx<shapes.length; idx++){
-      const shape_id = shapes[idx][0]
-      const polygon = shapes[idx][1] as L.Polygon
-      this.arMapService.arPopupWindowCreation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
-    }
-    this.arQueryService.sendArShapes(shapeArrays)
-  }
 }

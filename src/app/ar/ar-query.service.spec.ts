@@ -3,9 +3,9 @@ import {inject, TestBed  } from '@angular/core/testing';
 import { ArQueryService } from './ar-query.service';
 import { Router, ActivatedRoute} from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing';
-import { query } from '@angular/animations';
 import { filter } from 'rxjs/operators';
 
+import { DateRange } from './../../typeings/daterange'
 import * as moment from 'moment'
 
 describe('ArQueryService', () => {
@@ -125,5 +125,17 @@ describe('ArQueryService', () => {
     expect(service.getDisplayGlobally()).toEqual(!dispGlob)   
   })
 
+  it('should convert ar date and hour range into a date range for profile selection', () => {
+    const defaultSelectionDates = service.getSelectionDates()
+    const defaultArDate = { startDate: "2009-12-31T06:00:00Z", endDate: "2010-01-01T18:00:00Z", label: "" } as DateRange
+    expect(defaultSelectionDates.startDate === defaultArDate.startDate).toEqual(false)
+    expect(defaultSelectionDates.endDate === defaultArDate.endDate).toEqual(false)
+
+    service.setSelectionDateRange()
+
+    const selectionDates = service.getSelectionDates()
+    expect(selectionDates.startDate).toEqual(defaultArDate.startDate)
+    expect(selectionDates.endDate).toEqual(defaultArDate.endDate)
+  })
 
 });

@@ -59,7 +59,6 @@ export class MapCovarComponent implements OnInit {
 
     this.covarService.change
     .subscribe(msg => {
-       console.log('query changed: ' + msg);
        this.proj = this.covarService.getProj()
        this.covarService.buildDataUrl()
        this.removePoints()

@@ -2,6 +2,8 @@ import { Component, OnInit, Injector } from '@angular/core'
 import { MapComponent } from './../../home/map/map.component'
 import { ArQueryService } from './../ar-query.service'
 import { ArMapService } from './../ar-map.service'
+import { ArShapeService } from './../ar-shape.service'
+import { ARShape } from '../../home/models/ar-shape'
 import { ProfilePoints } from './../../home/models/profile-points'
 import * as L from "leaflet"
 @Component({
@@ -12,9 +14,11 @@ import * as L from "leaflet"
 export class ArMapComponent extends MapComponent implements OnInit {
   private arQueryService: ArQueryService
   private arMapService: ArMapService
+  private arShapeService: ArShapeService
   constructor(public injector: Injector) { super(injector)
                                            this.arQueryService = this.injector.get(ArQueryService)
                                            this.arMapService = this.injector.get(ArMapService)
+                                           this.arShapeService = this.injector.get(ArShapeService)
                                          }
 
   ngOnInit() {
@@ -46,7 +50,6 @@ export class ArMapComponent extends MapComponent implements OnInit {
 
     this.arQueryService.change
       .subscribe(msg => {
-        console.log('query changed in ar component: ' + msg)
         this.arQueryService.setURL()
         this.markersLayer.clearLayers()
         this.setPointsOnMap()
@@ -67,7 +70,56 @@ export class ArMapComponent extends MapComponent implements OnInit {
         //this.arMapService.arShapeItems.clearLayers()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
+    this.arQueryService.arEvent
+    .subscribe( (msg: string) => {
+      console.log('arEvent emitted')
+      const dateString = this.arQueryService.formatDate(this.arQueryService.getArDate())
+      const arShapes = this.arShapeService.getArShapes(dateString)
+      arShapes.subscribe((arShapes: ARShape[]) => {
+        if (arShapes.length !== 0) {
+          this.arQueryService.setSelectionDateRange() // for profiles
+          this.setArShape(arShapes)
+        }
+        else {
+            this.notifier.notify( 'warning', 'no ar shapes found for date selected' )
+        }
+      })
+    })
   }
+  
+  private convertArShapesToshapeArraysAndIds(arShapes: ARShape[]) {
+    let shapeArrays = []
+    let shape_ids = []
+    for(let idx=0; idx<arShapes.length; idx++){
+      let sa = arShapes[idx].geoLocation.coordinates
+      sa = sa.map(coord => ([coord[1], coord[0]]))
+      const shape_id = arShapes[idx]._id
+      shape_ids.push(shape_id)
+      shapeArrays.push(sa)
+    }
+    return [shapeArrays, shape_ids]
+  }
+
+  private setArShape(arShapes: ARShape[]) {
+    const [shapeArrays, shape_ids] = this.convertArShapesToshapeArraysAndIds(arShapes)
+    const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.arShapeOptions)
+    const shapeType = 'atmospheric river shape'
+
+    let shapes = []
+    let idx = 0
+    shapeFeatureGroup.eachLayer( (layer: unknown) => {
+      const polygon = layer as L.Polygon
+      shapes.push([shape_ids[idx], polygon])
+      idx += 1
+    })
+    for(let idx=0; idx<shapes.length; idx++){
+      const shape_id = shapes[idx][0]
+      const polygon = shapes[idx][1] as L.Polygon
+      this.arMapService.arPopupWindowCreation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
+    }
+    this.arQueryService.sendArShapes(shapeArrays)
+  }
+
   
   public setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.arQueryService.getShapes()

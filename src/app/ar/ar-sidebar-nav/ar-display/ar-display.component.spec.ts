@@ -15,7 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { mockShapeComplex, mockShapeSimple } from './../../ar-shape.parameters'
 import * as moment from 'moment'
-fdescribe('ArDisplayComponent', () => {
+describe('ArDisplayComponent', () => {
   let component: ArDisplayComponent;
   let fixture: ComponentFixture<ArDisplayComponent>;
   let arQueryService: ArQueryService;
