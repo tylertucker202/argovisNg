@@ -240,7 +240,6 @@ export class QueryService {
 
   public setMapState(this, key: string, value: string): void {
     const notifyChange = false
-    console.log('inside setMapState')
     switch(key) {
       case 'mapProj': {
         this.setProj(value)
