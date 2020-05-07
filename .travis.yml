@@ -19,3 +19,12 @@ install:
 
 script:
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+
+notifications:
+  email:
+    recipients:
+      - tyler.tucker@colorado.edu
+      - mscanderbeg@ucsd.edu
+      - donata.giglio@colorado.edu
+    on_success: never # default: change
+    on_failure: always # default: always
