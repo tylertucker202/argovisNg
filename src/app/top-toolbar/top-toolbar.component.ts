@@ -32,6 +32,11 @@ export class TopToolbarComponent implements OnInit {
     this.toolbarService.drawerToggle.emit(true)
   }
 
+  private goToHome(): void {
+    const url = '/ng/home'
+    window.open(url,"_blank")
+  }
+
 
 
 }
