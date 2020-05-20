@@ -291,7 +291,6 @@ export class MapComponent implements OnInit, OnDestroy {
           urlQuery += '&presRange='+JSON.stringify(presRange)
         }
         urlQuery += '&shape='+JSON.stringify(transformedShape)
-        //console.log(urlQuery)
         this.pointsService.getSelectionPoints(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.displayProfiles(selectionPoints, 'normalMarker')

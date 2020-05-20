@@ -20,10 +20,10 @@
       </mat-select>
     </mat-form-field>
     <mat-slide-toggle id="three-day-toggle" matTooltip="toggle on show global profiles within a three day window"
-      color="accent" [checked]="display3Day"
+      color="accent" [checked]="threeDayToggle"
       (change)="displayGlobalChange($event.checked)">Profiles in 3 days, globally
     </mat-slide-toggle>
-     <mat-form-field class="date-form" [hidden]="!display3Day">
+     <mat-form-field class="date-form" [hidden]="!threeDayToggle">
       <input matInput 
       matTooltip="display three day window of profiles ending on the selected date" 
       [matDatepicker]="picker"

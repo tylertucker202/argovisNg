@@ -29,11 +29,6 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
       this.onlyDeep = this.arQueryService.getDeepToggle()
       this.displayGlobally = this.arQueryService.getDisplayGlobally()
       this.proj = this.arQueryService.getProj()
-
-      let displayDate = new Date(this.arQueryService.getGlobalDisplayDate())
-      displayDate.setDate(displayDate.getDate())
-      displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
-      this.date = new FormControl(displayDate)
     })
   }
 

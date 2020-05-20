@@ -28,7 +28,7 @@ export class SidebarNavComponent implements OnInit {
   @Input() public includeRT: boolean
   @Input() public onlyBGC: boolean
   @Input() public onlyDeep: boolean
-  @Input() public display3Day: boolean
+  @Input() public threeDayToggle: boolean
   @Input() public proj: string
   public platformInput: string
   public projections: Projections[] = [
@@ -48,7 +48,7 @@ export class SidebarNavComponent implements OnInit {
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
-      this.display3Day = this.queryService.getThreeDayToggle()
+      this.threeDayToggle = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
       let displayDate = new Date(this.queryService.getGlobalDisplayDate())
@@ -64,8 +64,8 @@ export class SidebarNavComponent implements OnInit {
   }
 
   displayGlobalChange(checked: boolean): void {
-    this.display3Day = checked
-    this.queryService.sendThreeDayMsg(this.display3Day);
+    this.threeDayToggle = checked
+    this.queryService.sendThreeDayMsg(this.threeDayToggle);
   }
 
   bgcChange(checked: boolean): void {
