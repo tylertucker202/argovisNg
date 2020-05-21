@@ -112,7 +112,6 @@ describe('MapComponent', () => {
   })
 
   it('should have northern stereographic', () => {
-    //TODO: find out why getting false positives!
     queryService.setProj('NSP')
     expect(component['proj'] == 'NSP')
     expect(component['wrappedComponents'] == false)
@@ -124,7 +123,6 @@ describe('MapComponent', () => {
   })
 
   it('should have Default set', () => {
-    //TODO: find out why getting false positives!
     queryService.setProj('made up')
     expect(component['proj'] == 'WM')
     expect(component['wrappedComponents'] == true)
@@ -136,7 +134,6 @@ describe('MapComponent', () => {
   })
 
   it('should add and remove mock points', () => {
-    //TODO: find out why getting false positives!
     component.setMockPoints()
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length > 0)

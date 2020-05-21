@@ -58,7 +58,6 @@ export class ArMapComponent extends MapComponent implements OnInit {
       .subscribe( () => {
         this.arQueryService.clearShapes()
         this.markersLayer.clearLayers()
-        //this.arMapService.drawnItems.clearLayers()
         this.arMapService.arShapeItems.clearLayers()
         this.arQueryService.setURL()
       })
@@ -66,8 +65,8 @@ export class ArMapComponent extends MapComponent implements OnInit {
       .subscribe( () => {
         this.arQueryService.clearShapes()
         this.markersLayer.clearLayers()
-        this.arMapService.drawnItems.clearLayers()
-        //this.arMapService.arShapeItems.clearLayers()
+        // this.arMapService.drawnItems.clearLayers()
+        this.arMapService.arShapeItems.clearLayers()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
     this.arQueryService.arEvent
@@ -123,35 +122,41 @@ export class ArMapComponent extends MapComponent implements OnInit {
   
   public setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.arQueryService.getShapes()
-    if (shapeArrays) {
-      this.markersLayer.clearLayers()
-      let base = '/selection/profiles/map'
-      const daterange = this.arQueryService.getArDateAsDateRange()
-
-      shapeArrays.forEach( (shape) => {
-        const transformedShape = this.arMapService.getTransformedShape(shape)
-        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
-        urlQuery += '&shape='+JSON.stringify(transformedShape)
-
-        this.pointsService.getSelectionPoints(urlQuery)
-            .subscribe((selectionPoints: ProfilePoints[]) => {
-              if (selectionPoints.length == 0 && !this.arQueryService.getDisplayGlobally()) {
-                this.notifier.notify( 'info', 'no profile points found inside a shape' )
-              }
-              else {
-                this.displayProfiles(selectionPoints, 'normalMarker')
-              }
-              }, 
-            error => {
-              if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
-              console.log('error occured when selecting points: ', error)
-            })      
-        })
+    const displayGlobally = this.arQueryService.getDisplayGlobally()
+    if (shapeArrays && !displayGlobally) {
+      this.setShapeProfiles(shapeArrays, sendNotification)
     }
-    if (this.arQueryService.getDisplayGlobally()) {
+    if (displayGlobally) {
       this.setGlobalProfiles()
     }
   }
+
+  private setShapeProfiles(shapeArrays: number[][][], sendNotification=true): void { 
+    this.markersLayer.clearLayers()
+    let base = '/selection/profiles/map'
+    const daterange = this.arQueryService.getArDateAsDateRange()
+
+    shapeArrays.forEach( (shape) => {
+      const transformedShape = this.arMapService.getTransformedShape(shape)
+      let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
+      urlQuery += '&shape='+JSON.stringify(transformedShape)
+
+      this.pointsService.getSelectionPoints(urlQuery)
+          .subscribe((selectionPoints: ProfilePoints[]) => {
+            if (selectionPoints.length == 0 && !this.arQueryService.getDisplayGlobally()) {
+              this.notifier.notify( 'info', 'no profile points found inside a shape' )
+            }
+            else {
+              this.displayProfiles(selectionPoints, 'normalMarker')
+            }
+            }, 
+          error => {
+            if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
+            console.log('error occured when selecting points: ', error)
+          })      
+      })
+
+}
 
   private setGlobalProfiles(): void {
 

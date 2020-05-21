@@ -14,8 +14,8 @@ export class MapService {
   public drawnItems = L.featureGroup();
   public platformProfileMarkersLayer = L.featureGroup();
   public markersLayer = L.featureGroup()
-  private WMstartView = [20, -150]
-  private WMstartZoom = 3
+  public WMstartView = [20, -150]
+  public WMstartZoom = 3
   private SSPstartView = [-89, .1]
   private SSPstartZoom = 4
   private NSPstartView =  [89, .1]
