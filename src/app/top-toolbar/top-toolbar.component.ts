@@ -34,7 +34,7 @@ export class TopToolbarComponent implements OnInit {
 
   private goToHome(): void {
     const url = '/ng/home'
-    window.open(url,"_blank")
+    location.href = url;
   }
 
 
