@@ -9,11 +9,12 @@ import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule } from 'angular-plotly.js';
 import { PlatformWindowComponent } from './platform-window/platform-window.component';
 import { GlobeScatterComponent } from './globe-scatter/globe-scatter.component';
+import { ColorbarComponent } from './colorbar/colorbar.component';
  
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
-  declarations: [ProfviewComponent, TableComponent, ColorChartComponent, PlatformWindowComponent, GlobeScatterComponent],
+  declarations: [ProfviewComponent, TableComponent, ColorChartComponent, PlatformWindowComponent, GlobeScatterComponent, ColorbarComponent],
   imports: [
     CommonModule,
     MaterialModule,
