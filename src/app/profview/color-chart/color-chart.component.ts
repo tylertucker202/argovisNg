@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from './../profiles'
 import { GetProfilesService } from './../get-profiles.service'
 import { ChartService } from './../chart.service'
@@ -31,6 +31,7 @@ export class ColorChartComponent implements OnInit {
   private yLabel: string = 'pres'
   private revision: number = 0
   private readonly reduceMeas = 200
+  @Output() colorbarRange: [number, number] = [0, 1]
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
@@ -58,7 +59,7 @@ export class ColorChartComponent implements OnInit {
   } 
 
   makeChart(): void {
-    this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[]) => {
+    this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
       this.profileData = profileData
       this.setChart(this.profileData)
       this.revision += 1;
@@ -78,12 +79,23 @@ export class ColorChartComponent implements OnInit {
     }
     const dataArrays = this.chartService.makeColorChartDataArrays(profileData, this.yLabel, this.colorLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
     const measurements = this.chartService.makeColorChartMeasurements(dataArrays, this.yLabel, this.colorLabel, colorParams.units, colorscale)
+    this.colorbarRange = this.getMinMax(dataArrays[this.colorLabel])
+    console.log(this.colorbarRange)
     const trace = this.chartService.makeColorChartTrace(measurements, this.colorLabel, this.bgcPlatform)
 
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true
     }
+  }
+
+  getMinMax(darray: number[], round=3): [number, number] {
+    let min = Math.min(...darray)
+    let max = Math.max(...darray)
+
+    min = parseFloat(Number(min).toFixed(round))
+    max = parseFloat(Number(max).toFixed(round))
+    return [min, max]
   }
 
   cLabelChange(colorLabel: string): void {

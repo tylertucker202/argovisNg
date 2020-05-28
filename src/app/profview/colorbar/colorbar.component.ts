@@ -51,6 +51,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit {
     // this.domain = this.queryGridService.getGridDomain()
     // this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = chroma.brewer[this.colorScale]
+    console.log(this.colorArr)
     this.svg.remove();
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
     else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }

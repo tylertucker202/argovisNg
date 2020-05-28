@@ -19,7 +19,7 @@
     <button mat-icon-button matTooltip="Download data used to create this chart" (click)="downloadChartData()">
       <mat-icon>archive</mat-icon>
     </button>
-    <app-colorbar [id]="axis" [axis]="axis" [domain]="[0, 1]" colorScale='OrRd'></app-colorbar>
+    <app-colorbar [id]="axis" [axis]="axis" [domain]="colorbarRange" colorScale='OrRd'></app-colorbar>
     </div>
     <h5 align="center">{{chartTitle}}</h5>
     <plotly-plot *ngIf="graph" class='chart'
