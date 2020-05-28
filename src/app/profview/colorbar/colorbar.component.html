@@ -1,16 +1,15 @@
 
-<mat-label>Colorbar range:</mat-label>
-<div class='input-div'>
+<!-- <mat-label>Colorbar range:</mat-label> -->
     <mat-form-field>
     <input matInput matTooltip="sets minimum colorbar leve for raster selectionl"
-        class="colorbar-input" placeholder="min"
+        class="minInput" placeholder="min"
         value={{domain[0]}} type="number" 
-        id='minInput' (change)="minChange($event.target.value)">
+        (change)="minChange($event.target.value)">
     </mat-form-field>
+    <div class="middleColorbar" [id]="colorbarId"></div>
     <mat-form-field>
     <input matInput matTooltip="sets maximum colorbar level for raster selection" 
-        class="colorbar-input" placeholder="max"
+        class="maxInput" placeholder="max"
         value={{domain[1]}} type="number" 
-        id='maxInput' (change)="maxChange($event.target.value)">
+        (change)="maxChange($event.target.value)">
     </mat-form-field>
-</div>

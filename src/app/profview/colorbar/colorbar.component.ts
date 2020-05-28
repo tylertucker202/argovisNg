@@ -1,5 +1,5 @@
 
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, AfterViewInit  } from '@angular/core'
 import * as chroma from 'chroma'
 import 'd3'
 import 'd3-scale'
@@ -12,7 +12,7 @@ declare let d3: any
   templateUrl: './colorbar.component.html',
   styleUrls: ['./colorbar.component.css']
 })
-export class ColorbarComponent implements OnInit {
+export class ColorbarComponent implements OnInit, AfterViewInit {
   private colorArr: string[]
   private cbrange: number[]
   private cbarShift: string
@@ -24,11 +24,14 @@ export class ColorbarComponent implements OnInit {
   @Input() axis: string;
   @Input() domain: [number, number]
   @Input() colorScale: string
+  private colorbarId: string
   private inverseColorScale: boolean = false
   constructor( ) { }
 
   ngOnInit() {
-    this.cbrange = [0, 100] //pxls for colorbar
+    this.colorbarId = this.axis + "Colorbar"
+
+    this.cbrange = [0, 75] //pxls for colorbar
     this.ticks = 3;
     this.rectHeight = 20
     this.svgHeight = 50
@@ -36,23 +39,11 @@ export class ColorbarComponent implements OnInit {
     this.cbarShift = "10"
     console.log('axis: ', this.axis)
     this.colorArr = chroma.brewer[this.colorScale]
+  }
+
+  ngAfterViewInit() {
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
     else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
-
-    // this.queryGridService.change
-    //   .subscribe(msg => {
-    //     this.updateColorbar()
-    //     })
-    
-    // this.queryGridService.updateColorbar
-    //   .subscribe(msg => {
-    //     this.updateColorbar()
-    //   })
-
-    // this.queryGridService.resetToStart
-    //   .subscribe(msg => {
-    //     this.updateColorbar()
-    //   })
   }
 
   private updateColorbar() {
@@ -66,10 +57,12 @@ export class ColorbarComponent implements OnInit {
   }
 
   private createColorbar(colorArr: string[], domain: number[]) {
-
-    this.svg = d3.select("#"+this.axis).append("svg")
+    // console.log(this.axis, this.colorbarId)
+    // this.svg = d3.select("#" + this.axis).append("svg")
+    this.svg = d3.select("#" + this.colorbarId).append("svg")
     .attr("width", this.svgWidth)
     .attr("height", this.svgHeight)
+    .style("position", "inherit")
 
     let defs = this.svg.append("defs");
 

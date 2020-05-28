@@ -1,15 +1,17 @@
+.minInput {
+    float: left;
+    position: relative;
+}
 
-.left-input, .right-input {
+.middleColorbar {
+    width: 100px;
     display:inline-block;
-    width: 35px;
+    position: relative;
 }
 
-#minInput {
-    float: left
-}
-
-#maxInput {
-    float: right
+.maxInput {
+    float: right;
+    position: relative;
 }
 
 .input-div {
