@@ -1,6 +1,6 @@
 
-import { Component, OnInit, Input, AfterViewInit  } from '@angular/core'
-import * as chroma from 'chroma'
+import { Component, OnInit, Input, AfterViewInit, OnChanges, EventEmitter, Output  } from '@angular/core'
+import { ChartService } from '../chart.service'
 import 'd3'
 import 'd3-scale'
 
@@ -12,8 +12,7 @@ declare let d3: any
   templateUrl: './colorbar.component.html',
   styleUrls: ['./colorbar.component.css']
 })
-export class ColorbarComponent implements OnInit, AfterViewInit {
-  private colorArr: string[]
+export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
   private cbrange: number[]
   private cbarShift: string
   private ticks: number
@@ -23,43 +22,42 @@ export class ColorbarComponent implements OnInit, AfterViewInit {
   private svg: any
   @Input() axis: string;
   @Input() domain: [number, number]
-  @Input() colorScale: string
+  @Input() colorscale: [number, string][]
   private colorbarId: string
   private inverseColorScale: boolean = false
-  constructor( ) { }
+  @Output() domainChange = new EventEmitter<[number, number]>()
+  constructor( private chartService: ChartService ) { }
 
   ngOnInit() {
     this.colorbarId = this.axis + "Colorbar"
-
-    this.cbrange = [0, 75] //pxls for colorbar
+    this.cbrange = [0, 80] //pxls for colorbar
     this.ticks = 3;
     this.rectHeight = 20
     this.svgHeight = 50
-    this.svgWidth = '95%'
+    this.svgWidth = '100%'
     this.cbarShift = "10"
-    console.log('axis: ', this.axis)
-    this.colorArr = chroma.brewer[this.colorScale]
+    // console.log('axis: ', this.axis)
+    // console.log('colorscale:', this.colorscale)
   }
 
   ngAfterViewInit() {
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    if ( this.inverseColorScale ) { this.createColorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.createColorbar(this.colorscale.slice(), this.domain.slice()) }
+  }
+
+  ngOnChanges() {
+    this.updateColorbar()
   }
 
   private updateColorbar() {
-    // this.colorScale = this.queryGridService.getColorScale()
-    // this.domain = this.queryGridService.getGridDomain()
-    // this.inverseColorScale = this.queryGridService.getInverseColorScale()
-    this.colorArr = chroma.brewer[this.colorScale]
-    console.log(this.colorArr)
-    this.svg.remove();
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    if (this.svg) {
+      this.svg.remove();
+      if ( this.inverseColorScale ) { this.createColorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
+      else { this.createColorbar(this.colorscale.slice(), this.domain.slice()) }
+    }
   }
 
-  private createColorbar(colorArr: string[], domain: number[]) {
-    // console.log(this.axis, this.colorbarId)
-    // this.svg = d3.select("#" + this.axis).append("svg")
+  private createColorbar(colorscale: string[] | [number, string][], domain: number[]) {
     this.svg = d3.select("#" + this.colorbarId).append("svg")
     .attr("width", this.svgWidth)
     .attr("height", this.svgHeight)
@@ -77,7 +75,11 @@ export class ColorbarComponent implements OnInit, AfterViewInit {
       .attr("y2", "0%");
 
     //A color scale
-    const c = d3.scaleLinear().range(colorArr).domain(domain.sort()).nice();
+    let cvalues = []
+    colorscale.forEach( value => {
+      cvalues.push(value[1])
+    })
+    const c = d3.scaleLinear().range( cvalues ).domain(domain.sort()).nice();
     
     //Append multiple color stops by using D3's data/enter step
     linearGradient.selectAll("stop")
@@ -108,14 +110,17 @@ export class ColorbarComponent implements OnInit, AfterViewInit {
     const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
     const uRange = this.domain.sort()[1]
     this.domain = [lRange, uRange]
-    // this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
+    this.updateColorbar()
+    this.domainChange.emit(this.domain)
   }
 
   public maxChange(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];
-    // this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
+    console.log('max change:', this.domain)
+    this.updateColorbar()
+    this.domainChange.emit(this.domain)
   }
   
 

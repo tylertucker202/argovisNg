@@ -3,6 +3,7 @@ import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection
 import { GetProfilesService } from './../get-profiles.service'
 import { ChartService } from './../chart.service'
 import { QueryProfviewService } from '../query-profview.service';
+import { ProtractorExpectedConditions } from 'protractor';
 
 @Component({
   selector: 'app-color-chart',
@@ -31,7 +32,8 @@ export class ColorChartComponent implements OnInit {
   private yLabel: string = 'pres'
   private revision: number = 0
   private readonly reduceMeas = 200
-  @Output() colorbarRange: [number, number] = [0, 1]
+  @Output() colorbarDomain: [number, number] = [0, 1]
+  @Output() colorscale: [number, string][] = this.chartService.getColorScale('thermal')
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
@@ -43,10 +45,16 @@ export class ColorChartComponent implements OnInit {
       this.makeChart()
       const yParams = this.chartService.getTraceParams(this.yLabel)
       this.yAxisTitle = yParams.title
+    }, 
+    error => {
+      console.error('an error occured when checking if url parsed: ', error)
     })
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
       this.statParams = this.queryProfviewService.statParams
+    }, 
+    error => {
+      console.error('an error occured when listening to changeStatParams: ', error)
     })
   }
 
@@ -61,27 +69,34 @@ export class ColorChartComponent implements OnInit {
   makeChart(): void {
     this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
       this.profileData = profileData
-      this.setChart(this.profileData)
+      const defaultColorScale = true
+      this.setChart(this.profileData, defaultColorScale)
       this.revision += 1;
+    },
+    error => {
+      console.error('an error occured when making chart: ', error)
     })
   }
 
-  setChart(profileData: BgcProfileData[] | CoreProfileData[], defaultColorScale=true) {
+  setChart(profileData: BgcProfileData[] | CoreProfileData[], defaultColorScale=false, defaultColorbarDomain=true) {
     const colorParams = this.chartService.getTraceParams(this.colorLabel)
     this.layout = this.chartService.makeLayout(this.yAxisTitle)
     this.chartTitle = colorParams.title
-    let colorscale = colorParams.colorscale
+    let cmapName = colorParams.cmapName
     if (defaultColorScale) { 
-      this.cmapName = colorParams.colorscale 
+      this.cmapName = colorParams.cmapName 
     }
     else {
-      colorscale = this.cmapName
+      cmapName = this.cmapName
     }
     const dataArrays = this.chartService.makeColorChartDataArrays(profileData, this.yLabel, this.colorLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const measurements = this.chartService.makeColorChartMeasurements(dataArrays, this.yLabel, this.colorLabel, colorParams.units, colorscale)
-    this.colorbarRange = this.getMinMax(dataArrays[this.colorLabel])
-    console.log(this.colorbarRange)
-    const trace = this.chartService.makeColorChartTrace(measurements, this.colorLabel, this.bgcPlatform)
+    const measurements = this.chartService.makeColorChartMeasurements(dataArrays, this.yLabel, this.colorLabel, colorParams.units, cmapName)
+    if (defaultColorbarDomain || !this.colorbarDomain){
+      this.colorbarDomain = this.getMinMax(dataArrays[this.colorLabel])
+    }
+    this.colorscale = measurements.colorscale
+    // console.log("colorbarDomain:", this.colorbarDomain)
+    const trace = this.chartService.makeColorChartTrace(measurements, this.colorLabel, this.bgcPlatform, this.colorbarDomain)
 
     this.graph = { data: trace,
       layout: this.layout,
@@ -109,8 +124,17 @@ export class ColorChartComponent implements OnInit {
   colorscaleChange(cmapName: string): void {
     this.cmapName = cmapName
     const defaultColorScale = false
-    this.setChart(this.profileData, defaultColorScale)
+    const defaultColorbarDomain = false
+    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
     this.revision += 1;
+  }
+
+  updateDomain(domain: [number, number]): void {
+    this.colorbarDomain = domain
+    const defaultColorScale = false
+    const defaultColorbarDomain = false
+    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
+    this.revision += 1
   }
 
   downloadChartData(): void {
@@ -120,5 +144,11 @@ export class ColorChartComponent implements OnInit {
     url += '&yaxis=' + this.colorLabel
     window.open(url,'_blank')
   }
-
+  
+  resetColorbarScale(): void {
+    const defaultColorScale = true
+    const defaultColorbarDomain = true
+    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
+    this.revision += 1
+  }
 }

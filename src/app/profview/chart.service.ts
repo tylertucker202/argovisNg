@@ -10,7 +10,7 @@ export interface TraceParam {
   units: string
   long_units: string
   title: string
-  colorscale: string
+  cmapName: string
   color: string
   wavelength?: string
 }
@@ -182,7 +182,7 @@ export class ChartService {
   return measurements
   }
 
-  makeColorChartTrace(meas, key: string, includeQC?: boolean) {
+  makeColorChartTrace(meas, key: string, includeQC: boolean, colorbarDomain: [number, number]) {
       let hovorText = []
       if (includeQC) {
         for(let idx=0; idx < meas.cvalues.length; idx++){
@@ -213,6 +213,9 @@ export class ChartService {
                       reversescale: false,
                       colorscale: meas.colorscale,
                       colorbar: meas.colorbar,
+                      cauto: false,
+                      cmin: colorbarDomain[0],
+                      cmax: colorbarDomain[1],
                   },
           name: key, 
       }
@@ -230,7 +233,7 @@ export class ChartService {
         traceParam['units'] = 'C'
         traceParam['long_units'] = 'Celcius'
         traceParam['title'] = "Temperature [Celsius]"
-        traceParam['colorscale'] = 'thermal'
+        traceParam['cmapName'] = 'thermal'
         traceParam['color'] = 'rgb(220,50,50)'
         break;
       case 'psal':
@@ -239,7 +242,7 @@ export class ChartService {
         traceParam['units'] = 'psu'
         traceParam['long_units'] = 'pounds per square inch'
         traceParam['title'] = "Salinity [psu]"
-        traceParam['colorscale'] = 'haline'
+        traceParam['cmapName'] = 'haline'
         traceParam['color'] = 'rgb(133,212,227)'
         break;
       case 'pres':
@@ -248,7 +251,7 @@ export class ChartService {
         traceParam['units'] = 'dbar'
         traceParam['long_units'] = 'decibar'
         traceParam['title'] = "Pressure [dbar]"
-        traceParam['colorscale'] = 'deep'
+        traceParam['cmapName'] = 'deep'
         traceParam['color'] = 'rgb(133,212,227)'
         break;
       case 'cndc':
@@ -257,7 +260,7 @@ export class ChartService {
         traceParam['units'] = 'mohms/m'
         traceParam['long_units'] = 'miliohms per meter'
         traceParam['title'] = "Electrical Conductivity >[mohms/m]"
-        traceParam['colorscale'] = 'amp' 
+        traceParam['cmapName'] = 'amp' 
         traceParam['color'] = 'rgb(242,231,55)'
         break;
       case 'bbp':
@@ -266,7 +269,7 @@ export class ChartService {
         traceParam['units'] = '1/m'
         traceParam['long_units'] = 'per meter'
         traceParam['title'] = 'Particle backscattering at ' + waveLength + ' nanometers [1/m]'
-        traceParam['colorscale'] = 'matter' 
+        traceParam['cmapName'] = 'matter' 
         traceParam['color'] = 'rgb(27,51,105)'
         traceParam['waveLength'] = waveLength
         break;
@@ -277,7 +280,7 @@ export class ChartService {
         traceParam['long_units'] = 'per meter'
         traceParam['title'] = 'Particle beam attenuation at ' + waveLength + ' nanometers [1/m]'
         traceParam['color']
-        traceParam['colorscale'] = 'matter' 
+        traceParam['cmapName'] = 'matter' 
         traceParam['color'] = 'rgb(189,200,202)'
         traceParam['waveLength'] = waveLength
         break;
@@ -287,7 +290,7 @@ export class ChartService {
         traceParam['units'] = 'uMol/kg'
         traceParam['long_units'] = 'micromole per kilogram'
         traceParam['title'] = 'Dissolved Oxygen [micromole/kg]'
-        traceParam['colorscale'] = 'oxy' 
+        traceParam['cmapName'] = 'oxy' 
         traceParam['color'] = 'rgb(242,231,55)'
         break;
       case 'chla':
@@ -296,7 +299,7 @@ export class ChartService {
         traceParam['units'] = 'mg/m3'
         traceParam['long_units'] = 'miligram per cubic meter'
         traceParam['title'] = 'Chlorophyll-A [mg/m3]'
-        traceParam['colorscale'] = 'algae' 
+        traceParam['cmapName'] = 'algae' 
         traceParam['color'] = 'rgb(237,113,62)'
         break;
       case 'cdom':
@@ -305,7 +308,7 @@ export class ChartService {
         traceParam['units'] = 'ppb'
         traceParam['long_units'] = 'parts per billion'
         traceParam['title'] = 'Concentration of coloured dissolved <br>organic matter in sea water [ppb]'
-        traceParam['colorscale'] = 'algae' 
+        traceParam['cmapName'] = 'algae' 
         traceParam['color'] = 'rgb(133,212,227)'
         break;
       case 'nitrate':
@@ -314,7 +317,7 @@ export class ChartService {
         traceParam['units'] = 'uMol/kg'
         traceParam['long_units'] = 'micromole per kilogram'
         traceParam['title'] = 'Nitrate [micromole/kg]'
-        traceParam['colorscale'] = 'algae' 
+        traceParam['cmapName'] = 'algae' 
         traceParam['color'] = 'rgb(40,177,161)'
         break;
       case 'turbidity':
@@ -323,7 +326,7 @@ export class ChartService {
         traceParam['units'] = 'ntu'
         traceParam['long_units'] = 'nephelometric turbidity units'
         traceParam['title'] = 'Sea water turbidity [ntu]'
-        traceParam['colorscale'] = 'turbid' 
+        traceParam['cmapName'] = 'turbid' 
         traceParam['color'] = 'rgb(27,51,105)'
         break;
       case 'bisulfide':
@@ -332,7 +335,7 @@ export class ChartService {
         traceParam['units'] = 'uMol/kg'
         traceParam['long_units'] = 'micromole per kilogram'
         traceParam['title'] = 'Bisulfide [micromole/kg]'
-        traceParam['colorscale'] = 'solar' 
+        traceParam['cmapName'] = 'solar' 
         traceParam['color'] = 'rgb(242,231,55)'
         break;
       case 'ph_in_situ_total':
@@ -341,7 +344,7 @@ export class ChartService {
         traceParam['units'] = ''
         traceParam['long_units'] = ''
         traceParam['title'] = 'pH in situ total [ ]'
-        traceParam['colorscale'] = 'gray' 
+        traceParam['cmapName'] = 'gray' 
         traceParam['color'] = 'rgb(242,231,55)'
         break;
       case 'down_irradiance':
@@ -350,7 +353,7 @@ export class ChartService {
         traceParam['units'] = 'W/m^2/nm'
         traceParam['long_units'] = 'Watts per meter squared per nanometers'
         traceParam['title'] = 'Downwelling irradiance at ' + waveLength + ' nanometers [W/m^2/nm]'
-        traceParam['colorscale'] = 'matter' 
+        traceParam['cmapName'] = 'matter' 
         traceParam['color'] = 'rgb(66,50,49)'
         traceParam['waveLength'] = waveLength
         break;
@@ -360,7 +363,7 @@ export class ChartService {
         traceParam['units'] = 'W/m^2/nm'
         traceParam['long_units'] = 'Watts per meter squared per nanometers'
         traceParam['title'] = 'Upwelling irradiance at ' + waveLength + ' nanometers [W/m^2/nm]'
-        traceParam['colorscale'] = 'matter' 
+        traceParam['cmapName'] = 'matter' 
         traceParam['color'] = 'rgb(222,189,153)'
         traceParam['waveLength'] = waveLength
         break;
@@ -370,7 +373,7 @@ export class ChartService {
         traceParam['units'] = ' uMol Quanta/m^2/sec'
         traceParam['long_units'] = 'micromole quanta per meters squared per second'
         traceParam['title'] = 'Downwelling photosynthetic available radiation <br> [uMol Quanta/m^2/sec]'
-        traceParam['colorscale'] = 'solar' 
+        traceParam['cmapName'] = 'solar' 
         traceParam['color'] = 'rgb(73,112,109)'
         break;
       default:
@@ -379,7 +382,7 @@ export class ChartService {
         traceParam['units'] = ''
         traceParam['long_units'] = ''
         traceParam['title'] = ''
-        traceParam['colorscale'] = '' 
+        traceParam['cmapName'] = '' 
         traceParam['color'] = 'rgb(66,50,49)'
       }
     return traceParam
