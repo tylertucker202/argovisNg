@@ -1,20 +1,31 @@
 <h5 class="disclaimer">Beta Product: Still in development!</h5>
 <app-platform-window></app-platform-window>
-<mat-grid-list id=chart-and-window cols="7" gutterSize="0px" rowHeight="300px">
-    <mat-grid-tile id=color-chart
-    [colspan]="3"
-    [rowspan] ="1">
-        <app-color-chart axis="topChart"></app-color-chart>
-    </mat-grid-tile>
-    <mat-grid-tile
-    [colspan]="2"
-    [rowspan]="2">
-        <app-globe-scatter></app-globe-scatter>
-    </mat-grid-tile>
-    <mat-grid-tile id=color-chart
-    [colspan]="3"
-    [rowspan] ="1">
-        <app-color-chart axis="bottomChart"></app-color-chart>
-    </mat-grid-tile>
-</mat-grid-list>
+<mat-tab-group>
+    <mat-tab label="Color charts">
+    <!-- <ng-template matTabContent> -->
+        <mat-grid-list id=color-charts cols="7" gutterSize="0px" rowHeight="300px">
+            <mat-grid-tile id=color-chart
+            [colspan]="3"
+            [rowspan] ="1">
+                <app-color-chart axis="topChart"></app-color-chart>
+            </mat-grid-tile>
+            <mat-grid-tile
+            [colspan]="2"
+            [rowspan]="2">
+                <app-globe-scatter></app-globe-scatter>
+            </mat-grid-tile>
+            <mat-grid-tile id=color-chart
+            [colspan]="3"
+            [rowspan] ="1">
+                <app-color-chart axis="bottomChart"></app-color-chart>
+            </mat-grid-tile>
+        </mat-grid-list>
+    <!-- </ng-template> -->
+    </mat-tab>
+    <mat-tab label="Pres vs X charts">
+        <ng-template matTabContent>
+        <span> insert stuff here.</span>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
 <app-table></app-table>

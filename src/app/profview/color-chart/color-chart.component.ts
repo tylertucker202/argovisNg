@@ -104,7 +104,7 @@ export class ColorChartComponent implements OnInit {
     }
   }
 
-  getMinMax(darray: number[], round=3): [number, number] {
+  getMinMax(darray: number[], round=1): [number, number] {
     let min = Math.min(...darray)
     let max = Math.max(...darray)
 

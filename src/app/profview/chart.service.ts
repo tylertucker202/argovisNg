@@ -212,7 +212,7 @@ export class ChartService {
                       opacity: 1,
                       reversescale: false,
                       colorscale: meas.colorscale,
-                      colorbar: meas.colorbar,
+                      // colorbar: meas.colorbar,
                       cauto: false,
                       cmin: colorbarDomain[0],
                       cmax: colorbarDomain[1],

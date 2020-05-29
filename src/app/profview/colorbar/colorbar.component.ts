@@ -14,11 +14,11 @@ declare let d3: any
 })
 export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
   private cbrange: number[]
-  private cbarShift: string
+  private cbarShift: number
   private ticks: number
   private rectHeight: number
   private svgHeight: number
-  private svgWidth: string
+  private svgWidth: number
   private svg: any
   @Input() axis: string;
   @Input() domain: [number, number]
@@ -30,12 +30,12 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit() {
     this.colorbarId = this.axis + "Colorbar"
-    this.cbrange = [0, 80] //pxls for colorbar
+    this.cbrange = [0, 160] //pxls for colorbar. make sure middle matches the width in the .css file.
     this.ticks = 3;
     this.rectHeight = 20
     this.svgHeight = 50
-    this.svgWidth = '100%'
-    this.cbarShift = "10"
+    this.cbarShift = 10
+    this.svgWidth = this.cbrange[1] + this.cbarShift
     // console.log('axis: ', this.axis)
     // console.log('colorscale:', this.colorscale)
   }
@@ -66,9 +66,9 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
     let defs = this.svg.append("defs");
 
     //Append a linearGradient element to the defs and give it a unique id
+    const linearGradiantId = this.axis + "linear-gradient"
     let linearGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient");
-    linearGradient
+      .attr("id", linearGradiantId)
       .attr("x1", "0%")
       .attr("y1", "0%")
       .attr("x2", "100%")
@@ -93,16 +93,18 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
       .attr("width", this.cbrange[1])
       .attr("height", this.rectHeight)
       .attr("x", this.cbarShift)
-      .style("fill", "url(#linear-gradient)");
+      .style("fill", "url(#" + linearGradiantId + ")")
+      .style("width", this.cbrange[1])
     // //create tick marks
     const scale = d3.scaleLinear()
-    .domain(c.domain()).range(this.cbrange).nice()
+    .domain(c.domain())
+    .range(this.cbrange).nice()
 
     const axis = d3.axisBottom().scale(scale).ticks(this.ticks);
 
     this.svg.append("g")
         .attr("id", "g-runoff")
-        .attr("transform", "translate("+this.cbarShift+",20)")
+        .attr("transform", "translate("+JSON.stringify(this.cbarShift)+",20)")
         .call(axis);
     }
 
@@ -118,7 +120,6 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];
-    console.log('max change:', this.domain)
     this.updateColorbar()
     this.domainChange.emit(this.domain)
   }

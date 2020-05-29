@@ -22,6 +22,7 @@ import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatSortModule } from '@angular/material/sort'
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatListModule } from '@angular/material/list'
+import { MatTabsModule } from '@angular/material/tabs';
 
 // table export module
 import { MatTableExporterModule } from 'mat-table-exporter'
@@ -49,7 +50,8 @@ import { MatTableExporterModule } from 'mat-table-exporter'
     MatSortModule,
     MatTableExporterModule,
     MatGridListModule,
-    MatListModule
+    MatListModule,
+    MatTabsModule
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,6 @@ import { MatTableExporterModule } from 'mat-table-exporter'
     MatTooltipModule,
     MatSelectModule,
     MatDatepickerModule,
-    //MatNativeDateModule,
     MatBottomSheetModule,
     MatRadioModule,
     MatDialogModule,
@@ -73,7 +74,8 @@ import { MatTableExporterModule } from 'mat-table-exporter'
     MatSortModule,
     MatTableExporterModule,
     MatGridListModule,
-    MatListModule
+    MatListModule,
+    MatTabsModule,
   ]
 })
 export class MaterialModule { }
