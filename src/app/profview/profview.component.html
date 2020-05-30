@@ -3,7 +3,7 @@
 <mat-tab-group>
     <mat-tab label="Color charts">
     <!-- <ng-template matTabContent> -->
-        <mat-grid-list id=color-charts cols="7" gutterSize="0px" rowHeight="300px">
+        <mat-grid-list id=color-charts cols="5" gutterSize="0px" rowHeight="300px">
             <mat-grid-tile id=color-chart
             [colspan]="3"
             [rowspan] ="1">
@@ -12,7 +12,7 @@
             <mat-grid-tile
             [colspan]="2"
             [rowspan]="2">
-                <app-globe-scatter></app-globe-scatter>
+                <app-globe-scatter id="globe-scatter-chart"></app-globe-scatter>
             </mat-grid-tile>
             <mat-grid-tile id=color-chart
             [colspan]="3"

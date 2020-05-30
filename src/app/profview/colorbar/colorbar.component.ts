@@ -30,7 +30,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnInit() {
     this.colorbarId = this.axis + "Colorbar"
-    this.cbrange = [0, 160] //pxls for colorbar. make sure middle matches the width in the .css file.
+    this.cbrange = [0, 140] //pxls for colorbar
     this.ticks = 3;
     this.rectHeight = 20
     this.svgHeight = 50
@@ -59,7 +59,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
 
   private createColorbar(colorscale: string[] | [number, string][], domain: number[]) {
     this.svg = d3.select("#" + this.colorbarId).append("svg")
-    .attr("width", this.svgWidth)
+    .attr("width", this.cbrange[1] + 10)
     .attr("height", this.svgHeight)
     .style("position", "inherit")
 
