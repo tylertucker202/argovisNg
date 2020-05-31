@@ -2,7 +2,6 @@
 <app-platform-window></app-platform-window>
 <mat-tab-group>
     <mat-tab label="Color charts">
-    <!-- <ng-template matTabContent> -->
         <mat-grid-list id=color-charts cols="5" gutterSize="0px" rowHeight="300px">
             <mat-grid-tile id=color-chart
             [colspan]="3"
@@ -20,12 +19,25 @@
                 <app-color-chart axis="bottomChart"></app-color-chart>
             </mat-grid-tile>
         </mat-grid-list>
-    <!-- </ng-template> -->
     </mat-tab>
     <mat-tab label="Pres vs X charts">
-        <ng-template matTabContent>
-        <span> insert stuff here.</span>
-        </ng-template>
+        <mat-grid-list id=pvx-charts cols="3" gutterSize="0px" rowHeight="400px">
+            <mat-grid-tile id=color-chart
+            [colspan]="1"
+            [rowspan] ="1">
+                <app-pvx-chart axis="leftChart"></app-pvx-chart>
+            </mat-grid-tile>
+            <mat-grid-tile
+            [colspan]="1"
+            [rowspan]="1">
+                <app-pvx-chart axis="middleChart" id="middleChart"></app-pvx-chart>
+            </mat-grid-tile>
+            <mat-grid-tile id=color-chart
+            [colspan]="1"
+            [rowspan] ="1">
+                <app-pvx-chart axis="rightChart"></app-pvx-chart>
+            </mat-grid-tile>
+        </mat-grid-list>
     </mat-tab>
 </mat-tab-group>
 <app-table></app-table>

@@ -55,12 +55,55 @@ export class ChartService {
     return layout
   }
 
-  makeColorChartText(pres: number, date: Date, text: string, value: number, units: string, cycle: number, qc?: number) {
+  public makePvxLayout(xLabel: string, yLabel: string) {
+    const layout = {
+      height:300, 
+      width: 300,
+      margin: {
+        l: 5,
+        r: 5,
+        b: 25,
+        t: 25,
+        pad: 5
+      },
+      yaxis: {
+          showticklabels: true,
+          autorange: 'reversed', //scattergl currently does not show tick labels when axis is reversed
+          type: "linear", 
+          title: yLabel,
+          automargin: true,
+      },
+      xaxis: {
+          autorange: true, 
+          title: xLabel,
+          automargin: true,
+      }, 
+      hovermode: "closest", 
+      showlegend: true,
+    }
+    return layout
+  }
+
+  makeColorChartText(pres: number, date: Date, text: string, value: number, units: string, cycle: number, qc?: number): string {
     let box = "<br>" + text + value.toString() + " " + units
     + "<br>date: " + date.toString()
     + "<br>pressure: " + pres.toString() + " dbar"
     + "<br>cycle: " + cycle.toString()
     if (qc) { box += "<br>qc: " + qc }
+    box += "<br>click to see profile page"
+    return(box)
+  }
+  
+  makePvxChartText(xvalue: number, yvalue: number, time: string, xtext: string, ytext: string,
+                   xunits: string, yunits: string, cycle: number,
+                   xqc?: number, yqc?: number): string {
+    let box = 
+    "<br>" + xtext + xvalue.toString() + " " + xunits
+    + "<br>" + ytext + yvalue.toString() + " " + yunits
+    + "<br>date: " + time
+    + "<br>cycle: " + cycle.toString()
+    if (xqc) { box += "<br>" + xtext + " qc: " + xqc }
+    if (yqc) { box += "<br>" + ytext + " qc: " + yqc }
     box += "<br>click to see profile page"
     return(box)
   }
@@ -120,7 +163,7 @@ export class ChartService {
                             reduceMeas: number, statParamsKey: string, includeQC?: boolean) {
     let yMeas = []
     let cMeas = []
-    let cQc = [] //todo: if requested, include qc
+    let cQc = [] 
     let time = []
     let cycles = []
     let ids = []
@@ -135,7 +178,6 @@ export class ChartService {
         cMeas = cMeas.concat(meas[colorLabel])
         if (includeQC) { cQc = cQc.concat(meas[colorQCLabel]) }
         const _id = pdat._id
-        //const data_mode = profile.core_data_mode
         const timeStr = moment.utc(pdat.date).format('YYYY-MM-DD HH:mm')
         const cycle = pdat.cycle_number
         const station_parameters = pdat[statParamsKey]
@@ -159,28 +201,100 @@ export class ChartService {
     return (dataArrays)
   }
 
+  makePvxChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
+    yLabel: string, xLabel: string, measKey: string,
+    reduceMeas: number, statParamsKey: string, includeQC?: boolean) {
+    let yMeas = []
+    let xMeas = []
+    let xQc = []
+    let yQc = [] 
+    let cycles = []
+    let ids = []
+    let _ids = []
+    let time = []
+    const xQCLabel = xLabel+'_qc'
+    const yQCLabel = yLabel+'_qc'
+    for(let idx=0; idx < profileData.length; idx++) {
+        const pdat = profileData[idx]
+        if (!pdat[measKey]) { continue }
+        let meas = this.reduceGPSMeasurements(pdat, reduceMeas, measKey)
+        meas = this.collateProfileMeasurements(meas, yLabel, xLabel, includeQC)
+        yMeas = yMeas.concat(meas[yLabel])
+        xMeas = xMeas.concat(meas[xLabel])
+        if (includeQC) { 
+          xQc = yQc.concat(meas[xQCLabel])
+          yQc = yQc.concat(meas[yQCLabel])
+         }
+        const _id = pdat._id
+        const cycle = pdat.cycle_number
+        const station_parameters = pdat[statParamsKey]
+        ids.push(_id)
+        const plen = meas[yLabel].length
+        const id_array = Array.apply(null, Array(plen)).map(String.prototype.valueOf,_id)
+        const cycle_array = Array.apply(null, Array(plen)).map(Number.prototype.valueOf,cycle)
+        const timeStr = moment.utc(pdat.date).format('YYYY-MM-DD HH:mm')
+        const time_array = Array.apply(null, Array(plen)).map(String.prototype.valueOf,timeStr)
+        time = time.concat(time_array)
+        _ids = _ids.concat(id_array)
+        cycles = cycles.concat(cycle_array)
+    }
+    let dataArrays  = {}
+    dataArrays[xLabel] = xMeas
+    if (includeQC) { 
+      dataArrays[xQCLabel] = xQc
+      dataArrays[yQCLabel] = yQc
+    }
+    dataArrays[yLabel] = yMeas
+    dataArrays['ids'] = ids
+    dataArrays['_ids'] = _ids
+    dataArrays['cycle'] = cycles
+    dataArrays['time'] = time
+    return (dataArrays)
+    }
+
   makeColorChartMeasurements(dataArrays, yLabel: string, colorLabel: string, units: string, cmapName: string) {
-      const measurements =  {
-          xvalues: dataArrays.time,
-          yvalues: dataArrays[yLabel].map(this.roundArray),
-          cvalues: dataArrays[colorLabel].map(this.roundArray),
-          cqc: dataArrays[colorLabel+"_qc"],
-          text: colorLabel + ': ',
-          yaxis: 'y2',
-          xaxis: 'x1',
-          units: units,
-          cycle: dataArrays.cycle,
-          colorscale: this.getColorScale(cmapName),
-          id: dataArrays._ids,
-          colorbar: {
-                  len: 1, 
-                  yanchor: "middle",
-                  titleside: "right",
-                  xpad: 10,
-                  }
-          }
+    const measurements =  {
+      xvalues: dataArrays.time,
+      yvalues: dataArrays[yLabel].map(this.roundArray),
+      cvalues: dataArrays[colorLabel].map(this.roundArray),
+      cqc: dataArrays[colorLabel+"_qc"],
+      text: colorLabel + ': ',
+      yaxis: 'y2',
+      xaxis: 'x1',
+      units: units,
+      cycle: dataArrays.cycle,
+      colorscale: this.getColorScale(cmapName),
+      id: dataArrays._ids,
+      colorbar: {
+              len: 1, 
+              yanchor: "middle",
+              titleside: "right",
+              xpad: 10,
+              }
+      }
   return measurements
-  }
+  } 
+
+  makePvxChartMeasurements(dataArrays, yLabel: string, xLabel: string, xUnits: string, yUnits: string ) {
+    const measurements =  {
+      xvalues: dataArrays[xLabel].map(this.roundArray),
+      yvalues: dataArrays[yLabel].map(this.roundArray),
+      cvalues: dataArrays.cycle,
+      time: dataArrays.time,
+      xqc: dataArrays[xLabel+"_qc"],
+      yqc: dataArrays[yLabel+"_qc"],
+      xtext: xLabel + ': ',
+      ytext: xLabel + ': ',
+      yaxis: 'y2',
+      xaxis: 'x1',
+      xUnits: xUnits,
+      yUnits: yUnits,
+      cycle: dataArrays.cycle,
+      // colorscale: this.getColorScale(cmapName),
+      id: dataArrays._ids,
+      }
+  return measurements
+  } 
 
   makeColorChartTrace(meas, key: string, includeQC: boolean, colorbarDomain: [number, number]) {
       let hovorText = []
@@ -216,6 +330,44 @@ export class ChartService {
                       cauto: false,
                       cmin: colorbarDomain[0],
                       cmax: colorbarDomain[1],
+                  },
+          name: key, 
+      }
+      return [scatterTrace]
+  }
+
+  makePvxChartTrace(meas, key: string, includeQC: boolean) {
+      let hovorText = []
+      if (includeQC) {
+        for(let idx=0; idx < meas.xvalues.length; idx++){
+          let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 
+            meas.xtext, meas.ytext, meas.xunits, meas.yunits, meas.cycle[idx], meas.xqc[idx], meas.yqc[idx])
+          hovorText.push(pointText)
+      }
+      }
+      else {
+        for(let idx=0; idx < meas.xvalues.length; idx++){
+          let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 
+            meas.xtext, meas.ytext, meas.xunits, meas.yunits, meas.cycle[idx])
+            hovorText.push(pointText)
+        }
+    }
+      const scatterTrace = {
+          y: meas.yvalues,
+          x: meas.xvalues,
+          text: hovorText,
+          hoverinfo: 'text',
+          showlegend: false,
+          type: 'scattergl',
+          mode: 'markers',
+          cycle: meas.cycle,
+          profile_ids: meas.id,
+          marker: { color: meas.cycle,
+                      size: 5,
+                      symbol: 'dot',
+                      opacity: 1,
+                      reversescale: false,
+                      colorscale: meas.colorscale,
                   },
           name: key, 
       }

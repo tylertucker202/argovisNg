@@ -3,7 +3,6 @@ import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection
 import { GetProfilesService } from './../get-profiles.service'
 import { ChartService } from './../chart.service'
 import { QueryProfviewService } from '../query-profview.service';
-import { ProtractorExpectedConditions } from 'protractor';
 
 @Component({
   selector: 'app-color-chart',
@@ -140,8 +139,8 @@ export class ColorChartComponent implements OnInit {
   downloadChartData(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
-    url += '?xaxis=' + this.yLabel
-    url += '&yaxis=' + this.colorLabel
+    url += '?yaxis=' + this.yLabel
+    url += '&xaxis=' + this.colorLabel
     window.open(url,'_blank')
   }
   
