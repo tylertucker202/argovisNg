@@ -31,7 +31,6 @@ export class PvxChartComponent implements OnInit {
   private readonly reduceMeas = 200
 
   ngOnInit(): void {
-    console.log('initing pvx chart axis: ', this.axis)
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
       this.xLabel = 'temp' //to be read in by url otherwise use a default set by chart id
       this.yLabel = 'pres' //to be read in url. otherwise, use a default set by chart id.
@@ -39,7 +38,6 @@ export class PvxChartComponent implements OnInit {
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
       this.bgcPlatform = this.queryProfviewService.bgcPlatform
-      console.log('inside init pvx. url parsed')
       this.makeChart()
     }, 
     error => {
@@ -48,7 +46,6 @@ export class PvxChartComponent implements OnInit {
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
       this.statParams = this.queryProfviewService.statParams
-      // this.statParams.push({value:'pres', viewValue: 'pressure'}) //add pres again
     }, 
     error => {
       console.error('an error occured when listening to changeStatParams: ', error)
@@ -65,7 +62,6 @@ export class PvxChartComponent implements OnInit {
 
   makeChart(): void {
     this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.xLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
-      console.log('inside makeChart. profile data is had')
       this.profileData = profileData
       this.setChart(this.profileData)
       this.revision += 1;
@@ -83,7 +79,6 @@ export class PvxChartComponent implements OnInit {
     const dataArrays = this.chartService.makePvxChartDataArrays(profileData, this.yLabel, this.xLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
     const measurements = this.chartService.makePvxChartMeasurements(dataArrays, this.yLabel, this.xLabel, xParams['units'], yParams['units'])
     const trace = this.chartService.makePvxChartTrace(measurements, this.xLabel, this.bgcPlatform)
-    console.log('inide setChart, trace:', trace)
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true

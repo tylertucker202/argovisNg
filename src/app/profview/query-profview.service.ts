@@ -74,7 +74,6 @@ export class QueryProfviewService {
         })
       }
     })
-    // uStatParam = uStatParam.filter( elem => elem !== 'pres')
     let statParams = [] as StationParameters[]
     uStatParam.forEach( (statParam: string) => {
         statParams.push({value: statParam, viewValue: statParam})

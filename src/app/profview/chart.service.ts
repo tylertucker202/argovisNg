@@ -284,7 +284,7 @@ export class ChartService {
       xqc: dataArrays[xLabel+"_qc"],
       yqc: dataArrays[yLabel+"_qc"],
       xtext: xLabel + ': ',
-      ytext: xLabel + ': ',
+      ytext: yLabel + ': ',
       yaxis: 'y2',
       xaxis: 'x1',
       xUnits: xUnits,
@@ -341,7 +341,7 @@ export class ChartService {
       if (includeQC) {
         for(let idx=0; idx < meas.xvalues.length; idx++){
           let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 
-            meas.xtext, meas.ytext, meas.xunits, meas.yunits, meas.cycle[idx], meas.xqc[idx], meas.yqc[idx])
+            meas.xtext, meas.ytext, meas.xUnits, meas.yUnits, meas.cycle[idx], meas.xqc[idx], meas.yqc[idx])
           hovorText.push(pointText)
       }
       }
@@ -367,12 +367,14 @@ export class ChartService {
                       symbol: 'dot',
                       opacity: 1,
                       reversescale: false,
-                      colorscale: 'Earth' 
+                      colorscale: this.getColorScale('diverge')
                   },
           name: key, 
       }
       return [scatterTrace]
   }
+
+
 
   public getTraceParams(paramKey: string): TraceParam {
     let traceParam = {} as TraceParam
