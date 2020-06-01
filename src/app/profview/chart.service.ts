@@ -118,18 +118,21 @@ export class ChartService {
   }
   
 
-  collateProfileMeasurements = function(profileData: BgcProfileData[] | CoreProfileData[], yLabel: string, colorLabel: string, includeQC?: boolean) { 
+  collateProfileMeasurements = function(profileData: BgcProfileData[] | CoreProfileData[], yLabel: string, xLabel: string, includeQC?: boolean) { 
     let collatedProfiles = {};
     const num_measurements = profileData.length;
     collatedProfiles[yLabel] = new Array(num_measurements)
-    collatedProfiles[colorLabel] = new Array(num_measurements)
-    const colorQCLabel = colorLabel + '_qc'
-    if (includeQC) { collatedProfiles[colorQCLabel] = new Array(num_measurements) }
+    collatedProfiles[xLabel] = new Array(num_measurements)
+    const xQCLabel = xLabel + '_qc'
+    const yQCLabel = yLabel + '_qc'
+    if (includeQC) { collatedProfiles[xQCLabel] = new Array(num_measurements)
+                     collatedProfiles[yQCLabel] = new Array(num_measurements) }
     for (var i = 0; i < num_measurements; ++i) {
         collatedProfiles[yLabel][i] = profileData[i][yLabel]
-        collatedProfiles[colorLabel][i] = profileData[i][colorLabel]
+        collatedProfiles[xLabel][i] = profileData[i][xLabel]
         if (includeQC) {
-          collatedProfiles[colorQCLabel][i] = profileData[i][colorQCLabel]
+          collatedProfiles[yQCLabel][i] = profileData[i][yQCLabel]
+          collatedProfiles[xQCLabel][i] = profileData[i][xQCLabel]
         }
     }
     return collatedProfiles;
@@ -338,6 +341,7 @@ export class ChartService {
 
   makePvxChartTrace(meas, key: string, includeQC: boolean) {
       let hovorText = []
+      console.log('includeQC:', includeQC, 'meas.xqc', meas.xqc, 'meas.yqc', meas.yqc)
       if (includeQC) {
         for(let idx=0; idx < meas.xvalues.length; idx++){
           let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 

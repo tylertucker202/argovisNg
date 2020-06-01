@@ -1,6 +1,6 @@
 <h5 class="disclaimer">Beta Product: Still in development!</h5>
 <app-platform-window></app-platform-window>
-<mat-tab-group>
+<mat-tab-group [selectedIndex]="selectedIndex">
     <mat-tab label="Color charts">
         <mat-grid-list id=color-charts cols="5" gutterSize="0px" rowHeight="300px">
             <mat-grid-tile id=color-chart

@@ -6,9 +6,13 @@ import { QueryProfviewService } from './query-profview.service'
   styleUrls: ['./profview.component.css']
 })
 export class ProfviewComponent implements OnInit {
-  constructor() { }
+  public selectedIndex: number = 0
+  constructor(private queryProfviewService: QueryProfviewService) { }
 
   ngOnInit(): void {
+    this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
+      this.selectedIndex = this.queryProfviewService.selectedIndex
+    } )
   }
 
 }

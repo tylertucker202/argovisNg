@@ -22,6 +22,7 @@ export class QueryProfviewService {
   public statParams: StationParameters[]
   public measKey: string = 'bgcMeas'
   public profileMeta:  ProfileMeta[]
+  public selectedIndex: number = 0
 
   constructor(private route: ActivatedRoute,
               private getProfileService: GetProfilesService,
@@ -136,6 +137,7 @@ export class QueryProfviewService {
                          'topChart': this.topChart, 
                          'bottomChart': this.bottomChart,
                          'bgcPlatform': JSON.stringify(this.bgcPlatform),
+                         'selectedIndex': JSON.stringify(this.selectedIndex)
                         }
     this.router.navigate(
       [], 
@@ -158,6 +160,10 @@ export class QueryProfviewService {
       }
       case 'bottomChart': {
         this.bottomChart = value
+        break
+      }
+      case 'selectedIndex': {
+        this.selectedIndex = JSON.parse(value)
         break
       }
       case 'bgcPlatform': {
