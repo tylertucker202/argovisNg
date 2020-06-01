@@ -362,12 +362,12 @@ export class ChartService {
           mode: 'markers',
           cycle: meas.cycle,
           profile_ids: meas.id,
-          marker: { color: meas.cycle,
+          marker: {   color: meas.cycle,
                       size: 5,
                       symbol: 'dot',
                       opacity: 1,
                       reversescale: false,
-                      colorscale: meas.colorscale,
+                      colorscale: 'Earth' 
                   },
           name: key, 
       }
