@@ -5,7 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
-
+export interface ChartItems{
+  x1: string,
+  x2: string,
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +20,9 @@ export class QueryProfviewService {
   public platform_number: string = "5903260"
   public topChart: string = 'temp'
   public bottomChart: string = 'psal'
+  public leftChart: ChartItems = {x1: 'temp', x2: 'pres'}
+  public middleChart: ChartItems = {x1: 'psal', x2: 'pres'}
+  public rightChart: ChartItems = {x1: 'psal', x2: 'temp'}
   public bgcPlatform: boolean = true
   public statParamKey: string = 'bgcMeasKeys'
   public statParams: StationParameters[]
@@ -50,6 +56,50 @@ export class QueryProfviewService {
       core_data_mode = 'Unknown'
     }
     return core_data_mode
+  }
+
+  public value_of_chart_labels(id: string): ChartItems {
+    let chartLabel: ChartItems
+    switch(id) {
+      case'leftChart': {
+        chartLabel = this.leftChart
+        break
+      }
+      case 'middleChart': {
+        chartLabel = this.middleChart
+        break
+      }
+      case 'rightChart': {
+        chartLabel = this.rightChart
+        break
+      }
+      default: {
+        chartLabel = {x1: 'temp', x2: 'pres'}
+        break
+      }
+    }
+    return(chartLabel)
+  }
+
+  public set_chart_labels(id: string, chartLabel: ChartItems): void {
+    switch(id) {
+      case'leftChart': {
+        this.leftChart = chartLabel
+        break
+      }
+      case 'middleChart': {
+        this.middleChart = chartLabel
+        break
+      }
+      case 'rightChart': {
+        this.rightChart = chartLabel
+        break
+      }
+      default: {
+        console.log('set_chart_labels id not found: ', id)
+        break
+      }
+    }
   }
 
   public applyFormatting( profileMeta: ProfileMeta[], statKey: string): ProfileMeta[] {
@@ -136,6 +186,9 @@ export class QueryProfviewService {
                          'platform_number': this.platform_number,
                          'topChart': this.topChart, 
                          'bottomChart': this.bottomChart,
+                         'leftChart': JSON.stringify(this.leftChart),
+                         'middleChart': JSON.stringify(this.middleChart),
+                         'rightChart': JSON.stringify(this.rightChart),
                          'bgcPlatform': JSON.stringify(this.bgcPlatform),
                          'selectedIndex': JSON.stringify(this.selectedIndex)
                         }
@@ -160,6 +213,18 @@ export class QueryProfviewService {
       }
       case 'bottomChart': {
         this.bottomChart = value
+        break
+      }
+      case 'leftChart': {
+        this.leftChart = JSON.parse(value)
+        break
+      }
+      case 'middleChart': {
+        this.middleChart = JSON.parse(value)
+        break
+      }
+      case 'rightChart': {
+        this.rightChart = JSON.parse(value)
         break
       }
       case 'selectedIndex': {

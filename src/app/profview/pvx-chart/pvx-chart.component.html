@@ -2,7 +2,7 @@
     <div class="fields">
     <mat-form-field class="field">
         <mat-select id="x-axis-select" placeholder="Float parameter on x axis" matTooltip="select parameter"
-         [(value)]="xLabel" (selectionChange)="xLabelChange($event.value)">
+         [(value)]="chartLabels.x1" (selectionChange)="xLabelChange($event.value)">
           <mat-option *ngFor="let param of statParams" [value]="param.value">
             {{param.viewValue}}
           </mat-option>
@@ -10,7 +10,7 @@
     </mat-form-field>
     <mat-form-field class="field">
         <mat-select id="y-axis-select" placeholder="Float parameter on y axis" matTooltip="select parameter"
-         [(value)]="yLabel" (selectionChange)="yLabelChange($event.value)">
+         [(value)]="chartLabels.x2" (selectionChange)="yLabelChange($event.value)">
           <mat-option *ngFor="let param of statParams" [value]="param.value">
             {{param.viewValue}}
           </mat-option>

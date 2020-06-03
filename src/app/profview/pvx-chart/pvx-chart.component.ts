@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from './../profiles'
 import { GetProfilesService } from './../get-profiles.service'
 import { ChartService } from './../chart.service'
-import { QueryProfviewService } from '../query-profview.service';
+import { QueryProfviewService, ChartItems } from '../query-profview.service';
 
 
 @Component({
@@ -24,16 +24,14 @@ export class PvxChartComponent implements OnInit {
   private bgcPlatform: boolean
   private statParamKey: string
   private yAxisTitle: string
-  private xLabel: string
+  private chartLabels: ChartItems
   @Input() id: string
-  private yLabel: string
   private revision: number = 0
   private readonly reduceMeas = 200
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
-      this.xLabel = 'temp' //to be read in by url otherwise use a default set by chart id
-      this.yLabel = 'pres' //to be read in url. otherwise, use a default set by chart id.
+      this.chartLabels = this.queryProfviewService.value_of_chart_labels(this.id) 
       this.statParamKey = this.queryProfviewService.statParamKey
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
@@ -61,7 +59,7 @@ export class PvxChartComponent implements OnInit {
   } 
 
   makeChart(): void {
-    this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.xLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
+    this.getProfileService.getPlaformData(this.platform_number, this.chartLabels.x2, this.chartLabels.x1).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
       this.profileData = profileData
       this.setChart(this.profileData)
       this.revision += 1;
@@ -72,12 +70,12 @@ export class PvxChartComponent implements OnInit {
   }
 
   setChart(profileData: BgcProfileData[] | CoreProfileData[]) {
-    const xParams = this.chartService.getTraceParams(this.xLabel)
-    const yParams = this.chartService.getTraceParams(this.yLabel)
-    this.layout = this.chartService.makePvxLayout(this.xLabel, this.yLabel)
+    const xParams = this.chartService.getTraceParams(this.chartLabels.x1)
+    const yParams = this.chartService.getTraceParams(this.chartLabels.x2)
+    this.layout = this.chartService.makePvxLayout(this.chartLabels.x1, this.chartLabels.x2)
 
-    const dataArrays = this.chartService.makePvxChartDataArrays(profileData, this.yLabel, this.xLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const trace = this.chartService.makePvxChartTrace(dataArrays, this.xLabel, this.bgcPlatform, xParams['units'], yParams['units'])
+    const dataArrays = this.chartService.makePvxChartDataArrays(profileData, this.chartLabels.x2, this.chartLabels.x1, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
+    const trace = this.chartService.makePvxChartTrace(dataArrays, this.chartLabels.x1, this.bgcPlatform, xParams['units'], yParams['units'])
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true
@@ -86,24 +84,26 @@ export class PvxChartComponent implements OnInit {
 
 
   yLabelChange(yLabel: string): void {
-    this.yLabel = yLabel
+    this.chartLabels.x2 = yLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
+    this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
     this.queryProfviewService.setURL()
   }
 
   xLabelChange(xLabel: string): void {
-    this.xLabel = xLabel
+    this.chartLabels.x1 = xLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
+    this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
     this.queryProfviewService.setURL()
   }
 
   downloadChartData(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
-    url += '?xaxis=' + this.xLabel
-    url += '&yaxis=' + this.yLabel
+    url += '?xaxis=' + this.chartLabels.x1
+    url += '&yaxis=' + this.chartLabels.x2
     window.open(url,'_blank')
   }
 }
