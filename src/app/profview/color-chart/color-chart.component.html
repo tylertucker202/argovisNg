@@ -19,7 +19,7 @@
     <button mat-icon-button matTooltip="Download data used to create this chart" (click)="downloadChartData()">
       <mat-icon>archive</mat-icon>
     </button>
-    <app-colorbar [id]="axis" [axis]="axis" [domain]="colorbarDomain" [colorscale]="colorscale" (domainChange)="updateDomain($event)"></app-colorbar>
+    <app-colorbar [id]="id" [domain]="colorbarDomain" [colorscale]="colorscale" (domainChange)="updateDomain($event)"></app-colorbar>
     <button mat-icon-button matTooltip="reset colorscale and domain" (click)="resetColorbarScale()">
       <mat-icon>refresh</mat-icon>
     </button>

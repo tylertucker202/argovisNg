@@ -1,19 +1,19 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from './profiles'
+import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection, DataArrays } from './profiles'
 import * as moment from 'moment';
 
-import { Cmap, cmaps } from './colorscales'
+import { Cmap, cmaps, } from './chart.parameters'
 
 export interface TraceParam {
-  short_name: string
-  long_name: string
-  units: string
-  long_units: string
-  title: string
-  cmapName: string
-  color: string
-  wavelength?: string
-}
+    short_name: string
+    long_name: string
+    units: string
+    long_units: string
+    title: string
+    cmapName: string
+    color: string
+    wavelength?: string
+  }
 @Injectable({
   providedIn: 'root'
 })
@@ -84,7 +84,7 @@ export class ChartService {
     return layout
   }
 
-  makeColorChartText(pres: number, date: Date, text: string, value: number, units: string, cycle: number, qc?: number): string {
+  makeColorChartText(pres: number, date: string, text: string, value: number, units: string, cycle: number, qc?: number): string {
     let box = "<br>" + text + value.toString() + " " + units
     + "<br>date: " + date.toString()
     + "<br>pressure: " + pres.toString() + " dbar"
@@ -163,7 +163,7 @@ export class ChartService {
 
   makeColorChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
                             yLabel: string, colorLabel: string, measKey: string,
-                            reduceMeas: number, statParamsKey: string, includeQC?: boolean) {
+                            reduceMeas: number, statParamsKey: string, includeQC?: boolean): DataArrays {
     let yMeas = []
     let cMeas = []
     let cQc = [] 
@@ -194,19 +194,21 @@ export class ChartService {
         cycles = cycles.concat(cycle_array)
     }
     let dataArrays  = {}
-    dataArrays[colorLabel] = cMeas
-    if (includeQC) { dataArrays[colorQCLabel] = cQc }
-    dataArrays[yLabel] = yMeas
+    dataArrays['x1'] = cMeas.map(this.roundArray)
+    if (includeQC) { dataArrays['x1_qc'] = cQc }
+    dataArrays['x2'] = yMeas.map(this.roundArray)
     dataArrays['ids'] = ids
     dataArrays['_ids'] = _ids
     dataArrays['cycle'] = cycles
     dataArrays['time'] = time
-    return (dataArrays)
+    dataArrays['x1_label'] = colorLabel
+    dataArrays['x2_label'] = yLabel
+    return (dataArrays as DataArrays)
   }
 
   makePvxChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
     yLabel: string, xLabel: string, measKey: string,
-    reduceMeas: number, statParamsKey: string, includeQC?: boolean) {
+    reduceMeas: number, statParamsKey: string, includeQC?: boolean): DataArrays {
     let yMeas = []
     let xMeas = []
     let xQc = []
@@ -242,94 +244,52 @@ export class ChartService {
         cycles = cycles.concat(cycle_array)
     }
     let dataArrays  = {}
-    dataArrays[xLabel] = xMeas
+    dataArrays['x1'] = xMeas.map(this.roundArray)
     if (includeQC) { 
-      dataArrays[xQCLabel] = xQc
-      dataArrays[yQCLabel] = yQc
+      dataArrays['x1_qc'] = xQc
+      dataArrays['x2_qc'] = yQc
     }
-    dataArrays[yLabel] = yMeas
+    dataArrays['x2'] = yMeas.map(this.roundArray)
     dataArrays['ids'] = ids
     dataArrays['_ids'] = _ids
     dataArrays['cycle'] = cycles
     dataArrays['time'] = time
-    return (dataArrays)
+    dataArrays['x1_label'] = xLabel
+    dataArrays['x2_label'] = yLabel
+    return (dataArrays as DataArrays)
     }
 
-  makeColorChartMeasurements(dataArrays, yLabel: string, colorLabel: string, units: string, cmapName: string) {
-    const measurements =  {
-      xvalues: dataArrays.time,
-      yvalues: dataArrays[yLabel].map(this.roundArray),
-      cvalues: dataArrays[colorLabel].map(this.roundArray),
-      cqc: dataArrays[colorLabel+"_qc"],
-      text: colorLabel + ': ',
-      yaxis: 'y2',
-      xaxis: 'x1',
-      units: units,
-      cycle: dataArrays.cycle,
-      colorscale: this.getColorScale(cmapName),
-      id: dataArrays._ids,
-      colorbar: {
-              len: 1, 
-              yanchor: "middle",
-              titleside: "right",
-              xpad: 10,
-              }
-      }
-  return measurements
-  } 
-
-  makePvxChartMeasurements(dataArrays, yLabel: string, xLabel: string, xUnits: string, yUnits: string ) {
-    const measurements =  {
-      xvalues: dataArrays[xLabel].map(this.roundArray),
-      yvalues: dataArrays[yLabel].map(this.roundArray),
-      cvalues: dataArrays.cycle,
-      time: dataArrays.time,
-      xqc: dataArrays[xLabel+"_qc"],
-      yqc: dataArrays[yLabel+"_qc"],
-      xtext: xLabel + ': ',
-      ytext: yLabel + ': ',
-      yaxis: 'y2',
-      xaxis: 'x1',
-      xUnits: xUnits,
-      yUnits: yUnits,
-      cycle: dataArrays.cycle,
-      // colorscale: this.getColorScale(cmapName),
-      id: dataArrays._ids,
-      }
-  return measurements
-  } 
-
-  makeColorChartTrace(meas, key: string, includeQC: boolean, colorbarDomain: [number, number]) {
+  makeColorChartTrace(da: DataArrays, units: string, cmapName: string, key: string, includeQC: boolean, colorbarDomain: [number, number]) {
       let hovorText = []
+      const text = da['x1_label'] + ':'
       if (includeQC) {
-        for(let idx=0; idx < meas.cvalues.length; idx++){
-          let pointText = this.makeColorChartText(meas.yvalues[idx], meas.xvalues[idx], meas.text, meas.cvalues[idx], meas.units, meas.cycle[idx], meas.cqc[idx])
+        for(let idx=0; idx < da['x1'].length; idx++){
+          let pointText = this.makeColorChartText(da['x2'][idx], da['time'][idx], text, da['x1'][idx], units, da['cycle'][idx], da['x1_qc'][idx])
           hovorText.push(pointText)
       }
       }
       else {
-        for(let idx=0; idx < meas.cvalues.length; idx++){
-            let pointText = this.makeColorChartText(meas.yvalues[idx], meas.xvalues[idx], meas.text, meas.cvalues[idx], meas.units, meas.cycle[idx])
+        for(let idx=0; idx < da['x1'].length; idx++){
+            let pointText = this.makeColorChartText(da['x2'][idx], da['time'][idx], text, da['x1'][idx], units, da['cycle'][idx])
             hovorText.push(pointText)
         }
     }
       const scatterTrace = {
-          y: meas.yvalues,
-          x: meas.xvalues,
+          y: da['x2'],
+          x: da['time'],
           text: hovorText,
           hoverinfo: 'text',
           showlegend: false,
           type: 'scattergl',
           mode: 'markers',
-          cycle: meas.cycle,
-          profile_ids: meas.id,
-          marker: { color: meas.cvalues,
+          cycle: da['cycle'],
+          profile_ids: da['_ids'],
+          marker: { color: da['x1'],
                       size: 5,
                       symbol: 'dot',
                       opacity: 1,
                       reversescale: false,
-                      colorscale: meas.colorscale,
-                      // colorbar: meas.colorbar,
+                      colorscale: this.getColorScale(cmapName),
                       cauto: false,
                       cmin: colorbarDomain[0],
                       cmax: colorbarDomain[1],
@@ -339,39 +299,40 @@ export class ChartService {
       return [scatterTrace]
   }
 
-  makePvxChartTrace(meas, key: string, includeQC: boolean) {
+  makePvxChartTrace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
       let hovorText = []
-      console.log('includeQC:', includeQC, 'meas.xqc', meas.xqc, 'meas.yqc', meas.yqc)
+      const xtext = da['x1_label'] + ':'
+      const ytext = da['x2_label'] + ':'
       if (includeQC) {
-        for(let idx=0; idx < meas.xvalues.length; idx++){
-          let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 
-            meas.xtext, meas.ytext, meas.xUnits, meas.yUnits, meas.cycle[idx], meas.xqc[idx], meas.yqc[idx])
+        for(let idx=0; idx < da['x1'].length; idx++){
+          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+            xtext, ytext, xunits, yunits, da['cycle'][idx], da['x1_qc'][idx], da['x2_qc'][idx])
           hovorText.push(pointText)
       }
       }
       else {
-        for(let idx=0; idx < meas.xvalues.length; idx++){
-          let pointText = this.makePvxChartText(meas.xvalues[idx], meas.yvalues[idx], meas.time[idx], 
-            meas.xtext, meas.ytext, meas.xunits, meas.yunits, meas.cycle[idx])
-            hovorText.push(pointText)
+        for(let idx=0; idx < da['x1'].length; idx++){
+          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+            xtext, ytext, xunits, yunits, da['cycle'][idx])
+          hovorText.push(pointText)
+          }
         }
-    }
       const scatterTrace = {
-          y: meas.yvalues,
-          x: meas.xvalues,
+          y: da['x2'],
+          x: da['x1'],
           text: hovorText,
           hoverinfo: 'text',
           showlegend: false,
           type: 'scattergl',
           mode: 'markers',
-          cycle: meas.cycle,
-          profile_ids: meas.id,
-          marker: {   color: meas.cycle,
+          cycle: da['cycle'],
+          profile_ids: da['_ids'],
+          marker: {   color: da['cycle'],
                       size: 5,
                       symbol: 'dot',
                       opacity: 1,
                       reversescale: false,
-                      colorscale: this.getColorScale('diverge')
+                      colorscale: this.getColorScale('diverge') // 'Jet'
                   },
           name: key, 
       }

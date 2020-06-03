@@ -124,3 +124,16 @@ export interface bgcMeasurements {
     downwelling_par?: number | null,
     downwelling_par_qc?: number | null,
 }
+
+export interface DataArrays {
+    x1: number[], 
+    x1_qc?: number[], 
+    x2_qc?: number[],
+    x2: number[],
+    x1_label: string,
+    x2_label: string,
+    _id: string[], 
+    _ids: string[], 
+    cycle: number[], 
+    time: string[],
+}

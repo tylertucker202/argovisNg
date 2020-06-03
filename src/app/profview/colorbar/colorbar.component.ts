@@ -20,7 +20,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
   private svgHeight: number
   private svgWidth: number
   private svg: any
-  @Input() axis: string;
+  @Input() id: string;
   @Input() domain: [number, number]
   @Input() colorscale: [number, string][]
   private colorbarId: string
@@ -29,15 +29,13 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
   constructor( private chartService: ChartService ) { }
 
   ngOnInit() {
-    this.colorbarId = this.axis + "Colorbar"
+    this.colorbarId = this.id + "Colorbar"
     this.cbrange = [0, 140] //pxls for colorbar
     this.ticks = 3;
     this.rectHeight = 20
     this.svgHeight = 50
     this.cbarShift = 10
     this.svgWidth = this.cbrange[1] + this.cbarShift
-    // console.log('axis: ', this.axis)
-    // console.log('colorscale:', this.colorscale)
   }
 
   ngAfterViewInit() {
@@ -66,7 +64,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
     let defs = this.svg.append("defs");
 
     //Append a linearGradient element to the defs and give it a unique id
-    const linearGradiantId = this.axis + "linear-gradient"
+    const linearGradiantId = this.id + "LinearGradient"
     let linearGradient = defs.append("linearGradient")
       .attr("id", linearGradiantId)
       .attr("x1", "0%")

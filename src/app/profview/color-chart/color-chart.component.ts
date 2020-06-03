@@ -27,7 +27,7 @@ export class ColorChartComponent implements OnInit {
   private cmapName: string
   private yAxisTitle: string
   private colorLabel: string
-  @Input() axis: string
+  @Input() id: string
   private yLabel: string = 'pres'
   private revision: number = 0
   private readonly reduceMeas = 200
@@ -36,7 +36,7 @@ export class ColorChartComponent implements OnInit {
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
-      this.colorLabel = this.queryProfviewService[this.axis] 
+      this.colorLabel = this.queryProfviewService[this.id] 
       this.statParamKey = this.queryProfviewService.statParamKey
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
@@ -50,7 +50,9 @@ export class ColorChartComponent implements OnInit {
     })
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
-      this.statParams = this.queryProfviewService.statParams
+      let statParams = this.queryProfviewService.statParams
+      statParams = statParams.filter( params => params.value !== 'pres') // filter out pressure
+      this.statParams = statParams
     }, 
     error => {
       console.error('an error occured when listening to changeStatParams: ', error)
@@ -89,13 +91,11 @@ export class ColorChartComponent implements OnInit {
       cmapName = this.cmapName
     }
     const dataArrays = this.chartService.makeColorChartDataArrays(profileData, this.yLabel, this.colorLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const measurements = this.chartService.makeColorChartMeasurements(dataArrays, this.yLabel, this.colorLabel, colorParams.units, cmapName)
     if (defaultColorbarDomain || !this.colorbarDomain){
-      this.colorbarDomain = this.getMinMax(dataArrays[this.colorLabel])
+      this.colorbarDomain = this.getMinMax(dataArrays['x1'])
     }
-    this.colorscale = measurements.colorscale
-    // console.log("colorbarDomain:", this.colorbarDomain)
-    const trace = this.chartService.makeColorChartTrace(measurements, this.colorLabel, this.bgcPlatform, this.colorbarDomain)
+    this.colorscale = this.chartService.getColorScale(cmapName)
+    const trace = this.chartService.makeColorChartTrace(dataArrays, colorParams.units, cmapName, this.colorLabel, this.bgcPlatform, this.colorbarDomain)
 
     this.graph = { data: trace,
       layout: this.layout,
@@ -114,7 +114,7 @@ export class ColorChartComponent implements OnInit {
 
   cLabelChange(colorLabel: string): void {
     this.colorLabel = colorLabel
-    this.queryProfviewService[this.axis] = this.colorLabel
+    this.queryProfviewService[this.id] = this.colorLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
     this.queryProfviewService.setURL()

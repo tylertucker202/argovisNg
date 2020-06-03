@@ -25,7 +25,7 @@ export class PvxChartComponent implements OnInit {
   private statParamKey: string
   private yAxisTitle: string
   private xLabel: string
-  @Input() axis: string
+  @Input() id: string
   private yLabel: string
   private revision: number = 0
   private readonly reduceMeas = 200
@@ -77,8 +77,7 @@ export class PvxChartComponent implements OnInit {
     this.layout = this.chartService.makePvxLayout(this.xLabel, this.yLabel)
 
     const dataArrays = this.chartService.makePvxChartDataArrays(profileData, this.yLabel, this.xLabel, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const measurements = this.chartService.makePvxChartMeasurements(dataArrays, this.yLabel, this.xLabel, xParams['units'], yParams['units'])
-    const trace = this.chartService.makePvxChartTrace(measurements, this.xLabel, this.bgcPlatform)
+    const trace = this.chartService.makePvxChartTrace(dataArrays, this.xLabel, this.bgcPlatform, xParams['units'], yParams['units'])
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true
