@@ -9,16 +9,26 @@ export class ProfPopupComponent {
   showBGC: boolean = false;
   show: boolean = false;
   constructor(private queryService: QueryService) {     
-    if (this.bgc == 1) {
+    if (this.bgc) {
     this.showBGC = true;
     }
   }
 
   @Input() platform: string;
-  @Input() bgc: Number;
+  @Input() bgc: boolean;
+  @Input() lat: string;
+  @Input() long: string;
+  @Input() profileId: string;
+  @Input() unknownPos: boolean;
+
+  private introMsg = {}
 
   ngOnInit() {
-    if (this.bgc == 1) {
+    this.introMsg = "Hello, i'm " + this.profileId + "!"
+    if (this.unknownPos) {
+      this.introMsg += " My whereabouts are unknown!"
+    }
+    if (this.bgc) {
       console.log('includes bgc')
       this.showBGC = true;
       }

@@ -13,7 +13,6 @@ declare let chroma: any
 
 import * as d3 from 'd3'; //needed for leaflet canvas layer
 import * as L from "leaflet";
-import { ChromaStatic } from 'chroma-js';
 
 @Injectable({
   providedIn: 'root'

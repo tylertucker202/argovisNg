@@ -1,0 +1,42 @@
+<div *ngIf="platMeta" id=platform-window class="mat-elevation-z8">
+<mat-grid-list id=platform-grid cols="4" gutterSize="0px" rowHeight="3em">
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan]="1"><p id="thick" class="left-align-forced">Platform Number: {{platMeta.platform_number}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p class="left-align-forced">Updated on: {{platMeta.most_recent_date_added}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p class="left-align-forced">Number of profiles: {{platMeta.number_of_profiles}}
+                       <br /> See table below for profile information.
+        </p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><a class="left-align-forced" target="_blank" href={{platMeta.jcommopsLink}}>link to JCOMMOPS</a>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p class="left-align-forced">PI: {{platMeta.PI_NAME}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p class="left-align-forced">Dac: {{platMeta.dac}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><p class="left-align-forced">Positioning System: {{platMeta.POSITIONING_SYSTEM}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile
+        [colspan]="1"
+        [rowspan] ="1"><a class="left-align-forced" target="_blank" href={{platMeta.fleetMonitoringLink}}>link to Fleet Monitor</a>
+    </mat-grid-tile>
+    <mat-grid-tile
+    [colspan]="4"
+    [rowspan] ="1"><p class="left-align-forced" *ngIf="statParamsList">Station Parameters: {{statParamsList}}</p>
+    </mat-grid-tile>
+</mat-grid-list>
+</div>

@@ -1,17 +1,15 @@
-import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SidebarNavComponent } from './sidebar-nav.component';
-import { FormControl } from '@angular/forms';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../services/query.service';
-import { of } from 'rxjs'; //use for observables
 import * as moment from 'moment';
 
 
 import { MaterialModule } from '../../material/material.module';
+import { MatMomentDateModule } from '@angular/material-moment-adapter'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { query } from '@angular/core/src/render3';
 
 
 describe('SidebarNavComponent', () => {
@@ -34,7 +32,8 @@ describe('SidebarNavComponent', () => {
       providers: [ QueryService ], 
       imports: [    MaterialModule,
                     RouterTestingModule,
-                    BrowserAnimationsModule]
+                    BrowserAnimationsModule, 
+                    MatMomentDateModule]
     }).compileComponents();
   }));
 
@@ -64,6 +63,24 @@ describe('SidebarNavComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have set state according to urlBuild', () => {
+     const RTToggle = queryService.getRealtimeToggle()
+     const bgcToggle = queryService.getBGCToggle()
+     const deepToggle = queryService.getDeepToggle()
+     const proj = queryService.getProj()
+     const threeDayToggle = queryService.getThreeDayToggle()
+     const globalDisplayDate = queryService.getGlobalDisplayDate()
+
+     queryService.urlBuild.emit('test')
+     expect(component['proj']).toEqual(proj)
+     expect(component['includeRT']).toEqual(RTToggle)
+     expect(component['onlyBGC']).toEqual(bgcToggle)
+     expect(component['onlyDeep']).toEqual(deepToggle)
+     expect(component['threeDayToggle']).toEqual(threeDayToggle)
+     const date = moment(component['date'].value).format('YYYY-MM-DD')
+     expect(date).toEqual(globalDisplayDate)
+  })
+
   it('should set realtime toggle', () => {
     const checked = false
     component.realtimeChange(!checked)  
@@ -77,9 +94,9 @@ describe('SidebarNavComponent', () => {
   it('should set three day toggle toggle', () => {
     const checked = false
     component.displayGlobalChange(!checked)
-    expect(component['display3Day']).toBeTruthy()
+    expect(component['threeDayToggle']).toBeTruthy()
     component.displayGlobalChange(checked)
-    expect(component['display3Day']).toBeFalsy()
+    expect(component['threeDayToggle']).toBeFalsy()
     expect(spy3D).toHaveBeenCalled()
     expect(spy3D).toHaveBeenCalledTimes(2);
   });
@@ -127,12 +144,12 @@ describe('SidebarNavComponent', () => {
   it('should set date string', () => {
     const dateStr = '1900-01-01'
     const momentDate = moment(dateStr, 'YYYY-MM-DD').utc()
-    let date = momentDate.toDate()
+    let date = momentDate
 
     component.displayGlobalDateChanged(date)
     const outDate = component['date'];
     const outDateMoment = moment(outDate.value)
-    expect(outDateMoment.toDate()).toEqual(date)
+    expect(outDateMoment).toEqual(date)
   });
 
 });

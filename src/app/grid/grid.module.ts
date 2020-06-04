@@ -13,7 +13,7 @@ import { MapGridComponent } from './map-grid/map-grid.component';
 import { SidebarNavGridComponent } from './sidebar-nav-grid/sidebar-nav-grid.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonthPickerComponent } from './sidebar-nav-grid/month-picker/month-picker.component';
-import { PresSliderComponent } from './sidebar-nav-grid/pres-slider/pres-slider.component';
+import { PresSelComponent } from './sidebar-nav-grid/pres-sel/pres-sel.component';
 import { QueryGridService } from './query-grid.service';
 import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.component';
 import { GridComparePickerComponent } from './sidebar-nav-grid/grid-compare-picker/grid-compare-picker.component';
@@ -26,7 +26,7 @@ import { ColorbarComponent } from './sidebar-nav-grid/colorbar/colorbar.componen
     MapGridComponent,
     SidebarNavGridComponent,
     MonthPickerComponent,
-    PresSliderComponent,
+    PresSelComponent,
     GridPickerComponent,
     GridComparePickerComponent,
     GridColorPickerComponent,

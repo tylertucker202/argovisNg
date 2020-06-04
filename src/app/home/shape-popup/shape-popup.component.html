@@ -1,24 +1,25 @@
 <section class="mat-typography">
 <p> Hello, I'm a {{message}}! </p>
-  <div [hidden]="!arMode">
-  <br /> <button [hidden]="!arMode"
-    matTooltip="Save as a shape and query for argo profiles" 
-    mat-raised-button color={{color}} 
-    (click)="queryARShape()" >
-    Query for Argo profiles</button>
-  </div>
-  <div [hidden]="arMode">
-    <mat-slide-toggle [hidden]="arMode"
-     id="pres-range-toggle" matTooltip="toggle on to query with pressure range"
-     color="accent" [checked]="presRangeToggle"
-     (change)="presRangeChange($event.checked)">Query with pressure range
-    </mat-slide-toggle>
-  <br /> <button [hidden]="arMode"
+  <mat-slide-toggle 
+   id="pres-range-toggle" matTooltip="toggle on to query with pressure range"
+   color="accent" [checked]="presRangeToggle"
+   (change)="presRangeChange($event.checked)">Query with pressure range
+  </mat-slide-toggle>
+  <mat-slide-toggle 
+  id="bgc-toggle" matTooltip="toggle on to query BGC profiles only (green dots)"
+  color="accent" [checked]="bgcOnlyToggle"
+  (change)="bgcOnlyChange($event.checked)">Filter BGC profies only
+  </mat-slide-toggle>
+  <mat-slide-toggle 
+  id="deep-toggle" matTooltip="toggle on to query deep profiles only (blue dots)"
+  color="accent" [checked]="deepOnlyToggle"
+  (change)="deepOnlyChange($event.checked)">Filter deep profiles only
+  </mat-slide-toggle>
+  <br /> <button
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
     (click)="goToSelectionPage(true)" >
     {{shapeButtonText}}</button>
-  </div>
   <br /> <button
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 

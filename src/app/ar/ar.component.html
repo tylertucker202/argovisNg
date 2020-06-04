@@ -1,0 +1,8 @@
+<mat-sidenav-container id="sidenav-container">
+    <mat-sidenav class="side-menu" #drawer mode="side" [opened]=getSidebarState()>
+      <app-ar-sidebar-nav></app-ar-sidebar-nav>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <app-ar-map></app-ar-map>
+    </mat-sidenav-content>
+    </mat-sidenav-container>

@@ -3,12 +3,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SelectionDatePicker } from './selectiondatepicker.component';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryService } from '../../services/query.service';
-import { Daterangepicker } from 'ng2-daterangepicker';
 
 import * as moment from 'moment';
-
-import { By } from '@angular/platform-browser';
-
 import { MaterialModule } from '../../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -28,7 +24,7 @@ describe('SelectionDatePicker', () => {
       providers: [ QueryService ], 
       imports: [    MaterialModule,
                     RouterTestingModule,
-                    BrowserAnimationsModule, Daterangepicker
+                    BrowserAnimationsModule
                    ]
     }).compileComponents();
   }));
@@ -48,7 +44,7 @@ describe('SelectionDatePicker', () => {
     const start = moment('1900-01-01').format('YYYY-MM-DD')
     const end = moment('1900-02-01').format('YYYY-MM-DD')
 
-    var dr = {start: start, end: end, label: ''}
+    var dr = {startDate: start, endDate: end, label: ''}
 
     spyGet = spyOn(queryService, 'getSelectionDates').and.returnValue(dr)
 
@@ -60,10 +56,10 @@ describe('SelectionDatePicker', () => {
   });
 
   it('should set dates from query service', () => {
-      const start = moment('1900-01-01')
-      const end = moment('1900-02-01')
-      expect(component['start']).toEqual(start)
-      expect(component['end']).toEqual(end)
+      const start = moment('1900-01-01').format('YYYY-MM-DD')
+      const end = moment('1900-02-01').format('YYYY-MM-DD')
+      expect(component['daterange']['startDate']).toEqual(start)
+      expect(component['daterange']['endDate']).toEqual(end)
   });
 
   it('should get dates once', () => {

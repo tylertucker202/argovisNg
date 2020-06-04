@@ -1,0 +1,21 @@
+
+<div  id="horz-sliderContainer">
+  <p  id="row">Hours before and after AR event</p>
+  <div class='input-div'>
+    <form class="hour-form">
+      <mat-form-field class="hour-half-width">
+        <input matInput matTooltip="sets lower time limit (hours) for profile selection"
+          class="hour-input" placeholder="lower range:"
+          value={{sliderRange[0]}} type="number"
+          min="-36" max="0" id='minHour' (change)="minValuechange($event.target.value)">
+      </mat-form-field>
+        <mat-form-field class="hour-half-width">
+          <input matInput matTooltip="sets upper time limit (hours) for profile selection" 
+            class="hour-input" placeholder="upper range:"
+            value={{sliderRange[1]}} type="number"
+            min="0" max="36" id='maxHour' (change)="maxValuechange($event.target.value)">
+        </mat-form-field>
+        </form>
+  </div>
+  <!-- <nouislider id='slider' (change)="sliderChange($event)" [config]="config" [(ngModel)]="sliderRange" ></nouislider> -->
+</div>

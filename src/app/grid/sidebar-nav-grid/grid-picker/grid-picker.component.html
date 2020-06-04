@@ -3,7 +3,7 @@
 <div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Param</mat-label>
-      <mat-select [(value)]="param" (selectionChange)="changeParams($event.value)">
+      <mat-select [(value)]="selectedParam" (selectionChange)="changeParams($event.value)">
           <mat-option *ngFor="let param of availableParams"  [(value)]="param.param">
             {{param.viewValue}}
           </mat-option>
@@ -34,8 +34,8 @@
   <mat-form-field>
     <mat-label>Grid Params</mat-label>
     <mat-select [(value)]="gridParam" (selectionChange)="gridParamSelected($event.value)" >
-      <mat-option *ngFor="let param of gridParams" [(value)]="param">
-          {{param}}
+      <mat-option *ngFor="let modelParam of gridParams" [(value)]="modelParam.modelParamName">
+          {{modelParam.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>

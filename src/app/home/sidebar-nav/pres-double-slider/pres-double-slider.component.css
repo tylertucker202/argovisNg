@@ -1,0 +1,36 @@
+#slider {
+    height: 10px;
+    width: 90%;
+    margin-left: 10px;
+}
+    
+#input-div {
+        margin: 10px;
+        width: 100%;
+        }
+
+.slider-container{
+    height: 90px;
+}
+  
+.pressure-half-width{
+    width: 40%;
+    margin: 5px;
+    }
+.pressure-input {
+    width: 100%;
+}
+
+.noUi-vertical {
+    margin: 10px;
+    height: 350px;
+  }
+
+#minPres, #maxPres {
+    margin:5px;
+    font-size: 14px;
+    line-height: 20px;
+    width: 95%;
+    }
+
+    

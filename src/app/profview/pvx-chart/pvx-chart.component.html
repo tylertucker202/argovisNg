@@ -1,0 +1,31 @@
+<div id="pvx-chart" class="mat-elevation-z8">
+    <div class="fields">
+    <mat-form-field class="field">
+        <mat-select id="x-axis-select" placeholder="Float parameter on x axis" matTooltip="select parameter"
+         [(value)]="chartLabels.x1" (selectionChange)="xLabelChange($event.value)">
+          <mat-option *ngFor="let param of statParams" [value]="param.value">
+            {{param.viewValue}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field class="field">
+        <mat-select id="y-axis-select" placeholder="Float parameter on y axis" matTooltip="select parameter"
+         [(value)]="chartLabels.x2" (selectionChange)="yLabelChange($event.value)">
+          <mat-option *ngFor="let param of statParams" [value]="param.value">
+            {{param.viewValue}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-icon-button matTooltip="Download data used to create this chart" (click)="downloadChartData()">
+      <mat-icon>archive</mat-icon>
+    </button>
+    </div>
+    <h5 align="center">{{chartTitle}}</h5>
+    <plotly-plot *ngIf="graph" class='chart'
+    [data]="graph.data"
+    [layout]="graph.layout"
+    [updateOnlyWithRevision]="graph.updateOnlyWithRevision"
+    [revision]="revision"
+    (plotly_click)="onSelect($event.points[0])">
+    </plotly-plot>
+</div>

@@ -75,6 +75,6 @@ describe('MapGridComponent', () => {
   it('should resetToStart', () => {
     queryGridService.resetToStart.emit('test change')
     expect(gridMappingService.gridLayers.getLayers().length).toEqual(0)
-    expect(mapService.drawnItems.getLayers().length).toEqual(0)
+    expect(mapService.drawnItems.getLayers().length).toEqual(1)
   })
 });

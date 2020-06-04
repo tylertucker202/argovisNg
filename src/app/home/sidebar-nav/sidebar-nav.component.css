@@ -1,6 +1,6 @@
 .sidebar-nav {
     height: 900px;
-    padding: 5px;
+    overflow-y: scroll;
 }
 
 #three-day-toggle {
@@ -23,4 +23,9 @@
 
 #ar-button {
     margin:10px;
+}
+
+.mat-elevation-z8 {
+    margin: 10px;
+    padding: 5px;
 }

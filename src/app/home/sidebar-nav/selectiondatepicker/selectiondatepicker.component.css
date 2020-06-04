@@ -1,3 +1,7 @@
 #daterange-picker {
     width: 95%;
 }
+
+.md-drppicker.shown.drops-down-right {
+    position: fixed;
+}

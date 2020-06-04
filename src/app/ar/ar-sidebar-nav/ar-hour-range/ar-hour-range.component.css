@@ -1,0 +1,39 @@
+#horz-slider-container{
+    display:flex;
+    height: 190px;
+    width: 90%;
+}
+
+#slider{
+    height: 30px;
+    margin-bottom: 30px;
+}
+
+#horz-slider {
+    position: relative;
+    height: 70px;
+    margin-left: 5%;
+    margin-right: 5%
+}
+
+#input-div {
+    margin: 10px;
+    width: 100%;
+    }
+
+.hour-form {
+    width: 80%;
+    height: 60px;
+    margin: auto;
+    }
+
+.hour-half-width{
+    width: 40%;
+    margin: 5px;
+    }
+
+#minHour, #maxHour {
+    font-size: 14px;
+    line-height: 20px;
+    width: 95%;
+    }

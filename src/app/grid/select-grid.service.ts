@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup } from './../../typeings/grids'
-
+import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam, GridMeta } from './../../typeings/grids'
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class SelectGridService {
+
+  constructor(private http: HttpClient) { }
 
   private readonly ksGrids: GridGroup[] = [
     // {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
@@ -28,15 +31,27 @@ export class SelectGridService {
     {grid: 'rgTempTotal', param: 'total', viewValue: 'RG Total'}
   ]
 
-  private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
+  // private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
+  private readonly allAvailableGrids = this.rgGrids //only allow rg grids for now
 
   private readonly ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
   private readonly rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
   private readonly tempGridGroup: MeasGroup = {meas:'Temperature', producers: [this.rgGridGroup, this.ksGridGroup]}
   public readonly allGrids = [this.tempGridGroup]
-  private readonly spaceTimeParams  = ['nResGrid', 'nll', 'sigmaOpt', 'thetaLatOpt', 'thetaLongOpt', 'thetasOpt', 'thetatOpt']
-  private readonly spaceParams = ['aOpt', 'nResGrid', 'nll', 'sigmaOpt', 'theta1Opt', 'theta2Opt']
-  private ksParams: GridParamGroup[] = [
+  private readonly spaceTimeParams: ModelParam[]  = [ {modelParamName: 'nResGrid', viewValue: 'N Profiles'},
+                                                      {modelParamName: 'nll', viewValue: 'Neg log liklihood'},
+                                                      {modelParamName: 'thetaLatOpt', viewValue: 'Lat weight'},
+                                                      {modelParamName: 'thetaLongOpt', viewValue: 'Lon weight'},
+                                                      {modelParamName: 'thetasOpt', viewValue: 'spread weight'},
+                                                      {modelParamName: 'thetatOpt', viewValue: 'time weight'},
+                                                    ]
+  private readonly spaceParams: ModelParam[]  = [{modelParamName: 'nResGrid', viewValue: 'N Profiles'},
+                                                {modelParamName: 'nll', viewValue: 'Neg log liklihood'},
+                                                {modelParamName: 'sigmaOpt', viewValue: 'spread weight'},
+                                                {modelParamName: 'theta1Opt', viewValue: 'first weight'},
+                                                {modelParamName: 'theta2Opt', viewValue: 'second weight'},
+                                                  ]
+  public readonly ksParams: GridParamGroup[] = [
     {grid: 'ksSpaceTempNoTrend', param: 'param', viewValue: 'Space No Trend Anomaly', params: this.spaceParams  },
     {grid: 'ksSpaceTempTrend', param: 'param', viewValue: 'Space Trend Anomaly', params: this.spaceParams   },
     {grid: 'ksSpaceTempTrend2', param: 'param',viewValue: 'Space Trend2 Anomaly', params: this.spaceParams   },
@@ -44,13 +59,13 @@ export class SelectGridService {
     {grid: 'ksSpaceTimeTempTrend', param: 'param',viewValue: 'Space Time Trend Anomaly', params: this.spaceTimeParams   },
     {grid: 'ksSpaceTimeTempTrend2', param: 'param',viewValue: 'Space Time Trend2 Anomaly', params: this.spaceTimeParams   },
   ]
-  private readonly ksParamGroup: any = {producer: 'Kuusela-Stein', grids: this.ksParams}
-  private readonly tempParamGroup: any = {meas: 'Temperature', producers: [this.ksParamGroup]}
-  public readonly allGridParams: any =  [this.tempParamGroup]
+  private readonly ksParamGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksParams}
+  private readonly tempParamGroup: MeasGroup = {meas: 'Temperature', producers: [this.ksParamGroup]}
+  public readonly allGridParams: MeasGroup[] =  [this.tempParamGroup]
   public readonly params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
                             {param:'anomaly', viewValue: 'Anomaly'},
                             //{param:'mean', viewValue: 'Mean'}
-                          ]
+                          ] as AvailableParams[]
 
   public getAvailableGrids(param: string): GridGroup[] {
     //select grids that have the following params: 'anomaly', 'mean', 'total'
@@ -76,5 +91,9 @@ export class SelectGridService {
 
   }
 
-  constructor() { }
+  public getGridMeta(gridName: string): Observable<GridMeta[]> {
+    const url = '/griddedProducts/grid/pressureLayers?gridName=' + gridName
+    return this.http.get<GridMeta[]>(url)
+  }
+
 }

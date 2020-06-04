@@ -1,0 +1,27 @@
+.ar-sidebar-nav {
+    height: 900px;
+    padding: 5px;
+    overflow-y: scroll;
+}
+
+#three-day-toggle {
+    font-size: 14px;
+  }
+
+#projectionForm {
+    margin: 10px;
+    width: 80%;
+}
+
+.platform-form {
+    padding-top: 10px;
+    width:100%;
+}
+
+.date-form {
+    width:100%;
+}
+
+#ar-button {
+    margin:10px;
+}

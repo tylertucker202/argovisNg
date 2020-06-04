@@ -38,7 +38,7 @@ declare module 'leaflet' {
     var colorBar: any
 
     export interface DrawConstructorOptions {
-      position?: string;
+      position?: ControlPosition;
       draw?: DrawOptions;
       edit?: EditOptions;
     }
@@ -56,7 +56,7 @@ declare module 'leaflet' {
     export interface EditOptions {
         featureGroup: FeatureGroup<any>;
         edit?: false | EditHandlerOptions;
-        remove?: false | DeleteHandlerOptions;
+        remove?: false;
         polygon?: boolean | DrawOptions.PolygonOptions;
         polyline?: boolean | PolylineOptions;
         marker?: boolean | MarkerOptions;

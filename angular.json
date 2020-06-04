@@ -27,10 +27,10 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/leaflet-coordinates.css",
+              "src/ext-css/leaflet-coordinates.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/ext-css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/nouislider/distribute/nouislider.min.css",
               "node_modules/ol/ol.css"
@@ -84,10 +84,10 @@
             "scripts": [],
             "styles": [
               "src/styles.css",
-              "src/leaflet-coordinates.css",
+              "src/ext-css/leaflet-coordinates.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/leaflet-draw/dist/leaflet.draw.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/ext-css/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/nouislider/distribute/nouislider.min.css"
             ],

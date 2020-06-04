@@ -83,7 +83,7 @@ public argoIconDeep = L.icon({
     return of(this.mockPoints)
   }
 
-  public getSelectionPoints(urlQuery): Observable<ProfilePoints[]> {
+  public getSelectionPoints(urlQuery: string): Observable<ProfilePoints[]> {
     const url = urlQuery;
     return this.http.get<ProfilePoints[]>(url);
   }
@@ -110,23 +110,31 @@ public argoIconDeep = L.icon({
     return this.http.get<ProfilePoints[]>(url);
   }
 
+  public getGlobalMapProfiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
+    let url = '/selection/globalMapProfiles/'
+    url += startDate + '/'
+    url += endDate
+    return this.http.get<ProfilePoints[]>(url)
+  }
+
   // plots the markers on the map three times. 
-  public makeWrappedCoordinates(coordinates): number[][] {
-      const lat = coordinates[1];
-      const lon = coordinates[0];
+   private makeWrappedLngLatCoordinates(coordinates: Number[]): number[][] {
+      const lat = coordinates[1].valueOf();
+      const lon = coordinates[0].valueOf();
+      let coords: number[][]
       if (-90 > lon && lon > -180) {
-          var coords = [[lon, lat], [lon + 360, lat]]
+        coords = [[lon, lat], [lon + 360, lat]]
       }
       else if (90 < lon && lon < 180) {
-          var coords = [[lon, lat], [lon - 360, lat]];
+        coords = [[lon, lat], [lon - 360, lat]];
       }
-      else{ var coords = [[lon, lat]]}
+      else{ coords = [[lon, lat]]}
       return coords;
   };
 
-  public makeCoords(coordinates) {
-    const lat = coordinates[1];
-    const lon = coordinates[0];    
+  private makeLngLatCoords(coordinates: Number[]): number[][] {
+    const lat = coordinates[1].valueOf();
+    const lon = coordinates[0].valueOf();    
     return [[lon, lat]]
   }
 
@@ -149,11 +157,11 @@ public argoIconDeep = L.icon({
     return [strLat, strLng]
   }
 
-  public addToMarkersLayer(this, profile, markersLayer, markerIcon=this.argoIcon, wrapCoordinates=true) {
+  public addToMarkersLayer(profile: ProfilePoints, markersLayer: L.LayerGroup , markerIcon=this.argoIcon, wrapCoordinates=true) {
     const selectedPlatform = profile.platform_number;
     const geoLocation = profile.geoLocation;
-    const lat = geoLocation.coordinates[1].toFixed(2);
-    const lon = geoLocation.coordinates[0].toFixed(2);
+    const lat = geoLocation.coordinates[1]
+    const lon = geoLocation.coordinates[0]
     const date = moment(profile.date).format('LLL')
     const strLatLng = this.formatLatLng([lon, lat])
     const cycle = profile.cycle_number
@@ -164,35 +172,40 @@ public argoIconDeep = L.icon({
     const dataMode = profile.DATA_MODE;
     const bgc = profile.containsBGC;
     const deep = profile.isDeep;
+    let unknownPos = false
+    if (lat == -89) {
+      unknownPos = true
+    }
     if (profile.DIRECTION == 'D') {
       profile_id += 'D'
     }
-
+    let coordArray: number[][]
     if (wrapCoordinates){
-      var coordArray = this.makeWrappedCoordinates(geoLocation.coordinates);
+      coordArray = this.makeWrappedLngLatCoordinates(geoLocation.coordinates);
     }
     else {
-      var coordArray = this.makeCoords(geoLocation.coordinates);
+      coordArray = this.makeLngLatCoords(geoLocation.coordinates);
     }
 
-    for(let i = 0; i < coordArray.length; i++) {
+    for(let i = 0; i < coordArray.length; i++) { //wrapped coordinates are repeated across map
         let marker;
-        const coordinates = coordArray[i];
-        marker = L.marker(coordinates.reverse(), {icon: markerIcon});
+        const latLngCoords = [coordArray[i][1], coordArray[i][0]] as [number, number]
+        marker = L.marker(latLngCoords, {icon: markerIcon});
         marker.bindPopup(null);
         marker.on('click', (event) => {
           marker.setPopupContent(
                 this.compileService.compile(ProfPopupComponent, (c) => 
-                  { c.instance.param = profile_id; 
-                    c.instance.profileId = profile_id;
-                    c.instance.lat = strLatLng[0];
-                    c.instance.lon = strLatLng[1];
-                    c.instance.cycle = cycle;
-                    c.instance.date = date;
-                    c.instance.platform = selectedPlatform;
-                    c.instance.dataMode = dataMode;
-                    c.instance.bgc = bgc;
-                    c.instance.deep = deep;
+                  { c.instance.param = profile_id
+                    c.instance.profileId = profile_id
+                    c.instance.lat = strLatLng[0]
+                    c.instance.lon = strLatLng[1]
+                    c.instance.cycle = cycle
+                    c.instance.date = date
+                    c.instance.platform = selectedPlatform
+                    c.instance.dataMode = dataMode
+                    c.instance.bgc = bgc
+                    c.instance.deep = deep
+                    c.instance.unknownPos = unknownPos
                   })
             );
 });

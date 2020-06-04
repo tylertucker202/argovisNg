@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Injector } from '@angular/core';
 import { QueryService } from '../services/query.service'
 import {MatDialog} from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
-import { ArDisplayComponent } from './ar-display/ar-display.component'
+import moment from 'moment';
 
 export interface Projections {
   value: string;
@@ -17,38 +17,38 @@ export interface Projections {
 
 export class SidebarNavComponent implements OnInit {
 
-  private date = new FormControl(new Date());
+  public date = new FormControl(new Date());
+  public queryService: QueryService
+  public dialog: MatDialog 
+  constructor( public injector: Injector ) { 
+                                             this.queryService = this.injector.get(QueryService)
+                                             this.dialog = this.injector.get(MatDialog)
+                                           }
 
-  constructor( private queryService: QueryService,
-               public dialog: MatDialog ) { }
-
-  @Input() private includeRT: boolean
-  @Input() private onlyBGC: boolean
-  @Input() private onlyDeep: boolean;
-  @Input() private display3Day: boolean
-  @Input() private proj: string
-  @Input() private arModule: boolean
-  
-  private arMode: boolean
-
-  private platformInput: string;
-  private projections: Projections[] = [
+  @Input() public includeRT: boolean
+  @Input() public onlyBGC: boolean
+  @Input() public onlyDeep: boolean
+  @Input() public threeDayToggle: boolean
+  @Input() public proj: string
+  public platformInput: string
+  public projections: Projections[] = [
     {value: 'WM', viewValue: 'Web mercator'},
     {value: 'SSP', viewValue: 'Southern stereo projection'},
     {value: 'NSP', viewValue: 'Northern stereo projection'}
   ];
 
   ngOnInit() {
+    this.setSubscriptions()
+  }
+
+  setSubscriptions() {
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
       this.includeRT = this.queryService.getRealtimeToggle()
       this.onlyBGC = this.queryService.getBGCToggle()
       this.onlyDeep = this.queryService.getDeepToggle()
-      this.arMode = this.queryService.getArMode()
-      this.arModule = this.queryService.arModule
-
-      this.display3Day = this.queryService.getThreeDayToggle()
+      this.threeDayToggle = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
       let displayDate = new Date(this.queryService.getGlobalDisplayDate())
@@ -64,8 +64,8 @@ export class SidebarNavComponent implements OnInit {
   }
 
   displayGlobalChange(checked: boolean): void {
-    this.display3Day = checked
-    this.queryService.sendThreeDayMsg(this.display3Day);
+    this.threeDayToggle = checked
+    this.queryService.sendThreeDayMsg(this.threeDayToggle);
   }
 
   bgcChange(checked: boolean): void {
@@ -76,13 +76,6 @@ export class SidebarNavComponent implements OnInit {
   deepChange(checked: boolean): void {
     this.onlyDeep = checked
     this.queryService.sendDeepToggleMsg(this.onlyDeep);
-  }
-
-  arModeChange(checked: boolean): void {
-    this.arMode = checked
-    const broadcastChange = false
-    const clearOtherShapes = checked // remove other shape if checked
-    this.queryService.sendArMode(this.arMode, broadcastChange, clearOtherShapes)
   }
 
   clearProfiles(): void {
@@ -98,8 +91,6 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.sendProj(proj)
   }
 
-
-
   displayPlatformInputChanged(platformInput: string): void {
     this.platformInput = platformInput
     if (platformInput.length >= 5){
@@ -107,21 +98,10 @@ export class SidebarNavComponent implements OnInit {
     }
   }
 
-  displayGlobalDateChanged(date: Date): void {
+  displayGlobalDateChanged(date: moment.Moment): void {
     this.date = new FormControl(date)
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const dateStr = year + '-' + month + '-' + day
+    const dateStr = date.format('YYYY-MM-DD')
     this.queryService.sendGlobalDate(dateStr)
   }
 
-  openARDialog(): void {
-    console.log('inside AR dialog')
-    this.queryService.clearLayers.emit('inside AR Dialog')
-    const dialogRef = this.dialog.open(ArDisplayComponent, {
-      width: '300px',
-      data: {}
-    });
-  }
 }

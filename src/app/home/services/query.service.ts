@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Injectable, EventEmitter, Output, Injector } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router'
 import { DateRange } from '../../../typeings/daterange';
@@ -14,61 +14,45 @@ export class QueryService {
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
-  @Output() arEvent: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000]
-  private selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'}
+  private selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+                                           endDate: moment().utc().format('YYYY-MM-DD')}
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
-  private arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
   private latLngShapes: number[][][]
-  private arShapes: number[][][]
   private includeRealtime = true
   private onlyBGC = false
   private onlyDeep = false
   private threeDayToggle = true
   private proj = 'WM'
-  private arMode = false
-  public arModule: boolean
-  private arDateRange = [-18, 18]
-
-  constructor(private route: ActivatedRoute,
-              private location: Location,
-              private router: Router) { this.router.urlUpdateStrategy = 'eager' }
-
-  public checkArModule(route: ActivatedRoute): void {
-    if (route.data) {
-      route.data.subscribe(v => {
-        if(v['arModule']) {
-          this.arModule = v['arModule'] //ignore if undefined
-        }
-        if (this.arModule) { this.sendArMode(false, false, false) }
-      })
-    }
-  }
+  public route: ActivatedRoute
+  public location: Location
+  public router: Router
+  constructor(public injector: Injector) { 
+                                            this.router = injector.get(Router)
+                                            this.location = injector.get(Location)
+                                            this.route = injector.get(ActivatedRoute)
+                                            this.router.urlUpdateStrategy = 'eager'
+                                          }
 
   public resetParams(): void{
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
-    this.sendThreeDayMsg(true, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
     const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
-
-    const selectionDateRange = {start: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                end: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-    this.sendSelectedDate(selectionDateRange, broadcastChange)
-    const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const clearOtherShapes = false
-    this.sendArMode(false, broadcastChange, clearOtherShapes)
-    this.sendArDate(arDate)
-    const arDateRange = [-18, 18]
-    this.sendArDateRange(arDateRange)
+    let selectionDateRange: DateRange
+    let sendThreeDayMsg: boolean
+    sendThreeDayMsg = true
+    selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
+    endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
+    this.sendSelectedDate(selectionDateRange, broadcastChange)
   }
-
 
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
@@ -97,27 +81,26 @@ export class QueryService {
         this.urlBuild.emit('got state from map component')
       });
     }
-
   public setURL(): void {
 
     //this is reversing the order of this.latLngShapes()
-    const presRangeString = JSON.stringify(this.presRange)
+    const presRangeString = JSON.stringify(this.getPresRange())
     let shapesString = null
-    if (this.latLngShapes) {
-      shapesString = JSON.stringify(this.latLngShapes)
+    const shapes = this.getShapes()
+    if (shapes) {
+      shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'mapProj': this.proj,
+                         'mapProj': this.getProj(),
                          'presRange': presRangeString, 
-                         'selectionStartDate': this.selectionDateRange.start,
-                         'selectionEndDate': this.selectionDateRange.end,
-                         'threeDayEndDate': this.globalDisplayDate,
+                         'selectionStartDate': this.getSelectionDates().startDate,
+                         'selectionEndDate': this.getSelectionDates().endDate,
+                         'threeDayEndDate': this.getGlobalDisplayDate(),
                          'shapes': shapesString,
-                         'includeRealtime': this.includeRealtime,
-                         'onlyBGC': this.onlyBGC,
-                         'onlyDeep': this.onlyDeep,
-                         'threeDayToggle': this.threeDayToggle,
-                         'arMode': this.arMode
+                         'includeRealtime': this.getRealtimeToggle(),
+                         'onlyBGC': this.getBGCToggle(),
+                         'onlyDeep': this.getDeepToggle(),
+                         'threeDayToggle': this.getThreeDayToggle(),
                         }
     this.router.navigate(
       [], 
@@ -130,33 +113,6 @@ export class QueryService {
 
   public getURL(): string {
     return location.pathname
-  }
-
-  public getArDateRange(): number[] {
-    return [...this.arDateRange]
-  }
-
-  public sendArDateRange(dateRange: number[]): void {
-    this.arDateRange = dateRange
-  }
-
-  public sendArMode(arMode: boolean, broadcastChange=false, clearOtherShapes=true) {
-    const msg = 'arMode'
-    this.arMode = arMode;
-    if (clearOtherShapes) { this.clearLayers.emit('ar more activated') }
-    if (broadcastChange) { this.change.emit(msg) }
-  }
-
-  public getArMode(): boolean {
-    return this.arMode
-  }
-
-  public sendArDate(date: moment.Moment) {
-    this.arDate = date
-  }
-
-  public getArDate(): moment.Moment {
-    return this.arDate
   }
 
   public triggerPlatformShow(platform: string): void {
@@ -177,23 +133,12 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  public sendARShapes(data: number[][][]): void {
-    let msg = 'ar shape'
-    this.arShapes = data
-  }
-
-  public getARShapse(): number[][][] {
-    return this.arShapes
-  }
-
   public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
-    
     let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
       this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
-    console.log('inside sendShape:', data)
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
@@ -230,7 +175,7 @@ export class QueryService {
   }
 
   public getPresRange(): number[] {
-    return this.presRange;
+    return [...this.presRange];
   }
 
   public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {
@@ -272,7 +217,6 @@ export class QueryService {
   public getThreeDayToggle(): boolean {
     return this.threeDayToggle;
   }
-
 
   sendBGCToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'bgc only'
@@ -333,12 +277,12 @@ export class QueryService {
         break
       }
       case 'selectionStartDate': {
-        const stateDateRange = {start: value, end: this.selectionDateRange.end}
+        const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }
       case 'selectionEndDate': {
-        const stateDateRange = {start: this.selectionDateRange.start, end: value}
+        const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
         this.sendSelectedDate(stateDateRange, notifyChange)
         break
       }
@@ -347,13 +291,7 @@ export class QueryService {
         this.sendPres(presRange, notifyChange)
         break
       }
-      case 'arMode': {
-        const arMode = JSON.parse(value)
-        const clearOtherShapes = false
-        this.sendArMode(arMode, notifyChange, clearOtherShapes)
-        break
-      }
-      default: {
+     default: {
         console.log('key not found. not doing anything: ', key)
         break;
     }

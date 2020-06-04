@@ -1,0 +1,19 @@
+#platform-window {
+    width: 1200px;
+    margin-left: 20px;
+}
+
+#platform-grid {
+    margin: 20px;
+    padding: 5px;
+    border: 20px;
+}
+
+#thick {
+    font-weight: bold;
+}
+
+.left-align-forced {
+    margin-top: 5px;
+    width: 100%;
+}

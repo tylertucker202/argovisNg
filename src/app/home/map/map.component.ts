@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Inject, ApplicationRef } from '@angular/core'
+import { Component, OnInit, OnDestroy, ApplicationRef, Injector } from '@angular/core'
 import { MapService } from '../services/map.service'
 import { PointsService } from '../services/points.service'
 import { ProfilePoints } from '../models/profile-points'
 import { QueryService } from '../services/query.service'
-import { DOCUMENT } from '@angular/common'
 import * as L from "leaflet"
 import { NotifierService } from 'angular-notifier'
-import { ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'app-map',
@@ -20,31 +18,42 @@ export class MapComponent implements OnInit, OnDestroy {
   public startView: L.LatLng
   public startZoom: number
   public graticule: any
-  private wrapCoordinates: boolean
-  private proj: string
-  private readonly notifier: NotifierService
-  
-  constructor(private appRef: ApplicationRef,
-              public mapService: MapService,
-              public pointsService: PointsService,
-              private queryService: QueryService,
-              private notifierService: NotifierService,
-              private route: ActivatedRoute,
-              @Inject(DOCUMENT) private document: Document) { this.notifier = notifierService }
+  public wrapCoordinates: boolean
+  public proj: string
+  public readonly notifier: NotifierService
+  public appRef: ApplicationRef
+  public mapService: MapService
+  public pointsService: PointsService
+  public queryService: QueryService
+  public notifierService: NotifierService
+  constructor(public injector: Injector) {  this.notifierService = injector.get(NotifierService)
+                                            this.notifier = this.notifierService
+                                            this.appRef = this.injector.get(ApplicationRef)
+                                            this.mapService = injector.get(MapService)
+                                            this.pointsService = injector.get(PointsService)
+                                            this.queryService = injector.get(QueryService)
+                                            }
 
   ngOnInit() {
-    this.route.data.subscribe(v => {
-    })
-    this.queryService.checkArModule(this.route)
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
-    this.queryService.setParamsFromURL()
 
-    this.proj = this.queryService.getProj()
-    if ( this.proj === 'WM' ){
-      this.wrapCoordinates = true
-    }
+    this.setParamsAndEvents()
 
+
+    this.invalidateSize()
+    //sets starting profiles from URL. Default is no params
+    setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
+      this.addShapesFromQueryService()
+     })
+  }
+
+  ngOnDestroy() {
+    this.map.off()
+    this.map.remove()
+  }
+
+  public setMap(): void {
     this.map = this.mapService.generateMap(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
@@ -53,80 +62,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.mapService.drawnItems.addTo(this.map)
     this.mapService.scaleDisplay.addTo(this.map)
     this.mapService.drawControl.addTo(this.map)
-    this.mapService.arShapeItems.addTo(this.map) //special shapes for ar objects
-    this.markersLayer.addTo(this.map)
-
-    this.queryService.change
-      .subscribe(msg => {
-         console.log('query changed: ' + msg)
-         this.queryService.setURL()
-         this.markersLayer.clearLayers()
-         this.setPointsOnMap()
-         const showThreeDay = this.queryService.getThreeDayToggle()
-         if (showThreeDay) {
-            this.addDisplayProfiles()
-         }
-         //this.setMockPoints()
-        })
-
-    this.queryService.arEvent
-        .subscribe(msg => {
-          console.log('ar event emit ' + msg)
-          this.mapService.arShapeItems.clearLayers()
-          this.addShapesFromQueryService()
-        })
-
-    this.queryService.clearLayers
-      .subscribe( () => {
-        this.queryService.clearShapes()
-        this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clearLayers()
-        this.mapService.arShapeItems.clearLayers()
-        this.queryService.setURL()
-      })
-    
-    this.queryService.resetToStart
-      .subscribe( () => {
-        this.queryService.clearShapes()
-        this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clearLayers()
-        this.mapService.arShapeItems.clearLayers()
-        this.setStartingProfiles()
-        //this.setMockPoints()
-        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
-      })
-
-    this.queryService.displayPlatform
-    .subscribe( platform => {
-      this.markersLayer.clearLayers()
-      this.mapService.drawnItems.clearLayers()
-      this.pointsService.getPlatformProfiles(platform)
-        .subscribe((profilePoints: ProfilePoints[]) => {
-          if (profilePoints.length > 0) {
-            this.displayProfiles(profilePoints, 'platform')
-            this.map.setView([this.startView.lat, this.startView.lng], 2.5)
-          }
-          else {
-            if (platform.length >= 7){
-              this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
-            }
-          }
-        },
-        error => {
-          this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles.' )
-          })
-    })
-
-    this.queryService.triggerPlatformDisplay
-      .subscribe( platform => {
-        this.pointsService.getPlatformProfiles(platform)
-          .subscribe((profilePoints: ProfilePoints[]) => {
-            this.displayProfiles(profilePoints, 'history')
-          },
-          error => { 
-            this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
-           })
-    })
+    this.markersLayer.addTo(this.map)   
 
     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
       this.markersLayer.clearLayers()
@@ -164,17 +100,75 @@ export class MapComponent implements OnInit, OnDestroy {
       const shape = this.queryService.getShapesFromFeatures(drawnItems)
       this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
     })
-
-    this.invalidateSize()
-    //sets starting profiles from URL. Default is no params
-    setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
-      this.addShapesFromQueryService()
-     })
   }
 
-  ngOnDestroy() {
-    this.map.off()
-    this.map.remove()
+  public setParamsAndEvents(): void {
+    //can be overwritten in child components
+    this.queryService.setParamsFromURL()
+    this.proj = this.queryService.getProj()
+    if ( this.proj === 'WM' ){
+      this.wrapCoordinates = true
+    }
+    this.setMap()
+    this.queryService.change
+      .subscribe(msg => {
+         this.queryService.setURL()
+         this.markersLayer.clearLayers()
+         this.setPointsOnMap()
+         const showThreeDay = this.queryService.getThreeDayToggle()
+         if (showThreeDay) {
+            this.addDisplayProfiles()
+         }
+        })
+
+    this.queryService.clearLayers
+      .subscribe( () => {
+        this.queryService.clearShapes()
+        this.markersLayer.clearLayers()
+        this.mapService.drawnItems.clearLayers()
+        this.queryService.setURL()
+      })
+    
+    this.queryService.resetToStart
+      .subscribe( () => {
+        this.queryService.clearShapes()
+        this.markersLayer.clearLayers()
+        this.mapService.drawnItems.clearLayers()
+        this.setStartingProfiles()
+        this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+      })
+
+    this.queryService.displayPlatform
+    .subscribe( platform => {
+      this.markersLayer.clearLayers()
+      this.mapService.drawnItems.clearLayers()
+      this.pointsService.getPlatformProfiles(platform)
+        .subscribe((profilePoints: ProfilePoints[]) => {
+          if (profilePoints.length > 0) {
+            this.displayProfiles(profilePoints, 'platform')
+            this.map.setView([this.startView.lat, this.startView.lng], 2.5)
+          }
+          else {
+            if (platform.length >= 7){
+              this.notifier.notify( 'warning', 'platform: '+platform+' not found' )
+            }
+          }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles.' )
+          })
+    })
+
+    this.queryService.triggerPlatformDisplay
+      .subscribe( platform => {
+        this.pointsService.getPlatformProfiles(platform)
+          .subscribe((profilePoints: ProfilePoints[]) => {
+            this.displayProfiles(profilePoints, 'history')
+          },
+          error => { 
+            this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
+           })
+    })
   }
 
   private addShapesFromQueryService(): void {
@@ -194,23 +188,24 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
   }
 
-  private setStartingProfiles(this): void {
-    if (this.queryService.getThreeDayToggle()){
-    this.pointsService.getLastThreeDaysProfiles()
-    .subscribe((profilePoints: ProfilePoints[]) => {
-      if (profilePoints.length == 0) {
-        this.notifier.notify( 'warning', 'zero profile points returned' )
-      }
-      else {
-        this.displayProfiles(profilePoints, 'normalMarker')
-      }
-      },
-      error => {
-        this.notifier.notify( 'error', 'error in getting last three day profiles' )
-      })
-    }}
+  public setStartingProfiles(this): void {
+    if (this.queryService.getThreeDayToggle()) {
+      this.pointsService.getLastThreeDaysProfiles()
+      .subscribe((profilePoints: ProfilePoints[]) => {
+        if (profilePoints.length == 0) {
+          this.notifier.notify( 'warning', 'zero profile points returned' )
+        }
+        else {
+          this.displayProfiles(profilePoints, 'normalMarker')
+        }
+        },
+        error => {
+          this.notifier.notify( 'error', 'error in getting last three day profiles' )
+        })
+    }
+  }
 
-  private addDisplayProfiles(this): void {
+  public addDisplayProfiles(): void {
     if (!this.queryService.getThreeDayToggle()) {return}
     const startDate = this.queryService.getGlobalDisplayDate()
     this.pointsService.getLastThreeDaysProfiles(startDate)
@@ -227,7 +222,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
     }
   
-  public setMockPoints(this): void {
+  public setMockPoints(): void {
     this.pointsService.getMockPoints()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
@@ -242,7 +237,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
   }
 
-  private invalidateSize(this): void {
+  public invalidateSize(): void {
     if (this.map) {
       setTimeout(() => {
         this.map.invalidateSize(true)
@@ -250,7 +245,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  private displayProfiles = function(this, profilePoints, markerType): void {
+  public displayProfiles(profilePoints, markerType): void {
 
     const includeRT = this.queryService.getRealtimeToggle()
     const bgcOnly = this.queryService.getBGCToggle()
@@ -275,30 +270,27 @@ export class MapComponent implements OnInit, OnDestroy {
         this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }
 
 
-  private setPointsOnMap(sendNotification=true): void {
+  public setPointsOnMap(sendNotification=true): void {
     let shapeArrays = this.queryService.getShapes()
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
-      let dates = this.queryService.getSelectionDates()
-      let presRange = this.queryService.getPresRange()
-      let includeRealtime = this.queryService.getRealtimeToggle()
-      let onlyBGC = this.queryService.getBGCToggle()
+      const daterange = this.queryService.getSelectionDates()
+      const presRange = this.queryService.getPresRange()
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.mapService.getTransformedShape(shape)
-        let urlQuery = base+'?startDate=' + dates.start + '&endDate=' + dates.end
+        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
         if (presRange) {
           urlQuery += '&presRange='+JSON.stringify(presRange)
         }
         urlQuery += '&shape='+JSON.stringify(transformedShape)
-        //console.log(urlQuery)
         this.pointsService.getSelectionPoints(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.displayProfiles(selectionPoints, 'normalMarker')

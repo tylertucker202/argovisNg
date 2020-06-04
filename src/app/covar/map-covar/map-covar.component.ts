@@ -1,5 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
 import { CovarPoints } from './../../home/models/covar-points'
 import { CovarService } from '../covar.service'
 import { MapCovarService } from '../map-covar.service'
@@ -7,7 +6,6 @@ import { MapCovarService } from '../map-covar.service'
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import TileLayer from 'ol/layer/Tile.js';
-import OSM from 'ol/source/OSM.js';
 import MousePosition from 'ol/control/MousePosition.js';
 import { createStringXY } from 'ol/coordinate.js';
 import { defaults as defaultControls, } from 'ol/control.js';
@@ -38,7 +36,6 @@ export class MapCovarComponent implements OnInit {
   constructor(private covarService: CovarService, 
               private mapCovarService: MapCovarService) { }
   @ViewChild('mouse-position') mousePosition: any;
-  @ViewChild('')
 
   private map: Map;
   private mousePositionControl: MousePosition;
@@ -62,7 +59,6 @@ export class MapCovarComponent implements OnInit {
 
     this.covarService.change
     .subscribe(msg => {
-       console.log('query changed: ' + msg);
        this.proj = this.covarService.getProj()
        this.covarService.buildDataUrl()
        this.removePoints()
@@ -136,8 +132,8 @@ export class MapCovarComponent implements OnInit {
 
     let proj54009 = getProjection('ESRI:54009');
     proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
-    const halfWidth = 12367396.2185; // To the Equator
-    const extent = [-halfWidth, -halfWidth, halfWidth, halfWidth];
+    const halfWidth = 12367396.2185 as number; // To the Equator
+    const extent: [number, number, number, number] = [-halfWidth, -halfWidth, halfWidth, halfWidth]
     let proj3031 = getProjection('EPSG:3031');
     proj3031.setExtent(extent);
     let proj3413 = getProjection('EPSG:3413');

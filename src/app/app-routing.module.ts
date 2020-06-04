@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { ProfviewComponent } from './profview/profview.component'
 import { GridComponent } from './grid/grid.component';
 import { CovarComponent } from './covar/covar.component';
+import { ArComponent } from './ar/ar.component';
 
 const appRoutes: Routes = [
     { path: 'ng/home',
       component: HomeComponent,
-      data: {arModule: false}
     },
     { path: 'ng',
     redirectTo: 'ng/home',
@@ -24,9 +25,11 @@ const appRoutes: Routes = [
       component: CovarComponent,
     }, 
     { path: 'ng/ar',
-      component: HomeComponent,
-      data: {arModule: true}
-    }
+      component: ArComponent,
+    },
+    { path: 'ng/profview',
+    component: ProfviewComponent,
+  }
   ]
 
 @NgModule({
