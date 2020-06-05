@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RasterGrid, RasterParam, BaseRaster } from '../home/models/raster-grid'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
-
+import { WasmService } from './wasm.service'
 
 import * as L from "leaflet";
 //leaflet.canvaslayer.field.js depends on d3 and chroma scripts set in angular.json.
@@ -152,7 +152,7 @@ export class RasterService {
                                  nCols:15,
                                  xllCorner:330.5,
                                  yllCorner:0.5}]
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private wasmService: WasmService ) { }
 
   public getMockGridRaster(): Observable<RasterGrid[]> {
     return of(this.mockRaster)
@@ -206,6 +206,9 @@ export class RasterService {
     let dGrid = numerendGrid;
     const gridName = numerendGrid['gridName'] + ' - ' + subtrahendGrid['gridName']
     let zs = []
+    console.log('inside makeDiffGrid. adding two numbers using wasm')
+    this.wasmService.add(100, 200)
+    console.log('did you see the answer (300)?')
     for (let idx = 0; idx < numerendGrid['zs'].length; idx++){
       
       const x1 = numerendGrid['zs'][idx]
