@@ -35,7 +35,11 @@
               "node_modules/nouislider/distribute/nouislider.min.css",
               "node_modules/ol/ol.css"
             ],
-            "scripts": ["src/ext-js/d3.js/", "src/ext-js/chroma-js.js", "src/ext-js/wasm/wasm-test/pkg/wasm_test.js"] // needed for leaflet.canvaslayer.field.js
+            "scripts": [
+              "src/ext-js/d3.js/",
+              "src/ext-js/chroma-js.js",
+              "src/ext-js/wasm/wasm-test/pkg/wasm_test.js"
+            ]
           },
           "configurations": {
             "production": {

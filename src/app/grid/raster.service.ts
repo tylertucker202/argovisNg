@@ -207,7 +207,8 @@ export class RasterService {
     const gridName = numerendGrid['gridName'] + ' - ' + subtrahendGrid['gridName']
     let zs = []
     console.log('inside makeDiffGrid. adding two numbers using wasm')
-    this.wasmService.add(100, 200)
+    const wasmAdd = this.wasmService.add(100, 200)
+    console.log('wasmAdd:', wasmAdd)
     console.log('did you see the answer (300)?')
     for (let idx = 0; idx < numerendGrid['zs'].length; idx++){
       
