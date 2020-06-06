@@ -3,10 +3,9 @@ import { QueryGridService } from '../../query-grid.service';
 import * as chroma from 'chroma'
 import 'd3'
 import 'd3-scale'
-
-declare let chroma: any
 declare let d3: any
-
+import { ChromaStatic } from 'chroma-js';
+declare const chroma: ChromaStatic
 @Component({
   selector: 'app-colorbar',
   templateUrl: './colorbar.component.html',
