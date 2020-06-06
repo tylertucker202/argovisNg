@@ -152,7 +152,11 @@ export class RasterService {
                                  nCols:15,
                                  xllCorner:330.5,
                                  yllCorner:0.5}]
-  constructor(private http: HttpClient, private wasmService: WasmService ) { }
+  constructor(
+    private http: HttpClient, 
+    private wasmService: WasmService 
+   ) { }
+
 
   public getMockGridRaster(): Observable<RasterGrid[]> {
     return of(this.mockRaster)
