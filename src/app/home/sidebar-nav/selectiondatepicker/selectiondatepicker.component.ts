@@ -10,9 +10,9 @@ import { DateRange, DateRangeSel } from '../../../../typeings/daterange';
 })
 export class SelectionDatePicker {
   constructor(private queryService: QueryService) {}
-  private daterange: DateRange
-  private selected: DateRangeSel
-  private options: any;
+  public daterange: DateRange
+  public selected: DateRangeSel
+  public options: any;
 
   ngOnInit() {
     this.daterange = this.queryService.getSelectionDates()
@@ -44,16 +44,16 @@ export class SelectionDatePicker {
     })
   }
 
-  private sendDateRange(): void {
+  public sendDateRange(): void {
     this.queryService.sendSelectedDate(this.daterange);
   }
 
-  private convertToMoment(daterange: DateRange): DateRangeSel {
+  public convertToMoment(daterange: DateRange): DateRangeSel {
     const select = {startDate: moment.utc(daterange.startDate), endDate: moment.utc(daterange.endDate)}
     return select
   }
 
-  private selectedDate(daterangeSel: DateRangeSel):void {
+  public selectedDate(daterangeSel: DateRangeSel):void {
     if (daterangeSel.startDate) {
       this.daterange.startDate = daterangeSel.startDate.format('YYYY-MM-DD');
       this.daterange.endDate = daterangeSel.endDate.format('YYYY-MM-DD');

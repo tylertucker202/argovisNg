@@ -14,14 +14,26 @@ export class ProfPopupComponent {
     }
   }
 
-  @Input() platform: string;
-  @Input() bgc: boolean;
-  @Input() lat: string;
-  @Input() long: string;
-  @Input() profileId: string;
-  @Input() unknownPos: boolean;
+  // @Input() platform: string;
+  // @Input() bgc: boolean;
+  // @Input() lat: string;
+  // @Input() lon: string;
+  // @Input() date: string;
+  // @Input() profileId: string;
+  // @Input() unknownPos: boolean;
 
-  private introMsg = {}
+  @Input() param: string
+  @Input() profileId: string
+  @Input() lat: string
+  @Input() lon: string
+  @Input() cycle: string
+  @Input() date: string
+  @Input() platform: string
+  @Input() dataMode: string
+  @Input() bgc: boolean
+  @Input() deep: boolean
+  @Input() unknownPos: boolean
+  public introMsg = {}
 
   ngOnInit() {
     this.introMsg = "Hello, i'm " + this.profileId + "!"

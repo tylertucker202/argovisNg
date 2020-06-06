@@ -13,9 +13,9 @@ export interface PressureLevels {
   styleUrls: ['./pres-sel.component.css'],
 })
 export class PresSelComponent implements OnInit {
-  private presLevels: PressureLevels[]
-  private presArray: number[]
-  private presLevel: number;
+  public presLevels: PressureLevels[]
+  public presArray: number[]
+  public presLevel: number;
   
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
@@ -29,7 +29,7 @@ export class PresSelComponent implements OnInit {
     })
   }
 
-  private makePressureLevels(): void {
+  public makePressureLevels(): void {
     let presLevels = []
     this.selectGridService.getGridMeta(this.queryGridService.getGrid())
       .subscribe((gridMeta: GridMeta[]) => {
@@ -43,7 +43,7 @@ export class PresSelComponent implements OnInit {
     this.presLevels = presLevels
   }
 
-  private incrementLevel(increment: number): void {
+  public incrementLevel(increment: number): void {
     const idx = this.presArray.indexOf(this.presLevel)
     const inc = idx + increment
     if( inc >= 0 && inc < this.presLevels.length) {
@@ -53,14 +53,14 @@ export class PresSelComponent implements OnInit {
 
   }
 
-  private sendPresLevel(): void {
+  public sendPresLevel(): void {
     const broadcastChange = true
     if (this.presLevel !== this.queryGridService.getPresLevel()){
       this.queryGridService.sendPres(this.presLevel, broadcastChange)
     }
   } 
 
-  private selChange(newPres: number ): void {
+  public selChange(newPres: number ): void {
     this.presLevel = newPres
     console.log(this.presLevel)
     this.sendPresLevel();

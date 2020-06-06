@@ -11,12 +11,12 @@ export class ArShapePopupComponent implements OnInit {
   @Input() transformedShape: number[][]
   @Input() message: string
   @Input() shape_id: string
-  private bgcOnlyToggle: boolean
-  private deepOnlyToggle: boolean
+  public bgcOnlyToggle: boolean
+  public deepOnlyToggle: boolean
  
-  private color: string
-  private jsonButtonText: string
-  private shapeButtonText: string
+  public color: string
+  public jsonButtonText: string
+  public shapeButtonText: string
 
   constructor( private arQueryService: ArQueryService ) { }
   
@@ -29,15 +29,15 @@ export class ArShapePopupComponent implements OnInit {
     this.queryARShape()
   }
 
-  private bgcOnlyChange(bgcOnlyToggle: boolean): void {
+  public bgcOnlyChange(bgcOnlyToggle: boolean): void {
     this.bgcOnlyToggle = bgcOnlyToggle
   }
 
-  private deepOnlyChange(deepOnlyToggle: boolean): void {
+  public deepOnlyChange(deepOnlyToggle: boolean): void {
     this.deepOnlyToggle = deepOnlyToggle
   }
 
-  private queryARShape(): void {
+  public queryARShape(): void {
     const broadcastChange = true
     const toggle3DayOff = false // should already be off
     let shapes = this.arQueryService.getShapes()
@@ -46,7 +46,7 @@ export class ArShapePopupComponent implements OnInit {
     this.arQueryService.sendShape(shapes, broadcastChange, toggle3DayOff)
   }
 
-  private generateURL(goToPage: boolean): string {
+  public generateURL(goToPage: boolean): string {
     let url = '/selection/profiles'
     if (goToPage) {
       url += '/page'
@@ -63,7 +63,7 @@ export class ArShapePopupComponent implements OnInit {
     return url 
   }
 
-  private generateHomepageURL(): string {
+  public generateHomepageURL(): string {
     let url = '/ng/home?'
     const dateRange = this.arQueryService.getArDateAsDateRange()
     url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
@@ -75,17 +75,17 @@ export class ArShapePopupComponent implements OnInit {
      return url
   }
 
-  private goToSelectionPage(goToPage: boolean): void {
+  public goToSelectionPage(goToPage: boolean): void {
     const url = this.generateURL(goToPage)
     window.open(url,"_blank")
   }
 
-  private goToShapeJson(): void {
+  public goToShapeJson(): void {
     const windowURL = '/arShapes/findByID?_id=' + this.shape_id
     window.open(windowURL,"_blank")
   } 
 
-  private goToHomePage(): void {
+  public goToHomePage(): void {
     const url = this.generateHomepageURL()
     window.open(url, "_blank")
   }

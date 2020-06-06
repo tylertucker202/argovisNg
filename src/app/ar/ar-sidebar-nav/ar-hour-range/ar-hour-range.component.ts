@@ -11,10 +11,10 @@ import * as moment from 'moment';
   encapsulation: ViewEncapsulation.Emulated //add to set styles as global
 })
 export class ArHourRangeComponent implements OnInit {
-  private config: Options;
+  public config: Options;
   public sliderRange: number[];
-  private lRange: number;
-  private uRange: number;
+  public lRange: number;
+  public uRange: number;
   constructor( private arQueryService: ArQueryService ) { }
 
   ngOnInit() {
@@ -43,29 +43,29 @@ export class ArHourRangeComponent implements OnInit {
     })
   }
 
-  private minValuechange(newLowPres: number ): void {
+  public minValuechange(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.updateSelectDates();
   }
 
-  private maxValuechange(newUpPres: number ): void {
+  public maxValuechange(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
     this.updateSelectDates();
   }
 
-  private setSliderRange(): void {
+  public setSliderRange(): void {
     this.sliderRange = this.arQueryService.getArDateRange()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
   }
 
-  private updateSelectDates(): void {
+  public updateSelectDates(): void {
     this.arQueryService.sendArDateRange(this.sliderRange)
   }
 
-  private sliderChange(sliderRange: number[]) {
+  public sliderChange(sliderRange: number[]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
     this.updateSelectDates()

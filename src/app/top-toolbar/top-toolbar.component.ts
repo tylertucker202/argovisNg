@@ -14,9 +14,9 @@ export interface arModule {
 })
 export class TopToolbarComponent implements OnInit {
 
-  private avModules: arModule[];
+  public avModules: arModule[];
 
-  constructor(private toolbarService: TopToolbarService) { }
+  constructor(public toolbarService: TopToolbarService) { }
 
   
   ngOnInit() {
@@ -32,7 +32,7 @@ export class TopToolbarComponent implements OnInit {
     this.toolbarService.drawerToggle.emit(true)
   }
 
-  private goToHome(): void {
+  public goToHome(): void {
     const url = '/ng/home'
     location.href = url;
   }

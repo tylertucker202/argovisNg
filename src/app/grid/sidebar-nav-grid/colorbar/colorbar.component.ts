@@ -12,17 +12,17 @@ declare const chroma: ChromaStatic
   styleUrls: ['./colorbar.component.css']
 })
 export class ColorbarComponent implements OnInit {
-  private colorScale: string
-  private colorArr: string[]
-  private inverseColorScale: boolean
-  private domain: number[]
-  private cbrange: number[]
-  private cbarShift: string
-  private ticks: number
-  private rectHeight: number
-  private svgHeight: number
-  private svgWidth: string
-  private svg: any
+  public colorScale: string
+  public colorArr: string[]
+  public inverseColorScale: boolean
+  public domain: number[]
+  public cbrange: number[]
+  public cbarShift: string
+  public ticks: number
+  public rectHeight: number
+  public svgHeight: number
+  public svgWidth: string
+  public svg: any
 
   constructor( private queryGridService: QueryGridService ) { }
 
@@ -56,7 +56,7 @@ export class ColorbarComponent implements OnInit {
       })
   }
 
-  private updateColorbar() {
+  public updateColorbar() {
     this.colorScale = this.queryGridService.getColorScale()
     this.domain = this.queryGridService.getGridDomain()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
@@ -66,7 +66,7 @@ export class ColorbarComponent implements OnInit {
     else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
   }
 
-  private createColorbar(colorArr: string[], domain: number[]) {
+  public createColorbar(colorArr: string[], domain: number[]) {
 
     this.svg = d3.select("app-colorbar").append("svg")
     .attr("width", this.svgWidth)

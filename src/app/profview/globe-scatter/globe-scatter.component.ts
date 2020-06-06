@@ -9,7 +9,7 @@ import { ProfileMeta } from '../profiles'
 export class GlobeScatterComponent implements OnInit {
 
   constructor(private queryProfviewService: QueryProfviewService) { }
-  private graph: any
+  public graph: any
 
   ngOnInit(): void {
 
@@ -27,12 +27,12 @@ export class GlobeScatterComponent implements OnInit {
 
   }
 
-  private onSelect(profile_id: string) {
+  public onSelect(profile_id: string) {
     const url = '/catalog/profiles/' + profile_id + '/page';
     window.open(url,'_blank');
   }
 
-  private makeMap(lats, longs, ids) {
+  public makeMap(lats, longs, ids) {
     const minLong = Math.min(...longs)
     const maxLong = Math.max(...longs)
     const longRange = [minLong-5, maxLong+5]

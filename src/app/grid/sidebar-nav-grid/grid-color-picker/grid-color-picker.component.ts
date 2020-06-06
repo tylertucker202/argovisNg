@@ -9,9 +9,9 @@ import { ColorScaleGroup } from '../../../../typeings/grids';
 })
 export class GridColorPickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService) { }
-  private availableColorscales: ColorScaleGroup[]
-  private colorScale: string
-  private inverseColorScale: boolean
+  public availableColorscales: ColorScaleGroup[]
+  public colorScale: string
+  public inverseColorScale: boolean
 
   ngOnInit() {
     this.availableColorscales = [
@@ -42,13 +42,13 @@ export class GridColorPickerComponent implements OnInit {
     })
   }
 
-  private changeColorScale(colorScale: string): void {
+  public changeColorScale(colorScale: string): void {
     const sendMessage = true
     this.colorScale = colorScale
     this.queryGridService.sendColorScale(this.colorScale, sendMessage)
   }
 
-  private inverseColorScaleToggle(inverseColorScale: boolean): void {
+  public inverseColorScaleToggle(inverseColorScale: boolean): void {
     const sendMessage = true
     this.inverseColorScale = inverseColorScale
     this.queryGridService.sendInverseColorScale(this.inverseColorScale, sendMessage)

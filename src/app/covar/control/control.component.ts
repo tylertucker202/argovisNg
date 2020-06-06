@@ -19,7 +19,7 @@ export interface ForcastSelections {
 export class ControlComponent implements OnInit {
 
   constructor(private covarService: CovarService) { }
-  private projections: Projections[] = [
+  public projections: Projections[] = [
     {value:"EPSG:3857", viewValue: "Spherical Mercator (EPSG:3857))"},
     {value:"EPSG:4326", viewValue: "Plate Carr\xE9e WGS 84 (EPSG:4326)"},
     {value:"ESRI:54009", viewValue: "Mollweide (ESRI:54009)"},
@@ -55,11 +55,11 @@ export class ControlComponent implements OnInit {
     this.forcastDays = this.covarService.getForcast()
   }
 
-  private mapProjChange(proj: string): void {
+  public mapProjChange(proj: string): void {
     this.covarService.sendProj(proj)
   }
 
-  private forcastChange(forcastDays: number): void {
+  public forcastChange(forcastDays: number): void {
     this.covarService.sendForcast(forcastDays)
   }
 

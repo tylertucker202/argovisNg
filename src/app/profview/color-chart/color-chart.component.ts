@@ -14,23 +14,23 @@ export class ColorChartComponent implements OnInit {
   constructor(private getProfileService: GetProfilesService,
               private chartService: ChartService,
               private queryProfviewService: QueryProfviewService) { }
-  private graph: any
-  private chartTitle: string
-  private platform_number: string
-  private measKey: string
-  private profileData: BgcProfileData[] |  CoreProfileData[]
-  private statParams: StationParameters[]
-  private layout: {}
-  private bgcPlatform: boolean
-  private statParamKey: string
-  private colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
-  private cmapName: string
-  private yAxisTitle: string
-  private colorLabel: string
+  public graph: any
+  public chartTitle: string
+  public platform_number: string
+  public measKey: string
+  public profileData: BgcProfileData[] |  CoreProfileData[]
+  public statParams: StationParameters[]
+  public layout: {}
+  public bgcPlatform: boolean
+  public statParamKey: string
+  public colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
+  public cmapName: string
+  public yAxisTitle: string
+  public colorLabel: string
   @Input() id: string
-  private yLabel: string = 'pres'
-  private revision: number = 0
-  private readonly reduceMeas = 200
+  public yLabel: string = 'pres'
+  public revision: number = 0
+  public readonly reduceMeas = 200
   @Output() colorbarDomain: [number, number] = [0, 1]
   @Output() colorscale: [number, string][] = this.chartService.getColorScale('thermal')
 

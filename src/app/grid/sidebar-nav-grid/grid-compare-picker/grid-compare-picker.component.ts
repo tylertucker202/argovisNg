@@ -13,11 +13,12 @@ export class GridComparePickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
 
-  private compareGrid: boolean
-  private grid: string
-  private param: string
+  public compareGrid: boolean
+  public grid: string
+  public param: string
+  @Input() paramMode: boolean
 
-  private availableGrids: GridGroup[]
+  public availableGrids: GridGroup[]
 
   ngOnInit() {
     this.param = this.queryGridService.getParam()
@@ -50,12 +51,12 @@ export class GridComparePickerComponent implements OnInit {
     this.queryGridService.sendCompare(this.compareGrid, broadcast);
   }
 
-  private sendGrid(): void {
+  public sendGrid(): void {
     const broadcastChange = true
     this.queryGridService.sendCompareGrid(this.grid, broadcastChange)
   }
 
-  private selChange(grid: string ): void {
+  public selChange(grid: string ): void {
     this.grid = grid
     this.sendGrid();
   }

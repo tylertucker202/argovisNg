@@ -25,12 +25,12 @@ export class ArDisplayComponent implements OnInit {
               private notifierService: NotifierService ) { this.notifier = notifierService }
   private arDate: moment.Moment;
   private readonly notifier: NotifierService
-  private arFormDate: FormControl
+  public arFormDate: FormControl
   
-  private hour: number
-  private MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
-  private MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
-  private hours: DropDownSelection[] = [
+  public hour: number
+  public MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
+  public MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
+  public hours: DropDownSelection[] = [
     {value: 0, viewValue: '0:00'},
     {value: 3, viewValue: '3:00'},
     {value: 6, viewValue: '6:00'},
@@ -72,18 +72,18 @@ export class ArDisplayComponent implements OnInit {
     this.dateChanged()
   }
 
-  private incrementDay(increment: number): void {
+  public incrementDay(increment: number): void {
     this.arDate = this.arDate.add(increment, 'd')
     this.dateChanged()
   }
 
-  private incrementHour(increment: number): void {
+  public incrementHour(increment: number): void {
     this.arDate = this.arDate.add(increment, 'h')
     this.dateChanged()
     this.hour = this.arDate.hour()
   }
 
-  private setArShapes(): void {
+  public setArShapes(): void {
     this.arQueryService.sendThreeDayMsg(false, false)
     this.arQueryService.clearLayers.emit('ar shapes being drawn')
     this.arQueryService.arEvent.emit('ar shapes being drawn')

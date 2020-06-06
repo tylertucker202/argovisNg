@@ -32,10 +32,10 @@ export const MY_FORMATS = {
 })
 export class MonthPickerComponent implements OnInit {
 
-  private date = new FormControl(moment());
-  private monthYear: moment.Moment;
-  private minDate = new Date(2012, 0, 1);
-  private maxDate = new Date(2012, 11, 1);
+  public date = new FormControl(moment());
+  public monthYear: moment.Moment;
+  public minDate = new Date(2012, 0, 1);
+  public maxDate = new Date(2012, 11, 1);
   @Input() paramMode: boolean
   @ViewChild('dp') datepicker: MatDatepicker<any>;
 
@@ -48,30 +48,30 @@ export class MonthPickerComponent implements OnInit {
     })
   }
 
-  private incrementMonth(increment: number): void {
+  public incrementMonth(increment: number): void {
     this.monthYear = this.monthYear.add(increment, 'M')
     this.date = new FormControl(this.monthYear)
     this.sendmonthYear()
   }
 
-  private setDate(): void {
+  public setDate(): void {
     this.monthYear = this.queryGridService.getMonthYear()
     this.date = new FormControl(this.monthYear)    
   }
 
-  private sendmonthYear(): void {
+  public sendmonthYear(): void {
     const broadcastChange = true;
     this.queryGridService.sendmonthYear(this.monthYear, broadcastChange)
   }
 
-  private displayDateChanged(date: moment.Moment): void {
+  public displayDateChanged(date: moment.Moment): void {
     //triggered when user changes date manually
     this.date.setValue(date)
     this.monthYear = date
     this.sendmonthYear()
   }
 
-  private chosenYearHandler(year: number) {
+  public chosenYearHandler(year: number) {
     //triggered when user selects on menu
     const ctrlValue = this.date.value;
     ctrlValue.year(year);
@@ -80,7 +80,7 @@ export class MonthPickerComponent implements OnInit {
     this.sendmonthYear()
   }
 
-  private chosenMonthHandler(month: number) {
+  public chosenMonthHandler(month: number) {
     //triggered when user selects month on menu
     const ctrlValue = this.date.value;
     ctrlValue.month(month);

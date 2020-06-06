@@ -9,8 +9,8 @@ import { QueryGridService } from '../query-grid.service'
 export class SidebarNavGridComponent implements OnInit {
 
   constructor(private queryGridService: QueryGridService) { }
-  private interpolateBool: boolean
-  private paramMode: boolean
+  public interpolateBool: boolean
+  public paramMode: boolean
   ngOnInit() {
 
     this.paramMode = this.queryGridService.getParamMode()
@@ -26,21 +26,21 @@ export class SidebarNavGridComponent implements OnInit {
     })
   }
 
-  private clearGrids(): void {
+  public clearGrids(): void {
     this.queryGridService.triggerClearLayers();
   }
 
-  private resetToStart(): void {
+  public resetToStart(): void {
     this.queryGridService.triggerResetToStart();
   }
 
-  private interpolateBoolToggle(checked: boolean): void {
+  public interpolateBoolToggle(checked: boolean): void {
     this.interpolateBool = checked
     const broadcastChange = true
     this.queryGridService.sendInterpolateBool(this.interpolateBool, broadcastChange);
   }
 
-  private paramModeToggle(checked: boolean): void {
+  public paramModeToggle(checked: boolean): void {
     this.paramMode = checked
     if (this.paramMode) {
       const broadcastChange = false

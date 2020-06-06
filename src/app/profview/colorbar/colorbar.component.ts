@@ -13,18 +13,18 @@ declare let d3: any
   styleUrls: ['./colorbar.component.css']
 })
 export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
-  private cbrange: number[]
-  private cbarShift: number
-  private ticks: number
-  private rectHeight: number
-  private svgHeight: number
-  private svgWidth: number
-  private svg: any
+  public cbrange: number[]
+  public cbarShift: number
+  public ticks: number
+  public rectHeight: number
+  public svgHeight: number
+  public svgWidth: number
+  public svg: any
   @Input() id: string;
   @Input() domain: [number, number]
   @Input() colorscale: [number, string][]
-  private colorbarId: string
-  private inverseColorScale: boolean = false
+  public colorbarId: string
+  public inverseColorScale: boolean = false
   @Output() domainChange = new EventEmitter<[number, number]>()
   constructor( private chartService: ChartService ) { }
 
@@ -47,7 +47,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
     this.updateColorbar()
   }
 
-  private updateColorbar() {
+  public updateColorbar() {
     if (this.svg) {
       this.svg.remove();
       if ( this.inverseColorScale ) { this.createColorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
@@ -55,7 +55,7 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private createColorbar(colorscale: string[] | [number, string][], domain: number[]) {
+  public createColorbar(colorscale: string[] | [number, string][], domain: number[]) {
     this.svg = d3.select("#" + this.colorbarId).append("svg")
     .attr("width", this.cbrange[1] + 10)
     .attr("height", this.svgHeight)

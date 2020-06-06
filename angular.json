@@ -38,7 +38,6 @@
             "scripts": [
               "src/ext-js/d3.js/",
               "src/ext-js/chroma-js.js",
-              // "src/ext-js/wasm/wasm-test/pkg/wasm_test.js"
             ]
           },
           "configurations": {

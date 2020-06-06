@@ -11,7 +11,7 @@ export class GridComponent implements OnInit {
 
   constructor(private toolbarService: TopToolbarService) { }
 
-  private sidebarOpen: boolean
+  public sidebarOpen: boolean
 
   ngOnInit() {
     this.sidebarOpen = true //start sidebar as open
@@ -24,7 +24,7 @@ export class GridComponent implements OnInit {
     })
   }
 
-  private getSidebarState(): boolean {
+  public getSidebarState(): boolean {
     return this.sidebarOpen
   }
 

@@ -14,11 +14,11 @@ export class PlatformWindowComponent implements OnInit {
 
   constructor(private chartService: ChartService, private getProfilesService: GetProfilesService, private queryProfviewService: QueryProfviewService) { }
 
-  private statParams: StationParameters[]
-  private statParamsList: string
-  private platform_number: string
-  private platMeta: PlatformMeta
-  private dateFormat: string = "MMM Do YYYY"
+  public statParams: StationParameters[]
+  public statParamsList: string
+  public platform_number: string
+  public platMeta: PlatformMeta
+  public dateFormat: string = "MMM Do YYYY"
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {

@@ -11,10 +11,10 @@ import { Options } from 'nouislider'
 })
 export class PresDoubleSliderComponent implements OnInit {
 
-  private config: Options;
-  private sliderRange: number[];
-  private lRange: number;
-  private uRange: number;
+  public config: Options;
+  public sliderRange: number[];
+  public lRange: number;
+  public uRange: number;
 
   constructor(private queryService: QueryService) {}
 
@@ -42,7 +42,7 @@ export class PresDoubleSliderComponent implements OnInit {
     })
   }
 
-  private sendSliderRange(broadcastChange=true): void {
+  public sendSliderRange(broadcastChange=true): void {
     this.queryService.sendPres(this.sliderRange, broadcastChange);
   }
 
