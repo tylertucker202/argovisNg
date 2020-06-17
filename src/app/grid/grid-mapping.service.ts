@@ -66,7 +66,7 @@ export class GridMappingService {
   }
 
   public addGridSection(bbox: number[], map: L.Map, 
-                                          monthYear, pres, grid, compareGrid, compare, paramMode,
+                                          datetime, pres, grid, compareGrid, compare, paramMode,
                                           gridParam, lockRange: boolean) {
     let lonRange = [bbox[0], bbox[2]]
     const latRange = [bbox[1], bbox[3]]
@@ -78,7 +78,7 @@ export class GridMappingService {
     }
 
     if (compare && !paramMode) {
-      this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid, compareGrid)
+      this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('MM-YYYY'), pres, grid, compareGrid)
       .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
         if (rasterGrids.length != 2) {
           this.notifier.notify( 'warning', 'Missing a grid' )
@@ -120,7 +120,7 @@ export class GridMappingService {
         })
     }
     else {
-      this.rasterService.getGridRaster(latRange, lonRange, monthYear.format('MM-YYYY'), pres, grid)
+      this.rasterService.getGridRaster(latRange, lonRange, datetime.format('MM-YYYY'), pres, grid)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
           this.notifier.notify( 'warning', 'grid not found' )
