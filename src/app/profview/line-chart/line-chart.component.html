@@ -1,7 +1,7 @@
-<div id="pvx-chart" class="mat-elevation-z8">
+<div id="line-chart" class="mat-elevation-z8">
     <div class="fields">
     <mat-form-field class="field">
-        <mat-select id="x-axis-select" placeholder="Float parameter on x axis" matTooltip="select parameter"
+        <mat-select id="x-axis-select" placeholder="Parameter on x axis" matTooltip="select parameter"
          [(value)]="chartLabels.x1" (selectionChange)="xLabelChange($event.value)">
           <mat-option *ngFor="let param of statParams" [value]="param.value">
             {{param.viewValue}}
@@ -9,7 +9,7 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field class="field">
-        <mat-select id="y-axis-select" placeholder="Float parameter on y axis" matTooltip="select parameter"
+        <mat-select id="y-axis-select" placeholder="Parameter on y axis" matTooltip="select parameter"
          [(value)]="chartLabels.x2" (selectionChange)="yLabelChange($event.value)">
           <mat-option *ngFor="let param of statParams" [value]="param.value">
             {{param.viewValue}}

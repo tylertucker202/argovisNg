@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from './../profiles'
-import { GetProfilesService } from './../get-profiles.service'
-import { ChartService } from './../chart.service'
+import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from '../profiles'
+import { GetProfilesService } from '../get-profiles.service'
+import { ChartService } from '../chart.service'
 import { QueryProfviewService, ChartItems } from '../query-profview.service';
 
 
 @Component({
-  selector: 'app-pvx-chart',
-  templateUrl: './pvx-chart.component.html',
-  styleUrls: ['./pvx-chart.component.css']
+  selector: 'app-line-chart',
+  templateUrl: './line-chart.component.html',
+  styleUrls: ['./line-chart.component.css']
 })
-export class PvxChartComponent implements OnInit {
+export class LineChartComponent implements OnInit {
   constructor(private getProfileService: GetProfilesService,
               private chartService: ChartService,
               private queryProfviewService: QueryProfviewService) { }
@@ -72,10 +72,10 @@ export class PvxChartComponent implements OnInit {
   setChart(profileData: BgcProfileData[] | CoreProfileData[]) {
     const xParams = this.chartService.getTraceParams(this.chartLabels.x1)
     const yParams = this.chartService.getTraceParams(this.chartLabels.x2)
-    this.layout = this.chartService.makePvxLayout(this.chartLabels.x1, this.chartLabels.x2)
+    this.layout = this.chartService.makeLineLayout(this.chartLabels.x1, this.chartLabels.x2)
 
-    const dataArrays = this.chartService.makePvxChartDataArrays(profileData, this.chartLabels.x2, this.chartLabels.x1, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const trace = this.chartService.makePvxChartTrace(dataArrays, this.chartLabels.x1, this.bgcPlatform, xParams['units'], yParams['units'])
+    const dataArrays = this.chartService.makeLineChartDataArrays(profileData, this.chartLabels.x2, this.chartLabels.x1, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
+    const trace = this.chartService.makeLineChartTrace(dataArrays, this.chartLabels.x1, this.bgcPlatform, xParams['units'], yParams['units'])
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true

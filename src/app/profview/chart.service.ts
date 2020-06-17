@@ -55,7 +55,7 @@ export class ChartService {
     return layout
   }
 
-  public makePvxLayout(xLabel: string, yLabel: string) {
+  public makeLineLayout(xLabel: string, yLabel: string) {
     const layout = {
       height:300, 
       width: 300,
@@ -93,8 +93,18 @@ export class ChartService {
     box += "<br>click to see profile page"
     return(box)
   }
+
+  makeHovorChartText(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
+    let box = "<br>profile id: " + _id
+    + "<br>latitude: " + lat.toFixed(3) 
+    + "<br>longitude: " + lon.toFixed(3)
+    + "<br>date: " + lon.toFixed(3)
+    + "<br>cycle: " + cycle
+    + "<br>position qc: " + qc
+    return box
+  }
   
-  makePvxChartText(xvalue: number, yvalue: number, time: string, xtext: string, ytext: string,
+  makeLineChartText(xvalue: number, yvalue: number, time: string, xtext: string, ytext: string,
                    xunits: string, yunits: string, cycle: number,
                    xqc?: number, yqc?: number): string {
     let box = 
@@ -206,7 +216,7 @@ export class ChartService {
     return (dataArrays as DataArrays)
   }
 
-  makePvxChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
+  makeLineChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
     yLabel: string, xLabel: string, measKey: string,
     reduceMeas: number, statParamsKey: string, includeQC?: boolean): DataArrays {
     let yMeas = []
@@ -299,20 +309,20 @@ export class ChartService {
       return [scatterTrace]
   }
 
-  makePvxChartTrace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
+  makeLineChartTrace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
       let hovorText = []
       const xtext = da['x1_label'] + ':'
       const ytext = da['x2_label'] + ':'
       if (includeQC) {
         for(let idx=0; idx < da['x1'].length; idx++){
-          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+          let pointText = this.makeLineChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
             xtext, ytext, xunits, yunits, da['cycle'][idx], da['x1_qc'][idx], da['x2_qc'][idx])
           hovorText.push(pointText)
       }
       }
       else {
         for(let idx=0; idx < da['x1'].length; idx++){
-          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+          let pointText = this.makeLineChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
             xtext, ytext, xunits, yunits, da['cycle'][idx])
           hovorText.push(pointText)
           }
