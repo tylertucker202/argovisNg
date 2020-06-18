@@ -40,8 +40,10 @@ export class GlobeScatterComponent implements OnInit {
     return box
   }
 
-  private onSelect(profile_id: string) {
-    const url = '/catalog/profiles/' + profile_id + '/page';
+  private onSelect(text: string) {
+    console.log('text', text)
+    const profile_id = text.split('id: ').pop().split('<br>')[0]
+    const url = '/catalog/profiles/' + profile_id + '/bgcPage';
     window.open(url,'_blank');
   }
 
@@ -69,6 +71,7 @@ export class GlobeScatterComponent implements OnInit {
         hoverinfo: 'text',
         lon: longs,
         lat: lats,
+        profile_ids: ids,
         marker: {
             color: cycles,
             size: 7,
