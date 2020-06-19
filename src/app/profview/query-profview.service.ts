@@ -18,8 +18,8 @@ export class QueryProfviewService {
   @Output() urlParsed: EventEmitter<string> = new EventEmitter
   @Output() profileMetaChanged: EventEmitter<string> = new EventEmitter
   public platform_number: string = "5903260"
-  public topChart: string = 'temp'
-  public bottomChart: string = 'psal'
+  public topChart: string = 'doxy'
+  public bottomChart: string = 'temp'
   public leftChart: ChartItems = {x1: 'temp', x2: 'pres'}
   public middleChart: ChartItems = {x1: 'psal', x2: 'pres'}
   public rightChart: ChartItems = {x1: 'psal', x2: 'temp'}

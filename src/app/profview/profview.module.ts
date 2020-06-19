@@ -10,12 +10,12 @@ import { PlotlyModule } from 'angular-plotly.js';
 import { PlatformWindowComponent } from './platform-window/platform-window.component';
 import { GlobeScatterComponent } from './globe-scatter/globe-scatter.component';
 import { ColorbarComponent } from './colorbar/colorbar.component';
-import { PvxChartComponent } from './pvx-chart/pvx-chart.component';
+import { LineChartComponent } from './line-chart/line-chart.component';
  
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
-  declarations: [ProfviewComponent, TableComponent, ColorChartComponent, PlatformWindowComponent, GlobeScatterComponent, ColorbarComponent, PvxChartComponent],
+  declarations: [ProfviewComponent, TableComponent, ColorChartComponent, PlatformWindowComponent, GlobeScatterComponent, ColorbarComponent, LineChartComponent],
   imports: [
     CommonModule,
     MaterialModule,
