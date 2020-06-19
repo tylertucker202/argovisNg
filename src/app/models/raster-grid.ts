@@ -16,7 +16,7 @@ export interface BaseRaster {
 }
 
 export interface RasterGrid extends BaseRaster {
-    time: number;
+    time: string;
 }
 
 export interface RasterParam extends BaseRaster {
@@ -40,5 +40,5 @@ export interface Grid {
     NODATA_value: number | null, 
     variable: string, 
     gridName: string, 
-    data: GridCell[]
+    data: GridCell[] | any
   }
