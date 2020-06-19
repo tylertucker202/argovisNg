@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { CovarPoints } from '../home/models/covar-points'
+import { CovarPoints } from '../models/covar-points'
 
 import { Observable, of } from 'rxjs';
 import { Style, Fill, Stroke, Icon } from 'ol/style.js'

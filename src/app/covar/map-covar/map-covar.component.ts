@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
-import { CovarPoints } from './../../home/models/covar-points'
+import { CovarPoints } from '../../models/covar-points'
 import { CovarService } from '../covar.service'
 import { MapCovarService } from '../map-covar.service'
 

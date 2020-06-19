@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ApplicationRef, Injector } from '@angular/core'
 import { MapService } from '../services/map.service'
 import { PointsService } from '../services/points.service'
-import { ProfilePoints } from '../models/profile-points'
+import { ProfilePoints } from '../../models/profile-points'
 import { QueryService } from '../services/query.service'
 import * as L from "leaflet"
 import { NotifierService } from 'angular-notifier'

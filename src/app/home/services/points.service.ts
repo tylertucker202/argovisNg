@@ -1,7 +1,7 @@
 import { Injectable, ApplicationRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-import { ProfilePoints } from '../models/profile-points'
+import { ProfilePoints } from '../../models/profile-points'
 import { MapService } from './map.service';
 import * as L from 'leaflet';
 import { PopupCompileService } from './popup-compile.service';

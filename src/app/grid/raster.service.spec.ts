@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { RasterGrid } from '../home/models/raster-grid'
+import { RasterGrid } from '../models/raster-grid'
 import { RasterService } from './raster.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 

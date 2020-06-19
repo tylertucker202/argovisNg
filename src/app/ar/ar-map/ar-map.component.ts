@@ -3,8 +3,8 @@ import { MapComponent } from './../../home/map/map.component'
 import { ArQueryService } from './../ar-query.service'
 import { ArMapService } from './../ar-map.service'
 import { ArShapeService } from './../ar-shape.service'
-import { ARShape } from '../../home/models/ar-shape'
-import { ProfilePoints } from './../../home/models/profile-points'
+import { ARShape } from '../../models/ar-shape'
+import { ProfilePoints } from '../../models/profile-points'
 import * as L from "leaflet"
 @Component({
   selector: 'app-ar-map',

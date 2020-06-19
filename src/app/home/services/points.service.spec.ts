@@ -4,7 +4,7 @@ import { PointsService } from './points.service';
 import { MapService } from './map.service';
 import { PopupCompileService } from './popup-compile.service';
 import { ProfPopupComponent } from '../prof-popup/prof-popup.component';
-import { ProfilePoints } from '../models/profile-points';
+import { ProfilePoints } from '../../models/profile-points';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 describe('PointsService', () => {

@@ -22,3 +22,23 @@ export interface RasterGrid extends BaseRaster {
 export interface RasterParam extends BaseRaster {
 
 }
+
+export interface GridCell {
+    lat: number, 
+    lon: number, 
+    value: number
+  }  
+
+export interface Grid {
+    _id: string, 
+    pres: number, 
+    chunks: number[], 
+    measurement: string,
+    param: string,
+    date: string, 
+    units: string, 
+    NODATA_value: number | null, 
+    variable: string, 
+    gridName: string, 
+    data: GridCell[]
+  }

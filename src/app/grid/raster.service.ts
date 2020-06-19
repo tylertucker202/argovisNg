@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RasterGrid, RasterParam, BaseRaster } from '../home/models/raster-grid'
+import { RasterGrid, RasterParam, BaseRaster } from '../models/raster-grid'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import { WasmService } from './wasm.service'

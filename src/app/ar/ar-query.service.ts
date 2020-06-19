@@ -3,7 +3,7 @@ import { QueryService } from './../home/services/query.service'
 import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
 import { MapState } from './../../typeings/mapState'
-import { ARShape } from '../home/models/ar-shape'
+import { ARShape } from '../models/ar-shape'
 @Injectable({
   providedIn: 'root'
 })
