@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { RasterGrid } from '../models/raster-grid'
 import { RasterService } from './raster.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { WasmService } from './wasm.service'
+// import { WasmService } from './wasm.service'
 import * as L from "leaflet";
 fdescribe('RasterService', () => {
   beforeEach(async() => TestBed.configureTestingModule({

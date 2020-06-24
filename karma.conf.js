@@ -8,7 +8,6 @@ module.exports = function (config) {
     files: [
       './node_modules/d3/dist/d3.js',
       './node_modules/chroma-js/chroma.js',
-      {pattern: '**/*.wasm', included: false, served: true, type: 'wasm'},
     ],
     plugins: [
       require('karma-jasmine'),
@@ -18,9 +17,6 @@ module.exports = function (config) {
       require('karma-coverage-istanbul-reporter'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
-    mime: {
-      'application/wasm': ['wasm'] //defines wasm type so karma knows how to deal with these files
-    },
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
