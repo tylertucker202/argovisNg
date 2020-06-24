@@ -2,10 +2,9 @@ import { TestBed, inject } from '@angular/core/testing';
 import { RasterGrid } from '../models/raster-grid'
 import { RasterService } from './raster.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
+import { WasmService } from './wasm.service'
 import * as L from "leaflet";
-
-describe('RasterService', () => {
+fdescribe('RasterService', () => {
   beforeEach(async() => TestBed.configureTestingModule({
     imports: [ HttpClientTestingModule ],
     providers: [ RasterService ],
@@ -15,12 +14,12 @@ describe('RasterService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get mock grid', inject([RasterService], (service: RasterService) => {
+  it('should get mock raster grid', inject([RasterService], (service: RasterService) => {
     const mockGrid = service.getMockGridRaster()
-
+    console.log('inside raster mock test')
     mockGrid.subscribe( (grids: RasterGrid[]) => {
       expect(grids.length).toEqual(1)
-
+      console.log('wse got a grid')
       const grid = grids[0]
       expect(grid.nRows).toEqual(10)
       expect(grid.nCols).toEqual(15)
@@ -28,7 +27,7 @@ describe('RasterService', () => {
       expect(grid.yllCorner).toEqual(0.5)
       expect(grid._id).toEqual('5c920df6afc6ec31f7e5092b')
       expect(grid.pres).toEqual(2.5)
-      expect(grid.time).toEqual(0.5)
+      // expect(grid.time).toEqual(0.5)
       expect(grid.cellXSize).toEqual(1)
       expect(grid.cellYSize).toEqual(1)
       expect(grid.noDataValue).toEqual(-9999)
@@ -37,7 +36,23 @@ describe('RasterService', () => {
         console.log('error in getting mock profiles' )
       })
 
-  }));
+    }))
+
+  it('should get mock non uniform grid') , inject([RasterService], (service: RasterService) => {
+    const mockGrid = service.getMockGrid()
+  })
+
+  it('should make grid arrays') , inject([RasterService], (service: RasterService) => {
+    const mockGrid = service.getMockGrid()
+  })
+  
+  it('should get lat and lon idx ') , inject([RasterService], (service: RasterService) => {
+    const mockGrid = service.getMockGrid()
+  })
+
+  it('should perform bilinear interpolation'), inject([RasterService], (service: RasterService) => {
+    const mockGrid = service.getMockGrid()
+  })
 
   // it('should make canvas layer', inject([RasterService], (service: RasterService) => {
   //   const mockGrid = service.getMockGridRaster()

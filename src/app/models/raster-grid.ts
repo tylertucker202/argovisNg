@@ -16,7 +16,8 @@ export interface BaseRaster {
 }
 
 export interface RasterGrid extends BaseRaster {
-    time: string;
+    time: number;
+    date?: string;
 }
 
 export interface RasterParam extends BaseRaster {

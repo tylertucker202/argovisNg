@@ -25,6 +25,6 @@
     ],
     "module": "es2020",
     "baseUrl": "./",
-    "allowSyntheticDefaultImports": true 
+    "allowSyntheticDefaultImports": true,
   }
 }

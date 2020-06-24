@@ -33,11 +33,6 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.mapService.init(this.appRef);
 
-    this.rasterService.getMockGrid()
-    .subscribe((grid) => {
-      console.log('grid;', grid)
-    })
-
     this.shapeOptions = {  color: '#983fb2',
                                       weight: 4, 
                                       fill: false,

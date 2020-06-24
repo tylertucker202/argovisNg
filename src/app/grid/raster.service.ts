@@ -12,8 +12,6 @@ import * as d3 from 'd3'; //needed for leaflet canvas layer
 import './../../ext-js/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
 import { ChromaStatic, Scale, Color } from 'chroma-js';
-import { NgControlStatus } from '@angular/forms';
-import { last } from 'rxjs/operators';
 declare const chroma: ChromaStatic;
 
 @Injectable({
@@ -78,23 +76,36 @@ export class RasterService {
   }
 
 
-  public makeRasterFromGrid(grid: Grid, latLngPoints: [number, number]): RasterGrid {
+  public makeRasterFromGrid(grid: Grid, latLngPoints: [number, number][], lon_0: number): RasterGrid {
     //assumes lat lng points are inside grid area
     let raster: RasterGrid
     raster._id = grid._id
     raster.gridName = grid.gridName
     raster.measurement = grid.measurement
     raster.pres = grid.pres
-    raster.time = grid.date
+    raster.date = grid.date
     raster.units = grid.units
 
     //reshape grid data
-    const [uLats, nLats, uLongs, nLongs, matrix] = this.make_grid_arrays(grid.data);
+    const [uLats, nLats, uLongs, nLongs, valuesMatrix] = this.make_grid_arrays(grid.data);
 
     //longitude is a uniform grid
     const dlon = uLongs[1] - uLongs[0]
     const minLon = Math.min(uLongs)
-    const get_lon_idx = (lon, dlon, lon_0) => Math.ceil((lon - lon_0) / dlon)
+
+    let zs = []
+    latLngPoints.forEach( ([lat, lon]) => {
+      const lat_idx = this.get_lat_idx(uLats.tolist(), lat)
+      const lon_idx = this.get_lon_idx(lon, dlon, lon_0)
+      const llPoint = (uLongs[lon_idx], uLats[lat_idx], valuesMatrix[lon_idx][lat_idx])
+      const lrPoint = (uLongs[lon_idx+1], uLats[lat_idx], valuesMatrix[lon_idx+1][lat_idx])
+      const urPoint = (uLongs[lon_idx+1], uLats[lat_idx+1], valuesMatrix[lon_idx+1][lat_idx+1])
+      const ulPoint = (uLongs[lon_idx], uLats[lat_idx+1], valuesMatrix[lon_idx][lat_idx+1])
+      const points = [llPoint, lrPoint, urPoint, ulPoint]
+      const intpValue = this.bilinear_interpolation(lon, lat, points)
+      zs.push()
+    })
+    raster.zs = zs
     return raster
   }
 
@@ -103,13 +114,77 @@ export class RasterService {
     return  Math.ceil((lon - lon_0) / dlon)
   }
   public get_lat_idx(arr, target) {
-    //binary search.
+    //binary search of nearest neighbor for an array of numbers
+    //corner cases
+    if (target <= arr[0]) { return 0 }
+    if (target >= arr[ arr.length -1 ]) { return (arr.length - 1)}
+
+    //iterative binary search
+    let idx = 0; let jdx = arr.length; let mid = 0;
+    while (idx < jdx) {
+      mid = Math.ceil( (idx + jdx) / 2)
+
+      if (arr[mid] === target) {
+        return mid
+      }
+
+      if (target < arr[mid]) { //search for the left of mid
+        // if target is greater than previous 
+        // to mid, return closest of two
+        if (mid > 0 && target > arr[mid-1]) {
+          const closest_idx = this.get_closest_idx(arr[mid - 1], arr[mid], mid, target)
+          return closest_idx
+        }
+        jdx = mid
+      }
+      else { // search to the right of mid
+        if (mid < arr.length - 1 && target < arr[mid + 1]) {
+          const closest_idx = this.get_closest_idx(arr[mid-1], arr[mid], mid, target)
+          return closest_idx
+        }
+        idx = mid + 1
+      }
+    // Only single element after search
+    return arr[mid]
+    }
   }
 
   public get_closest_idx(val1: number, val2: number, mid: number, target: number): number {
       if (target - val1 >= val2 - target) { return mid }
       else { return mid-1}
   }
+
+  public bilinear_interpolation(x: number, y: number, points: [number, number, number][]) {
+    /*
+    Interpolate (x,y) from values associated with four points.
+    The four points are a list of four triplets:  [x, y, value].
+    The four points can be in any order.  They should form a rectangle.
+        bilinear_interpolation(12, 5.5,
+        ...                        [(10, 4, 100),
+        ...                         (20, 4, 200),
+        ...                         (10, 6, 150),
+        ...                         (20, 6, 300)])
+        165.0
+    See formula at:  http://en.wikipedia.org/wiki/Bilinear_interpolation
+    */
+    points = points.sort()
+    const [x1, y1, q11] = points[0]
+    const [_x1, y2, q12] = points[1] 
+    const [x2, _y1, q21] = points[2]
+    const [_x2, _y2, q22] = points[3]
+    if ( x1 !== _x1 || x2 !== _x2 || y1 !== _y1 || y2 !== _y2) {
+      console.error('points do not form a rectangle')
+    }
+    if ( x < x1 || x > x2 || y < y1 || y > y2) {
+      console.error('(x,y) do not lie within rectangle')
+    }
+    return (q11 * (x2 - x) * (y2 - y) +
+            q21 * (x - x1) * (y2 - y) +
+            q12 * (x2 - x) * (y - y1) +
+            q22 * (x - x1) * (y - y1)
+           ) / ((x2 - x1) * (y2 - y1) + 0.0)
+  }
+
   public getGrid( date: string, latRange: number[], lonRange: number[], pres: number,
     gridName: string): Observable<Grid[]> {
     let url = ''
