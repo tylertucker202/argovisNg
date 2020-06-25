@@ -23,7 +23,7 @@
      <button class="nav-link" 
      mat-button 
      matTooltip="we have expanded to include several new modules!"
-     [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
+     [matMenuTriggerFor]="moduleMenu">Choose viewer</button>
      <mat-menu #moduleMenu="matMenu">
       <a mat-menu-item *ngFor="let module of avModules" 
         href={{module.link}}
