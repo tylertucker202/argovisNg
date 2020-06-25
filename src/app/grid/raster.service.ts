@@ -47,14 +47,14 @@ export class RasterService {
   public make_grid_arrays(gridCells: GridCell[]) {
     //assumes lat and lon are sorted
     let lats = []
-    let longs = []
+    let lons = []
     let values = []
     for (let idx = 0; idx < gridCells.length; ++idx) {
       const row = gridCells[idx]
       lats.push(row['lat'])
-      const lon = this.transform_lon(row['long'])
-      longs.push(lon)
-      values.push(row['values'])
+      const lon = this.transform_lon(row['lon'])
+      lons.push(lon)
+      values.push(row['value'])
     }
     let uLats = []
     for (let idx = 0; idx < lats.length; ++idx) {
@@ -67,12 +67,12 @@ export class RasterService {
     }
     const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
     const nLats = uLats.length
-    const uLongs = every_nth(lats, nLats)
-    const nLongs = uLongs.length
+    const uLons = every_nth(lons, nLats)
+    const nLons = uLons.length
 
     let matrix = [];
-    while(values.length) matrix.push(values.splice(0,nLongs));
-    return [uLats, nLats, uLongs, nLongs, matrix]
+    while(values.length) { matrix.push(values.splice(0,nLons)) };
+    return [uLats, nLats, uLons, nLons, matrix]
   }
 
 
@@ -87,20 +87,20 @@ export class RasterService {
     raster.units = grid.units
 
     //reshape grid data
-    const [uLats, nLats, uLongs, nLongs, valuesMatrix] = this.make_grid_arrays(grid.data);
+    const [uLats, nLats, uLons, nLons, valuesMatrix] = this.make_grid_arrays(grid.data);
 
     //longitude is a uniform grid
-    const dlon = uLongs[1] - uLongs[0]
-    const minLon = Math.min(uLongs)
+    const dlon = uLons[1] - uLons[0]
+    const minLon = Math.min(uLons)
 
     let zs = []
     latLngPoints.forEach( ([lat, lon]) => {
-      const lat_idx = this.get_lat_idx(uLats.tolist(), lat)
-      const lon_idx = this.get_lon_idx(lon, dlon, lon_0)
-      const llPoint = (uLongs[lon_idx], uLats[lat_idx], valuesMatrix[lon_idx][lat_idx])
-      const lrPoint = (uLongs[lon_idx+1], uLats[lat_idx], valuesMatrix[lon_idx+1][lat_idx])
-      const urPoint = (uLongs[lon_idx+1], uLats[lat_idx+1], valuesMatrix[lon_idx+1][lat_idx+1])
-      const ulPoint = (uLongs[lon_idx], uLats[lat_idx+1], valuesMatrix[lon_idx][lat_idx+1])
+      const [lat_idx, lat_shift] = this.get_lat_idx(uLats.tolist(), lat)
+      const lon_idx = this.get_lon_idx(lon, dlon, minLon)
+      const llPoint = [uLons[lon_idx], uLats[lat_idx], valuesMatrix[lon_idx][lat_idx]] as [number, number, number]
+      const lrPoint = [uLons[lon_idx+1], uLats[lat_idx], valuesMatrix[lon_idx+1][lat_idx]] as [number, number, number]
+      const urPoint = [uLons[lon_idx+1], uLats[lat_idx+lat_shift], valuesMatrix[lon_idx+1][lat_idx+lat_shift]] as [number, number, number]
+      const ulPoint = [uLons[lon_idx], uLats[lat_idx+lat_shift], valuesMatrix[lon_idx][lat_idx+lat_shift]] as [number, number, number]
       const points = [llPoint, lrPoint, urPoint, ulPoint]
       const intpValue = this.bilinear_interpolation(lon, lat, points)
       zs.push()
@@ -109,15 +109,15 @@ export class RasterService {
     return raster
   }
 
-  public get_lon_idx(lon, dlon, lon_0) {
+  public get_lon_idx(lon: number, dlon: number, lon_0: number) {
     // finds idx of a uniformly spaced grid
-    return  Math.ceil((lon - lon_0) / dlon)
+    return  Math.floor((lon - lon_0) / dlon)
   }
-  public get_lat_idx(arr, target) {
+  public get_lat_idx(arr, target): [number, number] {
     //binary search of nearest neighbor for an array of numbers
     //corner cases
-    if (target <= arr[0]) { return 0 }
-    if (target >= arr[ arr.length -1 ]) { return (arr.length - 1)}
+    if (target <= arr[0]) { return [0, 1] }
+    if (target >= arr[ arr.length -1 ]) { return [arr.length - 1, -1]}
 
     //iterative binary search
     let idx = 0; let jdx = arr.length; let mid = 0;
@@ -125,7 +125,7 @@ export class RasterService {
       mid = Math.ceil( (idx + jdx) / 2)
 
       if (arr[mid] === target) {
-        return mid
+        return [mid, 1]
       }
 
       if (target < arr[mid]) { //search for the left of mid
@@ -133,19 +133,19 @@ export class RasterService {
         // to mid, return closest of two
         if (mid > 0 && target > arr[mid-1]) {
           const closest_idx = this.get_closest_idx(arr[mid - 1], arr[mid], mid, target)
-          return closest_idx
+          return [closest_idx, -1]
         }
         jdx = mid
       }
       else { // search to the right of mid
         if (mid < arr.length - 1 && target < arr[mid + 1]) {
           const closest_idx = this.get_closest_idx(arr[mid-1], arr[mid], mid, target)
-          return closest_idx
+          return [closest_idx, 1]
         }
         idx = mid + 1
       }
     // Only single element after search
-    return arr[mid]
+    return [arr[mid], 1]
     }
   }
 
@@ -200,7 +200,6 @@ export class RasterService {
 
   public getParamRaster(latRange: number[], lonRange: number[], pres: number,
                        gridName: string, gridParam: string): Observable<RasterParam[]> {
-
     let url = ''
     url += '/griddedProducts/gridParams/window?'
     url += 'latRange=' + JSON.stringify(latRange)
