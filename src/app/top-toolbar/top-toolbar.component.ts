@@ -38,7 +38,6 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
     this.router.events.subscribe((val) => {
       if(this.location.path() != ''){
         this.href = this.location.path();
-        console.log(this.currentModule)
       } else {
         this.href = 'ng/home'
       }
@@ -57,7 +56,6 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
 
     for (let idx=0; idx<this.avModules.length; ++idx) {
       const modL = this.avModules[idx]['link']
-      console.log(modL, currentModuleLink)
       if (modL === currentModuleLink) {
         this.currentModule = "Current viewer: " + this.avModules[idx]['viewValue']
         break
