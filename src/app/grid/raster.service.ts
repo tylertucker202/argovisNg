@@ -101,6 +101,9 @@ export class RasterService {
     const [uLats, uLons, valuesMatrix] = this.make_grid_arrays(grid['data']);
     const star_lats = this.makeRegridArray(uLats, delta)
     const star_lons = this.makeRegridArray(uLons, delta)
+    raster['nCols'] = star_lons.length
+    raster['nRows'] = star_lats.length
+    raster['noDataValue'] = -9999
     raster['cellXSize'] = delta
     raster['cellYSize'] = delta
     raster['xllCorner'] = star_lons[0]

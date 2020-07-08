@@ -5,6 +5,7 @@ import { GridMappingService } from '../grid-mapping.service'
 import { RasterService } from '../raster.service'
 import { SelectGridService } from '../select-grid.service'
 
+import { RasterGrid, Grid } from '../../models/raster-grid'
 import * as L from "leaflet";
 
 @Component({
@@ -81,13 +82,29 @@ export class MapGridComponent implements OnInit, OnDestroy {
     //     console.log('warning: no grid')
     //   }
     //   else {
-    //     console.log('adding mock grid')
-    //     this.gridMappingService.addRasterGridsToMap(this.map, rasterGrids)
+    //     console.log('adding mock grid', rasterGrids[0])
+    //     this.gridMappingService.generateRasterGrids(this.map, rasterGrids, false)
     //   }
     //   },
     //   error => {
-    //     console.log('error in getting mock profiles' )
+    //     console.log('error in getting mock raster grid' )
     //   })
+
+    this.rasterService.getMockGrid()
+    .subscribe( (grid: Grid[]) => {
+        const t0 = performance.now();
+        console.log('getting sose mock grid')
+        const delta = .25 //need to regrid non uniform grid with delta
+        const rasterGrids = this.rasterService.makeRasterFromGrid(grid[0], delta)
+        const t1 = performance.now();
+        console.log(`Call to regridding took ${t1 - t0} milliseconds.`);
+        // console.log('regridded Raster:', rasterGrids)
+        this.gridMappingService.generateRasterGrids(this.map, [rasterGrids], false)
+      }, 
+      error => {
+        console.log('error in getting mock grid')
+      }
+    )
 
     this.queryGridService.clearLayers
     .subscribe( () => {
