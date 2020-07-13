@@ -1,5 +1,6 @@
 <div class="sidebar-nav-grid">
-<app-month-picker class="date-form" [hidden]="paramMode"></app-month-picker>
+<app-month-picker *ngIf="monthPicker" class="date-form" [hidden]="paramMode"></app-month-picker>
+<app-date-picker *ngIf="!monthPicker" class="date-form" [hidden]="paramMode"></app-date-picker>
 <app-pres-sel class="pres-form"></app-pres-sel>
 <app-grid-color-picker></app-grid-color-picker>
 <app-grid-picker class="grid-form" [paramMode]="paramMode"></app-grid-picker>

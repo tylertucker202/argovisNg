@@ -92,7 +92,7 @@ export class SelectGridService {
   }
 
   public getGridMeta(gridName: string): Observable<GridMeta[]> {
-    const url = '/griddedProducts/grid/pressureLayers?gridName=' + gridName
+    const url = '/griddedProducts/grid/gridMetadata?gridName=' + gridName
     return this.http.get<GridMeta[]>(url)
   }
 

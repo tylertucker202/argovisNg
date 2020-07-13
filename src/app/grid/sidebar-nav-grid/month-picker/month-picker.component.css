@@ -1,5 +1,5 @@
 
-#minusOne, #plusOne{
+#minusIncrement, #plusIncrement{
     display:inline-block;
     transform: scale(1);
 }

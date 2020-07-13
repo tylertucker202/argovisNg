@@ -1,10 +1,10 @@
-<section class="mat-typography"><p>Month Selected:</p></section>
+<section class="mat-typography"><p>Date Selected:</p></section>
 <button mat-icon-button matTooltip="-1 month" (click)="increment(-1)"  id="minIncrement">
   <p>&ndash;</p>
 </button>
 <mat-form-field id="dateInput">
     <input matInput [matDatepicker]="dp"
-     placeholder="Month and Year"
+     placeholder="date"
      [formControl]="dateForm"
      [matDatepickerFilter]="dateFilter"
      (dateChange)="displayDateChanged($event.value)"
@@ -15,9 +15,7 @@
                     #dp
                     startView="multi-year"
                     (dateChange)="displayDateChanged($event.value)"
-                    (yearSelected)="chosenYearHandler($event.year())"
-                    (monthSelected)="chosenMonthHandler($event.month())"
-                    panelClass="month-picker">
+                    panelClass="date-picker">
     </mat-datepicker>
   </mat-form-field>
 <button mat-icon-button matTooltip="+1 month" (click)="increment(1)"  id="plusIncrement">

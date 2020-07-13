@@ -11,6 +11,7 @@ export class SidebarNavGridComponent implements OnInit {
   constructor(private queryGridService: QueryGridService) { }
   public interpolateBool: boolean
   public paramMode: boolean
+  public monthPicker = false
   ngOnInit() {
 
     this.paramMode = this.queryGridService.getParamMode()

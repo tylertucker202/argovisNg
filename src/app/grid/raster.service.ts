@@ -273,23 +273,23 @@ export class RasterService {
     return grids
   }
 
-  public getGridRaster(latRange: number[], lonRange: number[], monthYear: string,
+  public getGridRaster(latRange: number[], lonRange: number[], date: string,
                        pres: number, gridName: string): Observable<RasterGrid[]> {
     let url = ''
     url += '/griddedProducts/grid/window?'
     url += 'latRange=' + JSON.stringify(latRange)
     url += '&lonRange=' + JSON.stringify(lonRange)
     url += '&gridName=' + gridName
-    url += '&monthYear=' + monthYear
+    url += '&date=' + date
     url += '&presLevel=' + JSON.stringify(pres)
     return this.http.get<RasterGrid[]>(url)
   }
 
   public getTwoGridRasterProfiles(latRange: number[], lonRange: number[],
-                                  monthYear: string, pres: number,
+                                  date: string, pres: number,
                                   gridName: string, gridName2: string): Observable<[RasterGrid[], RasterGrid[]]> {
-      const numerendGrid = this.getGridRaster(latRange, lonRange, monthYear, pres, gridName)
-      const subtrahendGrid = this.getGridRaster(latRange, lonRange, monthYear, pres, gridName2)
+      const numerendGrid = this.getGridRaster(latRange, lonRange, date, pres, gridName)
+      const subtrahendGrid = this.getGridRaster(latRange, lonRange, date, pres, gridName2)
       const grids = forkJoin([numerendGrid, subtrahendGrid])
       return grids
   }

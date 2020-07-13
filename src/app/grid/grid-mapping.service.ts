@@ -78,7 +78,7 @@ export class GridMappingService {
     }
 
     if (compare && !paramMode) {
-      this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('MM-YYYY'), pres, grid, compareGrid)
+      this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, grid, compareGrid)
       .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
         if (rasterGrids.length != 2) {
           this.notifier.notify( 'warning', 'Missing a grid' )
@@ -120,7 +120,7 @@ export class GridMappingService {
         })
     }
     else {
-      this.rasterService.getGridRaster(latRange, lonRange, datetime.format('MM-YYYY'), pres, grid)
+      this.rasterService.getGridRaster(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, grid)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
           this.notifier.notify( 'warning', 'grid not found' )
@@ -140,7 +140,7 @@ export class GridMappingService {
     const interpolation = this.queryGridService.getInterplateBool()
 
     if (bboxes) {
-      const monthYear = this.queryGridService.getMonthYear()
+      const date = this.queryGridService.getDate()
       const pres = this.queryGridService.getPresLevel()
       const compareGrid = this.queryGridService.getCompareGrid()
       const compare = this.queryGridService.getCompare()
@@ -149,7 +149,7 @@ export class GridMappingService {
       const gridParam = this.queryGridService.getGridParam()
       
       bboxes.forEach( (bbox: number[]) => {
-        this.addGridSection(bbox, map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+        this.addGridSection(bbox, map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
       })
     }
   }

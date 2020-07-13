@@ -15,7 +15,7 @@ export class QueryGridService {
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
-  private monthYear = moment('01-2012', 'MM-YYYY').utc(false)
+  private date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
   private mapState: MapState
   private grid = 'rgTempAnom'
   private param = 'anomaly' //total anomaly or mean
@@ -32,15 +32,15 @@ export class QueryGridService {
   constructor(private route: ActivatedRoute,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
-  public formatMonthYear(monthYear: Moment): string {
-    const monthYearString = monthYear.format('MM-YYYY')
-    return(monthYearString)
+  public formatDate(date: Moment): string {
+    const dateString = date.format('DD-MM-YYYY')
+    return(dateString)
   }
 
   public resetParams(): void{
     const broadcastChange = false
-    const monthYear = moment('01-2012', 'MM-YYYY').utc(false)
-    this.sendmonthYear(monthYear, broadcastChange)
+    const date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
+    this.sendDate(date, broadcastChange)
     const presLevel = 10
     this.sendPres(presLevel, broadcastChange)
     this.colorScale = 'OrRd'
@@ -96,17 +96,17 @@ export class QueryGridService {
   public getInverseColorScale(): boolean {
     return this.inverseColorScale
   }
-  public sendmonthYear(monthYear: Moment, broadcastChange=true): void {
-    const msg = 'month year change'
-    if (!monthYear.isValid) {
-      monthYear = moment('01-2007', 'MM-YYYY').utc(false)
+  public sendDate(date: Moment, broadcastChange=true): void {
+    const msg = 'date change'
+    if (!date.isValid) {
+      date = moment('01-01-2007', 'DD-MM-YYYY').utc(false)
     }
-    this.monthYear = monthYear
+    this.date = date
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getMonthYear(): Moment {
-    return this.monthYear
+  public getDate(): Moment {
+    return this.date
   }
 
   public sendShape(bboxes: number[][], broadcastChange=true): void {
@@ -239,10 +239,10 @@ export class QueryGridService {
     }
     const interpolateBool = JSON.stringify(this.getInterplateBool())
     const inverseColorScale = JSON.stringify(this.getInverseColorScale())
-    const monthYearString = this.formatMonthYear(this.monthYear)
+    const dateString = this.formatDate(this.date)
     let queryParams = {
                          'presLevel': presLevelString, 
-                         'monthYear': monthYearString,
+                         'date': dateString,
                          'shapes': shapesString,
                          'grid': this.grid,
                          'interpolateBool': interpolateBool,
@@ -323,9 +323,9 @@ export class QueryGridService {
         this.sendParam(param, notifyChange)
         break
       }
-      case 'monthYear': {
-        const monthYear = moment(value, 'MM-YYYY').utc()
-        if (monthYear.isValid)  { this.sendmonthYear(monthYear, notifyChange) }
+      case 'date': {
+        const date = moment(value, 'DD-MM-YYYY').utc()
+        if (date.isValid)  { this.sendDate(date, notifyChange) }
         break
       }
       case 'grid': {

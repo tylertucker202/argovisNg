@@ -19,7 +19,7 @@ describe('QueryGridService', () => {
     route = TestBed.get(ActivatedRoute)
     queryParamsDefault = {
                          presLevel: '10',
-                         monthYear: '01-2012', 
+                         date: '01-2012', 
                          shapes: '[[-65,-5,-15,15]]',
                          grid: 'rgTempAnom', 
                          interpolateBool: 'false', 

@@ -198,7 +198,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
   private updateGridsOnAdd(feature, bboxes: number[][]): void {
     const broadcastLayer = false
     //const bbox = this.queryGridService.getBBox(feature)
-    const monthYear = this.queryGridService.getMonthYear()
+    const date = this.queryGridService.getDate()
     const pres = this.queryGridService.getPresLevel()
     const grid = this.queryGridService.getGrid()
     const compareGrid = this.queryGridService.getCompareGrid()
@@ -215,7 +215,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     
     this.queryGridService.sendShape(bboxes, broadcastLayer)
     bboxes.forEach( (bbox: number[]) => {
-      this.gridMappingService.addGridSection(bbox, this.map, monthYear, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+      this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
     })
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')
