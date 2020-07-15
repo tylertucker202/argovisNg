@@ -240,7 +240,7 @@ export class RasterService {
            ) / ((x2 - x1) * (y2 - y1) + 0.0)
   }
 
-  public getGrid( date: string, latRange: number[], lonRange: number[], pres: number,
+  public getNonUniformGrid( date: string, latRange: number[], lonRange: number[], pres: number,
     gridName: string): Observable<Grid[]> {
     let url = ''
     url += '/griddedProducts/nonUniformGrid/window?'

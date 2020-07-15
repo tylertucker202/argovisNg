@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service'
 import { GridMeta } from '../../../../typeings/grids'
 import { SelectGridService } from '../../select-grid.service';
@@ -13,9 +13,10 @@ export interface PressureLevels {
   styleUrls: ['./pres-sel.component.css'],
 })
 export class PresSelComponent implements OnInit {
-  public presLevels: PressureLevels[]
+  public presLevelsDisplay: PressureLevels[]
   public presArray: number[]
   public presLevel: number;
+  @Input() presLevels: number[]
   
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
@@ -23,31 +24,24 @@ export class PresSelComponent implements OnInit {
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
     this.makePressureLevels()
-
     this.queryGridService.resetToStart.subscribe((msg) => {
       this.presLevel = this.queryGridService.getPresLevel()
     })
   }
 
   public makePressureLevels(): void {
-    let presLevels = []
-    this.selectGridService.getGridMeta(this.queryGridService.getGrid())
-      .subscribe((gridMeta: GridMeta[]) => {
-        this.presArray = gridMeta[0]['presLevels']
-        this.presArray.sort(function(a, b){return a-b})
-        for (let idx=0; idx < this.presArray.length; ++idx) {
-          presLevels.push({value: this.presArray[idx]})
-        }
-      })
-    
-    this.presLevels = presLevels
+    let presLevelsDisplay = []
+    this.presLevels.forEach(pres => {
+      presLevelsDisplay.push({value: pres})
+    });
+    this.presLevelsDisplay = presLevelsDisplay
   }
 
   public incrementLevel(increment: number): void {
     const idx = this.presArray.indexOf(this.presLevel)
     const inc = idx + increment
-    if( inc >= 0 && inc < this.presLevels.length) {
-      this.presLevel = this.presLevels[inc].value
+    if( inc >= 0 && inc < this.presLevelsDisplay.length) {
+      this.presLevel = this.presLevelsDisplay[inc].value
       this.sendPresLevel()
     }
 

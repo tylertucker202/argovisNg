@@ -1,5 +1,5 @@
 <section class="mat-typography"><p>Date Selected:</p></section>
-<button mat-icon-button matTooltip="-1 month" (click)="increment(-1)"  id="minIncrement">
+<button mat-icon-button matTooltip={{decrementMessage}} (click)="increment(-1)"  id="minIncrement">
   <p>&ndash;</p>
 </button>
 <mat-form-field id="dateInput">
@@ -18,6 +18,6 @@
                     panelClass="date-picker">
     </mat-datepicker>
   </mat-form-field>
-<button mat-icon-button matTooltip="+1 month" (click)="increment(1)"  id="plusIncrement">
+<button mat-icon-button matTooltip={{incrementMessage}} (click)="increment(1)"  id="plusIncrement">
   +
 </button>

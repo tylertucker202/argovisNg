@@ -36,9 +36,10 @@ export class MonthPickerComponent implements OnInit {
   public inc: number = 1
   public dateForm = new FormControl(moment());
   public date: moment.Moment;
-  public minDate = new Date(2012, 0, 1);
-  public maxDate = new Date(2012, 11, 1);
+  @Input() minDate: Date
+  @Input() maxDate: Date
   @Input() paramMode: boolean
+  @Input() dates: boolean
   @ViewChild('dp') datepicker: MatDatepicker<any>;
   public queryGridService: QueryGridService
 
@@ -65,7 +66,6 @@ export class MonthPickerComponent implements OnInit {
 
   public sendDate(): void {
     const broadcastChange = true;
-    console.log('sending date:', this.date.format('DD-MM-YYYY'))
     this.queryGridService.sendDate(this.date, broadcastChange)
   }
 

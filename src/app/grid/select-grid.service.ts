@@ -2,12 +2,22 @@ import { Injectable } from '@angular/core';
 import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam, GridMeta } from './../../typeings/grids'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
+import * as moment from 'moment'
+
 @Injectable({
   providedIn: 'root'
 })
 export class SelectGridService {
 
   constructor(private http: HttpClient) { }
+
+  public minDate: moment.Moment
+  public maxDate: moment.Moment
+  public presLevels: number[]
+  public dates: moment.Moment[]
+  public dateIncrement: [number, string] //increment and units
+
+  private readonly nonUniformGrids = ['sose_si_area_3_day', 'sose_si_area_monthly']
 
   private readonly ksGrids: GridGroup[] = [
     // {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
@@ -31,8 +41,13 @@ export class SelectGridService {
     {grid: 'rgTempTotal', param: 'total', viewValue: 'RG Total'}
   ]
 
+  private readonly soseGrids: GridGroup[] = [
+    {grid: 'sose_si_area_3_day', param: 'SIarea', viewValue: '3 day sea ice area fraction'},
+    {grid: 'sose_si_area_monthly', param: 'SIarea', viewValue: 'Monthly Sea ice area fraction'}
+  ]
+
   // private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
-  private readonly allAvailableGrids = this.rgGrids //only allow rg grids for now
+  private readonly allAvailableGrids = this.rgGrids.concat(...this.soseGrids) //only allow rg grids for now
 
   private readonly ksGridGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksGrids}
   private readonly rgGridGroup: ProducerGroup = {producer: 'Rommich-Gilson', grids: this.rgGrids}
@@ -64,8 +79,12 @@ export class SelectGridService {
   public readonly allGridParams: MeasGroup[] =  [this.tempParamGroup]
   public readonly params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
                             {param:'anomaly', viewValue: 'Anomaly'},
+                            {param:'SIarea', viewValue: 'Sea Ice Area Fractional Coverage'}
                             //{param:'mean', viewValue: 'Mean'}
                           ] as AvailableParams[]
+
+
+  public isUniform(gridName: string): boolean { return !this.nonUniformGrids.includes(gridName) }
 
   public getAvailableGrids(param: string): GridGroup[] {
     //select grids that have the following params: 'anomaly', 'mean', 'total'
@@ -87,13 +106,20 @@ export class SelectGridService {
     return gridAvailable
   }
 
-  public swtichGridOnParamChange(param: string): void{
-
-  }
-
   public getGridMeta(gridName: string): Observable<GridMeta[]> {
-    const url = '/griddedProducts/grid/gridMetadata?gridName=' + gridName
+    const url = '/griddedProducts/gridMetadata?gridName=' + gridName
     return this.http.get<GridMeta[]>(url)
   }
+
+  public parseDates(dateStrs: string[], format='DD-MM-YYYY') {
+    let dates = []
+    dateStrs.forEach( date => {
+      dates.push(moment(date))
+    })
+    this.dates = dates
+  }
+
+  
+
 
 }

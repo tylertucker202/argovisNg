@@ -43,8 +43,11 @@ export interface ColorScaleGroup {
 }
 
 export interface GridMeta {
-  _id: string,
+  _id?: string
   presLevels: number[]
+  dates: string[]
+  minDate: string
+  maxDate: string
 }
 
 

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryGridService } from '../query-grid.service'
+import * as moment from 'moment'
+import { SelectGridService } from '../select-grid.service'
+import { GridMeta } from './../../../typeings/grids'
 
 @Component({
   selector: 'app-sidebar-nav-grid',
@@ -8,10 +11,15 @@ import { QueryGridService } from '../query-grid.service'
 })
 export class SidebarNavGridComponent implements OnInit {
 
-  constructor(private queryGridService: QueryGridService) { }
+  constructor(private queryGridService: QueryGridService, private selectGridService: SelectGridService) { }
   public interpolateBool: boolean
   public paramMode: boolean
-  public monthPicker = false
+  public monthPicker: boolean = true
+  public presLevels: number[]
+  public dates: string[]
+  public minDate: Date
+  public maxDate: Date
+
   ngOnInit() {
 
     this.paramMode = this.queryGridService.getParamMode()
@@ -20,11 +28,25 @@ export class SidebarNavGridComponent implements OnInit {
     this.queryGridService.urlBuild.subscribe(msg => {
       this.interpolateBool = this.queryGridService.getInterplateBool()
       this.paramMode = this.queryGridService.getParamMode();
+
+      const gridName = this.queryGridService.getGridName()
+      if (gridName === 'sose_si_area_3_day') {
+        this.monthPicker = false
+      }
+      this.selectGridService.getGridMeta(gridName).subscribe( (gridMeta: GridMeta[] )=> {
+        this.minDate = new Date(gridMeta[0]['minDate'])
+        this.maxDate = new Date(gridMeta[0]['maxDate'])
+        this.dates = gridMeta[0]['dates']
+        this.presLevels = gridMeta[0]['presLevels']
+      } )
     })
     
     this.queryGridService.change.subscribe(msg => {
+      console.log('change msg: ', msg)
       this.paramMode = this.queryGridService.getParamMode();
     })
+
+
   }
 
   public clearGrids(): void {

@@ -61,7 +61,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       .subscribe(msg => {
         console.log('msg: ', msg)
         const param = this.queryGridService.getParam()
-        const grid = this.queryGridService.getGrid()
+        const grid = this.queryGridService.getGridName()
 
         this.map.closePopup()
         const updateURL = true
@@ -164,7 +164,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const redrawItems = [ 'grid change', 'pres level change', 'param change',
                           'grid param change', 'display grid param change',
                           'compare grid toggled', 'compare grid change',
-                          'month year change']
+                          'date change']
     const redrawGridBool = redrawItems.includes(msg)
     return redrawGridBool
   }
@@ -200,7 +200,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     //const bbox = this.queryGridService.getBBox(feature)
     const date = this.queryGridService.getDate()
     const pres = this.queryGridService.getPresLevel()
-    const grid = this.queryGridService.getGrid()
+    const grid = this.queryGridService.getGridName()
     const compareGrid = this.queryGridService.getCompareGrid()
     const compare = this.queryGridService.getCompare()
     const paramMode = this.queryGridService.getParamMode()

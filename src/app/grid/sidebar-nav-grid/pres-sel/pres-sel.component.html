@@ -7,7 +7,7 @@
     <mat-form-field id="presInput">
         <mat-label>Pressure Level</mat-label>
         <mat-select *ngIf='presLevels' [(value)]="presLevel" (selectionChange)="selChange($event.value)">
-          <mat-option [(value)]="pres.value" *ngFor="let pres of presLevels">
+          <mat-option [(value)]="pres.value" *ngFor="let pres of presLevelsDisplay">
             {{pres.value}}
           </mat-option>
         </mat-select>

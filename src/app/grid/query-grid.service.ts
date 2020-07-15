@@ -17,7 +17,7 @@ export class QueryGridService {
   private presLevel = 10
   private date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
   private mapState: MapState
-  private grid = 'rgTempAnom'
+  private gridName = 'rgTempAnom'
   private param = 'anomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
@@ -98,6 +98,8 @@ export class QueryGridService {
   }
   public sendDate(date: Moment, broadcastChange=true): void {
     const msg = 'date change'
+    if (this.gridName !== 'sose_si_area_3_day')
+    date = date.set('D', 1)
     if (!date.isValid) {
       date = moment('01-01-2007', 'DD-MM-YYYY').utc(false)
     }
@@ -121,17 +123,17 @@ export class QueryGridService {
 
   public sendGrid(grid: string, broadcastChange=true): void {
     let msg = 'grid change'
-    this.grid = grid
+    this.gridName = grid
     if (broadcastChange) { this.change.emit(msg) }
   }
 
-  public getGrid(): string {
-    return this.grid
+  public getGridName(): string {
+    return this.gridName
   }
 
   public sendGridParam(grid: string, gridParam: string, broadcastChange=true): void {
     let msg = 'grid param change'
-    this.grid = grid
+    this.gridName = grid
     this.gridParam = gridParam
     if (broadcastChange) { this.change.emit(msg) }
   }
@@ -244,7 +246,7 @@ export class QueryGridService {
                          'presLevel': presLevelString, 
                          'date': dateString,
                          'shapes': shapesString,
-                         'grid': this.grid,
+                         'gridName': this.gridName,
                          'interpolateBool': interpolateBool,
                          'colorScale': this.colorScale,
                          'inverseColorScale': inverseColorScale,
@@ -328,9 +330,9 @@ export class QueryGridService {
         if (date.isValid)  { this.sendDate(date, notifyChange) }
         break
       }
-      case 'grid': {
-        const grid = value
-        this.sendGrid(grid, notifyChange)
+      case 'gridName': {
+        const gridName = value
+        this.sendGrid(gridName, notifyChange)
         break
       }
       case 'compareGrid': {

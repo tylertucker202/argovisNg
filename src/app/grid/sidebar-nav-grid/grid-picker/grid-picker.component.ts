@@ -26,14 +26,14 @@ export class GridPickerComponent implements OnInit {
     this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
     this.availableParams = this.selectGridService.params
     this.availableGridParams = this.selectGridService.ksParams
-    this.grid = this.queryGridService.getGrid()
+    this.grid = this.queryGridService.getGridName()
     if (this.paramMode) {
       this.changeGridParams(this.grid)
       this.gridParam = this.queryGridService.getGridParam()
     }
 
     this.queryGridService.resetToStart.subscribe(msg => {
-      this.grid = this.queryGridService.getGrid()
+      this.grid = this.queryGridService.getGridName()
       this.changeGridParams(this.grid)
       this.selectedParam = this.queryGridService.getParam()
       this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
@@ -46,7 +46,7 @@ export class GridPickerComponent implements OnInit {
       const paramMode = this.queryGridService.getParamMode()
       if (msg === 'display grid param change' && paramMode) {
         this.selectedParam = this.queryGridService.getParam()
-        this.grid = this.queryGridService.getGrid()
+        this.grid = this.queryGridService.getGridName()
         this.gridParam = this.queryGridService.getGridParam()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedParam)
        }
