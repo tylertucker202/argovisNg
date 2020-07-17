@@ -1,9 +1,10 @@
 import { Component, OnInit, Input, ViewChild, Injector } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import {FormControl} from '@angular/forms';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MatDatepicker} from '@angular/material/datepicker';
+import { FormControl } from '@angular/forms';
+import { MomentDateAdapter} from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { SelectGridService } from './../../select-grid.service'
 
 import { QueryGridService } from '../../query-grid.service'
 
@@ -36,19 +37,32 @@ export class MonthPickerComponent implements OnInit {
   public inc: number = 1
   public dateForm = new FormControl(moment());
   public date: moment.Moment;
-  @Input() minDate: Date
-  @Input() maxDate: Date
+  public minDate: Date
+  public maxDate: Date
   @Input() paramMode: boolean
-  @Input() dates: boolean
+  public dates: moment.Moment[]
   @ViewChild('dp') datepicker: MatDatepicker<any>;
   public queryGridService: QueryGridService
+  public selectGridService: SelectGridService
 
-  constructor(public injector: Injector) { this.queryGridService = injector.get(QueryGridService)}
+  constructor(public injector: Injector) { 
+    this.queryGridService = injector.get(QueryGridService)
+    this.selectGridService = injector.get(SelectGridService) 
+  }
 
   ngOnInit() {
-    this.setDate()
+    this.date = this.queryGridService.getDate()
     this.queryGridService.resetToStart.subscribe((msg) => {
       this.setDate()
+    })
+
+    this.selectGridService.gridChange.subscribe((msg) => {
+      this.setDate()
+      this.dates = this.selectGridService.parseDates(this.selectGridService.gridMeta.dates)
+      this.minDate = moment(this.selectGridService.gridMeta.minDate, 'DD-MM-YYYY').toDate()
+      this.maxDate = moment(this.selectGridService.gridMeta.maxDate, 'DD-MM-YYYY').toDate()
+      this.date = this.dates[0]
+      this.queryGridService.sendDate(this.date, false)
     })
   }
 

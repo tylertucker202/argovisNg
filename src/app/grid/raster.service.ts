@@ -71,8 +71,16 @@ export class RasterService {
     const nLons = uLons.length
 
     let matrix = [];
-    while(values.length) { matrix.push(values.splice(0,nLons)) };
+    while(values.length) { matrix.push(values.splice(0,nLats)) };
+    matrix = this.transpose(matrix)
     return [uLats, uLons, matrix]
+  }
+
+  public transpose(matrix) {
+    //Object.keys yields an array of column indexes. We map these over a row mapping, returning the column value for each row. 
+    return Object.keys(matrix[0]).map(function(col) {
+        return matrix.map(function(row) { return row[col]; });
+    });
   }
 
   public makeRegridArray(arr: number[], delta: number): number[] {
@@ -109,14 +117,14 @@ export class RasterService {
     raster['xllCorner'] = star_lons[0]
     raster['yllCorner'] = star_lats[0]
 
-    let points = []
+    let latLngPoints = []
+    star_lats.reverse()
     for (let idx=0; idx<star_lats.length; ++idx) {
       for (let jdx=0; jdx<star_lons.length; ++jdx) {
-        points.push([star_lats[idx], star_lons[jdx]])
+        latLngPoints.push([star_lats[idx], star_lons[jdx]])
       }
     }
-    raster['zs'] = this.interpolateGrid(points, valuesMatrix, uLats, uLons)
-
+    raster['zs'] = this.interpolateGrid(latLngPoints, valuesMatrix, uLats, uLons)
     return raster as RasterGrid
   }
 

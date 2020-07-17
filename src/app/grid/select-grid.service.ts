@@ -1,21 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam, GridMeta } from './../../typeings/grids'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import * as moment from 'moment'
-
 @Injectable({
   providedIn: 'root'
 })
 export class SelectGridService {
 
   constructor(private http: HttpClient) { }
-
-  public minDate: moment.Moment
-  public maxDate: moment.Moment
-  public presLevels: number[]
-  public dates: moment.Moment[]
-  public dateIncrement: [number, string] //increment and units
+  public gridMeta: GridMeta
+  @Output() gridChange: EventEmitter<string> = new EventEmitter
 
   private readonly nonUniformGrids = ['sose_si_area_3_day', 'sose_si_area_monthly']
 
@@ -111,12 +106,12 @@ export class SelectGridService {
     return this.http.get<GridMeta[]>(url)
   }
 
-  public parseDates(dateStrs: string[], format='DD-MM-YYYY') {
+  public parseDates(dateStrs: string[], format='DD-MM-YYYY'): moment.Moment[] {
     let dates = []
     dateStrs.forEach( date => {
       dates.push(moment(date))
     })
-    this.dates = dates
+    return dates
   }
 
   

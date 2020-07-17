@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { QueryGridService } from '../../query-grid.service'
 import { GridMeta } from '../../../../typeings/grids'
 import { SelectGridService } from '../../select-grid.service';
@@ -16,16 +16,25 @@ export class PresSelComponent implements OnInit {
   public presLevelsDisplay: PressureLevels[]
   public presArray: number[]
   public presLevel: number;
-  @Input() presLevels: number[]
+  public presLevels: number[]
   
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
 
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
-    this.makePressureLevels()
-    this.queryGridService.resetToStart.subscribe((msg) => {
+    this.queryGridService.resetToStart.subscribe((msg: string) => {
       this.presLevel = this.queryGridService.getPresLevel()
+    })
+
+    this.selectGridService.gridChange.subscribe((msg: string) => {
+      this.presLevels = this.selectGridService.gridMeta.presLevels
+      this.makePressureLevels()
+      if (!this.presLevels.includes(this.presLevel)) {
+        this.presLevel = this.presLevels[0]
+        this.queryGridService.sendPres(this.presLevel, false)
+        this.queryGridService.setURL()
+      }
     })
   }
 

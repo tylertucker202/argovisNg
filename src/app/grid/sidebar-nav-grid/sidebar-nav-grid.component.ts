@@ -15,10 +15,6 @@ export class SidebarNavGridComponent implements OnInit {
   public interpolateBool: boolean
   public paramMode: boolean
   public monthPicker: boolean = true
-  public presLevels: number[]
-  public dates: string[]
-  public minDate: Date
-  public maxDate: Date
 
   ngOnInit() {
 
@@ -33,12 +29,11 @@ export class SidebarNavGridComponent implements OnInit {
       if (gridName === 'sose_si_area_3_day') {
         this.monthPicker = false
       }
-      this.selectGridService.getGridMeta(gridName).subscribe( (gridMeta: GridMeta[] )=> {
-        this.minDate = new Date(gridMeta[0]['minDate'])
-        this.maxDate = new Date(gridMeta[0]['maxDate'])
-        this.dates = gridMeta[0]['dates']
-        this.presLevels = gridMeta[0]['presLevels']
-      } )
+
+      this.selectGridService.getGridMeta(gridName).subscribe( (gridMetas: GridMeta[] )=> {
+        this.selectGridService.gridMeta = gridMetas[0]
+        this.selectGridService.gridChange.emit('grids initalized')
+      })
     })
     
     this.queryGridService.change.subscribe(msg => {

@@ -97,9 +97,13 @@ export class GridMappingService {
       this.rasterService.getNonUniformGrid(datetime.format('DD-MM-YYYY'), latRange, lonRange, pres, gridName)
       .subscribe( (grids: Grid[]) => {
         const delta = 1 //need to regrid non uniform grid with delta
-        const rasterGrids = this.rasterService.makeRasterFromGrid(grids[0], delta)
-        const t1 = performance.now();
-        this.generateRasterGrids(map, [rasterGrids], false)
+        if (grids[0]) {
+          const rasterGrids = this.rasterService.makeRasterFromGrid(grids[0], delta)
+          this.generateRasterGrids(map, [rasterGrids], false)
+        }
+        else {
+          this.notifier.notify('warning', 'grid not found')
+        }
       },
       error => {
         this.notifier.notify('error', 'error in getting non uniform grid')
