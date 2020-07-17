@@ -28,7 +28,7 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
       {name: "Home", viewValue: "Home (Argo profiles)", link: "/ng/home", tooltip: "link to Argovis home page"},
       {name: "AR", viewValue: "Atmospheric River (Beta)", link: "/ng/ar", tooltip: 'link to AR page (Beta)'},
       {name: "Grids", viewValue: "Gridded Products (Beta)", link: "/ng/grid", tooltip: 'link to gridded page (Beta)'},
-      {name: "GridsOld", viewValue: "Gridded Products (old)", link: "http://www.argo.ucsd.edu/Gridded_Argovis.html", tooltip: 'link to old gridded page page'},
+      {name: "GridsOld", viewValue: "Gridded Products (old)", link: "https://argovis.colorado.edu/docs/Gridded_Argovis.html ", tooltip: 'link to old gridded page page'},
       {name: "Covar", viewValue: "Float Trajectory Forcast", link: "/ng/covar", tooltip: 'link to float trajectory forcast page'}
     ]
     //this.href = this.router.url
