@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection } from '../profiles'
+import { Component, OnInit, Input } from '@angular/core';
+import { BgcProfileData, CoreProfileData, StationParameters } from './../profiles'
 import { GetProfilesService } from '../get-profiles.service'
 import { ChartService } from '../chart.service'
 import { QueryProfviewService, ChartItems } from '../query-profview.service';

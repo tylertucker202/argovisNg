@@ -15,7 +15,7 @@ export interface avModule {
 })
 export class TopToolbarComponent implements OnInit, AfterViewInit {
 
-  private avModules: avModule[];
+  public avModules: avModule[];
   public href: string = "";
   public currentModule: string;
   constructor(private toolbarService: TopToolbarService, private location: Location, private router: Router) { 
