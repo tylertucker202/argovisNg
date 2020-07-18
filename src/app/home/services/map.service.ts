@@ -1,7 +1,6 @@
 import { Injectable, ApplicationRef, Injector } from "@angular/core"
 import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
 import { PopupCompileService } from './popup-compile.service'
-import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
 
 import 'leaflet'
 import '../../../ext-js/leaflet.draw-arc-src.js'
@@ -239,7 +238,7 @@ export class MapService {
   };
 
   public popupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
-    const feature = layer.toGeoJSON() as Feature<Polygon>
+    const feature = layer.toGeoJSON()
     const shape = this.getLatLngFromFeature(feature)
     const transformedShape = this.getTransformedShape(shape);
     layer.bindPopup(null);
@@ -258,7 +257,7 @@ export class MapService {
     featureGroup.addLayer(layer);
     }
 
-  public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {
+  public getLatLngFromFeature(feature): number[][] {
     let shape = []
     feature.geometry.coordinates[0].forEach( (coord) => {
       const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place
