@@ -14,7 +14,7 @@
 <div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
-      <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">
+      <mat-select [(value)]="gridName" (selectionChange)="selChange($event.value)">
           <mat-option *ngFor="let grid of availableGrids" [(value)]="grid.grid">
             {{grid.viewValue}}
           </mat-option>
@@ -25,7 +25,7 @@
 <div *ngIf="paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
-    <mat-select [(value)]="grid" (selectionChange)="selChange($event.value)">
+    <mat-select [(value)]="gridName" (selectionChange)="selChange($event.value)">
       <mat-option *ngFor="let grid of availableGrids" [(value)]="grid.grid">
         {{grid.viewValue}}
       </mat-option>

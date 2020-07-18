@@ -51,7 +51,7 @@ export class GridMappingService {
     this.queryGridService.setURL(); //this should be the last thing
   }
 
-  public drawGrids(map: L.Map, setURL=true, lockRange=false): void {
+  public drawGrids(map: L.Map, setURL=true, lockColorbarRange=false): void {
      //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
     this.gridLayers.clearLayers()
@@ -61,7 +61,7 @@ export class GridMappingService {
     let features = this.queryGridService.getShapes()
     const gridName = this.queryGridService.getGridName()
     //check if grid exists on current grid selection. If not dont draw.
-    this.generateGridSections(bboxes, map, gridName, lockRange)
+    this.generateGridSections(bboxes, map, gridName, lockColorbarRange)
     this.queryGridService.updateColorbar.emit('new grid')
     if(setURL){
       this.queryGridService.setURL(); //this should be the last thing
@@ -78,7 +78,9 @@ export class GridMappingService {
     return Object.keys(gridOptionsMap).find(key => gridOptionsMap[key] === true);
   }
 
-  public singleGridHandler(latRange: [number, number], lonRange: [number, number], datetime: moment.Moment, pres: number, gridName: string, map: L.Map, lockRange: boolean) {
+  public singleGridHandler(latRange: [number, number], lonRange: [number, number],
+                           datetime: moment.Moment, pres: number,
+                           gridName: string, map: L.Map, lockColorbarRange: boolean) {
     if (this.selectGridService.isUniform(gridName) ){
       this.rasterService.getGridRaster(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, gridName)
       .subscribe( (rasterGrids: RasterGrid[]) => {
@@ -86,7 +88,7 @@ export class GridMappingService {
           this.notifier.notify( 'warning', 'grid not found' )
         }
         else {
-          this.generateRasterGrids(map, rasterGrids, lockRange)
+          this.generateRasterGrids(map, rasterGrids, lockColorbarRange)
         }
         },
         error => {
@@ -110,9 +112,10 @@ export class GridMappingService {
       })
     }
   }
+
   public addGridSection(bbox: number[], map: L.Map, 
                                           datetime: moment.Moment, pres: number, gridName: string, compareGrid: string, compare: boolean, paramMode: boolean,
-                                          gridParam, lockRange: boolean) {
+                                          gridParam, lockColorbarRange: boolean) {
     let lonRange = [bbox[0], bbox[2]] as [number, number]
     const latRange = [bbox[1], bbox[3]] as [number, number]
     const translateShape = lonRange[0] < -180
@@ -125,7 +128,7 @@ export class GridMappingService {
     const gridOption = this.getGridDisplayOption(compare, paramMode)
     switch (gridOption) {
       case 'grid':
-        this.singleGridHandler(latRange, lonRange, datetime, pres, gridName, map, lockRange)
+        this.singleGridHandler(latRange, lonRange, datetime, pres, gridName, map, lockColorbarRange)
         break
       case 'compare grid':
         this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, gridName, compareGrid)
@@ -135,7 +138,7 @@ export class GridMappingService {
           }
           else {
             let dGrid = this.rasterService.makeDiffGrid(rasterGrids)
-            this.generateRasterGrids(map, dGrid, lockRange)
+            this.generateRasterGrids(map, dGrid, lockColorbarRange)
           }
           },
           error => {
@@ -148,7 +151,7 @@ export class GridMappingService {
             this.notifier.notify('warning', 'Missing a param')
           }
           else {
-            this.generateRasterGrids(map, rasterParam, lockRange)
+            this.generateRasterGrids(map, rasterParam, lockColorbarRange)
           }
           },
           error => {
@@ -162,7 +165,7 @@ export class GridMappingService {
           }
           else {
             let dGrid = this.rasterService.makeDiffGrid(rasterParams)
-            this.generateRasterGrids(map, dGrid, lockRange)
+            this.generateRasterGrids(map, dGrid, lockColorbarRange)
           }
           },
           error => {
@@ -174,7 +177,7 @@ export class GridMappingService {
     }
   }
 
-  private generateGridSections(bboxes: number[][], map: L.Map, grid: string, lockRange: boolean): void {
+  private generateGridSections(bboxes: number[][], map: L.Map, grid: string, lockColorbarRange: boolean): void {
 
     const interpolation = this.queryGridService.getInterplateBool()
 
@@ -188,12 +191,12 @@ export class GridMappingService {
       const gridParam = this.queryGridService.getGridParam()
       
       bboxes.forEach( (bbox: number[]) => {
-        this.addGridSection(bbox, map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+        this.addGridSection(bbox, map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockColorbarRange)
       })
     }
   }
 
-  public generateRasterGrids(map: L.Map, rasterGrids: RasterGrid[] | RasterParam[], lockRange: boolean): void {
+  public generateRasterGrids(map: L.Map, rasterGrids: RasterGrid[] | RasterParam[], lockColorbarRange: boolean): void {
     const colorScale = this.queryGridService.getColorScale()
     const interpolationBool = this.queryGridService.getInterplateBool()
     const invertColorScale = this.queryGridService.getInverseColorScale()
@@ -201,7 +204,7 @@ export class GridMappingService {
       let grid = rasterGrids[idx];
       this.gridLayers = this.rasterService.addCanvasToGridLayer(grid, this.gridLayers, map, interpolationBool, colorScale, invertColorScale)
       this.gridLayers.eachLayer((layer: any) => {
-        if (lockRange) {
+        if (lockColorbarRange) {
           let gridDomain = this.queryGridService.getGridDomain()
           let c: Scale<Color>
           if(invertColorScale) {c = chroma.scale(colorScale).domain(gridDomain.reverse()) }

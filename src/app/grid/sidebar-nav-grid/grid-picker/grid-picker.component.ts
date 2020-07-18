@@ -56,10 +56,16 @@ export class GridPickerComponent implements OnInit {
   private sendGrid(): void {
     let broadcastChange = !this.paramMode
     this.selectGridService.getGridMeta(this.gridName).subscribe( (gridMetas: GridMeta[] )=> {
-      this.selectGridService.gridMeta = gridMetas[0]
-      this.selectGridService.gridChange.emit('new grid selected')
+      //quietly check the pressure level and update pressure if invalid.
+      if (!gridMetas[0].presLevels.includes(this.queryGridService.getPresLevel())) {
+        this.queryGridService.sendPres(gridMetas[0].presLevels[0], false)
+      }
+      this.queryGridService.sendGrid(this.gridName, false)
+      this.selectGridService.gridMetaChange.emit(gridMetas[0])
+
+      //safe to update grid and broadcast change.
+      this.queryGridService.sendGrid(this.gridName, broadcastChange)
     })
-    this.queryGridService.sendGrid(this.gridName, broadcastChange)
   } 
 
   private selChange(gridName: string ): void {

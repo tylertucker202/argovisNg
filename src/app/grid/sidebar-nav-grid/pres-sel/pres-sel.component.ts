@@ -14,7 +14,6 @@ export interface PressureLevels {
 })
 export class PresSelComponent implements OnInit {
   public presLevelsDisplay: PressureLevels[]
-  public presArray: number[]
   public presLevel: number;
   public presLevels: number[]
   
@@ -27,8 +26,8 @@ export class PresSelComponent implements OnInit {
       this.presLevel = this.queryGridService.getPresLevel()
     })
 
-    this.selectGridService.gridChange.subscribe((msg: string) => {
-      this.presLevels = this.selectGridService.gridMeta.presLevels
+    this.selectGridService.gridMetaChange.subscribe((gridMeta: GridMeta) => {
+      this.presLevels = gridMeta.presLevels
       this.makePressureLevels()
       if (!this.presLevels.includes(this.presLevel)) {
         this.presLevel = this.presLevels[0]
@@ -47,7 +46,7 @@ export class PresSelComponent implements OnInit {
   }
 
   public incrementLevel(increment: number): void {
-    const idx = this.presArray.indexOf(this.presLevel)
+    const idx = this.presLevels.indexOf(this.presLevel)
     const inc = idx + increment
     if( inc >= 0 && inc < this.presLevelsDisplay.length) {
       this.presLevel = this.presLevelsDisplay[inc].value

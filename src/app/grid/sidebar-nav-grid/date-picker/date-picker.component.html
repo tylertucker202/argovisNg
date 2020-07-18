@@ -4,9 +4,8 @@
 </button>
 <mat-form-field id="dateInput">
     <input matInput [matDatepicker]="dp"
-     placeholder="date"
+     placeholder="Date"
      [formControl]="dateForm"
-     [matDatepickerFilter]="dateFilter"
      (dateChange)="displayDateChanged($event.value)"
      matTooltip="select date of grid data on display" 
      [min]="minDate" [max]="maxDate" >

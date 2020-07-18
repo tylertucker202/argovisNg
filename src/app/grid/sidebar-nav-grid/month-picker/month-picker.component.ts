@@ -5,7 +5,7 @@ import { MomentDateAdapter} from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { SelectGridService } from './../../select-grid.service'
-
+import { GridMeta } from './../../../../typeings/grids'
 import { QueryGridService } from '../../query-grid.service'
 
 import * as moment from 'moment';
@@ -40,7 +40,7 @@ export class MonthPickerComponent implements OnInit {
   public minDate: Date
   public maxDate: Date
   @Input() paramMode: boolean
-  public dates: moment.Moment[]
+  public dates: string[]
   @ViewChild('dp') datepicker: MatDatepicker<any>;
   public queryGridService: QueryGridService
   public selectGridService: SelectGridService
@@ -53,15 +53,19 @@ export class MonthPickerComponent implements OnInit {
   ngOnInit() {
     this.date = this.queryGridService.getDate()
     this.queryGridService.resetToStart.subscribe((msg) => {
+      console.log('resetToStart triggered. setting date', this.queryGridService.getDate())
       this.setDate()
     })
 
-    this.selectGridService.gridChange.subscribe((msg) => {
+    this.selectGridService.gridMetaChange.subscribe((gridMeta: GridMeta) => {
       this.setDate()
-      this.dates = this.selectGridService.parseDates(this.selectGridService.gridMeta.dates)
-      this.minDate = moment(this.selectGridService.gridMeta.minDate, 'DD-MM-YYYY').toDate()
-      this.maxDate = moment(this.selectGridService.gridMeta.maxDate, 'DD-MM-YYYY').toDate()
-      this.date = this.dates[0]
+      this.dates = gridMeta.dates
+      this.minDate = new Date(gridMeta.minDate)
+      this.maxDate = new Date(gridMeta.maxDate)
+      if (!this.dates.includes(this.date.format())) {
+        let newDate = this.dates[0]
+        this.date = moment.utc(newDate)
+      }
       this.queryGridService.sendDate(this.date, false)
     })
   }
@@ -109,8 +113,7 @@ export class MonthPickerComponent implements OnInit {
     this.sendDate()
   }
 
-
-  dateFilter = (date: moment.Moment) => {
+  dateFilter = (date: moment.Moment): boolean => {
     // return date.month() % 2 == 1 //filter out odd months
     return true
   }

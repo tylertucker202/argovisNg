@@ -97,13 +97,14 @@ export class QueryGridService {
     return this.inverseColorScale
   }
   public sendDate(date: Moment, broadcastChange=true): void {
-    const msg = 'date change'
-    if (this.gridName !== 'sose_si_area_3_day')
-    date = date.set('D', 1)
+    if (this.gridName !== 'sose_si_area_3_day') {
+      date = date.startOf('month')
+    }
     if (!date.isValid) {
       date = moment('01-01-2007', 'DD-MM-YYYY').utc(false)
     }
     this.date = date
+    const msg = 'date changed'
     if (broadcastChange){ this.change.emit(msg) }
   }
 
@@ -121,9 +122,9 @@ export class QueryGridService {
     return this.latLngShapes
   }
 
-  public sendGrid(grid: string, broadcastChange=true): void {
+  public sendGrid(gridName: string, broadcastChange=true): void {
     let msg = 'grid change'
-    this.gridName = grid
+    this.gridName = gridName
     if (broadcastChange) { this.change.emit(msg) }
   }
 
@@ -287,13 +288,13 @@ export class QueryGridService {
     return bbox
   }
 
-  public setParamsFromURL(): void {
+  public setParamsFromURL(msg): void {
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
         this.setMapState(key, this.mapState[key])
       })
-      this.urlBuild.emit('got state from map component')
+      this.urlBuild.emit(msg)
     })
   }
 

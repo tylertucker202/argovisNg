@@ -14,34 +14,44 @@ export class SidebarNavGridComponent implements OnInit {
   constructor(private queryGridService: QueryGridService, private selectGridService: SelectGridService) { }
   public interpolateBool: boolean
   public paramMode: boolean
-  public monthPicker: boolean = true
+  public monthPicker: boolean
+  public initSet: boolean = false
 
   ngOnInit() {
-
     this.paramMode = this.queryGridService.getParamMode()
     this.interpolateBool = this.queryGridService.getInterplateBool()
 
     this.queryGridService.urlBuild.subscribe(msg => {
       this.interpolateBool = this.queryGridService.getInterplateBool()
       this.paramMode = this.queryGridService.getParamMode();
-
-      const gridName = this.queryGridService.getGridName()
-      if (gridName === 'sose_si_area_3_day') {
-        this.monthPicker = false
+      if (!this.initSet) { // initialize gridMeta
+        this.getGridMeta()
       }
-
-      this.selectGridService.getGridMeta(gridName).subscribe( (gridMetas: GridMeta[] )=> {
-        this.selectGridService.gridMeta = gridMetas[0]
-        this.selectGridService.gridChange.emit('grids initalized')
-      })
+      this.initSet = true
     })
     
     this.queryGridService.change.subscribe(msg => {
-      console.log('change msg: ', msg)
       this.paramMode = this.queryGridService.getParamMode();
+      const gridName = this.queryGridService.getGridName()
+      gridName === 'sose_si_area_3_day'? this.monthPicker = false: this.monthPicker = true
+
+      //set date to start of month if using month picker.
+      if (this.monthPicker) { this.queryGridService.sendDate(this.queryGridService.getDate().startOf('month'), false)}
+      if (msg === 'grid change') {
+        console.log('getting grid meta')
+        this.getGridMeta()
+      }
     })
+  }
 
+  public getGridMeta(): void {
+    const gridName = this.queryGridService.getGridName()
+    gridName === 'sose_si_area_3_day'? this.monthPicker = false: this.monthPicker = true
+    console.log('gridName', gridName, 'monthPicker?', this.monthPicker)
 
+    this.selectGridService.getGridMeta(gridName).subscribe( (gridMetas: GridMeta[] )=> {
+      this.selectGridService.gridMetaChange.emit(gridMetas[0])
+    })
   }
 
   public clearGrids(): void {

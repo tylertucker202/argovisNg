@@ -41,7 +41,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
                                       }
 
     //set state from url
-    this.queryGridService.setParamsFromURL()
+    this.queryGridService.setParamsFromURL('setting params from map component init')
 
     //setup map
     this.proj = 'WM'
@@ -65,13 +65,13 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
         this.map.closePopup()
         const updateURL = true
-        const lockRange = false //update colorbar
-        const redrawGridBool = this.checkIfRedraw(msg) // redraw grids or just update cosmetic items?
-        if (redrawGridBool) {
+        const lockColorbarRange = false //update colorbar
+        if (this.isNewGrid(msg)) {
+          console.log('new grids to be queried')
           const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
-          gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockRange) : this.gridMappingService.gridLayers.clearLayers()
+          gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockColorbarRange) : this.gridMappingService.gridLayers.clearLayers()
         }
-        else {
+        else { //cosmetic changes
           this.gridMappingService.updateGrids(this.map) //redraws shape with updated change
         }
         })
@@ -159,12 +159,12 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.invalidateSize();
   }
 
-  private checkIfRedraw(msg: string): boolean {
+  private isNewGrid(msg: string): boolean {
     //this checks if change merits a complete redraw (true), or just update some cosmetic changes (false)
     const redrawItems = [ 'grid change', 'pres level change', 'param change',
                           'grid param change', 'display grid param change',
                           'compare grid toggled', 'compare grid change',
-                          'date change']
+                          'date changed']
     const redrawGridBool = redrawItems.includes(msg)
     return redrawGridBool
   }
@@ -205,7 +205,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     const compare = this.queryGridService.getCompare()
     const paramMode = this.queryGridService.getParamMode()
     const gridParam = this.queryGridService.getGridParam()
-    const lockRange = false
+    const lockColorbarRange = false
 
     if (bboxes[0][0] < -180) {
       const wrappedBbox = [[bboxes[0][0], bboxes[0][1], -180, bboxes[0][3]], [-180, bboxes[0][1], bboxes[0][2], bboxes[0][3]]]
@@ -215,7 +215,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     
     this.queryGridService.sendShape(bboxes, broadcastLayer)
     bboxes.forEach( (bbox: number[]) => {
-      this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockRange)
+      this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockColorbarRange)
     })
     this.gridMappingService.updateGrids(this.map)
     this.queryGridService.updateColorbar.emit('new shape added')

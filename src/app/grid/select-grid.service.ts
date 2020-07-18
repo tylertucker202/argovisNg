@@ -9,8 +9,7 @@ import * as moment from 'moment'
 export class SelectGridService {
 
   constructor(private http: HttpClient) { }
-  public gridMeta: GridMeta
-  @Output() gridChange: EventEmitter<string> = new EventEmitter
+  @Output() gridMetaChange: EventEmitter<GridMeta> = new EventEmitter
 
   private readonly nonUniformGrids = ['sose_si_area_3_day', 'sose_si_area_monthly']
 
@@ -105,16 +104,5 @@ export class SelectGridService {
     const url = '/griddedProducts/gridMetadata?gridName=' + gridName
     return this.http.get<GridMeta[]>(url)
   }
-
-  public parseDates(dateStrs: string[], format='DD-MM-YYYY'): moment.Moment[] {
-    let dates = []
-    dateStrs.forEach( date => {
-      dates.push(moment(date))
-    })
-    return dates
-  }
-
-  
-
 
 }
