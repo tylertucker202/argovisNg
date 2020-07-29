@@ -96,13 +96,9 @@ export class QueryGridService {
   public getInverseColorScale(): boolean {
     return this.inverseColorScale
   }
-  public sendDate(date: Moment, broadcastChange=true): void {
-    if (this.gridName !== 'sose_si_area_3_day') {
-      date = date.startOf('month')
-    }
-    if (!date.isValid) {
-      date = moment('01-01-2007', 'DD-MM-YYYY').utc(false)
-    }
+  public sendDate(date: Moment, broadcastChange=true, init=false): void {
+    if (!init && this.gridName !== 'sose_si_area_3_day') { date = date.startOf('month') }
+    if (!date.isValid) { date = moment('01-01-2007', 'DD-MM-YYYY').utc(false) }
     this.date = date
     const msg = 'date changed'
     if (broadcastChange){ this.change.emit(msg) }
@@ -328,7 +324,8 @@ export class QueryGridService {
       }
       case 'date': {
         const date = moment(value, 'DD-MM-YYYY').utc()
-        if (date.isValid)  { this.sendDate(date, notifyChange) }
+        const init = true
+        if (date.isValid)  { this.sendDate(date, notifyChange, true) }
         break
       }
       case 'gridName': {

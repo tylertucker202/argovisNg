@@ -3,6 +3,7 @@ import { RasterGrid } from '../models/raster-grid'
 import { RasterService } from './raster.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 // import { WasmService } from './wasm.service'
+import { mockMeridianGrid } from './grid.items'
 import * as L from "leaflet";
 fdescribe('RasterService', () => {
   beforeEach(async() => TestBed.configureTestingModule({
@@ -66,6 +67,27 @@ fdescribe('RasterService', () => {
     expect(lat_idx_5_shift).toEqual(-1)
   }))
 
+  it('should properly index lon', inject([RasterService], (service: RasterService) => {
+    const uLons = [-5, -2.5, 0, 2.5, 5]
+    const delta = 2.5
+
+    const t1 = 0
+    const lon_idx_1 = service.get_uniform_idx(t1, delta, uLons[0])
+    expect(lon_idx_1).toEqual(2)
+    const t2 = -0.1
+    const lat_idx_2 = service.get_uniform_idx(t2, delta, uLons[0])
+    expect(lat_idx_2).toEqual(1)
+    const t3 = -2.4
+    const lat_idx_3 = service.get_uniform_idx(t3, delta, uLons[0])
+    expect(lat_idx_3).toEqual(1)
+    const t4 = 2.6
+    const lat_idx_4 = service.get_uniform_idx(t4, delta, uLons[0])
+    expect(lat_idx_4).toEqual(3)
+    const t5 = 4.6
+    const lat_idx_5 = service.get_uniform_idx(t5, delta, uLons[0])
+    expect(lat_idx_5).toEqual(3)
+  }))
+
   it('should make grid arrays', inject([RasterService], (service: RasterService) => {
     service.getMockGrid()
     .subscribe( grid => {
@@ -78,23 +100,27 @@ fdescribe('RasterService', () => {
       for (let idx = 1; idx<uLons.length; ++idx) {
         expect(uLons[idx]).toBeGreaterThan(uLons[idx-1])
       }
-      // console.log('nLats', nLats, 'nLons', nLons)
-      expect(uLats.length).toEqual(39)
-      expect(uLons.length).toEqual(15)
-      // console.log('valuesMatrix', valuesMatrix.length, valuesMatrix[0].length)
+      console.log('nLats', uLats.length, 'nLons', uLons.length)
+      // expect(uLats.length).toEqual(39)
+      // expect(uLons.length).toEqual(15)
+      expect(uLats.length).toEqual(71)
+      expect(uLons.length).toEqual(107)
+      console.log('valuesMatrix', valuesMatrix.length, valuesMatrix[0].length)
       expect(valuesMatrix.length).toEqual(uLats.length)
       expect(valuesMatrix[0].length).toEqual(uLons.length)
-      const lat = -67.5
-      const lon = 1.25
+      // const lat = -67.5
+      // const lon = 1.25
+      const lat = -51.25
+      const lon = 78.1
       const dlon = uLons[1] - uLons[0]
       const minLon = uLons[0]
       const lon_idx = service.get_uniform_idx(lon, dlon, minLon)
-      expect(lon_idx===4)
-      expect(uLons[lon_idx] === 1.5)
+      // expect(lon_idx===4)
+      // expect(uLons[lon_idx] === 1.5)
       const [lat_idx, lat_shift] = service.get_nearest_neighbor(uLats, lat)
-      expect(lat_shift===-1)
-      expect(lat_idx===20)
-      expect(uLats[lat_idx] === -67.519)
+      // expect(lat_shift===-1)
+      // expect(lat_idx===20)
+      // expect(uLats[lat_idx] === -67.519)
       // console.log('valuesMatrix[lon_idx][lon_idx]',valuesMatrix[lat_idx][lon_idx])
       const llPoint = [uLons[lon_idx], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx]] as [number, number, number]
       const lrPoint = [uLons[lon_idx+1], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+1]] as [number, number, number]
@@ -102,8 +128,8 @@ fdescribe('RasterService', () => {
       const ulPoint = [uLons[lon_idx], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx]] as [number, number, number]
       const points = [llPoint, lrPoint, urPoint, ulPoint]
       const intpValue = service.bilinear_interpolation(lon, lat, points)
-      console.log('points', points, 'intpValue', intpValue)
-      expect(intpValue).toEqual(0.00007948320375250093)
+      console.log('lon, lat', lon, lat, 'points', points, 'intpValue', intpValue)
+      expect(intpValue).toEqual(0.000)
     })
   }))
 
@@ -135,7 +161,34 @@ fdescribe('RasterService', () => {
     })
   }))
 
-  
+  // it('should find nearest neigbhor', inject([RasterService], (service: RasterService) => {
+  //   service.getMockGrid()
+  //   .subscribe( grid => {
+  //     const delta = .25
+  //     const [uLats, uLons, valuesMatrix] = service.make_grid_arrays(grid[0]['data']);
+  //     const star_lats = service.makeRegridArray(uLats, delta)
+  //     const star_lons = service.makeRegridArray(uLons, delta)
+  //     let points = []
+  //     for (let idx=0; idx<star_lats.length; ++idx) {
+  //       for (let jdx=0; jdx<star_lons.length; ++jdx) {
+  //         points.push([star_lats[idx], star_lons[jdx]])
+  //       }
+  //     }
+  //     let zs = []
+  //     const dlon = uLons[1] - uLons[0]
+  //     const minLon = Math.min(...uLons)
+  //     // console.log('ulats: ', uLats)
+  //     points.forEach( ([lat, lon]) => {      
+  //       const [lat_idx, lat_shift] = service.get_nearest_neighbor(uLats, lat)
+  //       console.log('lon', lon, 'uLons:', uLons)
+  //       const [lon_idx, lon_shift] = service.get_nearest_neighbor(uLons, lon)
+  //       // const lon_idx = service.get_uniform_idx(lon, dlon, minLon)
+  //       // const lon_shift = 1
+
+  //     })
+  //   })
+  // }))
+
   it('should do bilinear interpolation', inject([RasterService], (service: RasterService) => {
     service.getMockGrid()
     .subscribe( grid => {
@@ -153,13 +206,15 @@ fdescribe('RasterService', () => {
       const dlon = uLons[1] - uLons[0]
       const minLon = Math.min(...uLons)
       // console.log('ulats: ', uLats)
-      points.forEach( ([lat, lon]) => {
+      points.forEach( ([lat, lon]) => {      
         const [lat_idx, lat_shift] = service.get_nearest_neighbor(uLats, lat)
         const lon_idx = service.get_uniform_idx(lon, dlon, minLon)
+        const lon_shift = 1
+      
         // console.log('lat, lon, lon_idx, lat_idx, latshift:', lat, lon, lon_idx, lat_idx, lat_shift)
         const llPoint = [uLons[lon_idx], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx]] as [number, number, number]
-        const lrPoint = [uLons[lon_idx+1], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+1]] as [number, number, number]
-        const urPoint = [uLons[lon_idx+1], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx+1]] as [number, number, number]
+        const lrPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+lon_shift]] as [number, number, number]
+        const urPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx+lon_shift]] as [number, number, number]
         const ulPoint = [uLons[lon_idx], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx]] as [number, number, number]
         let points = [llPoint, lrPoint, urPoint, ulPoint]
         // console.log('lat lng intp', lat, lon, 'points', points)
@@ -199,20 +254,40 @@ fdescribe('RasterService', () => {
   
   it('should get lat and lon idx ', inject([RasterService], (service: RasterService) => {
     const lat = -67.5
-    const lon = 1.25
+    const lon = 80
     service.getMockGrid()
     .subscribe( grid => {
       const [uLats, uLons, valuesMatrix] = service.make_grid_arrays(grid[0]['data']);
       const dlon = uLons[1] - uLons[0]
       const minLon = Math.min(...uLons)
       const [lat_idx, lat_shift] = service.get_nearest_neighbor(uLats, lat)
-      expect(lat_idx).toEqual(20)
-      expect(uLats[lat_idx]).toEqual(-67.519)
+      expect(lat_idx).toEqual(0)
+      expect(uLats[lat_idx]).toEqual(-56.146)
       const lon_idx = service.get_uniform_idx(lon, dlon, minLon)
-      expect(lon_idx).toEqual(3)
-      expect(uLons[lon_idx]).toEqual(1.167)
+      expect(lon_idx).toEqual(24)
+      expect(uLons[lon_idx]).toEqual(79.917)
     })
   }))
+
+  it('should regrid selection that crosses meridian', inject([RasterService], (service: RasterService) => {
+    const lat = -67.5
+    const lon = 80
+    const delta = 1
+    const [uLats, uLons, valuesMatrix] = service.make_grid_arrays(mockMeridianGrid[0]['data']);
+    const star_lats = service.makeRegridArray(uLats, delta)
+    const star_lons = service.makeRegridArray(uLons, delta)
+
+    let latLngPoints = []
+    star_lats.reverse()
+    for (let idx=0; idx<star_lats.length; ++idx) {
+      for (let jdx=0; jdx<star_lons.length; ++jdx) {
+        latLngPoints.push([star_lats[idx], star_lons[jdx]])
+      }
+    }
+    console.log('star_lats', star_lats, 'star_lons', star_lons, 'latLngPoints', latLngPoints)
+    const ipoints = service.interpolateGrid(latLngPoints, valuesMatrix, uLats, uLons)
+    })
+  )
 
   // it('should make canvas layer', inject([RasterService], (service: RasterService) => {
   //   const mockGrid = service.getMockGridRaster()

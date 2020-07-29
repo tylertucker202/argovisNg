@@ -57,7 +57,7 @@ describe('MonthPickerComponent', () => {
   it('should set date', () => {
     const ddate = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
     const date = new FormControl(ddate)
-    expect(component['dateForm']).toEqual(ddate)
+    expect(component['dateForm']).toEqual(date)
     const cDate = component['dateForm']
     expect(cDate.value.format('DD-MM-YYYY')).toEqual(ddate.format('DD-MM-YYYY'))
   });

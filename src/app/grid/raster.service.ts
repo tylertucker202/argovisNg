@@ -38,6 +38,7 @@ export class RasterService {
   }
 
   public transform_lon(lon: number): number {
+    //not currently used
     if (lon < 0) {
       lon += 360
     }
@@ -52,8 +53,7 @@ export class RasterService {
     for (let idx = 0; idx < gridCells.length; ++idx) {
       const row = gridCells[idx]
       lats.push(row['lat'])
-      const lon = this.transform_lon(row['lon'])
-      lons.push(lon)
+      lons.push(row['lon'])
       values.push(row['value'])
     }
     let uLats = []
@@ -83,7 +83,7 @@ export class RasterService {
     });
   }
 
-  public makeRegridArray(arr: number[], delta: number): number[] {
+  public makeRegridArray(arr: number[], delta: number, nDec=3): number[] {
     //find n columns of star_arr
     const rangeArr = arr[arr.length -1] - arr[0]
     const ncols = Math.floor(rangeArr / delta)
@@ -92,7 +92,8 @@ export class RasterService {
     let star_arr = [ arr[0] + rem/2 ]
     // populate star_arr
     while (star_arr.length < ncols ) {
-      star_arr.push(star_arr[star_arr.length-1] + delta)
+      const star = Number((star_arr[star_arr.length-1] + delta).toFixed(nDec)).valueOf()
+      star_arr.push(star)
     }
     return star_arr
   }
@@ -139,9 +140,11 @@ export class RasterService {
     latLngPoints.forEach( ([lat, lon]) => {
       const [lat_idx, lat_shift] = this.get_nearest_neighbor(uLats, lat)
       const lon_idx = this.get_uniform_idx(lon, dlon, minLon)
+      const lon_shift = 1
+      // const [lon_idx, lon_shift] = this.get_nearest_neighbor(uLons, lon)
       const llPoint = [uLons[lon_idx], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx]] as [number, number, number]
-      const lrPoint = [uLons[lon_idx+1], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+1]] as [number, number, number]
-      const urPoint = [uLons[lon_idx+1], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx+1]] as [number, number, number]
+      const lrPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+lon_shift]] as [number, number, number]
+      const urPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx+lon_shift]] as [number, number, number]
       const ulPoint = [uLons[lon_idx], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx]] as [number, number, number]
       const points = [llPoint, lrPoint, urPoint, ulPoint]
       const intpValue = this.bilinear_interpolation(lon, lat, points)
@@ -150,9 +153,9 @@ export class RasterService {
     return zs
   }
 
-  public get_uniform_idx(lon: number, dlon: number, lon_0: number) {
+  public get_uniform_idx(coord: number, delta: number, coord_0: number): number {
     // finds idx of a uniformly spaced grid
-    return  Math.floor((lon - lon_0) / dlon)
+    return  Math.floor(Math.abs(coord - coord_0) / delta)
   }
   public get_nearest_neighbor(arr, target): [number, number] {
     //binary search of nearest neighbor for an array of numbers
@@ -170,9 +173,9 @@ export class RasterService {
 
     //iterative binary search
     let idx = 0; let jdx = arr.length-1; let mid = 0;
-
-    // console.log('target: ', target, 'arr[idx]', arr[idx], 'arr[jdx]', arr[jdx])
+    
     while (idx < jdx) {
+      // console.log('yet another loop. idx: ', idx, 'jdx: ', jdx)
       mid = Math.ceil( (idx + jdx) / 2)
 
       if (arr[mid] === target) {
@@ -257,7 +260,6 @@ export class RasterService {
     url += '&presLevel=' + JSON.stringify(pres)
     url += '&date=' + date
     url += '&gridName=' + gridName
-    console.log('url:', url)
     return this.http.get<Grid[]>(url)
     }
 

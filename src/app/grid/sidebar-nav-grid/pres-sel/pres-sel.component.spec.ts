@@ -46,7 +46,7 @@ describe('PresSelComponent', () => {
     selectGridService = debugElement.injector.get(SelectGridService)
 
     const pres = 10
-    const dummyGridMeta: Observable<GridMeta[]> = of([{_id: 'dummyGrid', presLevels: [5, 10, 200]}])
+    const dummyGridMeta: Observable<GridMeta[]> = of([{_id: 'dummyGrid', presLevels: [5, 10, 200], minDate: "min date", maxDate: "max date", dates: ["test date 1"]}])
     spyGetGridMeta = spyOn(selectGridService, 'getGridMeta').and.returnValue(dummyGridMeta)
     spyGetPresLevel = spyOn(queryGridService, 'getPresLevel').and.returnValue(pres)
     spysendPres = spyOn(queryGridService, 'sendPres').and.callThrough()
