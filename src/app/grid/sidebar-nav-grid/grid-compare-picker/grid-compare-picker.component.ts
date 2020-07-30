@@ -21,7 +21,7 @@ export class GridComparePickerComponent implements OnInit {
   public availableGrids: GridGroup[]
 
   ngOnInit() {
-    this.param = this.queryGridService.getParam()
+    this.param = this.queryGridService.getProperty()
     this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
     this.compareGrid = this.queryGridService.getCompare()
     this.grid = this.queryGridService.getCompareGrid()
@@ -29,11 +29,11 @@ export class GridComparePickerComponent implements OnInit {
     this.queryGridService.change //updates selection upon change
     .subscribe(msg => {
        if (msg === 'param change'){
-        this.param = this.queryGridService.getParam()
+        this.param = this.queryGridService.getProperty()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
        }
        if (msg === 'display grid param change' && this.compareGrid) {
-        this.param = this.queryGridService.getParam()
+        this.param = this.queryGridService.getProperty()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
        }
       })

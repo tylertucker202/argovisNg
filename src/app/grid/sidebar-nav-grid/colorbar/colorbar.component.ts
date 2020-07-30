@@ -1,3 +1,4 @@
+import { HEX_COLOR_MAPS } from './../../../profview/colormap.parameters';
 import { Component, OnInit } from '@angular/core'
 import { QueryGridService } from '../../query-grid.service';
 import * as chroma from 'chroma'
@@ -36,7 +37,7 @@ export class ColorbarComponent implements OnInit {
     this.cbarShift = "10"
     this.colorScale = this.queryGridService.getColorScale()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
-    this.colorArr = chroma.brewer[this.colorScale]
+    this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
     else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
 
@@ -45,7 +46,7 @@ export class ColorbarComponent implements OnInit {
         this.updateColorbar()
         })
     
-    this.queryGridService.updateColorbar
+    this.queryGridService.updateColorbarEvent
       .subscribe(msg => {
         this.updateColorbar()
       })
@@ -60,7 +61,7 @@ export class ColorbarComponent implements OnInit {
     this.colorScale = this.queryGridService.getColorScale()
     this.domain = this.queryGridService.getGridDomain()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
-    this.colorArr = chroma.brewer[this.colorScale]
+    this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
     this.svg.remove();
     if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
     else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }

@@ -62,7 +62,7 @@ describe('ColorbarComponent', () => {
 
   it('should updateColorbar', () => {
 
-    queryGridService.updateColorbar.emit('test update')
+    queryGridService.updateColorbarEvent.emit('test update')
 
     expect(component['svg']).toBeTruthy()
     expect(spyGetColorScale).toHaveBeenCalledTimes(2)

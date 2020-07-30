@@ -2,7 +2,7 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection, DataArrays } from './profiles'
 import * as moment from 'moment';
 
-import { Cmap, cmaps, } from './chart.parameters'
+import { HEX_COLOR_MAPS } from './colormap.parameters'
 
 export interface TraceParam {
     short_name: string
@@ -21,7 +21,6 @@ export class ChartService {
 
   constructor() { }
 
-  public readonly cmaps: Cmap[] = cmaps
   public statParams: StationParameters[]
   public colorscaleSelections: ColorScaleSelection[] = this.makeColorScaleSelections()
   
@@ -119,7 +118,7 @@ export class ChartService {
   }
 
   makeColorScaleSelections(): ColorScaleSelection[] {
-    const cmapNames = this.cmaps.map(cmap => cmap.name)
+    const cmapNames = Object.keys(HEX_COLOR_MAPS)
     let colorScaleSelections = []
     cmapNames.forEach( (cmapName: string) => {
       colorScaleSelections.push({value: cmapName, viewValue: cmapName})
@@ -517,12 +516,14 @@ export class ChartService {
     return traceParam
   }
 
-  public getColorScale(cmapName: string) {
-    const isColorscale = function(cmap) { 
-      return cmap.name === cmapName;
+  public getColorScale(cmapName: string): [number, string][] {
+    const cmap = HEX_COLOR_MAPS[cmapName.toLocaleLowerCase()] as string[]
+
+    let plotlyMap = []
+    for( let idx=0; idx<cmap.length; ++idx) {
+      plotlyMap.push([idx/(cmap.length-1), cmap[idx]])
     }
-    const cmap = this.cmaps.find(isColorscale) 
-    return cmap.cmap
+    return plotlyMap
   }
 
 

@@ -1,3 +1,4 @@
+import { HEX_COLOR_MAPS } from './../profview/colormap.parameters';
 import { Injectable, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router'
 import { FeatureCollection, Feature, Polygon } from 'geojson'
@@ -37,9 +38,8 @@ export class GridMappingService {
     let gridDomain = this.queryGridService.getGridDomain()
 
     const invertColorScale = this.queryGridService.getInverseColorScale()
-    let c: Scale<Color>
-    if (invertColorScale) { c = chroma.scale(colorScale).domain(gridDomain.reverse()) }
-    else { c = chroma.scale(colorScale).domain(gridDomain) }
+    let c = this.rasterService.get_colorscale(colorScale, gridDomain, invertColorScale)
+    console.log('colorscale: ', c, 'colorscale', HEX_COLOR_MAPS[colorScale.toLowerCase()])
     const interpolateBool = this.queryGridService.getInterplateBool()
     this.gridLayers.eachLayer((layer: L.ScalarLayer) => { //scalar layer based off of leaflet Layer
       layer.setColor(c)
@@ -47,7 +47,7 @@ export class GridMappingService {
       layer.needRedraw()
     })
 
-    this.queryGridService.updateColorbar.emit('redrawn grids')
+    this.queryGridService.updateColorbarEvent.emit('redrawn grids')
     this.queryGridService.setURL(); //this should be the last thing
   }
 
@@ -62,7 +62,7 @@ export class GridMappingService {
     const gridName = this.queryGridService.getGridName()
     //check if grid exists on current grid selection. If not dont draw.
     this.generateGridSections(bboxes, map, gridName, lockColorbarRange)
-    this.queryGridService.updateColorbar.emit('new grid')
+    this.queryGridService.updateColorbarEvent.emit('new grid')
     if(setURL){
       this.queryGridService.setURL(); //this should be the last thing
     }
@@ -206,9 +206,7 @@ export class GridMappingService {
       this.gridLayers.eachLayer((layer: any) => {
         if (lockColorbarRange) {
           let gridDomain = this.queryGridService.getGridDomain()
-          let c: Scale<Color>
-          if(invertColorScale) {c = chroma.scale(colorScale).domain(gridDomain.reverse()) }
-          else { c = chroma.scale(colorScale).domain(gridDomain) }
+          let c = this.rasterService.get_colorscale(colorScale, gridDomain, invertColorScale)
           layer.setColor(c)
         }
         else {

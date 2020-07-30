@@ -60,15 +60,15 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.queryGridService.change
       .subscribe(msg => {
         console.log('msg: ', msg)
-        const param = this.queryGridService.getParam()
+        const param = this.queryGridService.getProperty()
         const grid = this.queryGridService.getGridName()
 
         this.map.closePopup()
         const updateURL = true
         const lockColorbarRange = false //update colorbar
         if (this.isNewGrid(msg)) {
-          console.log('new grids to be queried')
           const gridAvailable = this.selectGridService.checkIfGridAvailable(grid, param)
+          // console.log('new grids to be queried. gridAvailable?', gridAvailable, 'grid', grid, 'param', param)
           gridAvailable ? this.gridMappingService.drawGrids(this.map, updateURL, lockColorbarRange) : this.gridMappingService.gridLayers.clearLayers()
         }
         else { //cosmetic changes
@@ -218,7 +218,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockColorbarRange)
     })
     this.gridMappingService.updateGrids(this.map)
-    this.queryGridService.updateColorbar.emit('new shape added')
+    this.queryGridService.updateColorbarEvent.emit('new shape added')
   }
 
   ngOnDestroy() {

@@ -1,3 +1,4 @@
+import { HEX_COLOR_MAPS } from './../profview/colormap.parameters';
 import { Injectable } from '@angular/core';
 import { RasterGrid, RasterParam, BaseRaster, Grid, GridCell } from '../models/raster-grid'
 import { HttpClient } from '@angular/common/http';
@@ -343,11 +344,17 @@ export class RasterService {
     return s
   }
 
-  private makeCanvasLayer(grid: RasterGrid | RasterParam, brewerColorScheme: string, inverseColorScale, interpolateBool: boolean, map: L.Map): L.ScalarField { 
-    const s = this.makeScalarField(grid)
+  public get_colorscale(cmapName: string, domain: number[], reverse: boolean): Scale<Color> {
     let c: Scale<Color>
-    if(interpolateBool) { c = chroma.scale(brewerColorScheme).domain(s.range.reverse()) }
-    else { c = chroma.scale(brewerColorScheme).domain(s.range) }
+    const hexScale = HEX_COLOR_MAPS[cmapName.toLowerCase()]
+    if(reverse) { c = chroma.scale(hexScale).domain(domain.reverse()) }
+    else { c = chroma.scale(hexScale).domain(domain) }
+    return c
+  }
+
+  private makeCanvasLayer(grid: RasterGrid | RasterParam, cmapName: string, inverseColorScale, interpolateBool: boolean, map: L.Map): L.ScalarField { 
+    const s = this.makeScalarField(grid)
+    let c = this.get_colorscale(cmapName, s.range, inverseColorScale)
     let layer = L.canvasLayer.scalarField(s, {
         color: c,
         interpolate: interpolateBool

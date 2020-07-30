@@ -21,7 +21,7 @@ export class SidebarNavGridComponent implements OnInit {
     this.paramMode = this.queryGridService.getParamMode()
     this.interpolateBool = this.queryGridService.getInterplateBool()
 
-    this.queryGridService.urlBuild.subscribe(msg => {
+    this.queryGridService.urlRead.subscribe(msg => {
       this.interpolateBool = this.queryGridService.getInterplateBool()
       this.paramMode = this.queryGridService.getParamMode();
       if (!this.initSet) { // initialize gridMeta
@@ -73,7 +73,7 @@ export class SidebarNavGridComponent implements OnInit {
     if (this.paramMode) {
       const broadcastChange = false
       const param = 'anomaly'
-      this.queryGridService.sendParam(param, broadcastChange)
+      this.queryGridService.sendProperty(param, broadcastChange)
     }
     this.queryGridService.sendParamMode(this.paramMode);
   }

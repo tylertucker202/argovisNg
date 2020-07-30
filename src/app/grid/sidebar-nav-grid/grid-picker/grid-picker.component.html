@@ -1,11 +1,11 @@
 
-<section *ngIf="!paramMode" class="mat-typography"><p>Parameter:</p></section>
+<section *ngIf="!paramMode" class="mat-typography"><p>Earth Property:</p></section>
 <div *ngIf="!paramMode" class='input-div'>
   <mat-form-field>
-    <mat-label>Param</mat-label>
-      <mat-select [(value)]="selectedParam" (selectionChange)="changeParams($event.value)">
-          <mat-option *ngFor="let param of availableParams"  [(value)]="param.param">
-            {{param.viewValue}}
+    <mat-label>Property</mat-label>
+      <mat-select [(value)]="selectedProperty" (selectionChange)="changeProperty($event.value)">
+          <mat-option *ngFor="let property of availableProperties"  [(value)]="property.param">
+            {{property.viewValue}}
           </mat-option>
     </mat-select>
   </mat-form-field>
@@ -25,7 +25,7 @@
 <div *ngIf="paramMode" class='input-div'>
   <mat-form-field>
     <mat-label>Grid</mat-label>
-    <mat-select [(value)]="gridName" (selectionChange)="selChange($event.value)">
+    <mat-select [(ngModel)]="gridName" (selectionChange)="selChange($event.value)">
       <mat-option *ngFor="let grid of availableGrids" [(value)]="grid.grid">
         {{grid.viewValue}}
       </mat-option>
@@ -33,7 +33,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Grid Params</mat-label>
-    <mat-select [(value)]="gridParam" (selectionChange)="gridParamSelected($event.value)" >
+    <mat-select [(ngModel)]="gridParam" (selectionChange)="gridParamSelected($event.value)" >
       <mat-option *ngFor="let modelParam of gridParams" [(value)]="modelParam.modelParamName">
           {{modelParam.viewValue}}
       </mat-option>

@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, AvailableParams, ModelParam, GridMeta } from './../../typeings/grids'
+import { GridGroup, ProducerGroup, MeasGroup, GridParamGroup, EarthProperty, ModelParam, GridMeta } from './../../typeings/grids'
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import * as moment from 'moment'
@@ -14,25 +14,25 @@ export class SelectGridService {
   private readonly nonUniformGrids = ['sose_si_area_1_day', 'sose_si_area_3_day', 'sose_si_area_monthly']
 
   private readonly ksGrids: GridGroup[] = [
-    // {grid: 'ksSpaceTempNoTrend', param: 'anomaly', viewValue: 'Space No Trend Anomaly'  },
-    // {grid: 'ksSpaceTempTrend' , param: 'anomaly', viewValue: 'Space Trend Anomaly'  },
-    // {grid: 'ksSpaceTempTrend2', param: 'anomaly', viewValue: 'Space Trend2 Anomaly'  },
-    // {grid: 'ksSpaceTimeTempNoTrend', param: 'anomaly',viewValue: 'Space Time No Trend Anomaly'  },
-    // {grid: 'ksSpaceTimeTempTrend', param: 'anomaly', viewValue: 'Space Time Trend Anomaly'  },
-    // {grid: 'ksSpaceTimeTempTrend2', param: 'anomaly', viewValue: 'Space Time Trend2 Anomaly'  },
-    // {grid: 'ksTempTrend', param: 'mean',viewValue: 'Trend Mean Field'  },
-    // {grid: 'ksTempNoTrend', param: 'mean',viewValue: 'No Trend Mean Field'  },
-    // {grid: 'ksTempTrend2', param: 'mean',viewValue: 'Trend 2 Mean Field'  },
-    {grid: 'ksSpaceTempNoTrendTotal', param: 'total', viewValue: 'Space No Trend Total'  },
-    {grid: 'ksSpaceTempTrendTotal', param: 'total', viewValue: 'Space Trend Total'  },
-    {grid: 'ksSpaceTempTrend2Total', param: 'total', viewValue: 'Space Trend2 Total'  },
-    {grid: 'ksSpaceTimeTempTrendTotal', param: 'total', viewValue: 'Space Time Trend Total'  },
-    {grid: 'ksSpaceTimeTempTrend2Total', param: 'total', viewValue: 'Space Time Trend2 Total'  },
+    // {grid: 'ksSpaceTempNoTrend', param: 'tempAnomaly', viewValue: 'Space No Trend Anomaly'  },
+    // {grid: 'ksSpaceTempTrend' , param: 'tempAnomaly', viewValue: 'Space Trend Anomaly'  },
+    // {grid: 'ksSpaceTempTrend2', param: 'tempAnomaly', viewValue: 'Space Trend2 Anomaly'  },
+    // {grid: 'ksSpaceTimeTempNoTrend', param: 'tempAnomaly',viewValue: 'Space Time No Trend Anomaly'  },
+    // {grid: 'ksSpaceTimeTempTrend', param: 'tempAnomaly', viewValue: 'Space Time Trend Anomaly'  },
+    // {grid: 'ksSpaceTimeTempTrend2', param: 'tempAnomaly', viewValue: 'Space Time Trend2 Anomaly'  },
+    // {grid: 'ksTempTrend', param: 'tempMean',viewValue: 'Trend Mean Field'  },
+    // {grid: 'ksTempNoTrend', param: 'tempMean',viewValue: 'No Trend Mean Field'  },
+    // {grid: 'ksTempTrend2', param: 'tempMean',viewValue: 'Trend 2 Mean Field'  },
+    {grid: 'ksSpaceTempNoTrendTotal', param: 'tempTotal', viewValue: 'Space No Trend Total'  },
+    {grid: 'ksSpaceTempTrendTotal', param: 'tempTotal', viewValue: 'Space Trend Total'  },
+    {grid: 'ksSpaceTempTrend2Total', param: 'tempTotal', viewValue: 'Space Trend2 Total'  },
+    {grid: 'ksSpaceTimeTempTrendTotal', param: 'tempTotal', viewValue: 'Space Time Trend Total'  },
+    {grid: 'ksSpaceTimeTempTrend2Total', param: 'tempTotal', viewValue: 'Space Time Trend2 Total'  },
   ]
 
   private readonly rgGrids: GridGroup[] = [
-    {grid: 'rgTempAnom', param: 'anomaly', viewValue: 'RG Anomaly'},
-    {grid: 'rgTempTotal', param: 'total', viewValue: 'RG Total'}
+    {grid: 'rgTempAnom', param: 'tempAnomaly', viewValue: 'RG Anomaly'},
+    {grid: 'rgTempTotal', param: 'tempTotal', viewValue: 'RG Total'}
   ]
 
   private readonly soseGrids: GridGroup[] = [
@@ -72,11 +72,11 @@ export class SelectGridService {
   private readonly ksParamGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksParams}
   private readonly tempParamGroup: MeasGroup = {meas: 'Temperature', producers: [this.ksParamGroup]}
   public readonly allGridParams: MeasGroup[] =  [this.tempParamGroup]
-  public readonly params = [{param:'total', viewValue: 'Total (mean+anomaly)'},
-                            {param:'anomaly', viewValue: 'Anomaly'},
-                            {param:'SIarea', viewValue: 'Sea Ice Area Fractional Coverage'}
+  public readonly properties = [{param:'tempTotal', viewValue: 'Temperature total (mean+anomaly)', colorScale: 'thermal'},
+                            {param:'tempAnomaly', viewValue: 'Temperature Anomaly', colorScale: 'balance'},
+                            {param:'SIarea', viewValue: 'Sea Ice Area Fractional Coverage', colorScale: 'ice'}
                             //{param:'mean', viewValue: 'Mean'}
-                          ] as AvailableParams[]
+                          ] as EarthProperty[]
 
 
   public isUniform(gridName: string): boolean { return !this.nonUniformGrids.includes(gridName) }

@@ -15,6 +15,9 @@ export class GridColorPickerComponent implements OnInit {
 
   ngOnInit() {
     this.availableColorscales = [
+      {viewValue: 'Thermal', colorScale: 'thermal'},
+      {viewValue: 'Ice', colorScale: 'ice'}, 
+      {viewValue: 'Balance', colorScale: 'balance'},
       {viewValue: 'Red Yellow Blue', colorScale: 'RdYlBu'},
       {viewValue: 'Yellow Orange Red', colorScale: 'YlOrRd'},
       {viewValue: 'Yellow Orange Brown', colorScale: 'YlOrBr'},

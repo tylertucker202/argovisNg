@@ -9,23 +9,23 @@ import { FeatureCollection, Feature, Polygon } from 'geojson'
 export class QueryGridService {
 
   @Output() change: EventEmitter<string> = new EventEmitter
-  @Output() updateColorbar: EventEmitter<string> = new EventEmitter
+  @Output() updateColorbarEvent: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() clearLayers: EventEmitter<string> = new EventEmitter
-  @Output() urlBuild: EventEmitter<string> = new EventEmitter
+  @Output() urlRead: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
   private date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
   private mapState: MapState
   private gridName = 'rgTempAnom'
-  private param = 'anomaly' //total anomaly or mean
+  private param = 'tempAnomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
   private latLngShapes = [[-65, -5, -15, 15]]
   private compare = false
   private paramMode = false
   private interpolateBool = false
-  private colorScale = 'OrRd'
+  private colorScale = 'balance'
   private inverseColorScale = false
   private gridDomain = [0, 1]
 
@@ -43,10 +43,10 @@ export class QueryGridService {
     this.sendDate(date, broadcastChange)
     const presLevel = 10
     this.sendPres(presLevel, broadcastChange)
-    this.colorScale = 'OrRd'
+    this.colorScale = 'balance'
     this.inverseColorScale = false
     this.gridDomain = [0, 1]
-    this.param = 'anomaly'
+    this.param = 'tempAnomaly'
     this.paramMode = false
     this.compare = false
     //this.clearShapes()
@@ -139,13 +139,13 @@ export class QueryGridService {
     return this.gridParam
   }
 
-  public sendParam(param: string, broadcastChange=true): void {
+  public sendProperty(param: string, broadcastChange=true): void {
     let msg = 'param change'
     this.param = param
     if (broadcastChange) { this.change.emit(msg) }
   }
 
-  public getParam(): string {
+  public getProperty(): string {
     return this.param
   }
 
@@ -290,7 +290,7 @@ export class QueryGridService {
       Object.keys(this.mapState).forEach((key) => {
         this.setMapState(key, this.mapState[key])
       })
-      this.urlBuild.emit(msg)
+      this.urlRead.emit(msg)
     })
   }
 
@@ -319,7 +319,7 @@ export class QueryGridService {
       }
       case 'param': {
         const param = value
-        this.sendParam(param, notifyChange)
+        this.sendProperty(param, notifyChange)
         break
       }
       case 'date': {
