@@ -68,10 +68,8 @@ describe('PresSelComponent', () => {
 
   it('should incrementLevel', () => {
     const pres = 10
-    // component['presArray'] = [5, 10, 200]
-    // component['presLevel'] = pres
-    // component['presLevels'] = [{value: 5}, {value: 10}, {value: 200}]
-    // component['makePressureLevels']()
+    component['presLevels'] = [5, 10, 200]
+    component['makePressureLevels']()
     expect(component['presLevel']).toEqual(pres)
     let inc = 1
     component['incrementLevel'](inc)

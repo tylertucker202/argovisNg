@@ -21,7 +21,7 @@ describe('QueryGridService', () => {
                          presLevel: '10',
                          date: '01-2012', 
                          shapes: '[[-65,-5,-15,15]]',
-                         grid: 'rgTempAnom', 
+                         gridName: 'rgTempAnom', 
                          interpolateBool: 'false', 
                          colorScale: 'OrRd', 
                          inverseColorScale: 'false',

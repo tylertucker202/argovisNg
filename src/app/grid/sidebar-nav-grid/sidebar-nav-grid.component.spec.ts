@@ -53,7 +53,7 @@ describe('SidebarNavGridComponent', () => {
   })
 
   it('should detect urlBuild', () => {
-    queryGridService.urlBuild.emit('test change')
+    queryGridService.urlRead.emit('test change')
     expect(spyGetParamMode).toHaveBeenCalledTimes(2)
   })
 

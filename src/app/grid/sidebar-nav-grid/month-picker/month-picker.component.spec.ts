@@ -7,7 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { QueryGridService } from './../../query-grid.service'
 import {FormControl} from '@angular/forms'
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import * as moment from 'moment'
@@ -24,7 +24,7 @@ describe('MonthPickerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MonthPickerComponent ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      imports: [ MaterialModule, FormsModule, ReactiveFormsModule, RouterTestingModule, BrowserAnimationsModule ],
+      imports: [ MaterialModule, FormsModule, ReactiveFormsModule, RouterTestingModule, BrowserAnimationsModule, HttpClientTestingModule ],
       providers: [ QueryGridService ]
     })
     .compileComponents();
@@ -45,40 +45,33 @@ describe('MonthPickerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
-    expect(component['date']).toBeTruthy()
-    expect(component['dateForm']).toBeTruthy()
-    expect(component['minDate']).toBeTruthy()
-    expect(component['maxDate']).toBeTruthy()
-    expect(component['paramMode']).toBeTruthy()
-
     expect(spyGetDate).toHaveBeenCalledTimes(1)
   });
 
-  it('should set date', () => {
-    const ddate = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
+  it('should set date to today', () => {
+    const ddate = moment()
     const date = new FormControl(ddate)
-    expect(component['dateForm']).toEqual(date)
     const cDate = component['dateForm']
     expect(cDate.value.format('DD-MM-YYYY')).toEqual(ddate.format('DD-MM-YYYY'))
   });
 
-  it('should incrementMonth', () => {
+  it('should increment Month', () => {
 
-    component['incrementMonth'](1)
+    component['increment'](1)
 
-    let mys = moment('02-2012', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
+    let mys = '01-02-2012'
     expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
     let cDate = component['dateForm']
     expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)
 
-    component['incrementMonth'](-1)
-    mys = moment('01-2012', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
+    component['increment'](-1)
+    mys = moment('01-01-2012', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
     expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
     cDate = component['dateForm']
     expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)
 
-    component['incrementMonth'](-1)
-    mys = moment('12-2011', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
+    component['increment'](-1)
+    mys = moment('01-12-2011', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
     expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
     cDate = component['dateForm']
     expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)

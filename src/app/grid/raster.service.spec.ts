@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 // import { WasmService } from './wasm.service'
 import { mockMeridianGrid } from './grid.items'
 import * as L from "leaflet";
-fdescribe('RasterService', () => {
+describe('RasterService', () => {
   beforeEach(async() => TestBed.configureTestingModule({
     imports: [ HttpClientTestingModule ],
     providers: [ RasterService ],
