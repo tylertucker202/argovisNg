@@ -11,7 +11,7 @@ export class SelectGridService {
   constructor(private http: HttpClient) { }
   @Output() gridMetaChange: EventEmitter<GridMeta> = new EventEmitter
 
-  private readonly nonUniformGrids = ['sose_si_area_1_day', 'sose_si_area_3_day', 'sose_si_area_monthly']
+  private readonly nonUniformGrids = ['sose_si_area_1_day', 'sose_si_area_1_day_sparse', 'sose_si_area_3_day', 'sose_si_area_monthly']
 
   private readonly ksGrids: GridGroup[] = [
     // {grid: 'ksSpaceTempNoTrend', param: 'tempAnomaly', viewValue: 'Space No Trend Anomaly'  },
@@ -36,6 +36,7 @@ export class SelectGridService {
   ]
 
   private readonly soseGrids: GridGroup[] = [
+    {grid: 'sose_si_area_1_day_sparse', param: 'SIarea', viewValue: '1 day sea ice area fractional coverage (sparse)'},
     {grid: 'sose_si_area_1_day', param: 'SIarea', viewValue: '1 day sea ice area fractional coverage'},
     {grid: 'sose_si_area_3_day', param: 'SIarea', viewValue: '3 day sea ice area fractional coverage'},
     {grid: 'sose_si_area_monthly', param: 'SIarea', viewValue: 'Monthly Sea ice area fractional coverage'},

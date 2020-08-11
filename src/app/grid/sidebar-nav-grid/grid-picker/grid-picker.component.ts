@@ -25,6 +25,7 @@ export class GridPickerComponent implements OnInit {
     this.availableProperties = this.selectGridService.properties
 
     this.queryGridService.urlRead.subscribe( (msg: string) => {
+      console.log('gridPickerurlbuild msg:', msg)
       if (msg.includes('init')) {
         this.selectedProperty = this.queryGridService.getProperty()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.selectedProperty)

@@ -5,7 +5,7 @@ import { FeatureCollection, Feature, Polygon } from 'geojson'
 import { MapService } from './../home/services/map.service'
 import { QueryGridService } from './query-grid.service'
 import { RasterService } from './raster.service'
-import { RasterGrid, RasterParam, Grid } from '../models/raster-grid'
+import { RasterGrid, RasterParam, Grid, GridCoords } from '../models/raster-grid'
 import { NotifierService } from 'angular-notifier'
 import { DOCUMENT } from '@angular/common'
 import { Scale, Color } from 'chroma-js'
@@ -100,8 +100,18 @@ export class GridMappingService {
       .subscribe( (grids: Grid[]) => {
         const delta = 1 //need to regrid non uniform grid with delta
         if (grids[0]) {
-          const rasterGrids = this.rasterService.makeRasterFromGrid(grids[0], delta)
-          this.generateRasterGrids(map, [rasterGrids], false)
+          if (gridName.includes('sparse')) {
+            this.rasterService.getGridCoords(latRange, lonRange, gridName).subscribe( (gridCoords: GridCoords[]) => {
+              const fullGrid = this.rasterService.desparseGrid(grids[0].data, gridCoords[0])
+              grids[0].data = fullGrid
+              const rasterGrids = this.rasterService.makeRasterFromGrid(grids[0], delta)
+              this.generateRasterGrids(map, [rasterGrids], false)
+            })
+          }
+          else {
+            const rasterGrids = this.rasterService.makeRasterFromGrid(grids[0], delta)
+            this.generateRasterGrids(map, [rasterGrids], false)
+          }
         }
         else {
           this.notifier.notify('warning', 'grid not found')

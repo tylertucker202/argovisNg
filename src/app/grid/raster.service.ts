@@ -54,7 +54,10 @@ export class RasterService extends GridService {
     }
 
   public getGridCoords( latRange: number[], lonRange: number[], gridName: string): Observable<GridCoords[]> {
-    const url = `http://localhost:3000/griddedProducts/gridCoords?latRange=${latRange}&lonRange=${lonRange}&gridName=${gridName}`
+    let url = 'http://localhost:3000/griddedProducts/gridCoords?'
+    url += 'latRange=' + JSON.stringify(latRange)
+    url += '&lonRange=' + JSON.stringify(lonRange)
+    url += '&gridName=' + gridName
     return this.http.get<GridCoords[]>(url) 
   }
 

@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { RasterGrid, Grid, GridCell } from '../models/raster-grid'
+import { RasterGrid, Grid, GridCell, GridCoords } from '../models/raster-grid'
 
 @Injectable({
   providedIn: 'root'
@@ -54,15 +54,78 @@ export class GridService {
     });
   }
 
+  public createZeroGrid(lons: number[], lats: number[]): GridCell[] {
+    // returns 1d array of a 2d grid flattened column wise
+    //return [].concat(...lats.map( lat => lons.map( lon => [].concat({lat: lat, lon: lon, value: 0})[0] )))
+    return [].concat(...lons.map( lon => lats.map( lat => [].concat({lat: lat, lon: lon, value: 0})[0] )))
+  }
+
+  public desparseGrid( sparseGrid: GridCell[], gridCoords: GridCoords) {
+    let fullGrid = this.createZeroGrid(gridCoords.lons, gridCoords.lats)
+    // console.log(`grid is nCols ${gridCoords.lons.length}, by nRows ${gridCoords.lats.length}`)
+    
+    // sparseGrid.forEach( (gridCell: GridCell) => {
+    //   const idx = fullGrid.findIndex( (gc) => gc.lat === gridCell.lat && gc.lon === gridCell.lon );
+    //   //TODO: use forloop for better performance
+    //   const lat_idx = this.binaryFindIndex(gridCoords.lats, gridCell.lat)
+    //   const lon_idx = this.binaryFindIndex(gridCoords.lons, gridCell.lon)
+    //   //const bs_idx = lat_idx * (gridCoords.lats.length) + lon_idx
+    //   const bs_idx = lon_idx * (gridCoords.lats.length) + lat_idx
+    //   console.log(`grid cell lat lng ${gridCell.lat} ${gridCell.lon} has bs_idx=${bs_idx}, idx=${idx}, equal? ${bs_idx === idx}`)
+    //   fullGrid[idx].value = gridCell.value
+    // })
+
+    const t1 = performance.now();
+    // sparseGrid.forEach( (gridCell: GridCell) => {
+    //   const idx = fullGrid.findIndex( (gc) => gc.lat === gridCell.lat && gc.lon === gridCell.lon );
+    //   fullGrid[idx].value = gridCell.value
+    // })
+
+    const t2 = performance.now();
+    const duration_find = t2 - t1;
+    
+    const t3 = performance.now();
+    sparseGrid.forEach( (gridCell: GridCell) => {
+      const lat_idx = this.binaryFindIndex(gridCoords.lats, gridCell.lat)
+      const lon_idx = this.binaryFindIndex(gridCoords.lons, gridCell.lon)
+      const idx = lon_idx * (gridCoords.lats.length) + lat_idx
+      fullGrid[idx].value = gridCell.value
+    })
+    const t4 = performance.now();
+    const duration_bs = t4 - t3;
+    console.log(`duration_find: ${duration_find} duration_bs: ${duration_bs}`)
+    // console.log('fullGrid after:', JSON.stringify(fullGrid))
+    return fullGrid
+  }
+
+  public binaryFindIndex( arr: number[], x: number): number {
+    let start=0, end=arr.length-1; 
+          
+    // Iterate while start not meets end 
+    while (start<=end){ 
+        // Find the mid index 
+        let mid=Math.floor((start + end)/2); 
+        // If element is present at mid, return mid 
+        if (arr[mid]===x) return mid; 
+        // Else look in left or right half accordingly 
+        else if (arr[mid] < x)  
+              start = mid + 1; 
+        else
+              end = mid - 1; 
+    } 
+    
+    return -1; 
+  }
+
   public makeRegridArray(arr: number[], delta: number, nDec=3): number[] {
     //find n columns of star_arr
     const rangeArr = arr[arr.length -1] - arr[0]
-    const ncols = Math.floor(rangeArr / delta)
+    const star_arr_length = Math.floor(rangeArr / delta)
     //set first star_arr element
     const rem = rangeArr % delta
     let star_arr = [ arr[0] + rem/2 ]
     // populate star_arr
-    while (star_arr.length < ncols ) {
+    while (star_arr.length < star_arr_length ) {
       const star = Number((star_arr[star_arr.length-1] + delta).toFixed(nDec)).valueOf()
       star_arr.push(star)
     }
@@ -103,16 +166,17 @@ export class GridService {
 
   public interpolateGrid(latLngPoints: [number, number][], valuesMatrix: number[][],  uLats: number[], uLons: number[] ): number[] {
 
-    //longitude is a uniform grid
-    const dlon = uLons[1] - uLons[0]
-    const minLon = Math.min(...uLons)
+    // //longitude is a uniform grid
+    // const dlon = uLons[1] - uLons[0]
+    // const minLon = Math.min(...uLons)
 
     let zs = []
+    const t1 = performance.now();
     latLngPoints.forEach( ([lat, lon]) => {
       const [lat_idx, lat_shift] = this.get_nearest_neighbor(uLats, lat)
-      const lon_idx = this.get_uniform_idx(lon, dlon, minLon)
-      const lon_shift = 1
-      // const [lon_idx, lon_shift] = this.get_nearest_neighbor(uLons, lon)
+      //const lon_idx = this.get_uniform_idx(lon, dlon, minLon) //lon is not actually uniform!
+      //const lon_shift = 1
+      const [lon_idx, lon_shift] = this.get_nearest_neighbor(uLons, lon)
       const llPoint = [uLons[lon_idx], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx]] as [number, number, number]
       const lrPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx], valuesMatrix[lat_idx][lon_idx+lon_shift]] as [number, number, number]
       const urPoint = [uLons[lon_idx+lon_shift], uLats[lat_idx+lat_shift], valuesMatrix[lat_idx+lat_shift][lon_idx+lon_shift]] as [number, number, number]
@@ -121,6 +185,9 @@ export class GridService {
       const intpValue = this.bilinear_interpolation(lon, lat, points)
       zs.push(intpValue)
     })
+    const t2 = performance.now();
+
+    console.log('interpolation took: ', t2-t1)
     return zs
   }
 
@@ -130,7 +197,6 @@ export class GridService {
   }
   public get_nearest_neighbor(arr, target): [number, number] {
     //binary search of nearest neighbor for an array of numbers
-    // todo: come up with a starting guess to reduce the number of steps?.
 
     //corner cases
     if (target <= arr[0]) { 
@@ -143,15 +209,21 @@ export class GridService {
     }
 
     //iterative binary search
-    let idx = 0; let jdx = arr.length-1; let mid = 0;
+    let idx = 0; let jdx = arr.length-1; let mid=0;
     
     while (idx < jdx) {
-      // console.log('yet another loop. idx: ', idx, 'jdx: ', jdx)
       mid = Math.ceil( (idx + jdx) / 2)
+      // console.log('yet another loop. idx: ', idx, 'jdx: ', jdx, 'mid: ', mid, 
+      // 'target: ', target, 'arr[idx]', arr[idx], 'arr[jdx]', arr[jdx])
 
       if (arr[mid] === target) {
         // console.log('target is midpoint', mid, jdx, idx)
         return [mid, 1]
+      }
+
+      if (arr[idx] === target) {
+        // console.log('targed is left edge', mid, jdx, idx)
+        return [idx, 1]
       }
 
       if (target < arr[mid]) { //search for the left of mid

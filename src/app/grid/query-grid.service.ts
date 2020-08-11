@@ -284,13 +284,17 @@ export class QueryGridService {
     return bbox
   }
 
-  public setParamsFromURL(msg): void {
+  public setParamsFromURL(msg: string): void {
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
         this.setMapState(key, this.mapState[key])
       })
-      this.urlRead.emit(msg)
+      //wait a few for the other components to load
+      console.log('emitting url read message')
+      setTimeout(() => {
+        this.urlRead.emit(msg)
+      },100);
     })
   }
 

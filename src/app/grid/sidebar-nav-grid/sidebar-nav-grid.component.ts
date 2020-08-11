@@ -33,7 +33,7 @@ export class SidebarNavGridComponent implements OnInit {
     this.queryGridService.change.subscribe(msg => {
       this.paramMode = this.queryGridService.getParamMode();
       const gridName = this.queryGridService.getGridName()
-      gridName === 'sose_si_area_3_day'? this.monthPicker = false: this.monthPicker = true
+      gridName.includes('sose_si_area')? this.monthPicker = false: this.monthPicker = true
 
       //set date to start of month if using month picker.
       if (this.monthPicker) { this.queryGridService.sendDate(this.queryGridService.getDate().startOf('month'), false)}

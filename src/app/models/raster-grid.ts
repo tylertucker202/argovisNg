@@ -30,6 +30,13 @@ export interface GridCell {
     value: number
   }  
 
+export interface GridCoords {
+  _id?: null, 
+  lats: number[],
+  lons: number[],
+  gridName: string
+}
+
 export interface Grid {
     _id: string, 
     pres: number, 
