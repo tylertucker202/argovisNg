@@ -82,7 +82,7 @@ export class GridMappingService {
                            datetime: moment.Moment, pres: number,
                            gridName: string, map: L.Map, lockColorbarRange: boolean) {
     if (this.selectGridService.isUniform(gridName) ){
-      this.rasterService.getGridRaster(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, gridName)
+      this.rasterService.getGridRaster(latRange, lonRange, datetime.format('YYYY-MM-DD'), pres, gridName)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
           this.notifier.notify( 'warning', 'grid not found' )
@@ -96,7 +96,7 @@ export class GridMappingService {
         }
       )}
     else {
-      this.rasterService.getNonUniformGrid(datetime.format('DD-MM-YYYY'), latRange, lonRange, pres, gridName)
+      this.rasterService.getNonUniformGrid(datetime.format('YYYY-MM-DD'), latRange, lonRange, pres, gridName)
       .subscribe( (grids: Grid[]) => {
         const delta = 1 //need to regrid non uniform grid with delta
         if (grids[0]) {
@@ -141,7 +141,7 @@ export class GridMappingService {
         this.singleGridHandler(latRange, lonRange, datetime, pres, gridName, map, lockColorbarRange)
         break
       case 'compare grid':
-        this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('DD-MM-YYYY'), pres, gridName, compareGrid)
+        this.rasterService.getTwoGridRasterProfiles(latRange, lonRange, datetime.format('YYYY-MM-DD'), pres, gridName, compareGrid)
         .subscribe( (rasterGrids: [RasterGrid[], RasterGrid[]]) => {
           if (rasterGrids.length != 2) {
             this.notifier.notify( 'warning', 'Missing a grid' )

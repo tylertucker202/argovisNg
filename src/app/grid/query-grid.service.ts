@@ -15,7 +15,7 @@ export class QueryGridService {
   @Output() urlRead: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
-  private date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
+  private date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
   private mapState: MapState
   private gridName = 'rgTempAnom'
   private param = 'tempAnomaly' //total anomaly or mean
@@ -33,13 +33,13 @@ export class QueryGridService {
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
   public formatDate(date: Moment): string {
-    const dateString = date.format('DD-MM-YYYY')
+    const dateString = date.format('YYYY-MM-DD')
     return(dateString)
   }
 
   public resetParams(): void{
     const broadcastChange = false
-    const date = moment('01-01-2012', 'DD-MM-YYYY').utc(false)
+    const date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
     this.sendDate(date, broadcastChange)
     const presLevel = 10
     this.sendPres(presLevel, broadcastChange)
@@ -98,7 +98,7 @@ export class QueryGridService {
   }
   public sendDate(date: Moment, broadcastChange=true, init=false): void {
     if (!init && this.gridName.includes('sose_si_area')) { date = date.startOf('month') }
-    if (!date.isValid) { date = moment('01-01-2007', 'DD-MM-YYYY').utc(false) }
+    if (!date.isValid) { date = moment('2007-01-01', 'YYYY-MM-DD').utc(false) }
     this.date = date
     const msg = 'date changed'
     if (broadcastChange){ this.change.emit(msg) }
@@ -327,7 +327,7 @@ export class QueryGridService {
         break
       }
       case 'date': {
-        const date = moment(value, 'DD-MM-YYYY').utc()
+        const date = moment(value, 'YYYY-MM-DD').utc()
         const init = true
         if (date.isValid)  { this.sendDate(date, notifyChange, true) }
         break

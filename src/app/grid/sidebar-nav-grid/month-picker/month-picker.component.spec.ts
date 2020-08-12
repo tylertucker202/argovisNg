@@ -52,29 +52,29 @@ describe('MonthPickerComponent', () => {
     const ddate = moment()
     const date = new FormControl(ddate)
     const cDate = component['dateForm']
-    expect(cDate.value.format('DD-MM-YYYY')).toEqual(ddate.format('DD-MM-YYYY'))
+    expect(cDate.value.format('YYYY-MM-DD')).toEqual(ddate.format('YYYY-MM-DD'))
   });
 
   it('should increment Month', () => {
 
     component['increment'](1)
 
-    let mys = '01-02-2012'
-    expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
+    let mys = '2012-01-01'
+    expect(component['date'].format('YYYY-MM-DD')).toEqual(mys)
     let cDate = component['dateForm']
-    expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)
+    expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
 
     component['increment'](-1)
-    mys = moment('01-01-2012', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
-    expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
+    mys = moment('2012-01-01', 'YYYY-MM-DD').utc(false).format('YYYY-MM-DD')
+    expect(component['date'].format('YYYY-MM-DD')).toEqual(mys)
     cDate = component['dateForm']
-    expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)
+    expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
 
     component['increment'](-1)
-    mys = moment('01-12-2011', 'DD-MM-YYYY').utc(false).format('DD-MM-YYYY')
-    expect(component['date'].format('DD-MM-YYYY')).toEqual(mys)
+    mys = moment('2012-01-01', 'YYYY-MM-DD').utc(false).format('YYYY-MM-DD')
+    expect(component['date'].format('YYYY-MM-DD')).toEqual(mys)
     cDate = component['dateForm']
-    expect(cDate.value.format('DD-MM-YYYY')).toEqual(mys)
+    expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
 
     expect(spySendDate).toHaveBeenCalledTimes(3)  //somehow service is getting rewritten before message is called
     expect(spyGetDate).toHaveBeenCalledTimes(1)
@@ -101,9 +101,9 @@ describe('MonthPickerComponent', () => {
   });
 
   it('should displayDateChanged', () => {
-    const mys = moment('01-11-2015', 'DD-MM-YYYY').utc(false)
+    const mys = moment('2015-11-01', 'YYYY-MM-DD').utc(false)
     component['displayDateChanged'](mys)
-    expect(component['date'].format('DD-MM-YYYY')).toEqual(mys.format('DD-MM-YYYY'))
+    expect(component['date'].format('YYYY-MM-DD')).toEqual(mys.format('YYYY-MM-DD'))
     expect(spySendDate).toHaveBeenCalledTimes(1)
   });
 
