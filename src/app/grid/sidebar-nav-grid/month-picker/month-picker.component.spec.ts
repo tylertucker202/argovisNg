@@ -12,7 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import * as moment from 'moment'
 
-describe('MonthPickerComponent', () => {
+fdescribe('MonthPickerComponent', () => {
   let component: MonthPickerComponent;
   let fixture: ComponentFixture<MonthPickerComponent>;
   let debugElement: DebugElement;
@@ -59,7 +59,7 @@ describe('MonthPickerComponent', () => {
 
     component['increment'](1)
 
-    let mys = '2012-01-01'
+    let mys = '2012-02-01'
     expect(component['date'].format('YYYY-MM-DD')).toEqual(mys)
     let cDate = component['dateForm']
     expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
@@ -71,7 +71,7 @@ describe('MonthPickerComponent', () => {
     expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
 
     component['increment'](-1)
-    mys = moment('2012-01-01', 'YYYY-MM-DD').utc(false).format('YYYY-MM-DD')
+    mys = moment('2011-12-01', 'YYYY-MM-DD').utc(false).format('YYYY-MM-DD')
     expect(component['date'].format('YYYY-MM-DD')).toEqual(mys)
     cDate = component['dateForm']
     expect(cDate.value.format('YYYY-MM-DD')).toEqual(mys)
