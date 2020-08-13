@@ -139,8 +139,8 @@ export class ColorChartComponent implements OnInit {
   downloadChartData(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
-    url += '?yaxis=' + this.yLabel
-    url += '&xaxis=' + this.colorLabel
+    url += '?meas_2=' + this.yLabel
+    url += '&meas_1=' + this.colorLabel
     window.open(url,'_blank')
   }
   

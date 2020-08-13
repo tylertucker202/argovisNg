@@ -102,8 +102,8 @@ export class LineChartComponent implements OnInit {
   downloadChartData(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
-    url += '?xaxis=' + this.chartLabels.x1
-    url += '&yaxis=' + this.chartLabels.x2
+    url += '?meas_1=' + this.chartLabels.x1
+    url += '&meas_2=' + this.chartLabels.x2
     window.open(url,'_blank')
   }
 }

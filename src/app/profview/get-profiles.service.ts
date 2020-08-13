@@ -51,18 +51,18 @@ export class GetProfilesService {
 
   public getTestPlaformData(): Observable<BgcProfileData[]> {
     const platform = '5903260'
-    const xaxis = 'pres'
-    const yaxis = 'temp'
+    const meas_1 = 'pres'
+    const meas_2 = 'temp'
     let url = 'catalog/bgc_platform_data/'
     url += platform + '/?'
-    url += 'xaxis=' + xaxis + '&' + 'yaxis=' + yaxis
+    url += 'meas_1=' + meas_1 + '&' + 'meas_2=' + meas_2
     return this.http.get<BgcProfileData[]>(url)
   }
 
-  public getPlaformData(platform: string, xaxis: string, yaxis: string): Observable<BgcProfileData[]> {
+  public getPlaformData(platform: string, meas_1: string, meas_2: string): Observable<BgcProfileData[]> {
     let url = 'catalog/bgc_platform_data/'
     url += platform + '/?'
-    url += 'xaxis=' + xaxis + '&' + 'yaxis=' + yaxis
+    url += 'meas_1=' + meas_1 + '&' + 'meas_2=' + meas_2
     return this.http.get<BgcProfileData[]>(url)
   }
 
