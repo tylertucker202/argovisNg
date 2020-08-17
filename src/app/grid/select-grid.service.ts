@@ -32,14 +32,16 @@ export class SelectGridService {
 
   private readonly rgGrids: GridGroup[] = [
     {grid: 'rgTempAnom', param: 'tempAnomaly', viewValue: 'RG Anomaly'},
-    {grid: 'rgTempTotal', param: 'tempTotal', viewValue: 'RG Total'}
+    {grid: 'rgTempTotal', param: 'tempTotal', viewValue: 'RG Total'},
+    {grid: 'rgPsalAnom', param: 'psalAnomaly', viewValue: 'RG Anomaly'},
+    {grid: 'rgPsalTotal', param: 'psalTotal', viewValue: 'RG Total'}
   ]
 
   private readonly soseGrids: GridGroup[] = [
     {grid: 'sose_si_area_1_day_sparse', param: 'SIarea', viewValue: '1 day sea ice area fractional coverage (sparse)'},
-    {grid: 'sose_si_area_1_day', param: 'SIarea', viewValue: '1 day sea ice area fractional coverage'},
-    {grid: 'sose_si_area_3_day', param: 'SIarea', viewValue: '3 day sea ice area fractional coverage'},
-    {grid: 'sose_si_area_monthly', param: 'SIarea', viewValue: 'Monthly Sea ice area fractional coverage'},
+    // {grid: 'sose_si_area_1_day', param: 'SIarea', viewValue: '1 day sea ice area fractional coverage'},
+    // {grid: 'sose_si_area_3_day', param: 'SIarea', viewValue: '3 day sea ice area fractional coverage'},
+    // {grid: 'sose_si_area_monthly', param: 'SIarea', viewValue: 'Monthly Sea ice area fractional coverage'},
   ]
 
   // private readonly allAvailableGrids = this.rgGrids.concat(this.ksGrids)
@@ -73,8 +75,11 @@ export class SelectGridService {
   private readonly ksParamGroup: ProducerGroup = {producer: 'Kuusela-Stein', grids: this.ksParams}
   private readonly tempParamGroup: MeasGroup = {meas: 'Temperature', producers: [this.ksParamGroup]}
   public readonly allGridParams: MeasGroup[] =  [this.tempParamGroup]
-  public readonly properties = [{param:'tempTotal', viewValue: 'Temperature total (mean+anomaly)', colorScale: 'thermal'},
+  public readonly properties = [
+                            {param:'tempTotal', viewValue: 'Temperature total (mean+anomaly)', colorScale: 'thermal'},
                             {param:'tempAnomaly', viewValue: 'Temperature Anomaly', colorScale: 'balance'},
+                            {param:'psalTotal', viewValue: 'Salinity total (mean+anomaly)', colorScale: 'haline'},
+                            {param:'psalAnomaly', viewValue: 'Salinity Anomaly', colorScale: 'balance'},
                             {param:'SIarea', viewValue: 'Sea Ice Area Fractional Coverage', colorScale: 'ice'}
                             //{param:'mean', viewValue: 'Mean'}
                           ] as EarthProperty[]
