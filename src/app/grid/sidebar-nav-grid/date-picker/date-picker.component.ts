@@ -15,7 +15,7 @@ export class DatePickerComponent extends MonthPickerComponent implements OnInit 
   ngOnInit(): void {
     super.ngOnInit()
     this.monthPicker = false
-    this.inc = 3
+    this.inc = 1
     this.incrementMessage = '+' + JSON.stringify(this.inc) + ' days'
     this.decrementMessage = '-' + JSON.stringify(this.inc) + ' days'
     if (this.inc === 1) { //grammer change

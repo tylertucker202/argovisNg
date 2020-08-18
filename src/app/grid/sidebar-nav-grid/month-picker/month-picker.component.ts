@@ -72,8 +72,9 @@ export class MonthPickerComponent implements OnInit {
 
   public increment(sign: number): void {
     const increment = sign * this.inc
-    this.monthPicker? this.date = this.date.add(increment, 'M') : this.date = this.date.add(increment, 'd')
+    this.monthPicker? this.date.add(increment, 'M') : this.date.add(increment, 'd')
     this.dateForm = new FormControl(this.date)
+    console.log(`date incremented to ${this.date.format('YYYY-MM-DD')}`)
     this.sendDate()
   }
 
