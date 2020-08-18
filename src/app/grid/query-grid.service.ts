@@ -97,7 +97,6 @@ export class QueryGridService {
     return this.inverseColorScale
   }
   public sendDate(date: Moment, broadcastChange=true, init=false): void {
-    //if (!init && !this.gridName.includes('sose_si_area')) { date = date.startOf('month') } //may not be relavent anymore
     if (!date.isValid) { date = moment('2007-01-01', 'YYYY-MM-DD').utc(false) }
     this.date = date
     const msg = 'date changed'
