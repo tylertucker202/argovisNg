@@ -66,8 +66,13 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
 
   }
 
-  public goToHome(): void {
+  public go_to_home(): void {
     const url = '/ng/home'
+    location.href = url;
+  }
+
+  public go_to_api_docs(): void {
+    const url = '/api-docs'
     location.href = url;
   }
 

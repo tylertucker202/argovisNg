@@ -1,7 +1,21 @@
 <mat-toolbar id="top-toolbar" color="primary">
-  <button mat-icon-button matTooltip="go to argovis profile page (home)" (click)="goToHome()">
+  <button mat-icon-button matTooltip="go to argovis profile page (home)" (click)="go_to_home()">
     <mat-icon>home</mat-icon>
   </button>
+  <button mat-icon-button matTooltip="go to API documentation (home)" (click)="go_to_api_docs()">
+    <mat-icon>api</mat-icon>
+  </button>
+  <button class="nav-link" 
+    mat-button 
+    matTooltip="we have expanded to include several new modules!"
+    [matMenuTriggerFor]="moduleMenu">Choose viewer</button>
+    <mat-menu #moduleMenu="matMenu">
+    <a mat-menu-item *ngFor="let module of avModules" 
+      href={{module.link}}
+      routerLinkActive="active"
+      matTooltip={{module.tooltip}}>{{module.viewValue}}
+    </a>
+ </mat-menu>
   <a class="nav-link"
      matTooltip="link to about page"
      target='_blank'
@@ -20,17 +34,6 @@
      rel="noopener"
      href="https://argovis.colorado.edu/docs/Argovis_FAQ.html">
      FAQ</a>
-     <button class="nav-link" 
-     mat-button 
-     matTooltip="we have expanded to include several new modules!"
-     [matMenuTriggerFor]="moduleMenu">Choose viewer</button>
-     <mat-menu #moduleMenu="matMenu">
-      <a mat-menu-item *ngFor="let module of avModules" 
-        href={{module.link}}
-        routerLinkActive="active"
-        matTooltip={{module.tooltip}}>{{module.viewValue}}
-      </a>
-    </mat-menu>
   <a class="nav-link-survey"
     matTooltip="take a survey, comment, request features!"
     target='_blank'
