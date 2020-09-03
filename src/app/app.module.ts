@@ -14,7 +14,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TopToolbarComponent } from './top-toolbar/top-toolbar.component';
 
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
-import { JsonldComponent } from './jsonld/jsonld.component';
 
 const customNotifierOptions: NotifierOptions = {
   position: {
@@ -60,7 +59,6 @@ const customNotifierOptions: NotifierOptions = {
   declarations: [
     AppComponent,
     TopToolbarComponent,
-    JsonldComponent
   ],
   imports: [
     MaterialModule,
