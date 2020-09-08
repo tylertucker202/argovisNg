@@ -85,16 +85,16 @@ export class GridMappingService {
       this.rasterService.getGridRaster(latRange, lonRange, datetime.format('YYYY-MM-DD'), pres, gridName)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
-          let msg = 'grid not found'
-          if (gridName.localeCompare('sose_si_area_1_day_sparse')) { msg = 'no ice found in area'}
-          this.notifier.notify( 'warning', 'grid not found' )
+          let msg = 'no values found in box'
+          this.notifier.notify( 'warning', msg )
         }
         else {
           this.generateRasterGrids(map, rasterGrids, lockColorbarRange)
         }
         },
         error => {
-          this.notifier.notify( 'error', 'error in getting grid' )
+          const msg = 'error in getting grid ' + error.message
+          this.notifier.notify( 'error', msg )
         }
       )}
     else {
@@ -116,7 +116,8 @@ export class GridMappingService {
           }
         }
         else {
-          this.notifier.notify('warning', 'grid not found')
+          let msg =  'no values found in box'
+          this.notifier.notify( 'warning', msg )
         }
       },
       error => {
