@@ -85,6 +85,8 @@ export class GridMappingService {
       this.rasterService.getGridRaster(latRange, lonRange, datetime.format('YYYY-MM-DD'), pres, gridName)
       .subscribe( (rasterGrids: RasterGrid[]) => {
         if (rasterGrids.length == 0) {
+          let msg = 'grid not found'
+          if (gridName.localeCompare('sose_si_area_1_day_sparse')) { msg = 'no ice found in area'}
           this.notifier.notify( 'warning', 'grid not found' )
         }
         else {

@@ -301,7 +301,7 @@ export class MapComponent implements OnInit, OnDestroy {
               }, 
             error => {
               if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
-              console.log('error occured when selecting points: ', error)
+              console.log('error occured when selecting points: ', error.message)
             })      
         })
     }

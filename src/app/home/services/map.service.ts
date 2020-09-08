@@ -3,7 +3,10 @@ import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
 import { PopupCompileService } from './popup-compile.service'
 
 import 'leaflet'
-import '../../../ext-js/leaflet.draw-arc-src.js'
+import 'proj4leaflet'
+import 'arc'
+import 'leaflet-arc'
+import 'leaflet-draw'
 import * as msp from './map.service.parameters'
 declare const L;
 

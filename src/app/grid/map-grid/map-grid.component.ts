@@ -49,9 +49,9 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.wrapCoordinates = true
     }
     const gridMap = true
-    this.map = this.mapService.generateMap(this.proj, gridMap);
-    this.startView = {lat: 0, lng: 60} as L.LatLng;
-    this.startZoom = 3
+    this.map = this.mapService.generateMap(this.proj, gridMap)
+    this.startView = this.queryGridService.startView
+    this.startZoom = this.queryGridService.startZoom
     this.map.setView(this.startView, this.startZoom)
     this.mapService.drawnItems.addTo(this.map)
 

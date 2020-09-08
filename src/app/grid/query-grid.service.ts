@@ -21,7 +21,9 @@ export class QueryGridService {
   private param = 'tempAnomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
-  private latLngShapes = [[-65, -5, -15, 15]]
+  private boundingBox = [[-40, -70, 0, -30]]
+  public  startView = {lat: -30, lng: -15} as L.LatLng
+  public startZoom = 3
   private compare = false
   private paramMode = false
   private interpolateBool = false
@@ -50,7 +52,7 @@ export class QueryGridService {
     this.paramMode = false
     this.compare = false
     //this.clearShapes()
-    this.latLngShapes = [[-65, -5, -15, 15]]
+    this.boundingBox = [[-30, 0, -70, -40]]
     this.setURL()
     this.resetToStart.emit('reset params pushed')
   }
@@ -109,12 +111,12 @@ export class QueryGridService {
 
   public sendShape(bboxes: number[][], broadcastChange=true): void {
     let msg = 'shape change'
-    this.latLngShapes = bboxes
+    this.boundingBox = bboxes
     if (broadcastChange){ this.change.emit(msg) }
   }
 
   public getShapes(): number[][] {
-    return this.latLngShapes
+    return this.boundingBox
   }
 
   public sendGrid(gridName: string, broadcastChange=true): void {
@@ -169,7 +171,7 @@ export class QueryGridService {
   }
 
   public clearShapes(): void {
-    this.latLngShapes = null
+    this.boundingBox = null
   }
 
   public getInterplateBool(): boolean {
@@ -231,8 +233,8 @@ export class QueryGridService {
     const gridDomainStr = JSON.stringify(this.gridDomain)
     let shapesString = null
     let bboxes: number[][]
-    if (this.latLngShapes) {
-      bboxes = this.latLngShapes
+    if (this.boundingBox) {
+      bboxes = this.boundingBox
       shapesString = JSON.stringify(bboxes)
     }
     const interpolateBool = JSON.stringify(this.getInterplateBool())

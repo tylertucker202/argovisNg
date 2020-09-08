@@ -48,7 +48,7 @@
     "leaflet-ajax": "^2.1.0",
     "leaflet-arc": "^1.0.2",
     "leaflet-canvaslayer-field": "github:tylertucker202/Leaflet.CanvasLayer.Field",
-    "leaflet-draw": "^1.0.4",
+    "leaflet-draw": "github:tylertucker202/Leaflet.draw#develop",
     "leaflet-graticule": "0.0.1",
     "leaflet.coordinates": "^0.1.5",
     "mat-table-exporter": "^9.0.0",

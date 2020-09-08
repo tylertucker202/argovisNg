@@ -6,7 +6,7 @@ import 'proj4leaflet'
 import 'arc'
 import 'leaflet-arc'
 import 'leaflet-graticule'
-import './../../ext-js/leaflet.draw-arc-src.js'
+import 'leaflet-draw'
 import 'leaflet.coordinates/dist/Leaflet.Coordinates-0.1.5.min'
 import 'leaflet-ajax'
 
