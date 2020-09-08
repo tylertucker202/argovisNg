@@ -10,7 +10,9 @@ import * as L from "leaflet";
 //leaflet.canvaslayer.field.js depends on d3 and chroma scripts set in angular.json.
 
 import * as d3 from 'd3'; //needed for leaflet canvas layer
-import './../../ext-js/leaflet.canvaslayer.field.js'
+// import './../../ext-js/leaflet.canvaslayer.field.js'
+import './../../../node_modules/leaflet-canvaslayer-field/dist/leaflet.canvaslayer.field.js'
+//import '../../../node_modules/leaflet-canvaslayer-field/dist/leaflet.canvaslayer.field.js'
 import * as chroma from 'chroma'
 import { ChromaStatic, Scale, Color } from 'chroma-js';
 declare const chroma: ChromaStatic;
