@@ -17,10 +17,10 @@ describe('MapGridComponent', () => {
   let queryGridService: QueryGridService;
   let mapService: MapService;
   let gridMappingService: GridMappingService;
-  let setParamsFromURL: jasmine.Spy;
+  let set_params_from_url: jasmine.Spy;
   let updateGrids: jasmine.Spy;
-  let setURL: jasmine.Spy;
-  let clearShapes: jasmine.Spy;
+  let set_url: jasmine.Spy;
+  let clear_shapes: jasmine.Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -41,10 +41,10 @@ describe('MapGridComponent', () => {
     gridMappingService = debugElement.injector.get(GridMappingService)
     mapService = debugElement.injector.get(MapService)
 
-    setParamsFromURL = spyOn(queryGridService, 'setParamsFromURL')
+    set_params_from_url = spyOn(queryGridService, 'set_params_from_url')
     updateGrids = spyOn(gridMappingService, 'updateGrids')
-    setURL = spyOn(queryGridService, 'setURL')
-    clearShapes = spyOn(queryGridService, 'clearShapes')
+    set_url = spyOn(queryGridService, 'set_url')
+    clear_shapes = spyOn(queryGridService, 'clear_shapes')
 
     fixture.detectChanges();
   });
@@ -52,7 +52,7 @@ describe('MapGridComponent', () => {
   it('should create', () => {
     const proj = 'WM'
     expect(component).toBeTruthy();
-    expect(setParamsFromURL).toHaveBeenCalledTimes(1)
+    expect(set_params_from_url).toHaveBeenCalledTimes(1)
     expect(component['proj']).toEqual(proj)
     expect(component['map']).toBeTruthy();
 
@@ -65,9 +65,9 @@ describe('MapGridComponent', () => {
   });
 
   it('should clear layers', () => {
-    queryGridService.clearLayers.emit('test change')
-    expect(setURL).toHaveBeenCalledTimes(1)
-    expect(clearShapes).toHaveBeenCalledTimes(1)
+    queryGridService.clear_layers.emit('test change')
+    expect(set_url).toHaveBeenCalledTimes(1)
+    expect(clear_shapes).toHaveBeenCalledTimes(1)
     expect(gridMappingService.gridLayers.getLayers().length).toEqual(0)
     expect(mapService.drawnItems.getLayers().length).toEqual(0)
   })

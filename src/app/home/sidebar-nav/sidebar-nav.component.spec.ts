@@ -46,7 +46,7 @@ describe('SidebarNavComponent', () => {
 
     queryService = debugElement.injector.get(QueryService);
 
-    queryService.setParamsFromURL()
+    queryService.set_params_from_url()
     
     spyRT = spyOn(queryService, 'sendRealtimeMsg'); 
     spy3D = spyOn(queryService, 'sendThreeDayMsg'); 
@@ -64,9 +64,9 @@ describe('SidebarNavComponent', () => {
   });
 
   it('should have set state according to urlBuild', () => {
-     const RTToggle = queryService.getRealtimeToggle()
-     const bgcToggle = queryService.getBGCToggle()
-     const deepToggle = queryService.getDeepToggle()
+     const RTToggle = queryService.get_realtime_toggle()
+     const bgcToggle = queryService.get_bgc_toggle()
+     const deepToggle = queryService.get_deep_toggle()
      const proj = queryService.getProj()
      const threeDayToggle = queryService.getThreeDayToggle()
      const globalDisplayDate = queryService.getGlobalDisplayDate()

@@ -38,7 +38,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.pointsService.init(this.appRef)
     this.mapService.init(this.appRef)
 
-    this.setParamsAndEvents()
+    this.set_params_and_events()
 
 
     this.invalidateSize()
@@ -53,7 +53,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.remove()
   }
 
-  public setMap(): void {
+  public set_map(): void {
     this.map = this.mapService.generateMap(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
@@ -102,17 +102,17 @@ export class MapComponent implements OnInit, OnDestroy {
     })
   }
 
-  public setParamsAndEvents(): void {
+  public set_params_and_events(): void {
     //can be overwritten in child components
-    this.queryService.setParamsFromURL()
+    this.queryService.set_params_from_url()
     this.proj = this.queryService.getProj()
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
-    this.setMap()
+    this.set_map()
     this.queryService.change
       .subscribe(msg => {
-         this.queryService.setURL()
+         this.queryService.set_url()
          this.markersLayer.clearLayers()
          this.setPointsOnMap()
          const showThreeDay = this.queryService.getThreeDayToggle()
@@ -121,19 +121,19 @@ export class MapComponent implements OnInit, OnDestroy {
          }
         })
 
-    this.queryService.clearLayers
+    this.queryService.clear_layers
       .subscribe( () => {
-        this.queryService.clearShapes()
+        this.queryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clearLayers()
-        this.queryService.setURL()
+        this.mapService.drawnItems.clear_layers()
+        this.queryService.set_url()
       })
     
     this.queryService.resetToStart
       .subscribe( () => {
-        this.queryService.clearShapes()
+        this.queryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clearLayers()
+        this.mapService.drawnItems.clear_layers()
         this.setStartingProfiles()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
@@ -141,7 +141,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.displayPlatform
     .subscribe( platform => {
       this.markersLayer.clearLayers()
-      this.mapService.drawnItems.clearLayers()
+      this.mapService.drawnItems.clear_layers()
       this.pointsService.getPlatformProfiles(platform)
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {
@@ -172,7 +172,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private addShapesFromQueryService(): void {
-    let shapeArrays = this.queryService.getShapes()
+    let shapeArrays = this.queryService.get_shapes()
     if (shapeArrays) {
       const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.shapeOptions)
       shapeFeatureGroup.eachLayer( layer => {
@@ -247,9 +247,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public displayProfiles(profilePoints, markerType): void {
 
-    const includeRT = this.queryService.getRealtimeToggle()
-    const bgcOnly = this.queryService.getBGCToggle()
-    const deepOnly = this.queryService.getDeepToggle()
+    const includeRT = this.queryService.get_realtime_toggle()
+    const bgcOnly = this.queryService.get_bgc_toggle()
+    const deepOnly = this.queryService.get_deep_toggle()
 
     for (let idx in profilePoints) {
       let profile = profilePoints[idx]
@@ -277,7 +277,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
 
   public setPointsOnMap(sendNotification=true): void {
-    let shapeArrays = this.queryService.getShapes()
+    let shapeArrays = this.queryService.get_shapes()
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
@@ -285,7 +285,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const presRange = this.queryService.getPresRange()
 
       shapeArrays.forEach( (shape) => {
-        const transformedShape = this.mapService.getTransformedShape(shape)
+        const transformedShape = this.mapService.get_transformed_shape(shape)
         let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
         if (presRange) {
           urlQuery += '&presRange='+JSON.stringify(presRange)

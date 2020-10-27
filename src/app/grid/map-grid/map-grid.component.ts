@@ -41,7 +41,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
                                       }
 
     //set state from url
-    this.queryGridService.setParamsFromURL('setting params from map component init')
+    this.queryGridService.set_params_from_url('setting params from map component init')
 
     //setup map
     this.proj = 'WM'
@@ -106,20 +106,20 @@ export class MapGridComponent implements OnInit, OnDestroy {
     //   }
     // )
 
-    this.queryGridService.clearLayers
+    this.queryGridService.clear_layers
     .subscribe( () => {
       this.map.closePopup()
       this.gridMappingService.gridLayers.clearLayers()
-      this.mapService.drawnItems.clearLayers()
-      this.queryGridService.clearShapes()
-      this.queryGridService.setURL()
+      this.mapService.drawnItems.clear_layers()
+      this.queryGridService.clear_shapes()
+      this.queryGridService.set_url()
     })
 
     this.queryGridService.resetToStart
       .subscribe( () => {
         this.map.closePopup()
         this.gridMappingService.gridLayers.clearLayers()
-        this.mapService.drawnItems.clearLayers()
+        this.mapService.drawnItems.clear_layers()
         this.map.setView(this.startView, this.startZoom)
         this.initGrids()
       })
@@ -132,7 +132,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
-      this.mapService.drawnItems.clearLayers() // allow only one drawn item at a time.
+      this.mapService.drawnItems.clear_layers() // allow only one drawn item at a time.
       this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
@@ -142,7 +142,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
      });
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
-      this.queryGridService.clearLayers.emit('deleted event')
+      this.queryGridService.clear_layers.emit('deleted event')
      });
 
     this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
@@ -181,7 +181,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 }
 
   private initGrids(): void{ 
-    let bboxes = this.queryGridService.getShapes()
+    let bboxes = this.queryGridService.get_shapes()
     if (bboxes) {
       this.mapService.drawnItems.addLayer(this.makeRectanlge(bboxes))
       this.gridMappingService.drawGrids(this.map, false, false) //todo: add shape is set twice

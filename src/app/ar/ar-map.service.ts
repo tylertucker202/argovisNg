@@ -26,10 +26,10 @@ export class ArMapService extends MapService {
                             opacity: .5
                           }
 
-  public arPopupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void {
+  public ar_popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void {
     const feature = layer.toGeoJSON() as Feature<Polygon>
-    const shape = this.getLatLngFromFeature(feature)
-    const transformedShape = this.getTransformedShape(shape);
+    const shape = this.get_lat_lng_from_feature(feature)
+    const transformedShape = this.get_transformed_shape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
       const popupContent = this.compileService.compile(ArShapePopupComponent, (c) => { 

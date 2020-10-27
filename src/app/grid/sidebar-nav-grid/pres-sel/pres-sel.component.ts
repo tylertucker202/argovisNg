@@ -32,7 +32,7 @@ export class PresSelComponent implements OnInit {
       if (!this.presLevels.includes(this.presLevel)) {
         this.presLevel = this.presLevels[0]
         this.queryGridService.sendPres(this.presLevel, false)
-        this.queryGridService.setURL()
+        this.queryGridService.set_url()
       }
     })
   }

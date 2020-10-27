@@ -18,7 +18,7 @@ export class ArQueryService extends QueryService {
 
   constructor( public injector: Injector ) { super(injector) }
 
-  public resetParams(): void{
+  public reset_params(): void{
     console.log('reset params pressed')
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
@@ -26,48 +26,48 @@ export class ArQueryService extends QueryService {
     this.sendRealtimeMsg(true, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arHourRange = [-18, 18]
-    this.sendDisplayGlobally(true, broadcastChange)
+    this.send_display_globally(true, broadcastChange)
     const selectionDateRange: DateRange = {
                           startDate: arDate.add(arHourRange[0], 'hours').format('YYYY-MM-DD'),
                           endDate: arDate.add(arHourRange[1], 'hours').format('YYYY-MM-DD'),
                           label: 'initial arMode date range'
                         };
-    this.sendSelectedDate(selectionDateRange, broadcastChange)
-    this.sendArDate(arDate)
-    this.sendArDateRange(arHourRange)
+    this.send_selected_date(selectionDateRange, broadcastChange)
+    this.send_ar_date(arDate)
+    this.send_ar_date_range(arHourRange)
   }
 
-  public triggerResetToStart(): void {
-    this.resetParams()
+  public trigger_reset_to_start(): void {
+    this.reset_params()
     this.resetToStart.emit()
-    this.setURL()
+    this.set_url()
   }
 
-  public setSelectionDateRange(): void {
+  public set_selection_date_range(): void {
     const broadcastChange = false
-    const startDate = this.formatDate(this.arDate.clone().add(this.arHourRange[0], 'h')) //make sure to clone and format date correctly
-    const endDate = this.formatDate(this.arDate.clone().add(this.arHourRange[1], 'h'))
+    const startDate = this.format_date(this.arDate.clone().add(this.arHourRange[0], 'h')) //make sure to clone and format date correctly
+    const endDate = this.format_date(this.arDate.clone().add(this.arHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
-    this.sendSelectedDate(dateRange, broadcastChange)
+    this.send_selected_date(dateRange, broadcastChange)
   }
 
 
-  public setURL(): void {
+  public set_url(): void {
 
     const arDateRangeString = JSON.stringify(this.arHourRange)
     const arDateString = this.arDate.format('YYYY-MM-DDTHH')
     let shapesString = null
-     const shapes = this.getShapes()
+     const shapes = this.get_shapes()
      if (shapes) {
        shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'includeRealtime': this.getRealtimeToggle(),
-                         'onlyBGC': this.getBGCToggle(),
-                         'onlyDeep': this.getDeepToggle(),
+                         'includeRealtime': this.get_realtime_toggle(),
+                         'onlyBGC': this.get_bgc_toggle(),
+                         'onlyDeep': this.get_deep_toggle(),
                          'arHourRange': arDateRangeString,
                          'arDate': arDateString,
-                         'displayGlobally': this.getDisplayGlobally()
+                         'displayGlobally': this.get_display_globally()
                         }
     this.router.navigate(
       [], 
@@ -77,65 +77,65 @@ export class ArQueryService extends QueryService {
       });
   }
 
-  public getDisplayGlobally(): boolean {
+  public get_display_globally(): boolean {
     return this.displayGlobally
   }
 
-  public sendDisplayGlobally(displayGlobally: boolean, broadcastChange=true): void {
+  public send_display_globally(displayGlobally: boolean, broadcastChange=true): void {
     this.displayGlobally = displayGlobally
     if (broadcastChange) { this.change.emit('displayGlobally changed')}
   }
 
-  public getArDateRange(): number[] {
+  public get_ar_date_range(): number[] {
     return [...this.arHourRange]
   }
 
-  public sendArDateRange(dateRange: number[], broadcastChange=true): void {
+  public send_ar_date_range(dateRange: number[], broadcastChange=true): void {
     this.arHourRange = dateRange
     if (broadcastChange) { this.change.emit('ar date range change') }
   }
 
-  public formatDate(date: moment.Moment): string {
+  public format_date(date: moment.Moment): string {
     return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
   }
 
-  public getArDateAsDateRange(): DateRange {
-    const startDate = this.formatDate(this.arDate.clone().add(this.arHourRange[0], 'h'))
-    const endDate = this.formatDate(this.arDate.clone().add(this.arHourRange[1], 'h'))
+  public get_ar_dateAsDateRange(): DateRange {
+    const startDate = this.format_date(this.arDate.clone().add(this.arHourRange[0], 'h'))
+    const endDate = this.format_date(this.arDate.clone().add(this.arHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     return dateRange
   }
  
-  public sendArDate(date: moment.Moment): void {
+  public send_ar_date(date: moment.Moment): void {
     this.arDate = date
   }
 
-  public getArDate(): moment.Moment {
+  public get_ar_date(): moment.Moment {
     return this.arDate
   }
-  public sendArShapes(data: number[][][], broadcastChange=true): void {
+  public send_ar_shapes(data: number[][][], broadcastChange=true): void {
     let msg = 'ar shape'
     this.arShapes = data
     if (broadcastChange) { this.change.emit('ar shape change')}
   }
 
-  public getArShapes(): number[][][] {
+  public get_ar_shapes(): number[][][] {
     return this.arShapes
   }
 
-  public setParamsFromURL(msg='got state from map component'): void{
+  public set_params_from_url(msg='got state from map component'): void{
     let mapState: MapState
     this.route.queryParams.subscribe(params => {
       mapState = params
       Object.keys(mapState).forEach(key => {
-        this.arSetMapState(key, mapState[key])
+        this.ar_set_map_state(key, mapState[key])
       });
       this.urlBuild.emit(msg)
     });
   }
  
 
-  public arSetMapState(key: string, value: string): void {
+  public ar_set_map_state(key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'includeRealtime': {
@@ -155,18 +155,18 @@ export class ArQueryService extends QueryService {
       }
       case 'displayGlobally': {
         const displayGlobally = JSON.parse(value)
-        this.sendDisplayGlobally(displayGlobally, notifyChange)
+        this.send_display_globally(displayGlobally, notifyChange)
         break;
 
       }
       case 'arHourRange': {
         const arHourRange = JSON.parse(value)
-        this.sendArDateRange(arHourRange)
+        this.send_ar_date_range(arHourRange)
         break
       }
       case 'arDate': {
         const arDate = moment(value)
-        this.sendArDate(arDate)
+        this.send_ar_date(arDate)
         break
       }
       default: {

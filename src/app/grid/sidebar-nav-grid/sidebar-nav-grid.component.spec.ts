@@ -17,8 +17,8 @@ describe('SidebarNavGridComponent', () => {
   let spySendParam: jasmine.Spy;
   let spyGetInterpolateBool: jasmine.Spy;
   let spySendInterpolateBool: jasmine.Spy;
-  let spyTriggerClearLayers: jasmine.Spy;
-  let spyTriggerResetToStart: jasmine.Spy;
+  let spytrigger_clear_layers: jasmine.Spy;
+  let spytrigger_reset_to_start: jasmine.Spy;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,8 +42,8 @@ describe('SidebarNavGridComponent', () => {
     spySendParamMode = spyOn(queryGridService, 'sendParamMode').and.callThrough()
     spySendParam = spyOn(queryGridService, 'sendProperty').and.callThrough()
     spySendInterpolateBool = spyOn(queryGridService, 'sendInterpolateBool').and.callThrough()
-    spyTriggerClearLayers = spyOn( queryGridService, 'triggerClearLayers').and.callThrough()
-    spyTriggerResetToStart = spyOn( queryGridService, 'triggerResetToStart').and.callThrough()
+    spytrigger_clear_layers = spyOn( queryGridService, 'trigger_clear_layers').and.callThrough()
+    spytrigger_reset_to_start = spyOn( queryGridService, 'trigger_reset_to_start').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -64,12 +64,12 @@ describe('SidebarNavGridComponent', () => {
 
   it('should clearGrids', () => {
     component['clearGrids']()
-    expect(spyTriggerClearLayers).toHaveBeenCalledTimes(1)
+    expect(spytrigger_clear_layers).toHaveBeenCalledTimes(1)
   })
 
   it('should resetToStart', () => {
     component['resetToStart']()
-    expect(spyTriggerResetToStart).toHaveBeenCalledTimes(1)
+    expect(spytrigger_reset_to_start).toHaveBeenCalledTimes(1)
 
   })
 

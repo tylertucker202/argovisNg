@@ -11,7 +11,7 @@ export class QueryService {
   @Output() change: EventEmitter<string> = new EventEmitter
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
   @Output() triggerPlatformDisplay: EventEmitter<string> = new EventEmitter
-  @Output() clearLayers: EventEmitter<string> = new EventEmitter
+  @Output() clear_layers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
@@ -35,7 +35,7 @@ export class QueryService {
                                             this.router.urlUpdateStrategy = 'eager'
                                           }
 
-  public resetParams(): void{
+  public reset_params(): void{
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
@@ -51,7 +51,7 @@ export class QueryService {
     selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
     endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
     this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
-    this.sendSelectedDate(selectionDateRange, broadcastChange)
+    this.send_selected_date(selectionDateRange, broadcastChange)
   }
 
   public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
@@ -71,22 +71,22 @@ export class QueryService {
     return shapes
   }
 
-  public setParamsFromURL(): void{
+  public set_params_from_url(): void{
       let mapState: MapState
       this.route.queryParams.subscribe(params => {
         mapState = params
         Object.keys(mapState).forEach(key => {
-          this.setMapState(key, mapState[key])
+          this.set_map_state(key, mapState[key])
         });
         this.urlBuild.emit('got state from map component')
       });
     }
-  public setURL(): void {
+  public set_url(): void {
 
     //this is reversing the order of this.latLngShapes()
     const presRangeString = JSON.stringify(this.getPresRange())
     let shapesString = null
-    const shapes = this.getShapes()
+    const shapes = this.get_shapes()
     if (shapes) {
       shapesString = JSON.stringify(shapes)
     }
@@ -97,9 +97,9 @@ export class QueryService {
                          'selectionEndDate': this.getSelectionDates().endDate,
                          'threeDayEndDate': this.getGlobalDisplayDate(),
                          'shapes': shapesString,
-                         'includeRealtime': this.getRealtimeToggle(),
-                         'onlyBGC': this.getBGCToggle(),
-                         'onlyDeep': this.getDeepToggle(),
+                         'includeRealtime': this.get_realtime_toggle(),
+                         'onlyBGC': this.get_bgc_toggle(),
+                         'onlyDeep': this.get_deep_toggle(),
                          'threeDayToggle': this.getThreeDayToggle(),
                         }
     this.router.navigate(
@@ -119,14 +119,14 @@ export class QueryService {
     this.triggerPlatformDisplay.emit(platform)
   }
 
-  public triggerClearLayers(): void {
-    this.clearLayers.emit()
+  public trigger_clear_layers(): void {
+    this.clear_layers.emit()
   }
 
-  public triggerResetToStart(): void {
-    this.resetParams()
+  public trigger_reset_to_start(): void {
+    this.reset_params()
     this.resetToStart.emit()
-    this.setURL()
+    this.set_url()
   }
 
   public triggerShowPlatform(platform: string): void {
@@ -146,7 +146,7 @@ export class QueryService {
   public sendProj(proj: string): void {
     const msg = 'proj changed';
     this.proj = proj;
-    this.setURL()
+    this.set_url()
     setTimeout(() => {  // need to wait for url to be set before reloading page.
       location.reload();
      } );
@@ -160,11 +160,11 @@ export class QueryService {
     return this.proj;
   }
 
-  public getShapes(): number[][][] {
+  public get_shapes(): number[][][] {
     return this.latLngShapes;
   }
 
-  public clearShapes(): void {
+  public clear_shapes(): void {
     this.latLngShapes = null;
   }
 
@@ -178,7 +178,7 @@ export class QueryService {
     return [...this.presRange];
   }
 
-  public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {
+  public send_selected_date(selectionDateRange: DateRange, broadcastChange=true): void {
     const msg = 'selection date';
     this.selectionDateRange = selectionDateRange;
     if (broadcastChange){ this.change.emit(msg) }
@@ -204,7 +204,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getRealtimeToggle(): boolean {
+  public get_realtime_toggle(): boolean {
     return this.includeRealtime;
   }
 
@@ -224,7 +224,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getBGCToggle(): boolean {
+  public get_bgc_toggle(): boolean {
     return this.onlyBGC
   }
 
@@ -234,11 +234,11 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getDeepToggle(): boolean {
+  public get_deep_toggle(): boolean {
     return this.onlyDeep
   }
 
-  public setMapState(this, key: string, value: string): void {
+  public set_map_state(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'mapProj': {
@@ -278,12 +278,12 @@ export class QueryService {
       }
       case 'selectionStartDate': {
         const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
-        this.sendSelectedDate(stateDateRange, notifyChange)
+        this.send_selected_date(stateDateRange, notifyChange)
         break
       }
       case 'selectionEndDate': {
         const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
-        this.sendSelectedDate(stateDateRange, notifyChange)
+        this.send_selected_date(stateDateRange, notifyChange)
         break
       }
       case 'presRange': {

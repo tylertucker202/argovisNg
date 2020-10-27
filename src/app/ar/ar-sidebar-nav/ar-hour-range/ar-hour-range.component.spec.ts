@@ -33,8 +33,8 @@ describe('ArHourRangeComponent', () => {
 
     arQueryService = debugElement.injector.get(ArQueryService)  
      
-    spySendRange = spyOn(arQueryService, 'sendArDateRange').and.callThrough()
-    spyQS = spyOn(arQueryService, 'getArDateRange').and.returnValue(presRange)
+    spySendRange = spyOn(arQueryService, 'send_ar_date_range').and.callThrough()
+    spyQS = spyOn(arQueryService, 'get_ar_date_range').and.returnValue(presRange)
   });
 
   it('should create', () => {

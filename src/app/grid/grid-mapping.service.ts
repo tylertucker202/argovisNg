@@ -48,23 +48,23 @@ export class GridMappingService {
     })
 
     this.queryGridService.updateColorbarEvent.emit('redrawn grids')
-    this.queryGridService.setURL(); //this should be the last thing
+    this.queryGridService.set_url(); //this should be the last thing
   }
 
-  public drawGrids(map: L.Map, setURL=true, lockColorbarRange=false): void {
+  public drawGrids(map: L.Map, set_url=true, lockColorbarRange=false): void {
      //gets shapes, removes layers, redraws shapes and requeries database before setting the url.
     const broadcastChange = false
     this.gridLayers.clearLayers()
     const shapes = this.mapService.drawnItems.toGeoJSON()
     let bboxes = this.queryGridService.getBBoxes(shapes)
     this.queryGridService.sendShape(bboxes, broadcastChange)
-    let features = this.queryGridService.getShapes()
+    let features = this.queryGridService.get_shapes()
     const gridName = this.queryGridService.getGridName()
     //check if grid exists on current grid selection. If not dont draw.
     this.generateGridSections(bboxes, map, gridName, lockColorbarRange)
     this.queryGridService.updateColorbarEvent.emit('new grid')
-    if(setURL){
-      this.queryGridService.setURL(); //this should be the last thing
+    if(set_url){
+      this.queryGridService.set_url(); //this should be the last thing
     }
   }
 

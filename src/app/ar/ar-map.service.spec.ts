@@ -29,7 +29,7 @@ describe('ArMapService', () => {
     const latLngs = shape2.map( coord => {return L.latLng(coord[1], coord[1])})
     const lshape = L.polygon(latLngs)
     expect(fGroup.getLayers().length).toEqual(0)    
-    service.arPopupWindowCreation(lshape, fGroup)
+    service.ar_popup_window_creation(lshape, fGroup)
     expect(fGroup.getLayers().length).toEqual(1)
   })
 });

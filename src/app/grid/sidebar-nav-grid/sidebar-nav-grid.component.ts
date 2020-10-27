@@ -55,11 +55,11 @@ export class SidebarNavGridComponent implements OnInit {
   }
 
   public clearGrids(): void {
-    this.queryGridService.triggerClearLayers();
+    this.queryGridService.trigger_clear_layers();
   }
 
   public resetToStart(): void {
-    this.queryGridService.triggerResetToStart();
+    this.queryGridService.trigger_reset_to_start();
   }
 
   public interpolateBoolToggle(checked: boolean): void {

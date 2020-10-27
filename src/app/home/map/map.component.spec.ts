@@ -70,7 +70,7 @@ describe('MapComponent', () => {
     const getLatestProfiles = spyOn(pointsService, 'getLatestProfiles').and.returnValue(mockPoints)
     const getLastThreeDaysProfiles = spyOn(pointsService, 'getLastThreeDaysProfiles').and.returnValue(mockPoints)
     const popupWindowCreationSpy = spyOn(mapService, 'popupWindowCreation').and.callThrough()
-    spyURL = spyOn(queryService, 'setURL'); 
+    spyURL = spyOn(queryService, 'set_url'); 
     displayProfilesSpy = spyOn<any>(component, 'displayProfiles').and.callThrough()
     setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
     getProjSpy = spyOn(queryService, 'getProj').and.returnValue('WM');
@@ -137,7 +137,7 @@ describe('MapComponent', () => {
     component.setMockPoints()
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length > 0)
-    component.markersLayer.clearLayers()
+    component.markersLayer.clear_layers()
     myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
   })
@@ -160,7 +160,7 @@ describe('MapComponent', () => {
     expect(myMarkers['features'].length === 0)
   });
 
-  it('should detect query service clearLayers', () => {
+  it('should detect query service clear_layers', () => {
     component.setMockPoints()
     expect(displayProfilesSpy).toHaveBeenCalledTimes(1);
     expect(spyURL).toHaveBeenCalledTimes(0);

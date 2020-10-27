@@ -171,16 +171,16 @@ export class QueryProfviewService {
     return moment.utc(date).format('YYYY-MM-DD');
   }
 
-  public setParamsFromURL(): void{
+  public set_params_from_url(): void{
     this.route.queryParams.subscribe(params => {
       Object.keys(params).forEach(key => {
-        this.setMapState(key, params[key])
+        this.set_map_state(key, params[key])
       });
     });
     this.urlParsed.emit('url parsed. safe to build chart and window')
   }
 
-  public setURL(): void {
+  public set_url(): void {
 
     const queryParams = {
                          'platform_number': this.platform_number,
@@ -201,7 +201,7 @@ export class QueryProfviewService {
       });
   }
 
-  public setMapState(this, key: string, value: string): void {
+  public set_map_state(this, key: string, value: string): void {
     switch(key) {
       case 'platform_number': {
         this.platform_number = value

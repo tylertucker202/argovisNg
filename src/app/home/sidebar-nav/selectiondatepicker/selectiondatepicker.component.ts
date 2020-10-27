@@ -45,7 +45,7 @@ export class SelectionDatePicker {
   }
 
   public sendDateRange(): void {
-    this.queryService.sendSelectedDate(this.daterange);
+    this.queryService.send_selected_date(this.daterange);
   }
 
   public convertToMoment(daterange: DateRange): DateRangeSel {

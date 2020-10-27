@@ -5,6 +5,7 @@ import { ProfviewComponent } from './profview/profview.component'
 import { GridComponent } from './grid/grid.component';
 import { CovarComponent } from './covar/covar.component';
 import { ArComponent } from './ar/ar.component';
+import { TcComponent } from './tc/tc.component';
 
 const appRoutes: Routes = [
     { path: 'ng/home',
@@ -27,9 +28,12 @@ const appRoutes: Routes = [
     { path: 'ng/ar',
       component: ArComponent,
     },
+    { path: 'ng/tc',
+      component: TcComponent
+    },
     { path: 'ng/profview',
     component: ProfviewComponent,
-  }
+    }
   ]
 
 @NgModule({

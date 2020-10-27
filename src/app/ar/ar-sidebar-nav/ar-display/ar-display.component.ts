@@ -42,23 +42,23 @@ export class ArDisplayComponent implements OnInit {
   ];
 
   ngOnInit() { 
-    this.arDate = this.arQueryService.getArDate()
+    this.arDate = this.arQueryService.get_ar_date()
     this.arFormDate = new FormControl( this.arDate.toDate() )
     this.hour = this.arDate.hour() 
-    this.setArShapes()
+    this.set_ar_shapes()
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
-      this.arDate = this.arQueryService.getArDate()
+      this.arDate = this.arQueryService.get_ar_date()
       this.arFormDate = new FormControl(this.arDate.toDate())
       this.hour = this.arDate.hour()
-      this.setArShapes()
+      this.set_ar_shapes()
     })
   }
 
   dateChanged(): void {
     this.arFormDate = new FormControl(this.arDate.toDate())
-    this.arQueryService.sendArDate(this.arDate)
-    this.arQueryService.setURL()
-    this.setArShapes() //remove if you don't want to fire ar event
+    this.arQueryService.send_ar_date(this.arDate)
+    this.arQueryService.set_url()
+    this.set_ar_shapes() //remove if you don't want to fire ar event
   }
 
   timeChange(hour: number): void {
@@ -83,9 +83,9 @@ export class ArDisplayComponent implements OnInit {
     this.hour = this.arDate.hour()
   }
 
-  public setArShapes(): void {
+  public set_ar_shapes(): void {
     this.arQueryService.sendThreeDayMsg(false, false)
-    this.arQueryService.clearLayers.emit('ar shapes being drawn')
+    this.arQueryService.clear_layers.emit('ar shapes being drawn')
     this.arQueryService.arEvent.emit('ar shapes being drawn')
   }
     

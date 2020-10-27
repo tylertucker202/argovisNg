@@ -88,7 +88,7 @@ export class LineChartComponent implements OnInit {
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
     this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
-    this.queryProfviewService.setURL()
+    this.queryProfviewService.set_url()
   }
 
   xLabelChange(xLabel: string): void {
@@ -96,7 +96,7 @@ export class LineChartComponent implements OnInit {
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
     this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
-    this.queryProfviewService.setURL()
+    this.queryProfviewService.set_url()
   }
 
   downloadChartData(): void {

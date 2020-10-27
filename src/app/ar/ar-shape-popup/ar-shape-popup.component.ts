@@ -40,7 +40,7 @@ export class ArShapePopupComponent implements OnInit {
   public queryARShape(): void {
     const broadcastChange = true
     const toggle3DayOff = false // should already be off
-    let shapes = this.arQueryService.getShapes()
+    let shapes = this.arQueryService.get_shapes()
     shapes? shapes.push(this.shape[0]) : shapes = this.shape
 
     this.arQueryService.sendShape(shapes, broadcastChange, toggle3DayOff)
@@ -65,11 +65,11 @@ export class ArShapePopupComponent implements OnInit {
 
   public generateHomepageURL(): string {
     let url = '/ng/home?'
-    const dateRange = this.arQueryService.getArDateAsDateRange()
+    const dateRange = this.arQueryService.get_ar_dateAsDateRange()
     url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
-    url += '&includeRealtime=' + JSON.stringify(this.arQueryService.getRealtimeToggle()) +
-     '&onlyBGC=' + JSON.stringify(this.arQueryService.getBGCToggle()) + 
-     '&onlyDeep=' + JSON.stringify(this.arQueryService.getDeepToggle()) + '&threeDayToggle=false'
+    url += '&includeRealtime=' + JSON.stringify(this.arQueryService.get_realtime_toggle()) +
+     '&onlyBGC=' + JSON.stringify(this.arQueryService.get_bgc_toggle()) + 
+     '&onlyDeep=' + JSON.stringify(this.arQueryService.get_deep_toggle()) + '&threeDayToggle=false'
     const shapeString = JSON.stringify(this.shape)
     url += '&shapes=' + shapeString
      return url

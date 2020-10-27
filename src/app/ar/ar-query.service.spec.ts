@@ -13,7 +13,7 @@ describe('ArQueryService', () => {
   let router: Router;
   let route: ActivatedRoute;
   let queryParamsDefault: Object;
-  let spyResetParams: jasmine.Spy
+  let spy_reset_params: jasmine.Spy
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ ArQueryService ],
@@ -24,7 +24,7 @@ describe('ArQueryService', () => {
     router = TestBed.get(Router)
     route = TestBed.get(ActivatedRoute)
     
-    spyResetParams = spyOn(service, 'resetParams').and.callThrough()
+    spy_reset_params = spyOn(service, 'resetParams').and.callThrough()
 
     queryParamsDefault = {
       includeRealtime: true,
@@ -52,7 +52,7 @@ describe('ArQueryService', () => {
 
   it('should set url with default state', done => {
     const queryParamsDefaultKeys = Object.keys(queryParamsDefault)
-      service.setURL()
+      service.set_url()
       route.queryParamMap.pipe(
         filter(params => !!params.keys.length), // filter out any emissions where keys is an empty array.
       ).subscribe( params => {
@@ -72,26 +72,26 @@ describe('ArQueryService', () => {
     const arDateDefault = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const dispGlob = false
     //check if set to defaults
-    expect(service.getRealtimeToggle()).toEqual(!rtTog)
-    expect(service.getBGCToggle()).toEqual(!bgcTog)
-    expect(service.getDeepToggle()).toEqual(!deepTog)
-    expect(service.getArDateRange()).toEqual(arDrDefault)
-    expect(service.getArDate()).toEqual(arDateDefault)
-    expect(service.getDisplayGlobally()).toEqual(!dispGlob)    
+    expect(service.get_realtime_toggle()).toEqual(!rtTog)
+    expect(service.get_bgc_toggle()).toEqual(!bgcTog)
+    expect(service.get_deep_toggle()).toEqual(!deepTog)
+    expect(service.get_ar_date_range()).toEqual(arDrDefault)
+    expect(service.get_ar_date()).toEqual(arDateDefault)
+    expect(service.get_display_globally()).toEqual(!dispGlob)    
     //change all params to non default
     service.sendRealtimeMsg(rtTog, broadcastChange)
     service.sendBGCToggleMsg(bgcTog, broadcastChange)
     service.sendDeepToggleMsg(deepTog, broadcastChange)
-    service.sendArDateRange(arDR, broadcastChange)
-    service.sendArDate(arDate)
-    service.sendDisplayGlobally(dispGlob, broadcastChange)
+    service.send_ar_date_range(arDR, broadcastChange)
+    service.send_ar_date(arDate)
+    service.send_display_globally(dispGlob, broadcastChange)
     //check if changed
-    expect(service.getRealtimeToggle()).toEqual(rtTog)
-    expect(service.getBGCToggle()).toEqual(bgcTog)
-    expect(service.getDeepToggle()).toEqual(deepTog)
-    expect(service.getArDateRange()).toEqual(arDR)
-    expect(service.getArDate()).toEqual(arDate)
-    expect(service.getDisplayGlobally()).toEqual(dispGlob)
+    expect(service.get_realtime_toggle()).toEqual(rtTog)
+    expect(service.get_bgc_toggle()).toEqual(bgcTog)
+    expect(service.get_deep_toggle()).toEqual(deepTog)
+    expect(service.get_ar_date_range()).toEqual(arDR)
+    expect(service.get_ar_date()).toEqual(arDate)
+    expect(service.get_display_globally()).toEqual(dispGlob)
   })
 
   it('should reset to default upon reset event', () => {
@@ -109,20 +109,20 @@ describe('ArQueryService', () => {
     service.sendRealtimeMsg(rtTog, broadcastChange)
     service.sendBGCToggleMsg(bgcTog, broadcastChange)
     service.sendDeepToggleMsg(deepTog, broadcastChange)
-    service.sendArDateRange(arDR, broadcastChange)
-    service.sendArDate(arDate)
-    service.sendDisplayGlobally(dispGlob, broadcastChange)
+    service.send_ar_date_range(arDR, broadcastChange)
+    service.send_ar_date(arDate)
+    service.send_display_globally(dispGlob, broadcastChange)
 
-    service.triggerResetToStart()
+    service.trigger_reset_to_start()
 
-    expect(spyResetParams).toHaveBeenCalledTimes(1)
+    expect(spy_reset_params).toHaveBeenCalledTimes(1)
     //check if set to defaults
-    expect(service.getRealtimeToggle()).toEqual(!rtTog)
-    expect(service.getBGCToggle()).toEqual(!bgcTog)
-    expect(service.getDeepToggle()).toEqual(!deepTog)
-    expect(service.getArDateRange()).toEqual(arDrDefault)
-    expect(service.getArDate()).toEqual(arDateDefault)
-    expect(service.getDisplayGlobally()).toEqual(!dispGlob)   
+    expect(service.get_realtime_toggle()).toEqual(!rtTog)
+    expect(service.get_bgc_toggle()).toEqual(!bgcTog)
+    expect(service.get_deep_toggle()).toEqual(!deepTog)
+    expect(service.get_ar_date_range()).toEqual(arDrDefault)
+    expect(service.get_ar_date()).toEqual(arDateDefault)
+    expect(service.get_display_globally()).toEqual(!dispGlob)   
   })
 
   it('should convert ar date and hour range into a date range for profile selection', () => {
@@ -131,7 +131,7 @@ describe('ArQueryService', () => {
     expect(defaultSelectionDates.startDate === defaultArDate.startDate).toEqual(false)
     expect(defaultSelectionDates.endDate === defaultArDate.endDate).toEqual(false)
 
-    service.setSelectionDateRange()
+    service.set_selection_date_range()
 
     const selectionDates = service.getSelectionDates()
     expect(selectionDates.startDate).toEqual(defaultArDate.startDate)

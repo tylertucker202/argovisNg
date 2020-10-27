@@ -26,8 +26,8 @@ describe('ArMapComponent', () => {
   let arShapeService: ArShapeService;
   let arMapService: ArMapService;
   let setPointsOnMapSpy: jasmine.Spy;
-  let setArShapeSpy: jasmine.Spy;
-  let getArShapeSpy: jasmine.Spy;
+  let set_ar_shapeSpy: jasmine.Spy;
+  let get_ar_shapespy: jasmine.Spy;
 
 
   beforeEach(async(() => {
@@ -59,8 +59,8 @@ describe('ArMapComponent', () => {
     arShapeService = debugElement.injector.get(ArShapeService);
     arMapService = debugElement.injector.get(ArMapService);
     setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
-    setArShapeSpy = spyOn<any>(component, 'setArShape').and.callThrough()
-    getArShapeSpy = spyOn(arShapeService, 'getArShapes').and.returnValue(of([mockShapeSimple, mockShapeComplex]))
+    set_ar_shapeSpy = spyOn<any>(component, 'set_ar_shape').and.callThrough()
+    get_ar_shapespy = spyOn(arShapeService, 'get_ar_shapes').and.returnValue(of([mockShapeSimple, mockShapeComplex]))
   });
 
   it('should create', () => {
@@ -79,7 +79,7 @@ describe('ArMapComponent', () => {
 
   it('should acknoledge a clear layers event emit', () => {
     arQueryService.arEvent.emit('test')
-    arQueryService.clearLayers.emit('test')
+    arQueryService.clear_layers.emit('test')
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON()
     expect(drawnItems['features'].length).toEqual(0)
   })
@@ -87,16 +87,16 @@ describe('ArMapComponent', () => {
   it('should acknoledge a reset to start event emit', () => {
     arQueryService.arEvent.emit('test') //create an ar shape
     arQueryService.resetToStart.emit('test') // state is reset and then an ar shapes are cleared
-    expect(setArShapeSpy).toHaveBeenCalledTimes(1)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(1)
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON() //check if ar shapes have been cleared
     console.log('drawn items:', drawnItems)
     expect(drawnItems['features'].length).toEqual(0)
   })
   
   it('should get ar shapes on arEvent emit', () => {
-    expect(setArShapeSpy).toHaveBeenCalledTimes(0)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(0)
     arQueryService.arEvent.emit('test')
-    expect(setArShapeSpy).toHaveBeenCalledTimes(1)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(1)
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON()
     console.log('drawn items:', drawnItems)
     expect(drawnItems['features'].length).toEqual(2)

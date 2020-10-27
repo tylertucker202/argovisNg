@@ -64,7 +64,7 @@ export class MapCovarComponent implements OnInit {
        this.removePoints()
        //this.addMockPoints()
        this.addCovarPoints()
-       this.covarService.setURL()
+       this.covarService.set_url()
        if (msg === 'proj changed') {
          this.updateMap()
        }

@@ -48,10 +48,10 @@ describe('ArSidebarNavComponent', () => {
 
     arQueryService = debugElement.injector.get(ArQueryService);
 
-    arQueryService.setParamsFromURL()
+    arQueryService.set_params_from_url()
     
     spyRT = spyOn(arQueryService, 'sendRealtimeMsg'); 
-    spyDisplayGlobally = spyOn(arQueryService, 'sendDisplayGlobally'); 
+    spyDisplayGlobally = spyOn(arQueryService, 'send_display_globally'); 
     spyBGC = spyOn(arQueryService, 'sendBGCToggleMsg'); 
     spyDeep = spyOn(arQueryService, 'sendDeepToggleMsg'); 
     spyProj = spyOn(arQueryService, 'sendProj'); 
@@ -66,11 +66,11 @@ describe('ArSidebarNavComponent', () => {
   });
 
   it('should have set state according to urlBuild', () => {
-     const RTToggle = arQueryService.getRealtimeToggle()
-     const bgcToggle = arQueryService.getBGCToggle()
-     const deepToggle = arQueryService.getDeepToggle()
+     const RTToggle = arQueryService.get_realtime_toggle()
+     const bgcToggle = arQueryService.get_bgc_toggle()
+     const deepToggle = arQueryService.get_deep_toggle()
      const proj = arQueryService.getProj()
-     const displayGlobally = arQueryService.getDisplayGlobally()
+     const displayGlobally = arQueryService.get_display_globally()
 
      arQueryService.urlBuild.emit('test')
      expect(component['includeRT']).toEqual(RTToggle)

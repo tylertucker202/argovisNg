@@ -20,12 +20,12 @@ describe('ArDisplayComponent', () => {
   let fixture: ComponentFixture<ArDisplayComponent>;
   let arQueryService: ArQueryService;
   let debugElement: DebugElement
-  let spySendArDate: jasmine.Spy;
-  let spySendArDateRange: jasmine.Spy;
-  let spySetUrl: jasmine.Spy;
+  let spysend_ar_date: jasmine.Spy;
+  let spysend_ar_date_range: jasmine.Spy;
+  let spyset_url: jasmine.Spy;
   let spySendThreeDayMsg: jasmine.Spy;
-  let spyGetArShapes: jasmine.Spy;
-  let spyGetArDate: jasmine.Spy;
+  let spyget_ar_shapes: jasmine.Spy;
+  let spyget_ar_date: jasmine.Spy;
   let spyReset: jasmine.Spy
   let defaultHour: number
   let arDateDefault: moment.Moment
@@ -47,13 +47,13 @@ describe('ArDisplayComponent', () => {
     debugElement = fixture.debugElement
 
     arQueryService = debugElement.injector.get(ArQueryService)  
-    spySendArDate = spyOn(arQueryService, 'sendArDate').and.callThrough()
-    spySendArDateRange = spyOn(arQueryService, 'sendArDateRange').and.callThrough()
-    spySetUrl = spyOn(arQueryService, 'setURL').and.callThrough()
+    spysend_ar_date = spyOn(arQueryService, 'send_ar_date').and.callThrough()
+    spysend_ar_date_range = spyOn(arQueryService, 'send_ar_date_range').and.callThrough()
+    spyset_url = spyOn(arQueryService, 'set_url').and.callThrough()
     spySendThreeDayMsg = spyOn(arQueryService, 'sendThreeDayMsg').and.callThrough()
-    spyGetArShapes = spyOn(arQueryService, 'getArShapes').and.callThrough()
-    spyGetArDate = spyOn(arQueryService, 'getArDate').and.callThrough()
-    spyReset = spyOn(arQueryService, 'triggerResetToStart').and.callThrough()
+    spyget_ar_shapes = spyOn(arQueryService, 'get_ar_shapes').and.callThrough()
+    spyget_ar_date = spyOn(arQueryService, 'get_ar_date').and.callThrough()
+    spyReset = spyOn(arQueryService, 'trigger_reset_to_start').and.callThrough()
     arDateDefault = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     defaultHour = arDateDefault.hour()
     
@@ -77,12 +77,12 @@ describe('ArDisplayComponent', () => {
   it('should change date on increment day', () => {
     component['incrementDay'](1)
     expect(component['arDate']).toEqual(arDateDefault.add(1, 'd'))
-    expect(spySendArDate).toHaveBeenCalledTimes(1)
+    expect(spysend_ar_date).toHaveBeenCalledTimes(1)
     component['incrementDay'](-1)
     expect(component['arDate']).toEqual(arDateDefault.add(-1, 'd'))
-    expect(spySendArDate).toHaveBeenCalledTimes(2)
+    expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
-    expect(component['arDate']).toEqual(arQueryService.getArDate())
+    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on drop down menu select', () => {
@@ -92,7 +92,7 @@ describe('ArDisplayComponent', () => {
     expect(component['hour']).toEqual(21)
     expect(component['arDate']).toEqual(arDateDefault.add(21, 'h'))
 
-    expect(component['arDate']).toEqual(arQueryService.getArDate())
+    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on date select, preserving hour', () => {
@@ -106,19 +106,19 @@ describe('ArDisplayComponent', () => {
     expect(component['hour']).toEqual(hour)
     expect(component['arDate'].hour()).toEqual(hour)
 
-    expect(component['arDate']).toEqual(arQueryService.getArDate())
+    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on increment hour', () => {
     component['incrementHour'](3)
     expect(component['arDate']).toEqual(arDateDefault.add(3, 'h'))
-    expect(spySendArDate).toHaveBeenCalledTimes(1)
+    expect(spysend_ar_date).toHaveBeenCalledTimes(1)
     component['incrementHour'](-3)
     expect(component['arDate']).toEqual(arDateDefault.add(-3, 'h'))
-    expect(spySendArDate).toHaveBeenCalledTimes(2)
+    expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
 
-    expect(component['arDate']).toEqual(arQueryService.getArDate())
+    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should reset to default on resetEvent', () => {
@@ -126,21 +126,21 @@ describe('ArDisplayComponent', () => {
     component['incrementHour'](hour)
     const newDate = new Date(2016, 1, 4, 0, 0, 0, 0) //calendar date does not use hours
     component['calendarDateChanged'](newDate)
-    arQueryService.triggerResetToStart()
+    arQueryService.trigger_reset_to_start()
 
     expect(component['arDate']).toEqual(arDateDefault)
     expect(component['hour']).toEqual(defaultHour)
   })
 
   it('should set mock ar shapes in query service', () => {
-    console.log(spyGetArShapes)
-    console.log(arQueryService.getArShapes())
-    //expect(arQueryService.getArShapes().length).toEqual(0)
-    //component['setArShape']([mockShapeSimple, mockShapeComplex])
-    //expect(arQueryService.getArShapes().length).toEqual(2)
+    console.log(spyget_ar_shapes)
+    console.log(arQueryService.get_ar_shapes())
+    //expect(arQueryService.get_ar_shapes().length).toEqual(0)
+    //component['set_ar_shape']([mockShapeSimple, mockShapeComplex])
+    //expect(arQueryService.get_ar_shapes().length).toEqual(2)
   })
 
   it('time should maintain local offset, ', () => {
-    expect(component['arDate']).toEqual(arQueryService.getArDate())
+    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
   })
 });

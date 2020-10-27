@@ -33,7 +33,7 @@ export class ArHourRangeComponent implements OnInit {
         density: 4
       }
     }
-    const newRange = this.arQueryService.getArDateRange()
+    const newRange = this.arQueryService.get_ar_date_range()
     const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
     this.sliderRange[0] = nRange[0]
     this.sliderRange[1] = nRange[1]
@@ -56,13 +56,13 @@ export class ArHourRangeComponent implements OnInit {
   }
 
   public setSliderRange(): void {
-    this.sliderRange = this.arQueryService.getArDateRange()
+    this.sliderRange = this.arQueryService.get_ar_date_range()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
   }
 
   public updateSelectDates(): void {
-    this.arQueryService.sendArDateRange(this.sliderRange)
+    this.arQueryService.send_ar_date_range(this.sliderRange)
   }
 
   public sliderChange(sliderRange: number[]) {

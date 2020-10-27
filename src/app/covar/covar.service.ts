@@ -20,12 +20,12 @@ export class CovarService {
   public readURLParams(): void {
       this.route.queryParams.subscribe(params => {
         Object.keys(params).forEach(key => {
-          this.setMapState(key, params[key])
+          this.set_map_state(key, params[key])
         });
       });
   }
 
-  public setURL(): void {
+  public set_url(): void {
 
     let lngLatString = null
     if (this.lngLat) {
@@ -47,7 +47,7 @@ export class CovarService {
       });
   }
 
-  public setMapState(this, key: string, value: string): void {
+  public set_map_state(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'forcastDays': {

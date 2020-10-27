@@ -117,7 +117,7 @@ export class ColorChartComponent implements OnInit {
     this.queryProfviewService[this.id] = this.colorLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
     this.makeChart()
-    this.queryProfviewService.setURL()
+    this.queryProfviewService.set_url()
   }
 
   colorscaleChange(cmapName: string): void {

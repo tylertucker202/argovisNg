@@ -29,9 +29,9 @@ describe('CovarService', () => {
     const testLngLat = [25, 25]
     const testDataUrl = '/covarGrid/25/25/140'
 
-    service.setMapState('proj', testProj)
-    service.setMapState('forcastDays', JSON.stringify(forcastDays))
-    service.setMapState('lngLat', JSON.stringify(testLngLat))
+    service.set_map_state('proj', testProj)
+    service.set_map_state('forcastDays', JSON.stringify(forcastDays))
+    service.set_map_state('lngLat', JSON.stringify(testLngLat))
 
 
     expect(service['proj']).toEqual(testProj)

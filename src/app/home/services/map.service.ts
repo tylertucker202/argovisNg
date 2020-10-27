@@ -221,7 +221,7 @@ export class MapService {
     }
   }
 
-  public getTransformedShape(shape: number[][]): number[][][] {
+  public get_transformed_shape(shape: number[][]): number[][][] {
     //takes [lat long] array and transforms it into a [lng lat] nested array 
     let transformedShape = [];
     for (let j = 0; j < shape.length; j++) {
@@ -242,8 +242,8 @@ export class MapService {
 
   public popupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
     const feature = layer.toGeoJSON()
-    const shape = this.getLatLngFromFeature(feature)
-    const transformedShape = this.getTransformedShape(shape);
+    const shape = this.get_lat_lng_from_feature(feature)
+    const transformedShape = this.get_transformed_shape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
       const popupContent = this.compileService.compile(ShapePopupComponent, (c) => { 
@@ -260,7 +260,7 @@ export class MapService {
     featureGroup.addLayer(layer);
     }
 
-  public getLatLngFromFeature(feature): number[][] {
+  public get_lat_lng_from_feature(feature): number[][] {
     let shape = []
     feature.geometry.coordinates[0].forEach( (coord) => {
       const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place

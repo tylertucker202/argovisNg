@@ -45,9 +45,9 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
-      this.includeRT = this.queryService.getRealtimeToggle()
-      this.onlyBGC = this.queryService.getBGCToggle()
-      this.onlyDeep = this.queryService.getDeepToggle()
+      this.includeRT = this.queryService.get_realtime_toggle()
+      this.onlyBGC = this.queryService.get_bgc_toggle()
+      this.onlyDeep = this.queryService.get_deep_toggle()
       this.threeDayToggle = this.queryService.getThreeDayToggle()
       this.proj = this.queryService.getProj()
 
@@ -79,11 +79,11 @@ export class SidebarNavComponent implements OnInit {
   }
 
   clearProfiles(): void {
-    this.queryService.triggerClearLayers();
+    this.queryService.trigger_clear_layers();
   }
 
   resetToStart(): void {
-    this.queryService.triggerResetToStart();
+    this.queryService.trigger_reset_to_start();
   }
 
   mapProjChange(proj: string): void {

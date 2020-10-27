@@ -11,7 +11,7 @@ export class QueryGridService {
   @Output() change: EventEmitter<string> = new EventEmitter
   @Output() updateColorbarEvent: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
-  @Output() clearLayers: EventEmitter<string> = new EventEmitter
+  @Output() clear_layers: EventEmitter<string> = new EventEmitter
   @Output() urlRead: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
@@ -34,12 +34,12 @@ export class QueryGridService {
   constructor(private route: ActivatedRoute,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
-  public formatDate(date: Moment): string {
+  public format_date(date: Moment): string {
     const dateString = date.format('YYYY-MM-DD')
     return(dateString)
   }
 
-  public resetParams(): void{
+  public reset_params(): void{
     const broadcastChange = false
     const date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
     this.sendDate(date, broadcastChange)
@@ -51,9 +51,9 @@ export class QueryGridService {
     this.param = 'tempAnomaly'
     this.paramMode = false
     this.compare = false
-    //this.clearShapes()
+    //this.clear_shapes()
     this.boundingBox = [[-30, 0, -70, -40]]
-    this.setURL()
+    this.set_url()
     this.resetToStart.emit('reset params pushed')
   }
 
@@ -75,7 +75,7 @@ export class QueryGridService {
     const msg = 'grid range changed'
     const gridDomain = [lowerRange, upperRange]
     this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
-    this.setURL()
+    this.set_url()
     if (broadcastChange) {this.change.emit(msg)}
   }
 
@@ -115,7 +115,7 @@ export class QueryGridService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getShapes(): number[][] {
+  public get_shapes(): number[][] {
     return this.boundingBox
   }
 
@@ -170,7 +170,7 @@ export class QueryGridService {
     return this.paramMode
   }
 
-  public clearShapes(): void {
+  public clear_shapes(): void {
     this.boundingBox = null
   }
 
@@ -208,14 +208,14 @@ export class QueryGridService {
     return shapeArray
   }
 
-  public triggerResetToStart(): void {
-    this.resetParams()
+  public trigger_reset_to_start(): void {
+    this.reset_params()
     this.resetToStart.emit()
-    this.setURL()
+    this.set_url()
   }
 
-  public triggerClearLayers(): void {
-    this.clearLayers.emit()
+  public trigger_clear_layers(): void {
+    this.clear_layers.emit()
   }
 
   public getBBoxes(fc: FeatureCollection<Polygon>): number[][]{
@@ -227,7 +227,7 @@ export class QueryGridService {
     return bboxes
   }
 
-  public setURL(): void {
+  public set_url(): void {
 
     const presLevelString = JSON.stringify(this.presLevel)
     const gridDomainStr = JSON.stringify(this.gridDomain)
@@ -239,7 +239,7 @@ export class QueryGridService {
     }
     const interpolateBool = JSON.stringify(this.getInterplateBool())
     const inverseColorScale = JSON.stringify(this.getInverseColorScale())
-    const dateString = this.formatDate(this.date)
+    const dateString = this.format_date(this.date)
     let queryParams = {
                          'presLevel': presLevelString, 
                          'date': dateString,
@@ -285,11 +285,11 @@ export class QueryGridService {
     return bbox
   }
 
-  public setParamsFromURL(msg: string): void {
+  public set_params_from_url(msg: string): void {
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
-        this.setMapState(key, this.mapState[key])
+        this.set_map_state(key, this.mapState[key])
       })
       //wait a few for the other components to load
       console.log('emitting url read message')
@@ -299,7 +299,7 @@ export class QueryGridService {
     })
   }
 
-  private setMapState(this, key: string, value: string): void {
+  private set_map_state(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'colorScale': {

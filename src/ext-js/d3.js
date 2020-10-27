@@ -5805,7 +5805,7 @@ function formatYear(year) {
     : pad(year, 4);
 }
 
-function formatDate(date) {
+function format_date(date) {
   var hours = date.getUTCHours(),
       minutes = date.getUTCMinutes(),
       seconds = date.getUTCSeconds(),
@@ -5908,7 +5908,7 @@ function dsvFormat(delimiter) {
 
   function formatValue(value) {
     return value == null ? ""
-        : value instanceof Date ? formatDate(value)
+        : value instanceof Date ? format_date(value)
         : reFormat.test(value += "") ? "\"" + value.replace(/"/g, "\"\"") + "\""
         : value;
   }

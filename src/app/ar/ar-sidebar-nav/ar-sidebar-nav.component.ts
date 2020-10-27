@@ -24,25 +24,25 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arQueryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed 
-      this.includeRT = this.arQueryService.getRealtimeToggle()
-      this.onlyBGC = this.arQueryService.getBGCToggle()
-      this.onlyDeep = this.arQueryService.getDeepToggle()
-      this.displayGlobally = this.arQueryService.getDisplayGlobally()
+      this.includeRT = this.arQueryService.get_realtime_toggle()
+      this.onlyBGC = this.arQueryService.get_bgc_toggle()
+      this.onlyDeep = this.arQueryService.get_deep_toggle()
+      this.displayGlobally = this.arQueryService.get_display_globally()
       this.proj = this.arQueryService.getProj()
     })
   }
 
   displayGlobalChange(checked: boolean): void {
     this.displayGlobally = checked
-    this.arQueryService.sendDisplayGlobally(this.displayGlobally, true)
+    this.arQueryService.send_display_globally(this.displayGlobally, true)
   }
 
   clearProfiles(): void {
-    this.arQueryService.triggerClearLayers();
+    this.arQueryService.trigger_clear_layers();
   }
 
   resetToStart(): void {
-    this.arQueryService.triggerResetToStart();
+    this.arQueryService.trigger_reset_to_start();
   }
 
   realtimeChange(checked: boolean): void {

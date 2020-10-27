@@ -38,7 +38,7 @@ describe('PresDoubleSliderComponent', () => {
 
     queryService = debugElement.injector.get(QueryService);
 
-    queryService.setParamsFromURL()
+    queryService.set_params_from_url()
     
     spy = spyOn(queryService, 'sendPres');
     fixture.detectChanges();
