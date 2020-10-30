@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './tc-shape-popup.component.html',
   styleUrls: ['./tc-shape-popup.component.css']
 })
-export class TcShapePopupComponent implements OnInit {
+export class tcTrackPopupComponent implements OnInit {
 
   constructor() { }
 

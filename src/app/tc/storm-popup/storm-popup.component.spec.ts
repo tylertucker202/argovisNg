@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { tcTrackPopupComponent } from './tc-shape-popup.component';
+import { StormPopupComponent } from './storm-popup.component';
 
-describe('tcTrackPopupComponent', () => {
-  let component: tcTrackPopupComponent;
-  let fixture: ComponentFixture<tcTrackPopupComponent>;
+describe('StormPopupComponent', () => {
+  let component: StormPopupComponent;
+  let fixture: ComponentFixture<StormPopupComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ tcTrackPopupComponent ]
+      declarations: [ StormPopupComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(tcTrackPopupComponent);
+    fixture = TestBed.createComponent(StormPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

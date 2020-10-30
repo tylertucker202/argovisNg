@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { QueryService} from '../services/query.service';
+import { QueryService } from '../services/query.service';
 @Component({
   selector: 'app-prof-popup',
   templateUrl: './prof-popup.component.html',

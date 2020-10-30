@@ -125,7 +125,7 @@ export class MapService {
     this.compileService.configure(this.appRef);
   }
 
-  public generateMap(this, proj: string, gridMap=false): L.Map {
+  public generate_map(this, proj: string, gridMap=false): L.Map {
     switch(proj) {
       case 'WM': {
         console.log('generating web mercator');

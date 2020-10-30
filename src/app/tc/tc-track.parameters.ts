@@ -1,6 +1,6 @@
-import { TcShape, TcTrajShape } from '../models/tc-shape'
+import { TcTrack, TcTrajTrack } from '../models/tc-shape'
 
-export const carlottaTraj : TcTrajShape[] = [
+export const carlottaTraj : TcTrajTrack[] = [
 { _id : "EP042018_2018-06-14_18:00:00_HURDAT2", name : "CARLOTTA", num : 18, date : "2018-06-14", time : 1800, class : "TD", lat : 14.9, lon : 100, wind : 30, pres : 1008, year : 2018, timestamp : new Date("2018-06-14T18:00:00Z"), source : "HURDAT2", geoLocation : { type : "point", coordinates : [ 100, 14.9 ] } },
 { _id : "EP042018_2018-06-15_00:00:00_HURDAT2", name : "CARLOTTA", num : 18, date : "2018-06-15", time : 0, class : "TD", lat : 15.1, lon : 100, wind : 30, pres : 1007, year : 2018, timestamp : new Date("2018-06-15T00:00:00Z"), source : "HURDAT2", geoLocation : { type : "point", coordinates : [ 100, 15.1 ] } },,
 { _id : "EP042018_2018-06-15_06:00:00_HURDAT2", name : "CARLOTTA", num : 18, date : "2018-06-15", time : 600, class : "TD", lat : 15.4, lon : 99.9, wind : 30, pres : 1007, year : 2018, timestamp : new Date("2018-06-15T06:00:00Z"), source : "HURDAT2", geoLocation : { type : "point", coordinates : [ 99.9, 15.4 ] } },
@@ -21,7 +21,7 @@ export const carlottaTraj : TcTrajShape[] = [
 { _id : "EP042018_2018-06-19_00:00:00_HURDAT2", name : "CARLOTTA", num : 18, date : "2018-06-19", time : 0, class : "LO", lat : 18.1, lon : 103.5, wind : 20, pres : 1008, year : 2018, timestamp : new Date("2018-06-19T00:00:00Z"), source : "HURDAT2", geoLocation : { type : "point", coordinates : [ 103.5, 18.1 ] } },
 ]
 
-export const carlotta: TcShape = 
+export const carlotta: TcTrack[] = [
 {
 	_id : "EP042018_HURDAT2",
 	name : "CARLOTTA",
@@ -355,7 +355,7 @@ export const carlotta: TcShape =
 			date : "2018-06-19",
 			time : 0,
 			l : "",
-			class : lO",
+			class : "LO",
 			lat : 18.1,
 			lon : 103.5,
 			wind : 20,
@@ -371,4 +371,4 @@ export const carlotta: TcShape =
 			}
 		}
 	]
-}
+}]

@@ -25,7 +25,7 @@ describe('MapComponent', () => {
   let spyRT: jasmine.Spy;
   let getProjSpy: jasmine.Spy;
   let displayProfilesSpy: jasmine.Spy;
-  let setPointsOnMapSpy: jasmine.Spy;
+  let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
   let getSelectionPointsSpy: jasmine.Spy;
   let getPlatformProfilesSpy: jasmine.Spy;
@@ -72,7 +72,7 @@ describe('MapComponent', () => {
     const popupWindowCreationSpy = spyOn(mapService, 'popupWindowCreation').and.callThrough()
     spyURL = spyOn(queryService, 'set_url'); 
     displayProfilesSpy = spyOn<any>(component, 'displayProfiles').and.callThrough()
-    setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
+    set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
     getProjSpy = spyOn(queryService, 'getProj').and.returnValue('WM');
     fixture.detectChanges();
   });
@@ -169,7 +169,7 @@ describe('MapComponent', () => {
     expect(spyURL).toHaveBeenCalledTimes(0); //should not be called
 
     expect(displayProfilesSpy).toHaveBeenCalledTimes(2); //should not be called
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0);
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0);
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
   });
@@ -177,12 +177,12 @@ describe('MapComponent', () => {
   it('should add a shape', () => {
     const shapes = [[[55.578345,-146.074219],[52.908902,-148.886719],[52.48278,-141.328125],[55.578345,-146.074219]]]
     const notifiyChange = true 
-    //we check if shape is added indirectly by checking if setPointsOnMap() is called. It should when a change occurs.
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0)
+    //we check if shape is added indirectly by checking if set_points_on_map() is called. It should when a change occurs.
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0)
     let drawnItemsBefore = component.mapService.drawnItems.toGeoJSON()
     expect(drawnItemsBefore['features'].length).toEqual(0)
     queryService.sendShape(shapes, notifiyChange)
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(1)
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(1)
   })
 
 });

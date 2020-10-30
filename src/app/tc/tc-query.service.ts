@@ -3,7 +3,7 @@ import { QueryService } from './../home/services/query.service'
 import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
 import { MapState } from './../../typeings/mapState'
-import { TcShape } from '../models/tc-shape'
+import { TcTrack } from '../models/tc-shape'
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +12,7 @@ export class TcQueryService extends QueryService{
   @Output() tcEvent: EventEmitter<string> = new EventEmitter
 
   private tcDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
-  private tcShapes: number[][][]
+  private tcTracks: number[][][]
   private tcHourRange = [-18, 18]
   private displayGlobally = true
 
@@ -115,12 +115,12 @@ export class TcQueryService extends QueryService{
   }
   public send_tc_shapes(data: number[][][], broadcastChange=true): void {
     let msg = 'ar shape'
-    this.tcShapes = data
+    this.tcTracks = data
     if (broadcastChange) { this.change.emit('ar shape change')}
   }
 
   public get_tc_shapes(): number[][][] {
-    return this.tcShapes
+    return this.tcTracks
   }
 
   public set_params_from_url(msg='got state from map component'): void{

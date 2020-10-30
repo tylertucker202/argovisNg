@@ -49,7 +49,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.wrapCoordinates = true
     }
     const gridMap = true
-    this.map = this.mapService.generateMap(this.proj, gridMap)
+    this.map = this.mapService.generate_map(this.proj, gridMap)
     this.startView = this.queryGridService.startView
     this.startZoom = this.queryGridService.startZoom
     this.map.setView(this.startView, this.startZoom)
@@ -156,7 +156,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.invalidateSize();
+    this.invalidate_size();
   }
 
   private isNewGrid(msg: string): boolean {
@@ -226,10 +226,10 @@ export class MapGridComponent implements OnInit, OnDestroy {
     this.map.remove();
   }
 
-  public invalidateSize(this): void {
+  public invalidate_size(this): void {
     if (this.map) {
       setTimeout(() => {
-        this.map.invalidateSize(true);
+        this.map.invalideateSize(true);
       },100);
     }
   }

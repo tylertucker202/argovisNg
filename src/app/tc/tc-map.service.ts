@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core'
 import { MapService } from './../home/services/map.service'
-import { TcShapePopupComponent } from './tc-shape-popup/tc-shape-popup.component'
+import { tcTrackPopupComponent } from './tc-shape-popup/tc-shape-popup.component'
 import 'leaflet'
 import 'proj4leaflet'
 import 'arc'
@@ -19,8 +19,8 @@ export class TcMapService extends MapService {
 
   constructor(public injector: Injector) { super(injector) }
 
-  public tcShapeItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
-  public tcShapeOptions = { 
+  public tcTrackItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
+  public tcTrackOptions = { 
                             color: '#FF8C00', //pink: #C71585 orange: #FF8C00
                             weight: 4,
                             opacity: .5
@@ -32,7 +32,7 @@ export class TcMapService extends MapService {
     const transformedShape = this.get_transformed_shape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
-      const popupContent = this.compileService.compile(TcShapePopupComponent, (c) => { 
+      const popupContent = this.compileService.compile(tcTrackPopupComponent, (c) => { 
         c.instance.shape = [shape];
         c.instance.transformedShape = transformedShape;
         c.instance.message = shapeType 

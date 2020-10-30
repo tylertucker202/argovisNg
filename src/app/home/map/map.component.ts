@@ -41,7 +41,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.set_params_and_events()
 
 
-    this.invalidateSize()
+    this.invalidate_size()
     //sets starting profiles from URL. Default is no params
     setTimeout(() => {  // RTimeout required to prevent expressionchangedafterithasbeencheckederror.
       this.addShapesFromQueryService()
@@ -54,7 +54,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public set_map(): void {
-    this.map = this.mapService.generateMap(this.proj)
+    this.map = this.mapService.generate_map(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
 
@@ -114,10 +114,10 @@ export class MapComponent implements OnInit, OnDestroy {
       .subscribe(msg => {
          this.queryService.set_url()
          this.markersLayer.clearLayers()
-         this.setPointsOnMap()
+         this.set_points_on_map()
          const showThreeDay = this.queryService.getThreeDayToggle()
          if (showThreeDay) {
-            this.addDisplayProfiles()
+            this.adddisplay_profiles()
          }
         })
 
@@ -145,7 +145,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.pointsService.getPlatformProfiles(platform)
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {
-            this.displayProfiles(profilePoints, 'platform')
+            this.display_profiles(profilePoints, 'platform')
             this.map.setView([this.startView.lat, this.startView.lng], 2.5)
           }
           else {
@@ -163,7 +163,7 @@ export class MapComponent implements OnInit, OnDestroy {
       .subscribe( platform => {
         this.pointsService.getPlatformProfiles(platform)
           .subscribe((profilePoints: ProfilePoints[]) => {
-            this.displayProfiles(profilePoints, 'history')
+            this.display_profiles(profilePoints, 'history')
           },
           error => { 
             this.notifier.notify( 'error', 'error in getting platform: '+platform+' profiles' )
@@ -196,7 +196,7 @@ export class MapComponent implements OnInit, OnDestroy {
           this.notifier.notify( 'warning', 'zero profile points returned' )
         }
         else {
-          this.displayProfiles(profilePoints, 'normalMarker')
+          this.display_profiles(profilePoints, 'normalMarker')
         }
         },
         error => {
@@ -205,7 +205,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public addDisplayProfiles(): void {
+  public adddisplay_profiles(): void {
     if (!this.queryService.getThreeDayToggle()) {return}
     const startDate = this.queryService.getGlobalDisplayDate()
     this.pointsService.getLastThreeDaysProfiles(startDate)
@@ -214,7 +214,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.notifier.notify( 'warning', 'zero profile points returned' )
       }
       else {
-        this.displayProfiles(profilePoints, 'normalMarker')
+        this.display_profiles(profilePoints, 'normalMarker')
       }
       },
       error => {
@@ -229,7 +229,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.notifier.notify( 'warning', 'zero mock profile points returned' )
       }
       else {
-        this.displayProfiles(profilePoints, 'normalMarker')
+        this.display_profiles(profilePoints, 'normalMarker')
       }
       },
       error => {
@@ -237,7 +237,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
   }
 
-  public invalidateSize(): void {
+  public invalidate_size(): void {
     if (this.map) {
       setTimeout(() => {
         this.map.invalidateSize(true)
@@ -245,7 +245,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public displayProfiles(profilePoints, markerType): void {
+  public display_profiles(profilePoints, markerType): void {
 
     const includeRT = this.queryService.get_realtime_toggle()
     const bgcOnly = this.queryService.get_bgc_toggle()
@@ -258,25 +258,25 @@ export class MapComponent implements OnInit, OnDestroy {
       if ( !profile.containsBGC===true && bgcOnly) { continue } //be careful, old values may equal 1. use ==
       if ( !profile.isDeep===true && deepOnly ) { continue } // always use ===
       if (markerType==='history') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
       }
       else if (markerType==='platform') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
       }
       else if (profile.containsBGC) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
       }
       else if (profile.isDeep) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }
 
 
-  public setPointsOnMap(sendNotification=true): void {
+  public set_points_on_map(sendNotification=true): void {
     let shapeArrays = this.queryService.get_shapes()
     if (shapeArrays) {
       this.markersLayer.clearLayers()
@@ -293,7 +293,7 @@ export class MapComponent implements OnInit, OnDestroy {
         urlQuery += '&shape='+JSON.stringify(transformedShape)
         this.pointsService.getSelectionPoints(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
-              this.displayProfiles(selectionPoints, 'normalMarker')
+              this.display_profiles(selectionPoints, 'normalMarker')
               if (selectionPoints.length == 0 && sendNotification) {
                 this.notifier.notify( 'warning', 'no profile points found in shape' )
                 console.log('no points returned in shape')

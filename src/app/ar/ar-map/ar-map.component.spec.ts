@@ -25,7 +25,7 @@ describe('ArMapComponent', () => {
   let arQueryService: ArQueryService;
   let arShapeService: ArShapeService;
   let arMapService: ArMapService;
-  let setPointsOnMapSpy: jasmine.Spy;
+  let set_points_on_mapSpy: jasmine.Spy;
   let set_ar_shapeSpy: jasmine.Spy;
   let get_ar_shapespy: jasmine.Spy;
 
@@ -58,7 +58,7 @@ describe('ArMapComponent', () => {
     arQueryService = debugElement.injector.get(ArQueryService);
     arShapeService = debugElement.injector.get(ArShapeService);
     arMapService = debugElement.injector.get(ArMapService);
-    setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
+    set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
     set_ar_shapeSpy = spyOn<any>(component, 'set_ar_shape').and.callThrough()
     get_ar_shapespy = spyOn(arShapeService, 'get_ar_shapes').and.returnValue(of([mockShapeSimple, mockShapeComplex]))
   });
@@ -68,9 +68,9 @@ describe('ArMapComponent', () => {
   });
 
   it('should acknoledge a change event', () => {
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0)
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0)
     arQueryService.change.emit('test')
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(1)    
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(1)    
   })
 
   it('should have web mercator', () => {

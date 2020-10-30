@@ -1,5 +1,5 @@
 import { PlatformMeta } from './../profview/profiles.d';
-export interface TcShape {
+export interface TcTrack {
 	_id : string,
 	name : string,
 	num : number,
@@ -21,7 +21,7 @@ export interface TrajData {
     geoLocation: {type: string, coordinates: Array<number> };
 }
 
-export interface TcTrajShape {
+export interface TcTrajTrack {
     _id: string
     time: number
     name: string

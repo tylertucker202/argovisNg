@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TcShapeService } from './tc-shape.service';
+import { TcTrackService } from './tc-track.service';
 
-describe('TcShapeService', () => {
-  let service: TcShapeService;
+describe('TcTrackService', () => {
+  let service: TcTrackService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TcShapeService);
+    service = TestBed.inject(TcTrackService);
   });
 
   it('should be created', () => {

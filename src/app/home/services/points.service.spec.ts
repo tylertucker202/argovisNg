@@ -63,23 +63,23 @@ describe('PointsService', () => {
   }));
 
   it('should have wrap coordinates', inject([PointsService], (service: PointsService) => {
-    expect(service['makeWrappedLngLatCoordinates']).toBeTruthy();
+    expect(service['make_wrapped_lng_lat_coordinates']).toBeTruthy();
 
     const inT1 = [0, 0]
-    const outT1 = service['makeWrappedLngLatCoordinates'](inT1)
+    const outT1 = service['make_wrapped_lng_lat_coordinates'](inT1)
     expect(outT1).toEqual([[0,0]])
     const inT2 = [100, 0]
-    const outT2 = service['makeWrappedLngLatCoordinates'](inT2)
+    const outT2 = service['make_wrapped_lng_lat_coordinates'](inT2)
     expect(outT2).toEqual([inT2, [inT2[0] - 360, inT2[1]]])
     const inT3 = [-100, 0]
-    const outT3 = service['makeWrappedLngLatCoordinates'](inT3)
+    const outT3 = service['make_wrapped_lng_lat_coordinates'](inT3)
     expect(outT3).toEqual([inT3, [inT3[0] + 360, inT3[1]]])
   }));
 
   it('should make coordinates', inject([PointsService], (service: PointsService) => {
-    expect(service['makeLngLatCoords']).toBeTruthy();
+    expect(service['make_lng_lat_coords']).toBeTruthy();
     const inT1 = [0, 0]
-    const outT1 = service['makeLngLatCoords'](inT1)
+    const outT1 = service['make_lng_lat_coords'](inT1)
     expect(outT1).toEqual([[0,0]])
   }));
 

@@ -27,13 +27,13 @@ export class ArMapComponent extends MapComponent implements OnInit {
     this.set_params_and_events()
     this.proj = 'WM'
     this.wrapCoordinates = true
-    this.setPointsOnMap()
+    this.set_points_on_map()
 
-    this.invalidateSize()
+    this.invalidate_size()
   }
 
   public set_map(): void {
-    this.map = this.arMapService.generateMap(this.proj)
+    this.map = this.arMapService.generate_map(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
 
@@ -52,7 +52,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
       .subscribe(msg => {
         this.arQueryService.set_url()
         this.markersLayer.clearLayers()
-        this.setPointsOnMap()
+        this.set_points_on_map()
         })
     this.arQueryService.clear_layers
       .subscribe( () => {
@@ -120,7 +120,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
   }
 
   
-  public setPointsOnMap(sendNotification=true): void {
+  public set_points_on_map(sendNotification=true): void {
     let shapeArrays = this.arQueryService.get_shapes()
     const displayGlobally = this.arQueryService.get_display_globally()
     if (shapeArrays && !displayGlobally) {
@@ -147,7 +147,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
               this.notifier.notify( 'info', 'no profile points found inside a shape' )
             }
             else {
-              this.displayProfiles(selectionPoints, 'normalMarker')
+              this.display_profiles(selectionPoints, 'normalMarker')
             }
             }, 
           error => {
@@ -167,7 +167,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
           this.notifier.notify( 'warning', 'zero profile points returned' )
         }
         else {
-          this.displayProfiles(profilePoints, 'normalMarker')
+          this.display_profiles(profilePoints, 'normalMarker')
         }
         },
         error => {
@@ -175,7 +175,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
         })
 }
 
-  public displayProfiles(profilePoints: ProfilePoints[], markerType: string): void {
+  public display_profiles(profilePoints: ProfilePoints[], markerType: string): void {
 
     const includeRT = this.arQueryService.get_realtime_toggle()
     const bgcOnly = this.arQueryService.get_bgc_toggle()
@@ -188,19 +188,19 @@ export class ArMapComponent extends MapComponent implements OnInit {
       if ( !profile.containsBGC===true && bgcOnly) { continue } //be careful, old values may equal 1. use ==
       if ( !profile.isDeep===true && deepOnly ) { continue } // always use ===
       if (markerType==='history') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
       }
       else if (markerType==='platform') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
       }
       else if (profile.containsBGC) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
       }
       else if (profile.isDeep) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }

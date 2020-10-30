@@ -1,4 +1,4 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { Injectable, ApplicationRef, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 import { ProfilePoints } from '../../models/profile-points'
@@ -14,10 +14,19 @@ export class PointsService {
 
   public platformProfilesSelection: any;
   public appRef: ApplicationRef;
+  public mapService: MapService
+  public http: HttpClient
+  public compileService: PopupCompileService
 
-  constructor(public mapService: MapService,
-              private http: HttpClient,
-              private compileService: PopupCompileService) { }
+  constructor(public injector: Injector) { 
+    this.mapService = injector.get(MapService)
+    this.http = injector.get(HttpClient)
+    this.compileService = injector.get(PopupCompileService)
+  }
+
+  // constructor(public mapService: MapService,
+  //             public http: HttpClient,
+  //             public compileService: PopupCompileService) { }
 
   init(appRef: ApplicationRef): void {
     this.appRef = appRef;
@@ -50,14 +59,21 @@ export class PointsService {
     iconSize:     [12, 12], 
     iconAnchor:   [0, 0],
     popupAnchor:  [6, 6]
-});
+  });
 
-public argoIconDeep = L.icon({
-  iconUrl: 'assets/img/dot_blue.png',
-  iconSize:     [12, 12], 
-  iconAnchor:   [0, 0],
-  popupAnchor:  [6, 6]
-});
+  public argoIconDeep = L.icon({
+    iconUrl: 'assets/img/dot_blue.png',
+    iconSize:     [12, 12], 
+    iconAnchor:   [0, 0],
+    popupAnchor:  [6, 6]
+  });
+
+  public stormIcon = L.icon({
+    iconUrl: 'assets/img/storm.png',
+    iconSize:     [12, 12], 
+    iconAnchor:   [0, 0],
+    popupAnchor:  [6, 6]
+  })
 
   public mockPoints:  ProfilePoints[] = 
   [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549", "DATA_MODE":'D', 'containsBGC': true},
@@ -118,7 +134,7 @@ public argoIconDeep = L.icon({
   }
 
   // plots the markers on the map three times. 
-   private makeWrappedLngLatCoordinates(coordinates: Number[]): number[][] {
+   public make_wrapped_lng_lat_coordinates(coordinates: Number[]): number[][] {
       const lat = coordinates[1].valueOf();
       const lon = coordinates[0].valueOf();
       let coords: number[][]
@@ -132,7 +148,7 @@ public argoIconDeep = L.icon({
       return coords;
   };
 
-  private makeLngLatCoords(coordinates: Number[]): number[][] {
+  public make_lng_lat_coords(coordinates: Number[]): number[][] {
     const lat = coordinates[1].valueOf();
     const lon = coordinates[0].valueOf();    
     return [[lon, lat]]
@@ -157,7 +173,7 @@ public argoIconDeep = L.icon({
     return [strLat, strLng]
   }
 
-  public addToMarkersLayer(profile: ProfilePoints, markersLayer: L.LayerGroup , markerIcon=this.argoIcon, wrapCoordinates=true) {
+  public add_to_markers_layer(profile: ProfilePoints, markersLayer: L.LayerGroup , markerIcon=this.argoIcon, wrapCoordinates=true) {
     const selectedPlatform = profile.platform_number;
     const geoLocation = profile.geoLocation;
     const lat = geoLocation.coordinates[1]
@@ -181,10 +197,10 @@ public argoIconDeep = L.icon({
     }
     let coordArray: number[][]
     if (wrapCoordinates){
-      coordArray = this.makeWrappedLngLatCoordinates(geoLocation.coordinates);
+      coordArray = this.make_wrapped_lng_lat_coordinates(geoLocation.coordinates);
     }
     else {
-      coordArray = this.makeLngLatCoords(geoLocation.coordinates);
+      coordArray = this.make_lng_lat_coords(geoLocation.coordinates);
     }
 
     for(let i = 0; i < coordArray.length; i++) { //wrapped coordinates are repeated across map
