@@ -138,10 +138,10 @@ export class PointsService {
       const lat = coordinates[1].valueOf();
       const lon = coordinates[0].valueOf();
       let coords: number[][]
-      if (-90 > lon && lon > -180) {
+      if (-90 > lon && lon > -180) { //duplicate to the right
         coords = [[lon, lat], [lon + 360, lat]]
       }
-      else if (90 < lon && lon < 180) {
+      else if (90 < lon && lon < 180) { //duplicate to the left
         coords = [[lon, lat], [lon - 360, lat]];
       }
       else{ coords = [[lon, lat]]}

@@ -26,9 +26,9 @@ export class TcTrackService extends PointsService {
 
   public stormIcon = L.icon({
     iconUrl: 'assets/img/storm.png',
-    iconSize:     [12, 12], 
-    iconAnchor:   [0, 0],
-    popupAnchor:  [6, 6]
+    iconSize:     [24, 24], 
+    iconAnchor:   [12, 12],
+    popupAnchor:  [12, 12]
   })
 
   public get_mock_tc(): Observable<TcTrack[]> {
@@ -47,15 +47,36 @@ export class TcTrackService extends PointsService {
     return this.http.get<TcTrajTrack[]>(url)
   }
 
+  public make_wrapped_latLngs(latLngs: number[][]): number[][][] {
+    let wraps = []
+    latLngs.forEach( (lat, lng) => {
+      if (-90 > lng && lng > -180) { //duplicate to the right
+        wraps.push(1)
+      }
+      else if (90 > lng && lng < 180) { //duplicate to the left
+        wraps.push(-1)
+      }
+    })
+
+    let wrappedLngLats = [latLngs]
+    wraps.forEach( sign => {
+      const wll = latLngs.map( x => [x[0], x[1] + 360 * sign])
+      wrappedLngLats.push(wll)
+    })
+
+    return wrappedLngLats
+  }
+
   public add_to_track_layer(track: TcTrack, trackLayer: L.LayerGroup): L.LayerGroup {
     let trajDataArr: TrajData[] = track['traj_data']
     const name = track['name']
     const source = track['source']
-
+    let latLngs = []
     for (let idx=0; idx<trajDataArr.length; ++idx) {
       const trajData = trajDataArr[idx]
       const lat = trajData['lat']
       const lon = trajData['lon']
+      latLngs.push([lat, lon])
       const date = moment(trajData['timestamp']).format('LLLL')
       const strLatLng = this.formatLatLng([lon, lat])
       const catagory = trajData['class']
@@ -80,6 +101,12 @@ export class TcTrackService extends PointsService {
             );
       })
       trackLayer.addLayer(marker);
+      }
+
+      const wrappedLatLngs = this.make_wrapped_latLngs(latLngs)
+      for(let jdx = 0; jdx<wrappedLatLngs.length; jdx++){
+        const pl = L.polyline(wrappedLatLngs[jdx] as L.LatLngExpression[])
+        trackLayer.addLayer(pl)
       }
     }
     return trackLayer
