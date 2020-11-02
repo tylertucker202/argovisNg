@@ -69,7 +69,7 @@ describe('QueryService', () => {
 
     const broadcastChange=true
     const toggleThreeDayOff=false
-    service.sendShape(shape, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
+    service.send_shape(shape, broadcastChange, toggleThreeDayOff) // need to cast as GeoJSON.Feature[] object
   });
 
   it('should be emit a change upon pressure change', () => {

@@ -57,7 +57,7 @@ export class GridMappingService {
     this.gridLayers.clearLayers()
     const shapes = this.mapService.drawnItems.toGeoJSON()
     let bboxes = this.queryGridService.getBBoxes(shapes)
-    this.queryGridService.sendShape(bboxes, broadcastChange)
+    this.queryGridService.send_shape(bboxes, broadcastChange)
     let features = this.queryGridService.get_shapes()
     const gridName = this.queryGridService.getGridName()
     //check if grid exists on current grid selection. If not dont draw.

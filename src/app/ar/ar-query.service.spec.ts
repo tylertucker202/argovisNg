@@ -126,14 +126,14 @@ describe('ArQueryService', () => {
   })
 
   it('should convert ar date and hour range into a date range for profile selection', () => {
-    const defaultSelectionDates = service.getSelectionDates()
+    const defaultSelectionDates = service.get_selection_dates()
     const defaultArDate = { startDate: "2009-12-31T06:00:00Z", endDate: "2010-01-01T18:00:00Z", label: "" } as DateRange
     expect(defaultSelectionDates.startDate === defaultArDate.startDate).toEqual(false)
     expect(defaultSelectionDates.endDate === defaultArDate.endDate).toEqual(false)
 
     service.set_selection_date_range()
 
-    const selectionDates = service.getSelectionDates()
+    const selectionDates = service.get_selection_dates()
     expect(selectionDates.startDate).toEqual(defaultArDate.startDate)
     expect(selectionDates.endDate).toEqual(defaultArDate.endDate)
   })

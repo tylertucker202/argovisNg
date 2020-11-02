@@ -50,10 +50,10 @@ export class ShapePopupComponent implements OnInit {
     if (goToPage) {
       url += '/page'
     }
-    let dates = this.queryService.getSelectionDates();
+    let dates = this.queryService.get_selection_dates();
     url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
     if (this.presRangeToggle) {
-      const presRange = this.queryService.getPresRange();
+      const presRange = this.queryService.get_pres_range();
       url += '&presRange='+JSON.stringify(presRange)
     }
     if (this.bgcOnlyToggle) {

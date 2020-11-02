@@ -65,7 +65,7 @@ describe('MapService', () => {
     const lshape = L.polygon(latLngs)
     let fGroup = L.featureGroup()
     expect(fGroup.getLayers().length).toEqual(0)    
-    service.popupWindowCreation(lshape, fGroup)
+    service.popup_window_creation(lshape, fGroup)
     expect(fGroup.getLayers().length).toEqual(1)
   }))
 });

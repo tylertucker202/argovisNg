@@ -20,7 +20,7 @@ export class PresDoubleSliderComponent implements OnInit {
 
   ngOnInit() {
 
-    this.sliderRange = this.queryService.getPresRange()
+    this.sliderRange = this.queryService.get_pres_range()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
 
@@ -31,14 +31,14 @@ export class PresDoubleSliderComponent implements OnInit {
       connect: true,
       orientation: 'horizontal'
     }
-    const newRange = this.queryService.getPresRange()
+    const newRange = this.queryService.get_pres_range()
     const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
     this.sliderRange[0] = nRange[0]
     this.sliderRange[1] = nRange[1]
 
     this.queryService.resetToStart
     .subscribe( () => {
-      this.sliderRange = this.queryService.getPresRange()
+      this.sliderRange = this.queryService.get_pres_range()
     })
   }
 

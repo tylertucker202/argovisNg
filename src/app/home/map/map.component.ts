@@ -69,20 +69,20 @@ export class MapComponent implements OnInit, OnDestroy {
       const broadcast = true
       const toggleThreeDayOff = false
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
-      const shapes = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShape(shapes, broadcast, toggleThreeDayOff)
+      const shapes = this.queryService.get_shapes_from_features(drawnItems)
+      this.queryService.send_shape(shapes, broadcast, toggleThreeDayOff)
     })
 
     this.map.on('draw:created', (event: L.DrawEvents.Created) => {
       this.markersLayer.clearLayers()
       const layer = event.layer as L.Polygon<any>
-      this.mapService.popupWindowCreation(layer, this.mapService.drawnItems)
+      this.mapService.popup_window_creation(layer, this.mapService.drawnItems)
       const broadcast = true
       const toggleThreeDayOff = true
 
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
-      const shapes = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShape(shapes, broadcast, toggleThreeDayOff)
+      const shapes = this.queryService.get_shapes_from_features(drawnItems)
+      this.queryService.send_shape(shapes, broadcast, toggleThreeDayOff)
     })
 
     this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -97,8 +97,8 @@ export class MapComponent implements OnInit, OnDestroy {
       const toggleThreeDayOff = false
 
       const drawnItems = this.mapService.drawnItems.toGeoJSON().features
-      const shape = this.queryService.getShapesFromFeatures(drawnItems)
-      this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
+      const shape = this.queryService.get_shapes_from_features(drawnItems)
+      this.queryService.send_shape(shape, broadcast, toggleThreeDayOff)
     })
   }
 
@@ -177,15 +177,15 @@ export class MapComponent implements OnInit, OnDestroy {
       const shapeFeatureGroup = this.mapService.convertArrayToFeatureGroup(shapeArrays, this.mapService.shapeOptions)
       shapeFeatureGroup.eachLayer( layer => {
         const polygon = layer as L.Polygon
-        this.mapService.popupWindowCreation(polygon, this.mapService.drawnItems)
+        this.mapService.popup_window_creation(polygon, this.mapService.drawnItems)
       })
     }
     const broadcast = true // set to true to set page initially
     const toggleThreeDayOff = false
 
     const drawnItems = this.mapService.drawnItems.toGeoJSON().features
-    const shape = this.queryService.getShapesFromFeatures(drawnItems)
-    this.queryService.sendShape(shape, broadcast, toggleThreeDayOff)
+    const shape = this.queryService.get_shapes_from_features(drawnItems)
+    this.queryService.send_shape(shape, broadcast, toggleThreeDayOff)
   }
 
   public setStartingProfiles(this): void {
@@ -281,8 +281,8 @@ export class MapComponent implements OnInit, OnDestroy {
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
-      const daterange = this.queryService.getSelectionDates()
-      const presRange = this.queryService.getPresRange()
+      const daterange = this.queryService.get_selection_dates()
+      const presRange = this.queryService.get_pres_range()
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.mapService.get_transformed_shape(shape)
@@ -291,7 +291,7 @@ export class MapComponent implements OnInit, OnDestroy {
           urlQuery += '&presRange='+JSON.stringify(presRange)
         }
         urlQuery += '&shape='+JSON.stringify(transformedShape)
-        this.pointsService.getSelectionPoints(urlQuery)
+        this.pointsService.get_selection_points(urlQuery)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.display_profiles(selectionPoints, 'normalMarker')
               if (selectionPoints.length == 0 && sendNotification) {

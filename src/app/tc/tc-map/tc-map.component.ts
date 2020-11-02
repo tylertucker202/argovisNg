@@ -56,9 +56,10 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
     this.tcQueryService.change
       .subscribe(msg => {
+        console.log('change emitted:', msg)
         this.tcQueryService.set_url()
         this.markersLayer.clearLayers()
-        this.set_points_on_map()
+        this.set_points_on_tc_map()
         })
     this.tcQueryService.clear_layers
       .subscribe( () => {
@@ -97,13 +98,13 @@ export class TcMapComponent extends MapComponent implements OnInit {
         console.log(layer.getLatLngs())
         this.tcMapService.tcTrackItems.addLayer(layer); //show rectangles
         // this.markersLayer.clearLayers()
-        this.tcMapService.popupWindowCreation(layer, this.mapService.drawnItems)
+        this.tcMapService.popup_window_creation(layer, this.tcMapService.drawnItems)
         const broadcast = true
         const toggleThreeDayOff = true
   
-        // const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
-        // const shapes = this.tcQueryService.getShapesFromFeatures(drawnItems)
-        // this.tcQueryService.sendShape(shapes, broadcast, toggleThreeDayOff)
+        const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
+        const shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
+        this.tcQueryService.send_shape(shapes, broadcast, toggleThreeDayOff)
        });
   
       this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -131,6 +132,38 @@ export class TcMapComponent extends MapComponent implements OnInit {
       this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
     }
   }
+
+  public set_points_on_tc_map(sendNotification=true): void {
+    let shapeArrays = this.tcQueryService.get_shapes()
+    if (shapeArrays) {
+      this.markersLayer.clearLayers()
+      let base = '/selection/profiles/map'
+      const daterange = this.queryService.get_selection_dates()
+      const presRange = this.queryService.get_pres_range()
+
+      shapeArrays.forEach( (shape) => {
+        const transformedShape = this.tcMapService.get_transformed_shape(shape)
+        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
+        if (presRange) {
+          urlQuery += '&presRange='+JSON.stringify(presRange)
+        }
+        urlQuery += '&shape='+JSON.stringify(transformedShape)
+        this.pointsService.get_selection_points(urlQuery)
+            .subscribe((selectionPoints: ProfilePoints[]) => {
+              this.display_profiles(selectionPoints, 'normalMarker')
+              if (selectionPoints.length == 0 && sendNotification) {
+                this.notifier.notify( 'warning', 'no profile points found in shape' )
+                console.log('no points returned in shape')
+              }
+              }, 
+            error => {
+              if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
+              console.log('error occured when selecting points: ', error.message)
+            })      
+        })
+    }
+  }
+
 
   public display_profiles(profilePoints: ProfilePoints[], markerType: string): void {
 

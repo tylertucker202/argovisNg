@@ -141,7 +141,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
       let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
       urlQuery += '&shape='+JSON.stringify(transformedShape)
 
-      this.pointsService.getSelectionPoints(urlQuery)
+      this.pointsService.get_selection_points(urlQuery)
           .subscribe((selectionPoints: ProfilePoints[]) => {
             if (selectionPoints.length == 0 && !this.arQueryService.get_display_globally()) {
               this.notifier.notify( 'info', 'no profile points found inside a shape' )

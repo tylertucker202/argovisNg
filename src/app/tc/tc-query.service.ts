@@ -67,7 +67,8 @@ export class TcQueryService extends QueryService{
                          'onlyDeep': this.get_deep_toggle(),
                          'tcHourRange': tcDateRangeString,
                          'tcDate': tcDateString,
-                         'displayGlobally': this.get_display_globally()
+                         'displayGlobally': this.get_display_globally(),
+                         'shapes': shapesString
                         }
     this.router.navigate(
       [], 
@@ -114,9 +115,9 @@ export class TcQueryService extends QueryService{
     return this.tcDate
   }
   public send_tc_shapes(data: number[][][], broadcastChange=true): void {
-    let msg = 'ar shape'
+    let msg = 'tc shape'
     this.tcTracks = data
-    if (broadcastChange) { this.change.emit('ar shape change')}
+    if (broadcastChange) { this.change.emit('tc shape change')}
   }
 
   public get_tc_shapes(): number[][][] {
@@ -167,6 +168,12 @@ export class TcQueryService extends QueryService{
       case 'tcDate': {
         const tcDate = moment(value)
         this.send_tc_date(tcDate)
+        break
+      }
+      case 'shapes': {
+        const arrays = JSON.parse(value)
+        const toggleThreeDayOff = false
+        this.send_shape(arrays, notifyChange, toggleThreeDayOff)
         break
       }
       default: {

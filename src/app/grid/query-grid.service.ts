@@ -109,7 +109,7 @@ export class QueryGridService {
     return this.date
   }
 
-  public sendShape(bboxes: number[][], broadcastChange=true): void {
+  public send_shape(bboxes: number[][], broadcastChange=true): void {
     let msg = 'shape change'
     this.boundingBox = bboxes
     if (broadcastChange){ this.change.emit(msg) }
@@ -346,7 +346,7 @@ export class QueryGridService {
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
-        this.sendShape(arrays, notifyChange)
+        this.send_shape(arrays, notifyChange)
         break
       }
       case 'interpolateBool': {

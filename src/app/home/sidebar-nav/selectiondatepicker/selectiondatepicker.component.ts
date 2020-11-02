@@ -15,7 +15,7 @@ export class SelectionDatePicker {
   public options: any;
 
   ngOnInit() {
-    this.daterange = this.queryService.getSelectionDates()
+    this.daterange = this.queryService.get_selection_dates()
     this.selected = this.convertToMoment(this.daterange)
     this.options = {
                     locale: { format: 'MM/DD/YYYY' },
@@ -33,13 +33,13 @@ export class SelectionDatePicker {
 
     this.queryService.resetToStart
     .subscribe( () => {
-      this.daterange = this.queryService.getSelectionDates()
+      this.daterange = this.queryService.get_selection_dates()
       this.selected = this.convertToMoment(this.daterange)
     })
 
     this.queryService.change
     .subscribe( () => {
-      this.daterange = this.queryService.getSelectionDates()
+      this.daterange = this.queryService.get_selection_dates()
       this.selected = this.convertToMoment(this.daterange)
     })
   }

@@ -46,7 +46,7 @@ describe('SelectionDatePicker', () => {
 
     var dr = {startDate: start, endDate: end, label: ''}
 
-    spyGet = spyOn(queryService, 'getSelectionDates').and.returnValue(dr)
+    spyGet = spyOn(queryService, 'get_selection_dates').and.returnValue(dr)
 
     fixture.detectChanges();
   });

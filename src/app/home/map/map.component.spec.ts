@@ -27,7 +27,7 @@ describe('MapComponent', () => {
   let displayProfilesSpy: jasmine.Spy;
   let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
-  let getSelectionPointsSpy: jasmine.Spy;
+  let get_selection_pointsSpy: jasmine.Spy;
   let getPlatformProfilesSpy: jasmine.Spy;
   let getLatestProfiles: jasmine.Spy;
   let getLastThreeDaysProfiles: jasmine.Spy;
@@ -65,11 +65,11 @@ describe('MapComponent', () => {
 
     const mockPoints = pointsService.getMockPoints()
 
-    const getSelectionPoints = spyOn(pointsService, 'getSelectionPoints').and.returnValue(mockPoints)
+    const get_selection_points = spyOn(pointsService, 'get_selection_points').and.returnValue(mockPoints)
     const getPlatformProfiles = spyOn(pointsService, 'getPlatformProfiles').and.returnValue(mockPoints)
     const getLatestProfiles = spyOn(pointsService, 'getLatestProfiles').and.returnValue(mockPoints)
     const getLastThreeDaysProfiles = spyOn(pointsService, 'getLastThreeDaysProfiles').and.returnValue(mockPoints)
-    const popupWindowCreationSpy = spyOn(mapService, 'popupWindowCreation').and.callThrough()
+    const popupWindowCreationSpy = spyOn(mapService, 'popup_window_creation').and.callThrough()
     spyURL = spyOn(queryService, 'set_url'); 
     displayProfilesSpy = spyOn<any>(component, 'displayProfiles').and.callThrough()
     set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
@@ -181,7 +181,7 @@ describe('MapComponent', () => {
     expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0)
     let drawnItemsBefore = component.mapService.drawnItems.toGeoJSON()
     expect(drawnItemsBefore['features'].length).toEqual(0)
-    queryService.sendShape(shapes, notifiyChange)
+    queryService.send_shape(shapes, notifiyChange)
     expect(set_points_on_mapSpy).toHaveBeenCalledTimes(1)
   })
 

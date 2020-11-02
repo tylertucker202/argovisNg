@@ -54,7 +54,7 @@ export class QueryService {
     this.send_selected_date(selectionDateRange, broadcastChange)
   }
 
-  public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
+  public get_shapes_from_features(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
     let shapes = []
     for(let idx in features){
@@ -84,7 +84,7 @@ export class QueryService {
   public set_url(): void {
 
     //this is reversing the order of this.latLngShapes()
-    const presRangeString = JSON.stringify(this.getPresRange())
+    const presRangeString = JSON.stringify(this.get_pres_range())
     let shapesString = null
     const shapes = this.get_shapes()
     if (shapes) {
@@ -93,8 +93,8 @@ export class QueryService {
     const queryParams = {
                          'mapProj': this.getProj(),
                          'presRange': presRangeString, 
-                         'selectionStartDate': this.getSelectionDates().startDate,
-                         'selectionEndDate': this.getSelectionDates().endDate,
+                         'selectionStartDate': this.get_selection_dates().startDate,
+                         'selectionEndDate': this.get_selection_dates().endDate,
                          'threeDayEndDate': this.getGlobalDisplayDate(),
                          'shapes': shapesString,
                          'includeRealtime': this.get_realtime_toggle(),
@@ -133,7 +133,7 @@ export class QueryService {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
+  public send_shape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
@@ -174,7 +174,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getPresRange(): number[] {
+  public get_pres_range(): number[] {
     return [...this.presRange];
   }
 
@@ -184,7 +184,7 @@ export class QueryService {
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getSelectionDates(): DateRange {
+  public get_selection_dates(): DateRange {
     return this.selectionDateRange;
   }
 
@@ -273,7 +273,7 @@ export class QueryService {
       case 'shapes': {
         const arrays = JSON.parse(value)
         const toggleThreeDayOff = false
-        this.sendShape(arrays, notifyChange, toggleThreeDayOff)
+        this.send_shape(arrays, notifyChange, toggleThreeDayOff)
         break
       }
       case 'selectionStartDate': {

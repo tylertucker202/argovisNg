@@ -241,7 +241,7 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
+  public popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
     const feature = layer.toGeoJSON()
     const shape = this.get_lat_lng_from_feature(feature)
     const transformedShape = this.get_transformed_shape(shape);

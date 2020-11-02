@@ -213,7 +213,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     }
 
     
-    this.queryGridService.sendShape(bboxes, broadcastLayer)
+    this.queryGridService.send_shape(bboxes, broadcastLayer)
     bboxes.forEach( (bbox: number[]) => {
       this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockColorbarRange)
     })

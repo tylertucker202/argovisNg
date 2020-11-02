@@ -43,7 +43,7 @@ export class ArShapePopupComponent implements OnInit {
     let shapes = this.arQueryService.get_shapes()
     shapes? shapes.push(this.shape[0]) : shapes = this.shape
 
-    this.arQueryService.sendShape(shapes, broadcastChange, toggle3DayOff)
+    this.arQueryService.send_shape(shapes, broadcastChange, toggle3DayOff)
   }
 
   public generateURL(goToPage: boolean): string {
@@ -51,7 +51,7 @@ export class ArShapePopupComponent implements OnInit {
     if (goToPage) {
       url += '/page'
     }
-    let dates = this.arQueryService.getSelectionDates();
+    let dates = this.arQueryService.get_selection_dates();
     url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
     if (this.bgcOnlyToggle) {
       url += '&bgcOnly=true'

@@ -99,7 +99,7 @@ export class PointsService {
     return of(this.mockPoints)
   }
 
-  public getSelectionPoints(urlQuery: string): Observable<ProfilePoints[]> {
+  public get_selection_points(urlQuery: string): Observable<ProfilePoints[]> {
     const url = urlQuery;
     return this.http.get<ProfilePoints[]>(url);
   }
