@@ -14,6 +14,8 @@ export class StormPopupComponent implements OnInit {
   @Input() lat: string
   @Input() lon: string
   @Input() date: string
+  @Input() wind: number
+  @Input() pres: number
 
   public greeting: string =  'Hello there! I am an unnamed storm'
 

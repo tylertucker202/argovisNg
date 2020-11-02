@@ -16,7 +16,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
   private tcQueryService: TcQueryService
   private tcMapService: TcMapService
   private tcTrackService: TcTrackService
-  public trackLayer = L.layerGroup()
+  // public trackLayer = L.layerGroup()
   constructor(public injector: Injector) { super(injector)
                                            this.tcQueryService = this.injector.get(TcQueryService)
                                            this.tcMapService = this.injector.get(TcMapService)
@@ -38,13 +38,14 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
   public set_map(): void {
     this.map = this.tcMapService.generate_map(this.proj)
+    this.map.setView([15, 100], 6)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
 
     this.tcMapService.coordDisplay.addTo(this.map)
-    // this.tcMapService.tcTrackItems.addTo(this.map) //special shapes for ar objects
+    this.tcMapService.tcTrackItems.addTo(this.map) //special shapes for track objects
     this.tcMapService.scaleDisplay.addTo(this.map)
-    this.trackLayer.addTo(this.map)
+    // this.trackLayer.addTo(this.map)
     this.markersLayer.addTo(this.map)  
   }
 
@@ -75,20 +76,43 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
     this.tcQueryService.tcEvent
-    .subscribe( (msg: string) => {
-      console.log('tcEvent emitted')
-      const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date())
-      const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
-      tcTracks.subscribe((tcTracks: TcTrack[]) => {
-        if (tcTracks.length !== 0) {
-          this.tcQueryService.set_selection_date_range() // for profiles
-          this.set_tc_tracks(tcTracks)
-        }
-        else {
-            this.notifier.notify( 'warning', 'no tc tracks found for date selected' )
-        }
+      .subscribe( (msg: string) => {
+        console.log('tcEvent emitted')
+        const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date())
+        const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
+        tcTracks.subscribe((tcTracks: TcTrack[]) => {
+          if (tcTracks.length !== 0) {
+            this.tcQueryService.set_selection_date_range() // for profiles
+            this.set_tc_tracks(tcTracks)
+          }
+          else {
+              this.notifier.notify( 'warning', 'no tc tracks found for date selected' )
+          }
+        })
       })
-    })
+
+      this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
+        const layer = event.layer as L.Polygon<any>
+        console.log(`new layer ${layer}`)
+        console.log(layer.getLatLngs())
+        this.tcMapService.tcTrackItems.addLayer(layer); //show rectangles
+        // this.markersLayer.clearLayers()
+        this.tcMapService.popupWindowCreation(layer, this.mapService.drawnItems)
+        const broadcast = true
+        const toggleThreeDayOff = true
+  
+        // const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
+        // const shapes = this.tcQueryService.getShapesFromFeatures(drawnItems)
+        // this.tcQueryService.sendShape(shapes, broadcast, toggleThreeDayOff)
+       });
+  
+      this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
+       });
+  
+      this.map.on('draw:edited', (event: L.DrawEvents.Edited) => {
+      });
+
+    this.tcMapService.tcDrawControl.addTo(this.map);
   }
 
   private set_mock_tc_tracks() {
@@ -102,7 +126,9 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
     for (let idx in tcTracks) {
       let track = tcTracks[idx]
-      this.tcTrackService.add_to_track_layer(track, this.trackLayer)
+      // this.tcTrackService.add_to_track_layer(track, this.trackLayer)
+      console.log(`track ${track}`)
+      this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
     }
   }
 

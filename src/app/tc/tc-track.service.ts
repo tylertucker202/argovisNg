@@ -28,7 +28,7 @@ export class TcTrackService extends PointsService {
     iconUrl: 'assets/img/storm.png',
     iconSize:     [24, 24], 
     iconAnchor:   [12, 12],
-    popupAnchor:  [12, 12]
+    popupAnchor:  [0, 0]
   })
 
   public get_mock_tc(): Observable<TcTrack[]> {
@@ -81,6 +81,8 @@ export class TcTrackService extends PointsService {
       const strLatLng = this.formatLatLng([lon, lat])
       const catagory = trajData['class']
       const geoLocation = trajData['geoLocation']
+      const wind = trajData['wind']
+      const pres = trajData['pres']
 
       const coordArray = this.make_wrapped_lng_lat_coordinates(geoLocation.coordinates);
       for(let jdx=0; jdx<coordArray.length; jdx++) {
@@ -97,6 +99,8 @@ export class TcTrackService extends PointsService {
                     c.instance.lat = strLatLng[0]
                     c.instance.lon = strLatLng[1]
                     c.instance.date = date
+                    c.instance.wind = wind
+                    c.instance.pres = pres
                   })
             );
       })

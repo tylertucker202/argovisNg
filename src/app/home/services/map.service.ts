@@ -7,6 +7,7 @@ import 'proj4leaflet'
 import 'arc'
 import 'leaflet-arc'
 import 'leaflet-draw'
+import 'leaflet-buffer'
 import * as msp from './map.service.parameters'
 declare const L;
 
@@ -90,7 +91,7 @@ export class MapService {
       }
     },
   }
-
+  
   public drawControl = new L.Control.Draw(this.drawOptions);
   public gridDrawControl = new L.Control.Draw(this.gridDrawOptions);
 

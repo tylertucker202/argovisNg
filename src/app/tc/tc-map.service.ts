@@ -20,11 +20,49 @@ export class TcMapService extends MapService {
   constructor(public injector: Injector) { super(injector) }
 
   public tcTrackItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
+
+  public tcDrawOptions = {
+    position: 'topleft',
+    draw: {
+      polygon: {
+          allowIntersection: <false> false,
+          shapeOptions: {
+            color: '#983fb2',
+            weight: 4
+          },
+      },
+      rectangle: <false> false,
+      polyline: <false> false,
+      lineString: <false> false,
+      marker: <false> false,
+      circlemarker: <false> false, 
+      circle: <false> false
+    },
+    edit: {
+      featureGroup: this.tcTrackItems,
+      polygon: {
+        allowIntersection: <false> false
+      },
+      remove: true,
+      buffer: {
+        replacePolylines: false,
+        separateBuffer: true,
+        bufferStyle: {
+          color: '#983fb2',
+          weight: 4,
+          opacity: .5
+        },
+      },
+    },
+  }
   public tcTrackOptions = { 
-                            color: '#FF8C00', //pink: #C71585 orange: #FF8C00
+                            color: '#FF8C00', //pink: #C71585 orange: #FF8C00 purple: #983fb2
                             weight: 4,
                             opacity: .5
                           }
+
+
+  public tcDrawControl = new L.Control.Draw(this.tcDrawOptions);
 
   public tc_popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void {
     const feature = layer.toGeoJSON() as Feature<Polygon>
