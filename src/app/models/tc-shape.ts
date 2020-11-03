@@ -4,7 +4,9 @@ export interface TcTrack {
 	name : string,
 	num : number,
 	source : string,
-	traj_data : TrajData[]
+    traj_data : TrajData[]
+    startDate?: Date,
+    endDate?: Date,
 }
 
 export interface TrajData {
