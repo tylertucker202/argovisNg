@@ -1,17 +1,11 @@
 <div class="tc-sidebar-nav">
     <app-db-overview></app-db-overview>
-    <!-- <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
+    <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
       <mat-icon aria-label="clear profile and shape layers">layers_clear</mat-icon>
     </button>
     <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
       <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
-    </button> -->
-    <!-- <mat-slide-toggle 
-    id="three-day-toggle" 
-    matTooltip="toggle on query global profiles within hour range below"
-    color="accent" [checked]="displayGlobally"
-    (change)="displayGlobalChange($event.checked)">Query profiles globally
-    </mat-slide-toggle>
+    </button>
     <div><b>Display options:</b></div>
     <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                      color="accent" [checked]="includeRT"
@@ -24,5 +18,5 @@
     <mat-slide-toggle matTooltip="toggle on to show only Deep profiles"
                       color="accent" [checked]="onlyDeep"
                       (change)="deepChange($event.checked)">Show only Deep
-    </mat-slide-toggle> -->
+    </mat-slide-toggle>
   </div>

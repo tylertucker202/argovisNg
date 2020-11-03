@@ -1,6 +1,6 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { SidebarNavComponent } from './../../home/sidebar-nav/sidebar-nav.component'
-import { ArQueryService } from './../ar-query.service'
+import { SidebarNavComponent } from '../../home/sidebar-nav/sidebar-nav.component'
+import { ArQueryService } from '../ar-query.service'
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 

@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { Options } from 'nouislider'
 import { ArQueryService } from '../../ar-query.service'
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-ar-hour-range',
@@ -15,11 +14,12 @@ export class ArHourRangeComponent implements OnInit {
   public sliderRange: number[];
   public lRange: number;
   public uRange: number;
-  constructor( private arQueryService: ArQueryService ) { }
+  constructor( private arQueryService: ArQueryService) {}
 
   ngOnInit() {
 
     this.setSliderRange()
+    
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
       range: { min: -36, max: 36 },
@@ -33,14 +33,11 @@ export class ArHourRangeComponent implements OnInit {
         density: 4
       }
     }
-    const newRange = this.arQueryService.get_ar_date_range()
-    const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
-    this.sliderRange[0] = nRange[0]
-    this.sliderRange[1] = nRange[1]
 
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
       this.setSliderRange()
     })
+
   }
 
   public minValuechange(newLowPres: number ): void {
@@ -68,6 +65,8 @@ export class ArHourRangeComponent implements OnInit {
   public sliderChange(sliderRange: number[]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
+    this.lRange = this.sliderRange[0]
+    this.uRange = this.sliderRange[1]
     this.updateSelectDates()
   }
 }

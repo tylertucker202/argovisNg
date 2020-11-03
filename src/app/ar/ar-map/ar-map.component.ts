@@ -58,7 +58,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
       .subscribe( () => {
         this.arQueryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.arMapService.arShapeItems.clear_layers()
+        this.arMapService.arShapeItems.clearLayers()
         this.arQueryService.set_url()
       })
     this.arQueryService.resetToStart
@@ -66,7 +66,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
         this.arQueryService.clear_shapes()
         this.markersLayer.clearLayers()
         // this.arMapService.drawnItems.clear_layers()
-        this.arMapService.arShapeItems.clear_layers()
+        this.arMapService.arShapeItems.clearLayers()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
     this.arQueryService.arEvent

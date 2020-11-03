@@ -47,8 +47,6 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     HttpClientModule,
     BrowserAnimationsModule,
     NouisliderModule,
-    FormsModule,
-    ReactiveFormsModule,
     NgxDaterangepickerMd.forRoot(),
     MaterialModule,
   ],
@@ -77,6 +75,8 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     HelpBottomSheetComponent,
     HelpBottomSheet,
     NouisliderModule,
+    FormsModule,
+    ReactiveFormsModule,
     NgxDaterangepickerMd
   ]
 })

@@ -80,16 +80,16 @@ export class TcMapComponent extends MapComponent implements OnInit {
       .subscribe( (msg: string) => {
         console.log('tcEvent emitted')
         const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date())
-        const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
-        tcTracks.subscribe((tcTracks: TcTrack[]) => {
-          if (tcTracks.length !== 0) {
-            this.tcQueryService.set_selection_date_range() // for profiles
-            this.set_tc_tracks(tcTracks)
-          }
-          else {
-              this.notifier.notify( 'warning', 'no tc tracks found for date selected' )
-          }
-        })
+        // const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
+        // tcTracks.subscribe((tcTracks: TcTrack[]) => {
+        //   if (tcTracks.length !== 0) {
+        //     this.tcQueryService.set_selection_date_range() // for profiles
+        //     this.set_tc_tracks(tcTracks)
+        //   }
+        //   else {
+        //       this.notifier.notify( 'warning', 'no tc tracks found for date selected' )
+        //   }
+        // })
       })
 
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings

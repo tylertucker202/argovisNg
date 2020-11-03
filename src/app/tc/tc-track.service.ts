@@ -39,7 +39,13 @@ export class TcTrackService extends PointsService {
     return of(carlottaTraj)
   }
 
-  public get_tc_tracks(url=''): Observable<TcTrack[]> {
+  public get_tc_tracks_by_date_range(startDate: Date, endDate: Date): Observable<TcTrack[]> {
+    let url = `/findByDate?startDate=${startDate}&endDate=${endDate}`
+    return this.http.get<TcTrack[]>(url)
+  }
+
+  public get_tc_tracks_by_name(name: string): Observable<TcTrack[]> {
+    let url = `/findByName?name=${name}`
     return this.http.get<TcTrack[]>(url)
   }
 
