@@ -99,7 +99,7 @@ export class ArQueryService extends QueryService {
     return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
   }
 
-  public get_ar_dateAsDateRange(): DateRange {
+  public get_ar_date_as_date_range(): DateRange {
     const startDate = this.format_date(this.arDate.clone().add(this.arHourRange[0], 'h'))
     const endDate = this.format_date(this.arDate.clone().add(this.arHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}

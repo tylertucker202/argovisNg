@@ -23,7 +23,7 @@ export class ArDisplayComponent implements OnInit {
               private arQueryService: ArQueryService,
               private arMapService: ArMapService,
               private notifierService: NotifierService ) { this.notifier = notifierService }
-  private arDate: moment.Moment;
+  private date: moment.Moment;
   private readonly notifier: NotifierService
   public arFormDate: FormControl
   
@@ -42,45 +42,45 @@ export class ArDisplayComponent implements OnInit {
   ];
 
   ngOnInit() { 
-    this.arDate = this.arQueryService.get_ar_date()
-    this.arFormDate = new FormControl( this.arDate.toDate() )
-    this.hour = this.arDate.hour() 
+    this.date = this.arQueryService.get_ar_date()
+    this.arFormDate = new FormControl( this.date.toDate() )
+    this.hour = this.date.hour() 
     this.set_ar_shapes()
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
-      this.arDate = this.arQueryService.get_ar_date()
-      this.arFormDate = new FormControl(this.arDate.toDate())
-      this.hour = this.arDate.hour()
+      this.date = this.arQueryService.get_ar_date()
+      this.arFormDate = new FormControl(this.date.toDate())
+      this.hour = this.date.hour()
       this.set_ar_shapes()
     })
   }
 
   dateChanged(): void {
-    this.arFormDate = new FormControl(this.arDate.toDate())
-    this.arQueryService.send_ar_date(this.arDate)
+    this.arFormDate = new FormControl(this.date.toDate())
+    this.arQueryService.send_ar_date(this.date)
     this.arQueryService.set_url()
     this.set_ar_shapes() //remove if you don't want to fire ar event
   }
 
   timeChange(hour: number): void {
     this.hour = hour
-    this.arDate.hour(this.hour)
+    this.date.hour(this.hour)
     this.dateChanged()
   }
 
   calendarDateChanged(calDate: Date): void {
-    this.arDate = moment(calDate).hour(this.hour)
+    this.date = moment(calDate).hour(this.hour)
     this.dateChanged()
   }
 
   public incrementDay(increment: number): void {
-    this.arDate = this.arDate.add(increment, 'd')
+    this.date = this.date.add(increment, 'd')
     this.dateChanged()
   }
 
   public incrementHour(increment: number): void {
-    this.arDate = this.arDate.add(increment, 'h')
+    this.date = this.date.add(increment, 'h')
     this.dateChanged()
-    this.hour = this.arDate.hour()
+    this.hour = this.date.hour()
   }
 
   public set_ar_shapes(): void {

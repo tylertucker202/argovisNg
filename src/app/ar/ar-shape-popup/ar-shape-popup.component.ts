@@ -65,7 +65,7 @@ export class ArShapePopupComponent implements OnInit {
 
   public generateHomepageURL(): string {
     let url = '/ng/home?'
-    const dateRange = this.arQueryService.get_ar_dateAsDateRange()
+    const dateRange = this.arQueryService.get_ar_date_as_date_range()
     url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
     url += '&includeRealtime=' + JSON.stringify(this.arQueryService.get_realtime_toggle()) +
      '&onlyBGC=' + JSON.stringify(this.arQueryService.get_bgc_toggle()) + 

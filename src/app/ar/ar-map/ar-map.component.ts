@@ -134,7 +134,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
   private setShapeProfiles(shapeArrays: number[][][], sendNotification=true): void { 
     this.markersLayer.clearLayers()
     let base = '/selection/profiles/map'
-    const daterange = this.arQueryService.get_ar_dateAsDateRange()
+    const daterange = this.arQueryService.get_ar_date_as_date_range()
 
     shapeArrays.forEach( (shape) => {
       const transformedShape = this.arMapService.get_transformed_shape(shape)
@@ -160,7 +160,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
 
   private setGlobalProfiles(): void {
 
-    const dateRange = this.arQueryService.get_ar_dateAsDateRange()
+    const dateRange = this.arQueryService.get_ar_date_as_date_range()
     this.pointsService.getGlobalMapProfiles(dateRange.startDate, dateRange.endDate)
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {

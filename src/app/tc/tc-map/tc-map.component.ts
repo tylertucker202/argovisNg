@@ -60,12 +60,13 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.tcQueryService.set_url()
         this.markersLayer.clearLayers()
         this.set_points_on_tc_map()
+        this.set_mock_tc_tracks()
         })
     this.tcQueryService.clear_layers
       .subscribe( () => {
         this.tcQueryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.tcMapService.tcTrackItems.clear_layers()
+        this.tcMapService.tcTrackItems.clearLayers()
         this.tcQueryService.set_url()
       })
     this.tcQueryService.resetToStart
@@ -73,13 +74,15 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.tcQueryService.clear_shapes()
         this.markersLayer.clearLayers()
         // this.tcMapService.drawnItems.clear_layers()
-        this.tcMapService.tcTrackItems.clear_layers()
+        this.tcMapService.tcTrackItems.clearLayers()
+        this.set_mock_tc_tracks()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+
       })
     this.tcQueryService.tcEvent
       .subscribe( (msg: string) => {
         console.log('tcEvent emitted')
-        const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date())
+        // const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date_range())
         // const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
         // tcTracks.subscribe((tcTracks: TcTrack[]) => {
         //   if (tcTracks.length !== 0) {
@@ -118,6 +121,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
   private set_mock_tc_tracks() {
     const tcTracks = this.tcTrackService.get_mock_tc()
+    console.log('setting mock tc tracks')
     tcTracks.subscribe((tcTracks: TcTrack[]) => {
       this.set_tc_tracks(tcTracks)
     })
