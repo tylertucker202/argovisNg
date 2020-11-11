@@ -30,15 +30,17 @@ export class TcMapComponent extends MapComponent implements OnInit {
   this.set_params_and_events()
   this.proj = 'WM'
   this.wrapCoordinates = true
-  this.set_points_on_map()
-  this.set_mock_tc_tracks()
+  // this.set_points_on_map()
+  // this.set_mock_tc_tracks()
+  this.set_tc_tracks_by_date_range()
   this.invalidate_size()
-
   }
 
   public set_map(): void {
     this.map = this.tcMapService.generate_map(this.proj)
-    this.map.setView([15, 100], 6)
+    this.startView = L.latLng(15, -150)
+    this.startZoom = 6
+    this.map.setView(this.startView, this.startZoom)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
 
@@ -59,45 +61,45 @@ export class TcMapComponent extends MapComponent implements OnInit {
         console.log('change emitted:', msg)
         this.tcQueryService.set_url()
         this.markersLayer.clearLayers()
+        // this.tcMapService.tcTrackItems.clearLayers()
+        // this.tcMapService.drawnItems.clearLayers()
         this.set_points_on_tc_map()
-        this.set_mock_tc_tracks()
+        this.set_tc_tracks_by_date_range()
+        // this.set_mock_tc_tracks()
         })
     this.tcQueryService.clear_layers
       .subscribe( () => {
-        this.tcQueryService.clear_shapes()
         this.markersLayer.clearLayers()
         this.tcMapService.tcTrackItems.clearLayers()
+        this.tcQueryService.clear_shapes()
+        // this.tcMapService.drawnItems.clearLayers()
         this.tcQueryService.set_url()
       })
     this.tcQueryService.resetToStart
       .subscribe( () => {
-        this.tcQueryService.clear_shapes()
         this.markersLayer.clearLayers()
-        // this.tcMapService.drawnItems.clear_layers()
         this.tcMapService.tcTrackItems.clearLayers()
-        this.set_mock_tc_tracks()
+        this.tcQueryService.clear_shapes()
+        this.tcMapService.drawnItems.clearLayers()
+        this.set_tc_tracks_by_date_range()
+        // this.set_mock_tc_tracks()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
+        this.tcQueryService.set_url()
 
       })
     this.tcQueryService.tcEvent
-      .subscribe( (msg: string) => {
-        console.log('tcEvent emitted')
-        // const dateString = this.tcQueryService.format_date(this.tcQueryService.get_tc_date_range())
-        // const tcTracks = this.tcTrackService.get_tc_tracks(dateString)
-        // tcTracks.subscribe((tcTracks: TcTrack[]) => {
-        //   if (tcTracks.length !== 0) {
-        //     this.tcQueryService.set_selection_date_range() // for profiles
-        //     this.set_tc_tracks(tcTracks)
-        //   }
-        //   else {
-        //       this.notifier.notify( 'warning', 'no tc tracks found for date selected' )
-        //   }
-        // })
+      .subscribe( (stormNameYear: string) => {
+        console.log('tcEvent emitted', stormNameYear)
+        this.markersLayer.clearLayers()
+        this.tcMapService.tcTrackItems.clearLayers()
+        this.tcQueryService.clear_shapes()
+        this.set_tc_track_by_storm_name_year(stormNameYear)
+
+
       })
 
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
         const layer = event.layer as L.Polygon<any>
-        console.log(`new layer ${layer}`)
         console.log(layer.getLatLngs())
         this.tcMapService.tcTrackItems.addLayer(layer); //show rectangles
         // this.markersLayer.clearLayers()
@@ -106,7 +108,8 @@ export class TcMapComponent extends MapComponent implements OnInit {
         const toggleThreeDayOff = true
   
         const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
-        const shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
+        let shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
+        shapes = this.round_shapes(shapes)
         this.tcQueryService.send_shape(shapes, broadcast, toggleThreeDayOff)
        });
   
@@ -119,22 +122,43 @@ export class TcMapComponent extends MapComponent implements OnInit {
     this.tcMapService.tcDrawControl.addTo(this.map);
   }
 
+  public round_shapes(shapes: number[][][]): number[][][] {
+    shapes.forEach(shape => {
+      shape.forEach( point => {
+        point[0] = Math.round((point[0] + Number.EPSILON) * 100) / 100
+        point[1] = Math.round((point[1] + Number.EPSILON) * 100) / 100
+      })
+    })
+    return shapes
+  }
+
   private set_mock_tc_tracks() {
     const tcTracks = this.tcTrackService.get_mock_tc()
-    console.log('setting mock tc tracks')
     tcTracks.subscribe((tcTracks: TcTrack[]) => {
       this.set_tc_tracks(tcTracks)
     })
   }
 
-  private set_tc_tracks(tcTracks: TcTrack[]) {
+  private set_tc_tracks_by_date_range(): void {
+    const [startDate, endDate] = this.tcQueryService.get_tc_date_range()
+    const tcTracks = this.tcTrackService.get_tc_tracks_by_date_range(startDate, endDate)
+    tcTracks.subscribe((tcTracks: TcTrack[]) => {
+      this.set_tc_tracks(tcTracks)
+    })
+  }
 
-    for (let idx in tcTracks) {
-      let track = tcTracks[idx]
-      // this.tcTrackService.add_to_track_layer(track, this.trackLayer)
-      console.log(`track ${track}`)
+  private set_tc_track_by_storm_name_year(stormNameYear: string): void {
+    const [name, year] = stormNameYear.split('-')
+    const tcTrack = this.tcTrackService.get_tc_tracks_by_name_year(name, year)
+    tcTrack.subscribe((tcTracks: TcTrack[]) => {
+      this.tcTrackService.add_to_track_layer(tcTracks[0], this.tcMapService.tcTrackItems)
+    })
+  }
+
+  private set_tc_tracks(tcTracks: TcTrack[]) {
+    tcTracks.forEach((track: TcTrack) => {
       this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
-    }
+    })
   }
 
   public set_points_on_tc_map(sendNotification=true): void {
@@ -142,8 +166,10 @@ export class TcMapComponent extends MapComponent implements OnInit {
     if (shapeArrays) {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
-      const daterange = this.queryService.get_selection_dates()
-      const presRange = this.queryService.get_pres_range()
+      const daterange = this.tcQueryService.get_selection_dates()
+      const presRange = this.tcQueryService.get_pres_range()
+
+      console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.tcMapService.get_transformed_shape(shape)

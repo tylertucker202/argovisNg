@@ -7,37 +7,44 @@ import { TcTrack } from '../models/tc-shape'
 @Injectable({
   providedIn: 'root'
 })
-export class TcQueryService extends QueryService{
+export class TcQueryService extends QueryService {
 
   @Output() tcEvent: EventEmitter<string> = new EventEmitter
 
-  private tcStartDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
-  private tcEndDate = moment(new Date( 2010, 0, 15, 0, 0, 0, 0))
+
+  private tcStartDate = moment(new Date( 2018, 7, 15, 0, 0, 0, 0))
+  private tcEndDate = moment(new Date( 2018, 7, 17, 0, 0, 0, 0))
   private tcTracks: number[][][]
-  private profHourRange = [-18, 18]
+  private profHourRange = [-18, 18] as [number, number]
   private displayGlobally = true
+  public selectionDateRange = this.convert_hour_range_to_date_range(this.tcStartDate, this.tcEndDate, this.profHourRange, 'inital set date range')
 
   constructor( public injector: Injector ) { super(injector) }
 
   public reset_params(): void{
-    console.log('reset params pressed')
+    console.log('tc reset params pressed')
     const broadcastChange = false
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
-    const tcStartDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
-    const tcEndDate = moment(new Date( 2010, 0, 15, 0, 0, 0, 0))
-    const profHourRange = [-18, 18]
+    const tcStartDate = moment(new Date( 2018, 7, 15, 0, 0, 0, 0))
+    const tcEndDate = moment(new Date( 2018, 7, 17, 0, 0, 0, 0))
+    const profHourRange = [-18, 18] as [number, number]
     this.send_display_globally(true, broadcastChange)
-    const selectionDateRange: DateRange = {
-                          startDate: tcStartDate.add(profHourRange[0], 'hours').format('YYYY-MM-DD'),
-                          endDate: tcEndDate.add(profHourRange[1], 'hours').format('YYYY-MM-DD'),
-                          label: 'initial profile query date range'
-                        };
+    const selectionDateRange = this.convert_hour_range_to_date_range(tcStartDate, tcEndDate, profHourRange)
     this.send_selected_date(selectionDateRange, broadcastChange)
-    this.send_tc_start_date(tcStartDate)
-    this.send_tc_end_date(tcEndDate)
+    this.send_tc_start_date(tcStartDate, broadcastChange)
+    this.send_tc_end_date(tcEndDate, broadcastChange)
     // this.send_prof_date_range(profHourRange)
+  }
+
+  public convert_hour_range_to_date_range(startDate: moment.Moment, endDate: moment.Moment, hourRange: [number, number], msg=''): DateRange {
+    const dateRange: DateRange = {
+      startDate: startDate.clone().add(hourRange[0], 'hours').format('YYYY-MM-DDTHH:mm:ss'),
+      endDate: endDate.clone().add(hourRange[1], 'hours').format('YYYY-MM-DDTHH:mm:ss'),
+      label: 'msg'
+    };
+    return dateRange
   }
 
   public trigger_reset_to_start(): void {
@@ -56,10 +63,10 @@ export class TcQueryService extends QueryService{
 
 
   public set_url(): void {
-
+    console.log('setting tc url')
     const profDateRangeString = JSON.stringify(this.profHourRange)
-    const tcStartDateString = this.tcStartDate.format('YYYY-MM-DDTHH')
-    const tcEndDateString = this.tcEndDate.format('YYYY-MM-DDTHH')
+    const tcStartDateString = this.tcStartDate.format('YYYY-MM-DDTHH:mm:ss')
+    const tcEndDateString = this.tcEndDate.format('YYYY-MM-DDTHH:mm:ss')
     let shapesString = null
      const shapes = this.get_shapes()
      if (shapes) {
@@ -72,6 +79,8 @@ export class TcQueryService extends QueryService{
                          'profHourRange': profDateRangeString,
                          'tcStartDate': tcStartDateString,
                          'tcEndDate': tcEndDateString,
+                         'selectionStartDate': this.get_selection_dates().startDate,
+                         'selectionEndDate': this.get_selection_dates().endDate,
                          'displayGlobally': this.get_display_globally(),
                          'shapes': shapesString
                         }
@@ -92,13 +101,11 @@ export class TcQueryService extends QueryService{
     if (broadcastChange) { this.change.emit('displayGlobally changed')}
   }
 
-  public send_prof_date_range(sliderRange: [number, number], broadcastChange=true): void {
-    const selectionDateRange: DateRange = {
-      startDate: this.tcStartDate.add(sliderRange[0], 'hours').format('YYYY-MM-DD'),
-      endDate: this.tcEndDate.add(sliderRange[1], 'hours').format('YYYY-MM-DD'),
-      label: 'initial profile query date range'
-    };
-this.send_selected_date(selectionDateRange, broadcastChange)
+
+  public send_prof_date_range(sliderRange: [number, number], broadcastChange=true, msg=''): void {
+    this.profHourRange = sliderRange
+    this.selectionDateRange = this.convert_hour_range_to_date_range(this.tcStartDate, this.tcEndDate, sliderRange, msg)
+    if (broadcastChange) { this.change.emit('prof date range changed')}
   }
 
   public get_tc_date_range(): [moment.Moment, moment.Moment] {
@@ -115,14 +122,14 @@ this.send_selected_date(selectionDateRange, broadcastChange)
     if (broadcastChange) { this.change.emit('tcEndDate changed')}
   }
 
-  public get_prof_date_range(): number[] {
-    return [...this.profHourRange]
+  public set_prof_hour_range(sliderRange: [number, number], broadcastChange=true): void {
+    this.profHourRange = [...sliderRange] as [number, number]
+    if (broadcastChange) { this.change.emit('slider range changed')}
   }
 
-  // public send_prof_date_range(dateRange: number[], broadcastChange=true): void {
-  //   this.profHourRange = dateRange
-  //   if (broadcastChange) { this.change.emit('prof date range change') }
-  // }
+  public get_prof_hour_range(): [number, number] | number[] {
+    return [...this.profHourRange]
+  }
 
   public format_date(date: moment.Moment): string {
     return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
@@ -144,10 +151,10 @@ this.send_selected_date(selectionDateRange, broadcastChange)
     return this.tcTracks
   }
 
-  public set_params_from_url(msg='got state from map component'): void{
-    let mapState: MapState
+  public set_params_from_url(msg='got state from map component'): void {
+    // let mapState: MapState
     this.route.queryParams.subscribe(params => {
-      mapState = params
+      let mapState = params
       Object.keys(mapState).forEach(key => {
         this.tc_set_map_state(key, mapState[key])
       });
@@ -182,17 +189,27 @@ this.send_selected_date(selectionDateRange, broadcastChange)
       }
       case 'profHourRange': {
         const tcHourRange = JSON.parse(value)
-        this.send_prof_date_range(tcHourRange)
+        this.send_prof_date_range(tcHourRange, notifyChange)
         break
       }
       case 'tcStartDate': {
         const tcDate = moment(value)
-        this.send_tc_start_date(tcDate)
+        this.send_tc_start_date(tcDate, notifyChange)
         break
       }
       case 'tcEndDate': {
         const tcDate = moment(value)
-        this.send_tc_end_date(tcDate)
+        this.send_tc_end_date(tcDate, notifyChange)
+        break
+      }
+      case 'selectionStartDate': {
+        const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
+        this.send_selected_date(stateDateRange, notifyChange)
+        break
+      }
+      case 'selectionEndDate': {
+        const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
+        this.send_selected_date(stateDateRange, notifyChange)
         break
       }
       case 'shapes': {

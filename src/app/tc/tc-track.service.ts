@@ -39,13 +39,13 @@ export class TcTrackService extends PointsService {
     return of(carlottaTraj)
   }
 
-  public get_tc_tracks_by_date_range(startDate: Date, endDate: Date): Observable<TcTrack[]> {
-    let url = `/findByDate?startDate=${startDate}&endDate=${endDate}`
+  public get_tc_tracks_by_date_range(startDate: moment.Moment, endDate: moment.Moment): Observable<TcTrack[]> {
+    let url = `/tc/findByDateRange?startDate=${startDate.format('YYYY-MM-DDTHH:mm:ss')}&endDate=${endDate.format('YYYY-MM-DDTHH:mm:ss')}`
     return this.http.get<TcTrack[]>(url)
   }
 
-  public get_tc_tracks_by_name(name: string): Observable<TcTrack[]> {
-    let url = `/findByName?name=${name}`
+  public get_tc_tracks_by_name_year(name: string, year: string): Observable<TcTrack[]> {
+    let url = `/tc/findByNameYear?name=${name}&year=${year}`
     return this.http.get<TcTrack[]>(url)
   }
 
@@ -53,19 +53,23 @@ export class TcTrackService extends PointsService {
     return this.http.get<TcTrajTrack[]>(url)
   }
 
+  public get_storm_names(): Observable<string[]> {
+    return this.http.get<string[]>('/tc/stormNameList')
+  }
+
   public make_wrapped_latLngs(latLngs: number[][]): number[][][] {
-    let wraps = []
+    let wraps = new Set()
     latLngs.forEach( (lat, lng) => {
       if (-90 > lng && lng > -180) { //duplicate to the right
-        wraps.push(1)
+        wraps.add(1)
       }
       else if (90 > lng && lng < 180) { //duplicate to the left
-        wraps.push(-1)
+        wraps.add(-1)
       }
     })
 
     let wrappedLngLats = [latLngs]
-    wraps.forEach( sign => {
+    wraps.forEach( (sign: number) => {
       const wll = latLngs.map( x => [x[0], x[1] + 360 * sign])
       wrappedLngLats.push(wll)
     })
@@ -73,11 +77,33 @@ export class TcTrackService extends PointsService {
     return wrappedLngLats
   }
 
+
+  public anti_meridian_transform(latLngs: number[][]): number[][] {
+    //if tc has lon range > 270, assume tc crosses antimeridian
+    const lngs = latLngs.map( (latLng: number[]) => { return latLng[1]; });
+    const lonMax = lngs.reduce((a, b) => Math.max(a, b))
+    const lonMin = lngs.reduce((a, b) => Math.min(a, b))
+    const lonRange = lonMax - lonMin
+    if (lonRange > 270) {
+      latLngs.forEach( (latLng: number[]) => {
+        if (latLng[1] >= 0) {
+          latLng[1] -= 360
+        }
+      })
+    }
+  
+    return latLngs
+  }
+
   public add_to_track_layer(track: TcTrack, trackLayer: L.LayerGroup): L.LayerGroup {
     let trajDataArr: TrajData[] = track['traj_data']
-    const name = track['name']
+    let name = track['name']
+    if (!name) {
+      name = 'UNNAMED'
+    }
     const source = track['source']
     let latLngs = []
+    // console.log('storm name:', name)
     for (let idx=0; idx<trajDataArr.length; ++idx) {
       const trajData = trajDataArr[idx]
       const lat = trajData['lat']
@@ -89,7 +115,6 @@ export class TcTrackService extends PointsService {
       const geoLocation = trajData['geoLocation']
       const wind = trajData['wind']
       const pres = trajData['pres']
-
       const coordArray = this.make_wrapped_lng_lat_coordinates(geoLocation.coordinates);
       for(let jdx=0; jdx<coordArray.length; jdx++) {
         let marker;
@@ -112,12 +137,12 @@ export class TcTrackService extends PointsService {
       })
       trackLayer.addLayer(marker);
       }
-
-      const wrappedLatLngs = this.make_wrapped_latLngs(latLngs)
-      for(let jdx = 0; jdx<wrappedLatLngs.length; jdx++){
-        const pl = L.polyline(wrappedLatLngs[jdx] as L.LatLngExpression[])
-        trackLayer.addLayer(pl)
-      }
+    }
+    latLngs = this.anti_meridian_transform(latLngs)
+    const wrappedLatLngs = this.make_wrapped_latLngs(latLngs)
+    for(let jdx = 0; jdx<wrappedLatLngs.length; jdx++){
+      const pl = L.polyline(wrappedLatLngs[jdx] as L.LatLngExpression[])
+      trackLayer.addLayer(pl)
     }
     return trackLayer
   }

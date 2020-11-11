@@ -32,16 +32,12 @@ export class TcDisplayComponent implements OnInit {
   public startHour: number
   public endHour: number
   public MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
-  public MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
+  public MAX_DATE = new Date()
   public hours: DropDownSelection[] = [
     {value: 0, viewValue: '0:00'},
-    {value: 3, viewValue: '3:00'},
     {value: 6, viewValue: '6:00'},
-    {value: 9, viewValue: '9:00'},
     {value: 12, viewValue: '12:00'},
-    {value: 15, viewValue: '15:00'},
     {value: 18, viewValue: '18:00'},
-    {value: 21, viewValue: '21:00'},
   ];
 
   private reset_dates(): void {
@@ -120,8 +116,8 @@ export class TcDisplayComponent implements OnInit {
 
   public set_tc_tracks(): void {
     this.tcQueryService.sendThreeDayMsg(false, false)
-    this.tcQueryService.clear_layers.emit('tc shapes being drawn')
-    this.tcQueryService.tcEvent.emit('tc shapes being drawn')
+    // this.tcQueryService.clear_layers.emit('tc shapes being drawn')
+    // this.tcQueryService.tcEvent.emit('tc shapes being drawn')
   }
     
 

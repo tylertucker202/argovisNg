@@ -1,0 +1,16 @@
+<form class="example-form">
+    <mat-form-field class="example-full-width">
+      <input type="text"
+             placeholder="storm-year"
+             aria-label="Number"
+             matInput
+             [formControl]="stormControl"
+             [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="stormChange($event.option.value)" >
+        <mat-option *ngFor="let storm of (filteredStorms | async)" [value]="storm">
+          {{storm}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+  

@@ -11,7 +11,7 @@ import { TcQueryService } from '../../tc-query.service'
 })
 export class TcHourRangeComponent implements OnInit {
   public config: Options;
-  public sliderRange: number[];
+  public sliderRange: [number, number];
   public lRange: number;
   public uRange: number;
   constructor( private tcQueryService: TcQueryService) {}
@@ -43,31 +43,30 @@ export class TcHourRangeComponent implements OnInit {
   public minValuechange(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
-    this.updateSelectDates();
+    this.updateHourRange();
   }
 
   public maxValuechange(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
-    this.updateSelectDates();
+    this.updateHourRange();
   }
 
   public setSliderRange(): void {
-    // this.sliderRange = this.tcQueryService.get_tc_date_range()
-    this.sliderRange = [-48, 48]
+    this.sliderRange = this.tcQueryService.get_prof_hour_range() as [number, number]
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
   }
 
-  public updateSelectDates(): void {
-    this.tcQueryService.send_tc_date_range(this.sliderRange)
+  public updateHourRange(): void {
+    this.tcQueryService.send_prof_date_range(this.sliderRange, true, 'slider change')
   }
 
-  public sliderChange(sliderRange: number[]) {
+  public sliderChange(sliderRange: [number, number]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
-    this.updateSelectDates()
+    this.updateHourRange()
   }
 }

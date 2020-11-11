@@ -16,9 +16,9 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000]
-  private selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                           endDate: moment().utc().format('YYYY-MM-DD')}
-  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
+  public selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DDTHH:mm:ss'),
+                                           endDate: moment().utc().format('YYYY-MM-DDTHH:mm:ss')}
+  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss')
   private latLngShapes: number[][][]
   private includeRealtime = true
   private onlyBGC = false
@@ -40,7 +40,7 @@ export class QueryService {
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
-    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
+    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss');
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
@@ -48,8 +48,8 @@ export class QueryService {
     let selectionDateRange: DateRange
     let sendThreeDayMsg: boolean
     sendThreeDayMsg = true
-    selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-    endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
+    selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DDTHH:mm:ss'),
+    endDate: moment().utc().format('YYYY-MM-DDTHH:mm:ss'), label: 'initial date range'};
     this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
     this.send_selected_date(selectionDateRange, broadcastChange)
   }

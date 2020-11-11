@@ -1,4 +1,4 @@
-<h1  id="row" mat-dialog-title>Tropical Cyclone selection:</h1>
+<h1  id="row" mat-dialog-title>Global Tropical Cyclone Selection:</h1>
 <div id="dialog-form" mat-dialog-content>
   <p  id="row">Pick a start/end date and time</p>
 <div id="row">
@@ -18,16 +18,16 @@
   <button mat-icon-button matTooltip="+1 day" (click)="incrementDay(1, true)"  id="plusOne">+1</button>
 </div>
 <div id="row">
-  <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, true)"  id="minusThree">-3</button>
+  <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, true)"  id="minusSix">-6</button>
   <mat-form-field id="timeInput">
-    <mat-select placeholder="Choose Hour" matTooltip="Time in three hour incrments"
+    <mat-select placeholder="Choose Hour" matTooltip="Time in six hour incrments"
      [(value)]="startHour" (selectionChange)="timeChange($event.value, true)">
       <mat-option *ngFor="let hour of hours" [value]="hour.value">
         {{hour.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, true)"  id="plusThree">+3</button>
+  <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, true)"  id="plusSix">+6</button>
 </div>
 <div id="row">
     <button mat-icon-button matTooltip="-1 day" (click)="incrementDay(-1, true)"  id="minusOne">-1</button>
@@ -46,14 +46,14 @@
     <button mat-icon-button matTooltip="+1 day" (click)="incrementDay(1, false)"  id="plusOne">+1</button>
   </div>
   <div id="row">
-    <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, false)"  id="minusThree">-3</button>
+    <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, false)"  id="minusSix">-6</button>
     <mat-form-field id="timeInput">
-      <mat-select placeholder="Choose Hour" matTooltip="Time in three hour incrments"
+      <mat-select placeholder="Choose Hour" matTooltip="Time in six hour incrments"
        [(value)]="endHour" (selectionChange)="timeChange($event.value, false)">
         <mat-option *ngFor="let hour of hours" [value]="hour.value">
           {{hour.viewValue}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, false)"  id="plusThree">+3</button>
+    <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, false)"  id="plusSix">+6</button>
   </div>
