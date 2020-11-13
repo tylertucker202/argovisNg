@@ -169,7 +169,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
       const daterange = this.tcQueryService.get_selection_dates()
       const presRange = this.tcQueryService.get_pres_range()
 
-      console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
+      // console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.tcMapService.get_transformed_shape(shape)
