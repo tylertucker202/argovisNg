@@ -1,0 +1,28 @@
+<section class="mat-typography">
+    <p> Hello, I'm a {{message}}! </p>
+    <mat-slide-toggle 
+    id="bgc-toggle" matTooltip="toggle on to query BGC profiles only (green dots)"
+    color="accent" [checked]="bgcOnlyToggle"
+    (change)="bgc_only_change($event.checked)">Filter BGC profies only
+    </mat-slide-toggle>
+    <mat-slide-toggle 
+    id="deep-toggle" matTooltip="toggle on to query deep profiles only (blue dots)"
+    color="accent" [checked]="deepOnlyToggle"
+    (change)="deep_only_change($event.checked)">Filter deep profiles only
+    </mat-slide-toggle>
+    <br /> <button
+      matTooltip="hint: be sure to enable tabs on your browser" 
+      mat-raised-button color={{color}} 
+      (click)="go_to_selection_page(true)" >
+      {{shapeButtonText}}</button>
+    <br /> <button
+      matTooltip="hint: be sure to enable tabs on your browser" 
+      mat-raised-button color={{color}} 
+      (click)="go_to_selection_page(false)" >
+      {{jsonButtonText}}</button>
+    <br /> <button id='popup-button'
+    matTooltip="hint: be sure to enable tabs on your browser" 
+    mat-raised-button color={{color}} 
+    (click)="go_to_home_page()" >
+    Go to home page with this shape</button>
+</section>

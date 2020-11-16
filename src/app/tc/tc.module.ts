@@ -13,11 +13,12 @@ import { StormPopupComponent } from './storm-popup/storm-popup.component';
 import { TcHourRangeComponent } from './tc-sidebar-nav/tc-hour-range/tc-hour-range.component';
 import { TcDisplayComponent } from './tc-sidebar-nav/tc-display/tc-display.component';
 import { StormSelectComponent } from './tc-sidebar-nav/storm-select/storm-select.component';
+import { BufferPopupComponentComponent } from './buffer-popup-component/buffer-popup-component.component';
 
 
 
 @NgModule({
-  declarations: [TcComponent, TcMapComponent, tcTrackPopupComponent, TsSidebarNavComponent, StormPopupComponent, TcHourRangeComponent, TcDisplayComponent, StormSelectComponent],
+  declarations: [TcComponent, TcMapComponent, tcTrackPopupComponent, TsSidebarNavComponent, StormPopupComponent, TcHourRangeComponent, TcDisplayComponent, StormSelectComponent, BufferPopupComponentComponent],
   imports: [
     CommonModule,
     HomeModule,

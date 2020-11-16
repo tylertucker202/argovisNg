@@ -33,11 +33,11 @@ export class ShapePopupComponent implements OnInit {
     this.presRangeToggle = presRangeToggle;
   }
 
-  public bgcOnlyChange(bgcOnlyToggle: boolean): void {
+  public bgc_only_change(bgcOnlyToggle: boolean): void {
     this.bgcOnlyToggle = bgcOnlyToggle
   }
 
-  public deepOnlyChange(deepOnlyToggle: boolean): void {
+  public deep_only_change(deepOnlyToggle: boolean): void {
     this.deepOnlyToggle = deepOnlyToggle
   }
 
@@ -45,7 +45,7 @@ export class ShapePopupComponent implements OnInit {
     this.pageToggle = pageToggle
   }
 
-  public generateURL(goToPage: boolean): string {
+  public generate_url(goToPage: boolean): string {
     let url = '/selection/profiles'
     if (goToPage) {
       url += '/page'
@@ -66,8 +66,8 @@ export class ShapePopupComponent implements OnInit {
     return url 
   }
 
-  public goToSelectionPage(goToPage: boolean): void {
-    const url = this.generateURL(goToPage)
+  public go_to_selection_page(goToPage: boolean): void {
+    const url = this.generate_url(goToPage)
     window.open(url,"_blank")
   }
 

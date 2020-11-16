@@ -103,13 +103,13 @@ export class TcMapComponent extends MapComponent implements OnInit {
         console.log(layer.getLatLngs())
         this.tcMapService.tcTrackItems.addLayer(layer); //show rectangles
         // this.markersLayer.clearLayers()
-        this.tcMapService.popup_window_creation(layer, this.tcMapService.drawnItems)
+        this.tcMapService.buffer_popup_window_creation(layer, this.tcMapService.drawnItems)
         const broadcast = true
         const toggleThreeDayOff = true
   
         const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
         let shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
-        shapes = this.round_shapes(shapes)
+        shapes = this.tcQueryService.round_shapes(shapes)
         this.tcQueryService.send_shape(shapes, broadcast, toggleThreeDayOff)
        });
   
@@ -120,16 +120,6 @@ export class TcMapComponent extends MapComponent implements OnInit {
       });
 
     this.tcMapService.tcDrawControl.addTo(this.map);
-  }
-
-  public round_shapes(shapes: number[][][]): number[][][] {
-    shapes.forEach(shape => {
-      shape.forEach( point => {
-        point[0] = Math.round((point[0] + Number.EPSILON) * 100) / 100
-        point[1] = Math.round((point[1] + Number.EPSILON) * 100) / 100
-      })
-    })
-    return shapes
   }
 
   private set_mock_tc_tracks() {

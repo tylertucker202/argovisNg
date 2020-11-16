@@ -1,3 +1,4 @@
+import { BufferPopupComponentComponent } from './buffer-popup-component/buffer-popup-component.component';
 import { Injectable, Injector } from '@angular/core'
 import { MapService } from './../home/services/map.service'
 import { tcTrackPopupComponent } from './tc-shape-popup/tc-shape-popup.component'
@@ -80,5 +81,25 @@ export class TcMapService extends MapService {
     });
     featureGroup.addLayer(layer)
   }
+
+  public buffer_popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
+    const feature = layer.toGeoJSON()
+    const shape = this.get_lat_lng_from_feature(feature)
+    const transformedShape = this.get_transformed_shape(shape);
+    layer.bindPopup(null);
+    layer.on('click', (event) => {
+      const popupContent = this.compileService.compile(BufferPopupComponentComponent, (c) => { 
+        c.instance.shape = [shape];
+        c.instance.transformedShape = transformedShape;
+        c.instance.message = shapeType 
+        c.instance.shape_id = shape_id
+      })
+      layer.setPopupContent(popupContent);
+    });
+    layer.on('add', (event) => { 
+      layer.fire('click') // click generates popup object
+    });
+    featureGroup.addLayer(layer);
+    }
   
 }

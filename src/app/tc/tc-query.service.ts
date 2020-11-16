@@ -40,8 +40,8 @@ export class TcQueryService extends QueryService {
 
   public convert_hour_range_to_date_range(startDate: moment.Moment, endDate: moment.Moment, hourRange: [number, number], msg=''): DateRange {
     const dateRange: DateRange = {
-      startDate: startDate.clone().add(hourRange[0], 'hours').format('YYYY-MM-DDTHH:mm:ss'),
-      endDate: endDate.clone().add(hourRange[1], 'hours').format('YYYY-MM-DDTHH:mm:ss'),
+      startDate: startDate.clone().add(hourRange[0], 'hours').format('YYYY-MM-DDTHH:mm:ss').replace(':', '%3A'),
+      endDate: endDate.clone().add(hourRange[1], 'hours').format('YYYY-MM-DDTHH:mm:ss').replace(':', '%3A'),
       label: 'msg'
     };
     return dateRange
@@ -59,6 +59,16 @@ export class TcQueryService extends QueryService {
     const endDate = this.format_date(this.tcEndDate.clone().add(this.profHourRange[1], 'h'))
     const dateRange: DateRange = {startDate: startDate, endDate: endDate, label: ''}
     this.send_selected_date(dateRange, broadcastChange)
+  }
+
+  public round_shapes(shapes: number[][][]): number[][][] {
+    shapes.forEach(shape => {
+      shape.forEach( point => {
+        point[0] = Math.round((point[0] + Number.EPSILON) * 100) / 100
+        point[1] = Math.round((point[1] + Number.EPSILON) * 100) / 100
+      })
+    })
+    return shapes
   }
 
 
@@ -110,6 +120,13 @@ export class TcQueryService extends QueryService {
 
   public get_tc_date_range(): [moment.Moment, moment.Moment] {
     return [this.tcStartDate, this.tcEndDate]
+  }
+
+  public get_prof_date_range(): DateRange {
+    const tcDateRange = this.get_tc_date_range();
+    const hourRange = this.get_prof_hour_range() as [number, number]
+    const dates = this.convert_hour_range_to_date_range(tcDateRange[0], tcDateRange[1], hourRange, 'shape from buffer')
+    return dates
   }
 
   public send_tc_start_date(date: moment.Moment, broadcastChange=true): void {

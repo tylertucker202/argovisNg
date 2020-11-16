@@ -2,36 +2,36 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TopToolbarService } from './../top-toolbar.service'
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+
 export interface avModule {
   name: string,
   viewValue: string, 
   link: string, 
   tooltip: string
 }
+
 @Component({
   selector: 'app-top-toolbar',
   templateUrl: './top-toolbar.component.html',
   styleUrls: ['./top-toolbar.component.css']
 })
+
 export class TopToolbarComponent implements OnInit, AfterViewInit {
 
   public avModules: avModule[];
   public href: string = "";
   public currentModule: string;
   constructor(private toolbarService: TopToolbarService, private location: Location, private router: Router) { 
-
   }
 
-  
   ngOnInit() {
     this.avModules = [
       {name: "Home", viewValue: "Home (Argo profiles)", link: "/ng/home", tooltip: "link to Argovis home page"},
       {name: "AR", viewValue: "Atmospheric River (Beta)", link: "/ng/ar", tooltip: 'link to AR page (Beta)'},
       {name: "Grids", viewValue: "Gridded Products (Beta)", link: "/ng/grid", tooltip: 'link to gridded page (Beta)'},
       {name: "GridsOld", viewValue: "Gridded Products (old)", link: "https://argovis.colorado.edu/docs/Gridded_Argovis.html ", tooltip: 'link to old gridded page page'},
-      {name: "Covar", viewValue: "Float Trajectory Forcast", link: "/ng/covar", tooltip: 'link to float trajectory forcast page'}
+      {name: "Covar", viewValue: "Float Trajectory Forecast", link: "/ng/covar", tooltip: 'link to float trajectory forcast page'}
     ]
-    //this.href = this.router.url
   }
 
   ngAfterViewInit() {
@@ -60,10 +60,7 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
         this.currentModule = "Current viewer: " + this.avModules[idx]['viewValue']
         break
       }
-    //console.log('currentModule text:', this.currentModule)
     }
-
-
   }
 
   public go_to_home(): void {

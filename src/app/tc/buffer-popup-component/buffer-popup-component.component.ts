@@ -1,14 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core'
-import { ArQueryService } from './../ar-query.service'
+import { DateRange } from './../../../typeings/daterange.d';
+import { TcQueryService } from './../tc-query.service';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-ar-shape-popup',
-  templateUrl: './ar-shape-popup.component.html',
-  styleUrls: ['./ar-shape-popup.component.css']
+  selector: 'app-buffer-popup-component',
+  templateUrl: './buffer-popup-component.component.html',
+  styleUrls: ['./buffer-popup-component.component.css']
 })
-export class ArShapePopupComponent implements OnInit {
+
+export class BufferPopupComponentComponent implements OnInit {
   @Input() shape: number[][][]
-  @Input() transformedShape: number[][]
+  @Input() transformedShape: number[][][]
   @Input() message: string
   @Input() shape_id: string
   public bgcOnlyToggle: boolean
@@ -18,15 +20,16 @@ export class ArShapePopupComponent implements OnInit {
   public jsonButtonText: string
   public shapeButtonText: string
 
-  constructor( private arQueryService: ArQueryService ) { }
-  
+  constructor( private tcQueryService: TcQueryService ) { }
+
   ngOnInit(): void {
     this.color = 'primary';
     this.jsonButtonText = "Download JSON Data"
     this.bgcOnlyToggle = false
     this.deepOnlyToggle = false
     this.shapeButtonText = "To Selection Page"
-    this.queryARShape()
+    this.shape = this.tcQueryService.round_shapes(this.shape)
+    this.transformedShape = this.tcQueryService.round_shapes(this.transformedShape)
   }
 
   public bgc_only_change(bgcOnlyToggle: boolean): void {
@@ -37,22 +40,13 @@ export class ArShapePopupComponent implements OnInit {
     this.deepOnlyToggle = deepOnlyToggle
   }
 
-  public queryARShape(): void {
-    const broadcastChange = true
-    const toggle3DayOff = false // should already be off
-    let shapes = this.arQueryService.get_shapes()
-    shapes? shapes.push(this.shape[0]) : shapes = this.shape
-
-    this.arQueryService.send_shape(shapes, broadcastChange, toggle3DayOff)
-  }
-
   public generate_url(goToPage: boolean): string {
     let url = '/selection/profiles'
     if (goToPage) {
       url += '/page'
     }
-    let dates = this.arQueryService.get_selection_dates();
-    url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
+    const dateRange = this.tcQueryService.get_prof_date_range()
+    url += '?startDate=' + dateRange.startDate + '&endDate=' + dateRange.endDate
     if (this.bgcOnlyToggle) {
       url += '&bgcOnly=true'
     }
@@ -65,11 +59,11 @@ export class ArShapePopupComponent implements OnInit {
 
   public generate_homepage_url(): string {
     let url = '/ng/home?'
-    const dateRange = this.arQueryService.get_ar_date_as_date_range()
+    const dateRange = this.tcQueryService.get_prof_date_range()
     url += '&selectionStartDate=' + dateRange.startDate + '&selectionEndDate=' + dateRange.endDate
-    url += '&includeRealtime=' + JSON.stringify(this.arQueryService.get_realtime_toggle()) +
-     '&onlyBGC=' + JSON.stringify(this.arQueryService.get_bgc_toggle()) + 
-     '&onlyDeep=' + JSON.stringify(this.arQueryService.get_deep_toggle()) + '&threeDayToggle=false'
+    url += '&includeRealtime=' + JSON.stringify(this.tcQueryService.get_realtime_toggle()) +
+     '&onlyBGC=' + JSON.stringify(this.tcQueryService.get_bgc_toggle()) + 
+     '&onlyDeep=' + JSON.stringify(this.tcQueryService.get_deep_toggle()) + '&threeDayToggle=false'
     const shapeString = JSON.stringify(this.shape)
     url += '&shapes=' + shapeString
      return url
@@ -80,13 +74,9 @@ export class ArShapePopupComponent implements OnInit {
     window.open(url,"_blank")
   }
 
-  public goToShapeJson(): void {
-    const windowURL = '/arShapes/findByID?_id=' + this.shape_id
-    window.open(windowURL,"_blank")
-  } 
-
   public go_to_home_page(): void {
     const url = this.generate_homepage_url()
     window.open(url, "_blank")
   }
+
 }
