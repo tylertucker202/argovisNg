@@ -78,7 +78,7 @@ describe('SidebarNavComponent', () => {
      expect(component['onlyDeep']).toEqual(deepToggle)
      expect(component['threeDayToggle']).toEqual(threeDayToggle)
      const date = moment(component['date'].value).format('YYYY-MM-DD')
-     expect(date).toEqual(globalDisplayDate)
+     expect(date).toEqual(globalDisplayDate.split('T')[0])
   })
 
   it('should set realtime toggle', () => {

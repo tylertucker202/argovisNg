@@ -110,7 +110,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
     .subscribe( () => {
       this.map.closePopup()
       this.gridMappingService.gridLayers.clearLayers()
-      this.mapService.drawnItems.clear_layers()
+      this.mapService.drawnItems.clearLayers()
       this.queryGridService.clear_shapes()
       this.queryGridService.set_url()
     })
@@ -119,7 +119,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       .subscribe( () => {
         this.map.closePopup()
         this.gridMappingService.gridLayers.clearLayers()
-        this.mapService.drawnItems.clear_layers()
+        this.mapService.drawnItems.clearLayers()
         this.map.setView(this.startView, this.startZoom)
         this.initGrids()
       })
@@ -132,7 +132,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
 
     this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
       const layer = event.layer
-      this.mapService.drawnItems.clear_layers() // allow only one drawn item at a time.
+      this.mapService.drawnItems.clearLayers() // allow only one drawn item at a time.
       this.gridMappingService.gridLayers.clearLayers() // remove grid layers too.
       this.mapService.drawnItems.addLayer(layer); //show rectangles
       const shapes = this.mapService.drawnItems.toGeoJSON()
@@ -229,7 +229,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
   public invalidate_size(this): void {
     if (this.map) {
       setTimeout(() => {
-        this.map.invalideateSize(true);
+        this.map.invalidateSize(true);
       },100);
     }
   }

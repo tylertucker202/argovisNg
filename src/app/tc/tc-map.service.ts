@@ -1,3 +1,4 @@
+import { TcQueryService } from './tc-query.service';
 import { BufferPopupComponentComponent } from './buffer-popup-component/buffer-popup-component.component';
 import { Injectable, Injector } from '@angular/core'
 import { MapService } from './../home/services/map.service'
@@ -18,7 +19,7 @@ declare const L
 })
 export class TcMapService extends MapService {
 
-  constructor(public injector: Injector) { super(injector) }
+  constructor(public injector: Injector, public tcQueryService: TcQueryService) { super(injector) }
 
   public tcTrackItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
 
@@ -81,15 +82,14 @@ export class TcMapService extends MapService {
     });
     featureGroup.addLayer(layer)
   }
-
   public buffer_popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
     const feature = layer.toGeoJSON()
-    const shape = this.get_lat_lng_from_feature(feature)
-    const transformedShape = this.get_transformed_shape(shape);
+    const shape = this.tcQueryService.round_shapes([this.get_lat_lng_from_feature(feature)])
+    const transformedShape = this.get_transformed_shape(shape[0]);
     layer.bindPopup(null);
     layer.on('click', (event) => {
       const popupContent = this.compileService.compile(BufferPopupComponentComponent, (c) => { 
-        c.instance.shape = [shape];
+        c.instance.shape = shape;
         c.instance.transformedShape = transformedShape;
         c.instance.message = shapeType 
         c.instance.shape_id = shape_id

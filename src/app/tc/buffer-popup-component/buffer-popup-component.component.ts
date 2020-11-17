@@ -28,8 +28,6 @@ export class BufferPopupComponentComponent implements OnInit {
     this.bgcOnlyToggle = false
     this.deepOnlyToggle = false
     this.shapeButtonText = "To Selection Page"
-    this.shape = this.tcQueryService.round_shapes(this.shape)
-    this.transformedShape = this.tcQueryService.round_shapes(this.transformedShape)
   }
 
   public bgc_only_change(bgcOnlyToggle: boolean): void {

@@ -12,7 +12,7 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import * as moment from 'moment'
 
-fdescribe('MonthPickerComponent', () => {
+describe('MonthPickerComponent', () => {
   let component: MonthPickerComponent;
   let fixture: ComponentFixture<MonthPickerComponent>;
   let debugElement: DebugElement;

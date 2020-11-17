@@ -24,7 +24,7 @@ describe('ArQueryService', () => {
     router = TestBed.get(Router)
     route = TestBed.get(ActivatedRoute)
     
-    spy_reset_params = spyOn(service, 'resetParams').and.callThrough()
+    spy_reset_params = spyOn(service, 'reset_params').and.callThrough()
 
     queryParamsDefault = {
       includeRealtime: true,

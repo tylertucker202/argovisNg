@@ -1,12 +1,12 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NotifierService, NotifierModule } from 'angular-notifier'
+import { NotifierModule } from 'angular-notifier'
 import { ArMapComponent } from './ar-map.component';
 import { ArQueryService } from '../ar-query.service'
 import { ArShapeService } from '../ar-shape.service'
 import { ArMapService } from '../ar-map.service'
 import { mockShapeComplex, mockShapeSimple} from '../ar-shape.parameters'
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { PopupCompileService } from '../../home/services/popup-compile.service';
 import { QueryService } from '../../home/services/query.service'
 import { MapService } from '../../home/services/map.service'
@@ -15,8 +15,7 @@ import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
-import { Observable, of } from 'rxjs';
-import { ProtractorExpectedConditions } from 'protractor';
+import { of } from 'rxjs';
 
 describe('ArMapComponent', () => {
   let component: ArMapComponent;
@@ -34,9 +33,6 @@ describe('ArMapComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ArMapComponent ],
       providers: [ 
-          HttpClient,
-          HttpClientModule,
-          HttpHandler,
           ArMapService, 
           ArQueryService, 
           ArShapeService, 
@@ -44,7 +40,13 @@ describe('ArMapComponent', () => {
           QueryService, 
           PopupCompileService, 
           PointsService ],
-      imports: [NotifierModule, RouterTestingModule, BrowserAnimationsModule, MaterialModule ]
+      imports: [
+        NotifierModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        HttpClientTestingModule
+       ]
     })
     .compileComponents();
   }));

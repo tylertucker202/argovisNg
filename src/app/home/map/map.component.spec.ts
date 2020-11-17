@@ -1,5 +1,5 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, fakeAsync, tick, flush, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { MapComponent } from './map.component';
 import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service';
@@ -7,9 +7,6 @@ import { QueryService } from '../services/query.service';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { PopupCompileService } from '../services/popup-compile.service';
 import { NotifierService, NotifierModule } from 'angular-notifier';
-import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
-
-import { HomeModule } from '../home.module';
 
 import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,7 +21,7 @@ describe('MapComponent', () => {
   let pointsService: PointsService;
   let spyRT: jasmine.Spy;
   let getProjSpy: jasmine.Spy;
-  let displayProfilesSpy: jasmine.Spy;
+  let display_profilesSpy: jasmine.Spy;
   let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
   let get_selection_pointsSpy: jasmine.Spy;
@@ -38,9 +35,6 @@ describe('MapComponent', () => {
       declarations: [ MapComponent ],
       providers: 
       [NotifierService,
-       HttpClient,
-       HttpClientModule,
-       HttpHandler,
        { provide: MapService, useValue: getProjSpy },
        MapService,
        PointsService,
@@ -49,7 +43,8 @@ describe('MapComponent', () => {
        imports: [ RouterTestingModule,
                   NotifierModule,
                   MaterialModule,
-                  BrowserAnimationsModule
+                  BrowserAnimationsModule,
+                  HttpClientTestingModule
                 ],
 
     })
@@ -71,7 +66,7 @@ describe('MapComponent', () => {
     const getLastThreeDaysProfiles = spyOn(pointsService, 'getLastThreeDaysProfiles').and.returnValue(mockPoints)
     const popupWindowCreationSpy = spyOn(mapService, 'popup_window_creation').and.callThrough()
     spyURL = spyOn(queryService, 'set_url'); 
-    displayProfilesSpy = spyOn<any>(component, 'displayProfiles').and.callThrough()
+    display_profilesSpy = spyOn<any>(component, 'display_profiles').and.callThrough()
     set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
     getProjSpy = spyOn(queryService, 'getProj').and.returnValue('WM');
     fixture.detectChanges();
@@ -137,7 +132,7 @@ describe('MapComponent', () => {
     component.setMockPoints()
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length > 0)
-    component.markersLayer.clear_layers()
+    component.markersLayer.clearLayers()
     myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
   })
@@ -146,15 +141,15 @@ describe('MapComponent', () => {
   it('should detect query service change', () => {
 
     component.setMockPoints()
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(1);
+    expect(display_profilesSpy).toHaveBeenCalledTimes(1);
     expect(spyURL).toHaveBeenCalledTimes(0);
     
     queryService.change.emit('testing a change')
     expect(spyURL).toHaveBeenCalled()
     expect(spyURL).toHaveBeenCalledTimes(1);
 
-    expect(displayProfilesSpy).toHaveBeenCalled();
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(2);
+    expect(display_profilesSpy).toHaveBeenCalled();
+    expect(display_profilesSpy).toHaveBeenCalledTimes(2);
 
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
@@ -162,13 +157,13 @@ describe('MapComponent', () => {
 
   it('should detect query service clear_layers', () => {
     component.setMockPoints()
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(1);
+    expect(display_profilesSpy).toHaveBeenCalledTimes(1);
     expect(spyURL).toHaveBeenCalledTimes(0);
     
     queryService.resetToStart.emit('testing a clear')
     expect(spyURL).toHaveBeenCalledTimes(0); //should not be called
 
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(2); //should not be called
+    expect(display_profilesSpy).toHaveBeenCalledTimes(2); //should not be called
     expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0);
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)

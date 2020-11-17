@@ -70,29 +70,29 @@ describe('ArDisplayComponent', () => {
   });
 
   it('should set default parameters', () => {
-    expect(component['arDate']).toEqual(arDateDefault)
+    expect(component['date']).toEqual(arDateDefault)
     expect(component['hour']).toEqual(defaultHour)
   })
 
   it('should change date on increment day', () => {
     component['incrementDay'](1)
-    expect(component['arDate']).toEqual(arDateDefault.add(1, 'd'))
+    expect(component['date']).toEqual(arDateDefault.add(1, 'd'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(1)
     component['incrementDay'](-1)
-    expect(component['arDate']).toEqual(arDateDefault.add(-1, 'd'))
+    expect(component['date']).toEqual(arDateDefault.add(-1, 'd'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
-    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
+    expect(component['date']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on drop down menu select', () => {
     expect(component['hour']).toEqual(0)
-    expect(component['arDate']).toEqual(arDateDefault)
+    expect(component['date']).toEqual(arDateDefault)
     component['timeChange'](21)
     expect(component['hour']).toEqual(21)
-    expect(component['arDate']).toEqual(arDateDefault.add(21, 'h'))
+    expect(component['date']).toEqual(arDateDefault.add(21, 'h'))
 
-    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
+    expect(component['date']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on date select, preserving hour', () => {
@@ -101,24 +101,24 @@ describe('ArDisplayComponent', () => {
     const newDate = new Date(2016, 1, 4, 0, 0, 0, 0) //calendar date does not use hours 
     const date = moment(newDate).add(hour, 'h')
     component['calendarDateChanged'](newDate)
-    expect(component['arDate']).toEqual(date)
+    expect(component['date']).toEqual(date)
     //check if the hour carried over
     expect(component['hour']).toEqual(hour)
-    expect(component['arDate'].hour()).toEqual(hour)
+    expect(component['date'].hour()).toEqual(hour)
 
-    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
+    expect(component['date']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should change date on increment hour', () => {
     component['incrementHour'](3)
-    expect(component['arDate']).toEqual(arDateDefault.add(3, 'h'))
+    expect(component['date']).toEqual(arDateDefault.add(3, 'h'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(1)
     component['incrementHour'](-3)
-    expect(component['arDate']).toEqual(arDateDefault.add(-3, 'h'))
+    expect(component['date']).toEqual(arDateDefault.add(-3, 'h'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
 
-    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
+    expect(component['date']).toEqual(arQueryService.get_ar_date())
   })
 
   it('should reset to default on resetEvent', () => {
@@ -128,7 +128,7 @@ describe('ArDisplayComponent', () => {
     component['calendarDateChanged'](newDate)
     arQueryService.trigger_reset_to_start()
 
-    expect(component['arDate']).toEqual(arDateDefault)
+    expect(component['date']).toEqual(arDateDefault)
     expect(component['hour']).toEqual(defaultHour)
   })
 
@@ -141,6 +141,6 @@ describe('ArDisplayComponent', () => {
   })
 
   it('time should maintain local offset, ', () => {
-    expect(component['arDate']).toEqual(arQueryService.get_ar_date())
+    expect(component['date']).toEqual(arQueryService.get_ar_date())
   })
 });

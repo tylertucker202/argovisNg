@@ -1,3 +1,5 @@
+import { TcQueryService } from './../tc-query.service';
+import { RouterTestingModule } from '@angular/router/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BufferPopupComponentComponent } from './buffer-popup-component.component';
@@ -8,7 +10,9 @@ describe('BufferPopupComponentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BufferPopupComponentComponent ]
+      declarations: [ BufferPopupComponentComponent ],
+      imports: [ RouterTestingModule ],
+      providers: [ TcQueryService ]
     })
     .compileComponents();
   }));

@@ -125,7 +125,7 @@ export class MapComponent implements OnInit, OnDestroy {
       .subscribe( () => {
         this.queryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clear_layers()
+        this.mapService.drawnItems.clearLayers()
         this.queryService.set_url()
       })
     
@@ -133,7 +133,7 @@ export class MapComponent implements OnInit, OnDestroy {
       .subscribe( () => {
         this.queryService.clear_shapes()
         this.markersLayer.clearLayers()
-        this.mapService.drawnItems.clear_layers()
+        this.mapService.drawnItems.clearLayers()
         this.setStartingProfiles()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
@@ -141,7 +141,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.displayPlatform
     .subscribe( platform => {
       this.markersLayer.clearLayers()
-      this.mapService.drawnItems.clear_layers()
+      this.mapService.drawnItems.clearLayers()
       this.pointsService.getPlatformProfiles(platform)
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {

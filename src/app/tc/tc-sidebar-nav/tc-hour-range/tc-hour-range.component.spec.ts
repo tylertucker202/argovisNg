@@ -1,4 +1,8 @@
+import { RouterTestingModule } from '@angular/router/testing';
+import { NouisliderModule } from 'ng2-nouislider';
+import { TcQueryService } from './../../tc-query.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core'
 
 import { TcHourRangeComponent } from './tc-hour-range.component';
 
@@ -8,7 +12,10 @@ describe('TcHourRangeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TcHourRangeComponent ]
+      declarations: [ TcHourRangeComponent ],
+      providers: [ TcQueryService ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      imports: [ NouisliderModule, RouterTestingModule ]
     })
     .compileComponents();
   }));
