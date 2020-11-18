@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from '../material/material.module';
@@ -37,6 +37,7 @@ import { DatePickerComponent } from './sidebar-nav-grid/date-picker/date-picker.
   providers: [
     QueryGridService,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   imports: [
     MaterialModule,
     NouisliderModule,

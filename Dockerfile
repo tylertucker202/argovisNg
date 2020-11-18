@@ -6,7 +6,7 @@ WORKDIR /usr/src/ng_argovis
 # where available (npm@5+)
 COPY package*.json ./
 RUN npm install && \
-    npm install @angular/cli@9.0.4 -g && \
+    npm install @angular/cli@9.1.0 -g && \
     npm install -g pm2
 COPY . .
 RUN npm run ng-high-memory

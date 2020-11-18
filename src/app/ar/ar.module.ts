@@ -1,3 +1,4 @@
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeModule } from './../home/home.module';
@@ -25,6 +26,7 @@ import { ArMapComponent } from './ar-map/ar-map.component';
     CommonModule,
     HomeModule,
     MaterialModule,
+    ReactiveFormsModule
   ],
   entryComponents: [
     ArDisplayComponent

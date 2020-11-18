@@ -1,3 +1,4 @@
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TcComponent } from './tc.component';
@@ -23,6 +24,8 @@ import { BufferPopupComponentComponent } from './buffer-popup-component/buffer-p
     CommonModule,
     HomeModule,
     MaterialModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [
     HomeModule

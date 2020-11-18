@@ -1,4 +1,5 @@
-import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfviewComponent } from './profview.component';
 import { TableComponent } from './table/table.component';
@@ -20,6 +21,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     CommonModule,
     MaterialModule,
     PlotlyModule,
-  ]
+    ReactiveFormsModule
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })
 export class ProfviewModule { }
