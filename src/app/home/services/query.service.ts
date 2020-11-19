@@ -16,8 +16,8 @@ export class QueryService {
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
   private presRange = [0, 2000]
-  public selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DDTHH:mm:ss'),
-                                           endDate: moment().utc().format('YYYY-MM-DDTHH:mm:ss')}
+  public selectionDateRange: DateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
+                                          endDate: this.format_date(moment().utc()), label: 'initial date range'};
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss')
   private latLngShapes: number[][][]
   private includeRealtime = true
@@ -40,7 +40,7 @@ export class QueryService {
     this.sendDeepToggleMsg(false, broadcastChange)
     this.sendBGCToggleMsg(false, broadcastChange)
     this.sendRealtimeMsg(true, broadcastChange)
-    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss');
+    const globalDisplayDate = this.format_date(moment().utc().subtract(2, 'days'));
     this.sendGlobalDate(globalDisplayDate, broadcastChange)
     const presRange = [0, 2000]
     this.sendPres(presRange, broadcastChange)
@@ -48,8 +48,8 @@ export class QueryService {
     let selectionDateRange: DateRange
     let sendThreeDayMsg: boolean
     sendThreeDayMsg = true
-    selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DDTHH:mm:ss'),
-    endDate: moment().utc().format('YYYY-MM-DDTHH:mm:ss'), label: 'initial date range'};
+    selectionDateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
+    endDate: this.format_date(moment().utc()), label: 'initial date range'};
     this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
     this.send_selected_date(selectionDateRange, broadcastChange)
   }
@@ -81,6 +81,11 @@ export class QueryService {
         this.urlBuild.emit('got state from map component')
       });
     }
+  
+  public format_date(date: moment.Moment): string {
+    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+  }
+
   public set_url(): void {
 
     //this is reversing the order of this.latLngShapes()
