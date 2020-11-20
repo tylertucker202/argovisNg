@@ -91,9 +91,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set global toggle', () => {
     const checked = false
-    component.displayGlobalChange(!checked)
+    component.display_global_change(!checked)
     expect(component['displayGlobally']).toBeTruthy()
-    component.displayGlobalChange(checked)
+    component.display_global_change(checked)
     expect(component['displayGlobally']).toBeFalsy()
     expect(spyDisplayGlobally).toHaveBeenCalled()
     expect(spyDisplayGlobally).toHaveBeenCalledTimes(2);
@@ -101,9 +101,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set bgc toggle', () => {
     const checked = true
-    component.bgcChange(!checked)
+    component.bgc_change(!checked)
     expect(component['onlyBGC']).toBeFalsy()
-    component.bgcChange(checked)
+    component.bgc_change(checked)
     expect(component['onlyBGC']).toBeTruthy()
     expect(spyBGC).toHaveBeenCalled()
     expect(spyBGC).toHaveBeenCalledTimes(2);
@@ -111,9 +111,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set deep toggle', () => {
     const checked = true
-    component.deepChange(!checked)
+    component.deep_change(!checked)
     expect(component['onlyDeep']).toBeFalsy()
-    component.deepChange(checked)
+    component.deep_change(checked)
     expect(component['onlyDeep']).toBeTruthy()
     expect(spyDeep).toHaveBeenCalled()
     expect(spyDeep).toHaveBeenCalledTimes(2);

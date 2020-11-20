@@ -59,7 +59,7 @@ export class GetProfilesService {
     return this.http.get<BgcProfileData[]>(url)
   }
 
-  public getPlaformData(platform: string, meas_1: string, meas_2: string): Observable<BgcProfileData[]> {
+  public get_platform_data(platform: string, meas_1: string, meas_2: string): Observable<BgcProfileData[]> {
     let url = 'catalog/bgc_platform_data/'
     url += platform + '/?'
     url += 'meas_1=' + meas_1 + '&' + 'meas_2=' + meas_2

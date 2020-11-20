@@ -9,7 +9,7 @@ import { FeatureCollection, Feature, Polygon } from 'geojson'
 export class QueryGridService {
 
   @Output() change: EventEmitter<string> = new EventEmitter
-  @Output() updateColorbarEvent: EventEmitter<string> = new EventEmitter
+  @Output() update_colorbarEvent: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() clear_layers: EventEmitter<string> = new EventEmitter
   @Output() urlRead: EventEmitter<string> = new EventEmitter

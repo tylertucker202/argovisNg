@@ -1,6 +1,6 @@
 <div class="ar-sidebar-nav">
   <app-db-overview></app-db-overview>
-  <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
+  <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clear_profiles()" >
     <mat-icon aria-label="clear profile and shape layers">layers_clear</mat-icon>
   </button>
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
@@ -10,7 +10,7 @@
   id="three-day-toggle" 
   matTooltip="toggle on query global profiles within hour range below"
   color="accent" [checked]="displayGlobally"
-  (change)="displayGlobalChange($event.checked)">Query profiles globally
+  (change)="display_global_change($event.checked)">Query profiles globally
   </mat-slide-toggle>
   <app-ar-hour-range ></app-ar-hour-range>
   <app-ar-display ></app-ar-display>
@@ -21,10 +21,10 @@
   </mat-slide-toggle>
   <mat-slide-toggle matTooltip="toggle on to show only BGC profiles"
                     color="accent" [checked]="onlyBGC"
-                    (change)="bgcChange($event.checked)">Show only BGC
+                    (change)="bgc_change($event.checked)">Show only BGC
   </mat-slide-toggle>
   <mat-slide-toggle matTooltip="toggle on to show only Deep profiles"
                     color="accent" [checked]="onlyDeep"
-                    (change)="deepChange($event.checked)">Show only Deep
+                    (change)="deep_change($event.checked)">Show only Deep
   </mat-slide-toggle>
 </div>

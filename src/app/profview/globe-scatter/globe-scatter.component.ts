@@ -25,12 +25,12 @@ export class GlobeScatterComponent implements OnInit {
         dataArrays.cycle.push(profileMeta.cycle_number)
       } )
 
-      this.graph = this.makeMap(dataArrays.ids, dataArrays.lats, dataArrays.lon, dataArrays.date, dataArrays.cycle, dataArrays.qc)
+      this.graph = this.make_map(dataArrays.ids, dataArrays.lats, dataArrays.lon, dataArrays.date, dataArrays.cycle, dataArrays.qc)
     })
 
   }
 
-  makeHovorChartText(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
+  make_hovor_chart_text(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
     let box = "<br>profile id: " + _id
     + "<br>latitude: " + lat.toFixed(3) 
     + "<br>longitude: " + lon.toFixed(3)
@@ -40,14 +40,14 @@ export class GlobeScatterComponent implements OnInit {
     return box
   }
 
-  private onSelect(text: string) {
+  private on_select(text: string) {
     console.log('text', text)
     const profile_id = text.split('id: ').pop().split('<br>')[0]
     const url = '/catalog/profiles/' + profile_id + '/bgcPage';
     window.open(url,'_blank');
   }
 
-  private makeMap(ids, lats, longs, dates, cycles, qcs) {
+  private make_map(ids, lats, longs, dates, cycles, qcs) {
     const minLong = Math.min(...longs)
     const maxLong = Math.max(...longs)
     const longRange = [minLong-5, maxLong+5]
@@ -55,7 +55,7 @@ export class GlobeScatterComponent implements OnInit {
 
     let hovorText = []
     for (let idx=0; idx<ids.length; ++idx){
-      const txt = this.makeHovorChartText(ids[idx], lats[idx], longs[idx], dates[idx], cycles[idx], qcs[idx])
+      const txt = this.make_hovor_chart_text(ids[idx], lats[idx], longs[idx], dates[idx], cycles[idx], qcs[idx])
       hovorText.push(txt)
     }
 

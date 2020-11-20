@@ -157,7 +157,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
   private sed_global_profiles(): void {
 
     const dateRange = this.arQueryService.get_ar_date_as_date_range()
-    this.pointsService.getGlobalMapProfiles(dateRange.startDate, dateRange.endDate)
+    this.pointsService.get_global_map_profiles(dateRange.startDate, dateRange.endDate)
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {
           this.notifier.notify( 'warning', 'zero profile points returned' )

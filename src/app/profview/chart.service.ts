@@ -54,7 +54,7 @@ export class ChartService {
     return layout
   }
 
-  public makeLineLayout(xLabel: string, yLabel: string) {
+  public make_line_layout(xLabel: string, yLabel: string) {
     const layout = {
       height:300, 
       width: 300,
@@ -93,7 +93,7 @@ export class ChartService {
     return(box)
   }
 
-  makeHovorChartText(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
+  make_hovor_chart_text(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
     let box = "<br>profile id: " + _id
     + "<br>latitude: " + lat.toFixed(3) 
     + "<br>longitude: " + lon.toFixed(3)
@@ -215,7 +215,7 @@ export class ChartService {
     return (dataArrays as DataArrays)
   }
 
-  makeLineChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
+  make_line_chart_data_arrays( profileData: BgcProfileData[] | CoreProfileData[],
     yLabel: string, xLabel: string, measKey: string,
     reduceMeas: number, statParamsKey: string, includeQC?: boolean): DataArrays {
     let yMeas = []
@@ -308,7 +308,7 @@ export class ChartService {
       return [scatterTrace]
   }
 
-  makeLineChartTrace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
+  make_line_chart_trace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
       let hovorText = []
       const xtext = da['x1_label'] + ':'
       const ytext = da['x2_label'] + ':'
@@ -350,7 +350,7 @@ export class ChartService {
 
 
 
-  public getTraceParams(paramKey: string): TraceParam {
+  public get_trace_params(paramKey: string): TraceParam {
     let traceParam = {} as TraceParam
     const baseKey = paramKey.replace(/[0-9]/g, '')
     const waveLength = paramKey.replace(/[a-z_]/g, '')

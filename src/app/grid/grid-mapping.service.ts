@@ -47,7 +47,7 @@ export class GridMappingService {
       layer.needRedraw()
     })
 
-    this.queryGridService.updateColorbarEvent.emit('redrawn grids')
+    this.queryGridService.update_colorbarEvent.emit('redrawn grids')
     this.queryGridService.set_url(); //this should be the last thing
   }
 
@@ -62,7 +62,7 @@ export class GridMappingService {
     const gridName = this.queryGridService.getGridName()
     //check if grid exists on current grid selection. If not dont draw.
     this.generateGridSections(bboxes, map, gridName, lockColorbarRange)
-    this.queryGridService.updateColorbarEvent.emit('new grid')
+    this.queryGridService.update_colorbarEvent.emit('new grid')
     if(set_url){
       this.queryGridService.set_url(); //this should be the last thing
     }

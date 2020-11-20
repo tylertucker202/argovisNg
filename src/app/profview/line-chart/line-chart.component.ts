@@ -36,7 +36,7 @@ export class LineChartComponent implements OnInit {
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
       this.bgcPlatform = this.queryProfviewService.bgcPlatform
-      this.makeChart()
+      this.make_chart()
     }, 
     error => {
       console.error('an error occured when checking if url parsed: ', error)
@@ -51,17 +51,17 @@ export class LineChartComponent implements OnInit {
   }
 
   // Upon click a new tab opens to the corresponding profile.
-  onSelect(points: any): void {
+  on_select(points: any): void {
     const xidx = points.pointNumber
     const profile_id = points.data['profile_ids'][xidx]
     const url = '/catalog/profiles/' + profile_id + '/bgcPage'
     window.open(url,'_blank')
   } 
 
-  makeChart(): void {
-    this.getProfileService.getPlaformData(this.platform_number, this.chartLabels.x2, this.chartLabels.x1).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
+  make_chart(): void {
+    this.getProfileService.get_platform_data(this.platform_number, this.chartLabels.x2, this.chartLabels.x1).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
       this.profileData = profileData
-      this.setChart(this.profileData)
+      this.set_chart(this.profileData)
       this.revision += 1;
     },
     error => {
@@ -69,13 +69,13 @@ export class LineChartComponent implements OnInit {
     })
   }
 
-  setChart(profileData: BgcProfileData[] | CoreProfileData[]) {
-    const xParams = this.chartService.getTraceParams(this.chartLabels.x1)
-    const yParams = this.chartService.getTraceParams(this.chartLabels.x2)
-    this.layout = this.chartService.makeLineLayout(this.chartLabels.x1, this.chartLabels.x2)
+  set_chart(profileData: BgcProfileData[] | CoreProfileData[]) {
+    const xParams = this.chartService.get_trace_params(this.chartLabels.x1)
+    const yParams = this.chartService.get_trace_params(this.chartLabels.x2)
+    this.layout = this.chartService.make_line_layout(this.chartLabels.x1, this.chartLabels.x2)
 
-    const dataArrays = this.chartService.makeLineChartDataArrays(profileData, this.chartLabels.x2, this.chartLabels.x1, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
-    const trace = this.chartService.makeLineChartTrace(dataArrays, this.chartLabels.x1, this.bgcPlatform, xParams['units'], yParams['units'])
+    const dataArrays = this.chartService.make_line_chart_data_arrays(profileData, this.chartLabels.x2, this.chartLabels.x1, this.measKey, this.reduceMeas, this.statParamKey, this.bgcPlatform)
+    const trace = this.chartService.make_line_chart_trace(dataArrays, this.chartLabels.x1, this.bgcPlatform, xParams['units'], yParams['units'])
     this.graph = { data: trace,
       layout: this.layout,
       updateOnlyWithRevision: true
@@ -83,23 +83,23 @@ export class LineChartComponent implements OnInit {
   }
 
 
-  yLabelChange(yLabel: string): void {
+  y_label_change(yLabel: string): void {
     this.chartLabels.x2 = yLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
-    this.makeChart()
+    this.make_chart()
     this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
     this.queryProfviewService.set_url()
   }
 
-  xLabelChange(xLabel: string): void {
+  x_label_change(xLabel: string): void {
     this.chartLabels.x1 = xLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
-    this.makeChart()
+    this.make_chart()
     this.queryProfviewService.set_chart_labels(this.id, this.chartLabels)
     this.queryProfviewService.set_url()
   }
 
-  downloadChartData(): void {
+  download_chart_data(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
     url += '?meas_1=' + this.chartLabels.x1

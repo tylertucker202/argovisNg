@@ -63,22 +63,22 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.send_realtime_msg(this.includeRT);
   }
 
-  displayGlobalChange(checked: boolean): void {
+  display_global_change(checked: boolean): void {
     this.threeDayToggle = checked
     this.queryService.send_three_day_msg(this.threeDayToggle);
   }
 
-  bgcChange(checked: boolean): void {
+  bgc_change(checked: boolean): void {
     this.onlyBGC = checked
     this.queryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
-  deepChange(checked: boolean): void {
+  deep_change(checked: boolean): void {
     this.onlyDeep = checked
     this.queryService.send_deep_toggle_msg(this.onlyDeep);
   }
 
-  clearProfiles(): void {
+  clear_profiles(): void {
     this.queryService.trigger_clear_layers();
   }
 

@@ -91,13 +91,13 @@ describe('PointsService', () => {
     const pointQ1 = mockPoints[2]
     console.log(mockPoints.length)
     const pointQ2 = mockPoints[3]
-    const Q1LatLng = service.formatLatLng(pointQ1.geoLocation.coordinates)
+    const Q1LatLng = service.format_lat_lng(pointQ1.geoLocation.coordinates)
     expect(Q1LatLng).toEqual([ "5.000 N", "4.740 E" ])
-    const Q2LatLng = service.formatLatLng(pointQ2.geoLocation.coordinates)
+    const Q2LatLng = service.format_lat_lng(pointQ2.geoLocation.coordinates)
     expect(Q2LatLng).toEqual([ "5.000 N", "32.787 W" ])
-    const Q3LatLng = service.formatLatLng(pointQ3.geoLocation.coordinates)
+    const Q3LatLng = service.format_lat_lng(pointQ3.geoLocation.coordinates)
     expect(Q3LatLng).toEqual([ "21.205 S", "32.787 W" ])
-    const Q4LatLng = service.formatLatLng(pointQ4.geoLocation.coordinates)
+    const Q4LatLng = service.format_lat_lng(pointQ4.geoLocation.coordinates)
     expect(Q4LatLng).toEqual([ "20.180 S", "4.740 E" ])
     },
     error => {

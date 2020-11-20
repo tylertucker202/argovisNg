@@ -16,7 +16,7 @@ export class SelectionDatePicker {
 
   ngOnInit() {
     this.daterange = this.queryService.get_selection_dates()
-    this.selected = this.convertToMoment(this.daterange)
+    this.selected = this.convert_to_moment(this.daterange)
     this.options = {
                     locale: { format: 'MM/DD/YYYY' },
                     alwaysShowCalendars: true,
@@ -34,30 +34,30 @@ export class SelectionDatePicker {
     this.queryService.resetToStart
     .subscribe( () => {
       this.daterange = this.queryService.get_selection_dates()
-      this.selected = this.convertToMoment(this.daterange)
+      this.selected = this.convert_to_moment(this.daterange)
     })
 
     this.queryService.change
     .subscribe( () => {
       this.daterange = this.queryService.get_selection_dates()
-      this.selected = this.convertToMoment(this.daterange)
+      this.selected = this.convert_to_moment(this.daterange)
     })
   }
 
-  public sendDateRange(): void {
+  public send_date_range(): void {
     this.queryService.send_selected_date(this.daterange);
   }
 
-  public convertToMoment(daterange: DateRange): DateRangeSel {
+  public convert_to_moment(daterange: DateRange): DateRangeSel {
     const select = {startDate: moment.utc(daterange.startDate), endDate: moment.utc(daterange.endDate)}
     return select
   }
 
-  public selectedDate(daterangeSel: DateRangeSel):void {
+  public selected_date(daterangeSel: DateRangeSel):void {
     if (daterangeSel.startDate) {
       this.daterange.startDate = daterangeSel.startDate.format('YYYY-MM-DD');
       this.daterange.endDate = daterangeSel.endDate.format('YYYY-MM-DD');
-      this.sendDateRange();
+      this.send_date_range();
     }
   }
 }

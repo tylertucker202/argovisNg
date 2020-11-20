@@ -49,7 +49,7 @@ describe('ColorbarComponent', () => {
     
   });
 
-  it('should create createColorbar', () => {
+  it('should create create_colorbar', () => {
     const domain = [0, 1]
     const colorScale = 'OrRd'
     expect(component['domain']).toEqual(domain)
@@ -60,9 +60,9 @@ describe('ColorbarComponent', () => {
     expect(spyGetGridDomain).toHaveBeenCalledTimes(1)
   });
 
-  it('should updateColorbar', () => {
+  it('should update_colorbar', () => {
 
-    queryGridService.updateColorbarEvent.emit('test update')
+    queryGridService.update_colorbarEvent.emit('test update')
 
     expect(component['svg']).toBeTruthy()
     expect(spyGetColorScale).toHaveBeenCalledTimes(2)
@@ -85,9 +85,9 @@ describe('ColorbarComponent', () => {
     expect(spyGetGridDomain).toHaveBeenCalledTimes(2)
   });
 
-  it('should minChange', () => {
+  it('should min_change', () => {
     const domain = [-1, 1]
-    component.minChange(domain[0])
+    component.min_change(domain[0])
     expect(component['domain']).toEqual(domain)
     //colorbar should not update from event emitters
     expect(spyGetGridDomain).toHaveBeenCalledTimes(1) 
@@ -95,9 +95,9 @@ describe('ColorbarComponent', () => {
 
   });
 
-  it('should maxChange', () => {
+  it('should max_change', () => {
     const domain = [0, 2]
-    component.maxChange(domain[1])
+    component.max_change(domain[1])
     expect(component['domain']).toEqual(domain)
     //colorbar should not update from event emitters
     expect(spyGetGridDomain).toHaveBeenCalledTimes(1) 
@@ -106,8 +106,8 @@ describe('ColorbarComponent', () => {
 
   it('should min and max change', () => {
     const domain = [-1, 2]
-    component.minChange(domain[0])
-    component.maxChange(domain[1])
+    component.min_change(domain[0])
+    component.max_change(domain[1])
     expect(component['domain']).toEqual(domain)
 
     //colorbar should not update from event emitters

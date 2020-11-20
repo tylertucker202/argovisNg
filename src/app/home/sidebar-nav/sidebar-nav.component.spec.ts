@@ -93,9 +93,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set three day toggle toggle', () => {
     const checked = false
-    component.displayGlobalChange(!checked)
+    component.display_global_change(!checked)
     expect(component['threeDayToggle']).toBeTruthy()
-    component.displayGlobalChange(checked)
+    component.display_global_change(checked)
     expect(component['threeDayToggle']).toBeFalsy()
     expect(spy3D).toHaveBeenCalled()
     expect(spy3D).toHaveBeenCalledTimes(2);
@@ -103,9 +103,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set bgc toggle', () => {
     const checked = true
-    component.bgcChange(!checked)
+    component.bgc_change(!checked)
     expect(component['onlyBGC']).toBeFalsy()
-    component.bgcChange(checked)
+    component.bgc_change(checked)
     expect(component['onlyBGC']).toBeTruthy()
     expect(spyBGC).toHaveBeenCalled()
     expect(spyBGC).toHaveBeenCalledTimes(2);
@@ -113,9 +113,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set deep toggle', () => {
     const checked = true
-    component.deepChange(!checked)
+    component.deep_change(!checked)
     expect(component['onlyDeep']).toBeFalsy()
-    component.deepChange(checked)
+    component.deep_change(checked)
     expect(component['onlyDeep']).toBeTruthy()
     expect(spyDeep).toHaveBeenCalled()
     expect(spyDeep).toHaveBeenCalledTimes(2);

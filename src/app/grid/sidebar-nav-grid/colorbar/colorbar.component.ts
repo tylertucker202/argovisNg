@@ -38,36 +38,36 @@ export class ColorbarComponent implements OnInit {
     this.colorScale = this.queryGridService.getColorScale()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    if ( this.inverseColorScale ) { this.create_colorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.create_colorbar(this.colorArr.slice(), this.domain.slice()) }
 
     this.queryGridService.change
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
         })
     
-    this.queryGridService.updateColorbarEvent
+    this.queryGridService.update_colorbarEvent
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
       })
 
     this.queryGridService.resetToStart
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
       })
   }
 
-  public updateColorbar() {
+  public update_colorbar() {
     this.colorScale = this.queryGridService.getColorScale()
     this.domain = this.queryGridService.getGridDomain()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
     this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
     this.svg.remove();
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    if ( this.inverseColorScale ) { this.create_colorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.create_colorbar(this.colorArr.slice(), this.domain.slice()) }
   }
 
-  public createColorbar(colorArr: string[], domain: number[]) {
+  public create_colorbar(colorArr: string[], domain: number[]) {
 
     this.svg = d3.select("app-colorbar").append("svg")
     .attr("width", this.svgWidth)
@@ -112,7 +112,7 @@ export class ColorbarComponent implements OnInit {
         .call(axis);
     }
 
-  public minChange(val: number ): void {
+  public min_change(val: number ): void {
     const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
     const uRange = this.domain.sort()[1]
     this.domain = [lRange, uRange]
@@ -120,7 +120,7 @@ export class ColorbarComponent implements OnInit {
     this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
   }
 
-  public maxChange(val: number ): void {
+  public max_change(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];

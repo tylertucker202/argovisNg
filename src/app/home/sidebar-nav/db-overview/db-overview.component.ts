@@ -18,8 +18,8 @@ export class DbOverviewComponent implements OnInit {
   constructor(private http: HttpClient, private bottomSheet: MatBottomSheet) { }
   ngOnInit() { }
 
-  public openBottomSheet(): void {
-    this.getDatabaseInfo().subscribe((dbOverview: DatabaseOverview) => {
+  public open_bottom_sheet(): void {
+    this.get_database_info().subscribe((dbOverview: DatabaseOverview) => {
       this.dbOverview = dbOverview
       const lastDate = moment(this.dbOverview.lastAdded).format('LLLL')
 
@@ -33,7 +33,7 @@ export class DbOverviewComponent implements OnInit {
    });
   }
 
-  private getDatabaseInfo(): Observable<DatabaseOverview> {
+  private get_database_info(): Observable<DatabaseOverview> {
     const url = '/selection/overview';
     return this.http.get<DatabaseOverview>(url)
   }

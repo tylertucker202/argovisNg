@@ -218,7 +218,7 @@ export class MapGridComponent implements OnInit, OnDestroy {
       this.gridMappingService.addGridSection(bbox, this.map, date, pres, grid, compareGrid, compare, paramMode, gridParam, lockColorbarRange)
     })
     this.gridMappingService.updateGrids(this.map)
-    this.queryGridService.updateColorbarEvent.emit('new shape added')
+    this.queryGridService.update_colorbarEvent.emit('new shape added')
   }
 
   ngOnDestroy() {

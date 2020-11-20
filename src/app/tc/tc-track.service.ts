@@ -110,7 +110,7 @@ export class TcTrackService extends PointsService {
       const lon = trajData['lon']
       latLngs.push([lat, lon])
       const date = moment(trajData['timestamp']).format('LLLL')
-      const strLatLng = this.formatLatLng([lon, lat])
+      const strLatLng = this.format_lat_lng([lon, lat])
       const catagory = trajData['class']
       const geoLocation = trajData['geoLocation']
       const wind = trajData['wind']

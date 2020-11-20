@@ -25,8 +25,8 @@ describe('MapComponent', () => {
   let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
   let get_selection_pointsSpy: jasmine.Spy;
-  let getPlatformProfilesSpy: jasmine.Spy;
-  let getLatestProfiles: jasmine.Spy;
+  let get_platform_profilesSpy: jasmine.Spy;
+  let get_latest_profiles: jasmine.Spy;
   let getLastThreeDaysProfiles: jasmine.Spy;
   let popupWindowCreationSpy: jasmine.Spy;
 
@@ -61,9 +61,9 @@ describe('MapComponent', () => {
     const mockPoints = pointsService.get_mock_points()
 
     const get_selection_points = spyOn(pointsService, 'get_selection_points').and.returnValue(mockPoints)
-    const getPlatformProfiles = spyOn(pointsService, 'getPlatformProfiles').and.returnValue(mockPoints)
-    const getLatestProfiles = spyOn(pointsService, 'getLatestProfiles').and.returnValue(mockPoints)
-    const getLastThreeDaysProfiles = spyOn(pointsService, 'getLastThreeDaysProfiles').and.returnValue(mockPoints)
+    const get_platform_profiles = spyOn(pointsService, 'get_platform_profiles').and.returnValue(mockPoints)
+    const get_latest_profiles = spyOn(pointsService, 'get_latest_profiles').and.returnValue(mockPoints)
+    const getLastThreeDaysProfiles = spyOn(pointsService, 'get_last_three_days_profiles').and.returnValue(mockPoints)
     const popupWindowCreationSpy = spyOn(mapService, 'popup_window_creation').and.callThrough()
     spyURL = spyOn(queryService, 'set_url'); 
     display_profilesSpy = spyOn<any>(component, 'display_profiles').and.callThrough()
@@ -82,7 +82,7 @@ describe('MapComponent', () => {
     queryService['threeDayToggle'] = false
     queryService.set_proj('WM')
 
-    //getLastThreeDaysProfiles
+    //get_last_three_days_profiles
     //spy = spyOn(queryService, 'get_proj').and.returnValue('WM');
     expect(component['wrappedComponents'] == true)
 

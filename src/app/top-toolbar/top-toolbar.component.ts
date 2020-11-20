@@ -41,11 +41,11 @@ export class TopToolbarComponent implements OnInit, AfterViewInit {
       } else {
         this.href = 'ng/home'
       }
-      this.setCurrentModuleText() 
+      this.set_current_module_text() 
     })
   }
 
-  public setCurrentModuleText() {
+  public set_current_module_text() {
     let currentModuleLink: string
     if (this.href.includes('?')) {
       currentModuleLink = this.href.substring(0, this.href.indexOf("?")); 

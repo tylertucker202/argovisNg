@@ -108,21 +108,21 @@ export class PointsService {
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getPlatformProfiles(platform: string): Observable<ProfilePoints[]> {
+  public get_platform_profiles(platform: string): Observable<ProfilePoints[]> {
     const url = '/catalog/platforms/' + platform + '/map';
     return this.http.get<ProfilePoints[]>(url)
   }
 
-  public getLatestProfiles(): Observable<ProfilePoints[]> {
+  public get_latest_profiles(): Observable<ProfilePoints[]> {
     const url = '/selection/latestProfiles/map'
     return this.http.get<ProfilePoints[]>(url);
   }
-  public getLastProfiles(): Observable<ProfilePoints[]> {
+  public get_last_profiles(): Observable<ProfilePoints[]> {
     const url = '/selection/lastProfiles/map';
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getLastThreeDaysProfiles(startDate: string): Observable<ProfilePoints[]> {
+  public get_last_three_days_profiles(startDate: string): Observable<ProfilePoints[]> {
     let url = '/selection/lastThreeDays/';
     if (startDate) {
       url += startDate
@@ -130,7 +130,7 @@ export class PointsService {
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getGlobalMapProfiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
+  public get_global_map_profiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
     let url = '/selection/globalMapProfiles/'
     url += startDate + '/'
     url += endDate
@@ -158,7 +158,7 @@ export class PointsService {
     return [[lon, lat]]
   }
 
-  public formatLatLng( lonLat : Number[]): String[] {
+  public format_lat_lng( lonLat : Number[]): String[] {
     const lat = Number(lonLat[1])
     const lng = Number(lonLat[0])
     if (lat > 0) {
@@ -183,7 +183,7 @@ export class PointsService {
     const lat = geoLocation.coordinates[1]
     const lon = geoLocation.coordinates[0]
     const date = moment(profile.date).format('LLL')
-    const strLatLng = this.formatLatLng([lon, lat])
+    const strLatLng = this.format_lat_lng([lon, lat])
     const cycle = profile.cycle_number
     //for some reason _id looses its cycle number when passed to the popup object.
     // _id is made this way.

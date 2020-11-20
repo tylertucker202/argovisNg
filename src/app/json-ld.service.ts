@@ -36,7 +36,7 @@ export class JsonLDService {
 
 	constructor(@Inject(DOCUMENT) private _document: Document) {}
 
-	removeStructuredData(): void {
+	remove_structured_data(): void {
 		const els = [];
 		[ 'structured-data', 'structured-data-org' ].forEach(c => {
 			els.push(...Array.from(this._document.head.getElementsByClassName(c)));
@@ -44,7 +44,7 @@ export class JsonLDService {
 		els.forEach(el => this._document.head.removeChild(el));
 	}
 
-	insertSchema(schema: Record<string, any>, className = 'structured-data'): void {
+	insert_schema(schema: Record<string, any>, className = 'structured-data'): void {
 		let script;
 		let shouldAppend = false;
 		if (this._document.head.getElementsByClassName(className).length) {

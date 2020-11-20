@@ -142,7 +142,7 @@ export class MapComponent implements OnInit, OnDestroy {
     .subscribe( platform => {
       this.markersLayer.clearLayers()
       this.mapService.drawnItems.clearLayers()
-      this.pointsService.getPlatformProfiles(platform)
+      this.pointsService.get_platform_profiles(platform)
         .subscribe((profilePoints: ProfilePoints[]) => {
           if (profilePoints.length > 0) {
             this.display_profiles(profilePoints, 'platform')
@@ -161,7 +161,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.queryService.triggerPlatformDisplay
       .subscribe( platform => {
-        this.pointsService.getPlatformProfiles(platform)
+        this.pointsService.get_platform_profiles(platform)
           .subscribe((profilePoints: ProfilePoints[]) => {
             this.display_profiles(profilePoints, 'history')
           },
@@ -190,7 +190,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   public set_starting_profiles(this): void {
     if (this.queryService.get_three_day_toggle()) {
-      this.pointsService.getLastThreeDaysProfiles()
+      this.pointsService.get_last_three_days_profiles()
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {
           this.notifier.notify( 'warning', 'zero profile points returned' )
@@ -208,7 +208,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public add_display_profiles(): void {
     if (!this.queryService.get_three_day_toggle()) {return}
     const startDate = this.queryService.get_global_display_date()
-    this.pointsService.getLastThreeDaysProfiles(startDate)
+    this.pointsService.get_last_three_days_profiles(startDate)
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero profile points returned' )

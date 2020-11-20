@@ -8,16 +8,16 @@ import { Router,NavigationEnd, NavigationStart  } from '@angular/router';
 })
 export class AppComponent {
   constructor(private route:Router, private jsonLDService: JsonLDService) {
-    this.routeEvent(this.route);
+    this.route_event(this.route);
   }
   
-  routeEvent(router: Router){
+  route_event(router: Router){
     router.events.subscribe(e => {
       if(e instanceof NavigationStart){
-        this.jsonLDService.removeStructuredData()
+        this.jsonLDService.remove_structured_data()
       }
       if(e instanceof NavigationEnd){
-        this.jsonLDService.insertSchema(JsonLDService.websiteSchema())
+        this.jsonLDService.insert_schema(JsonLDService.websiteSchema())
       }
 
 

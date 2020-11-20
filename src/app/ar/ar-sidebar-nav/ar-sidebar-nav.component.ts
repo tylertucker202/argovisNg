@@ -32,12 +32,12 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     })
   }
 
-  displayGlobalChange(checked: boolean): void {
+  display_global_change(checked: boolean): void {
     this.displayGlobally = checked
     this.arQueryService.send_display_globally(this.displayGlobally, true)
   }
 
-  clearProfiles(): void {
+  clear_profiles(): void {
     this.arQueryService.trigger_clear_layers();
   }
 
@@ -50,12 +50,12 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arQueryService.send_realtime_msg(this.includeRT);
   }
 
-  bgcChange(checked: boolean): void {
+  bgc_change(checked: boolean): void {
     this.onlyBGC = checked
     this.arQueryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
-  deepChange(checked: boolean): void {
+  deep_change(checked: boolean): void {
     this.onlyDeep = checked
     this.arQueryService.send_deep_toggle_msg(this.onlyDeep);
   }
