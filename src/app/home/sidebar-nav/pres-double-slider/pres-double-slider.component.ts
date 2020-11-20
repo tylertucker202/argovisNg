@@ -12,7 +12,7 @@ import { Options } from 'nouislider'
 export class PresDoubleSliderComponent implements OnInit {
 
   public config: Options;
-  public sliderRange: number[];
+  public sliderRange: [number, number];
   public lRange: number;
   public uRange: number;
 
@@ -43,7 +43,7 @@ export class PresDoubleSliderComponent implements OnInit {
   }
 
   public sendSliderRange(broadcastChange=true): void {
-    this.queryService.sendPres(this.sliderRange, broadcastChange);
+    this.queryService.send_pres(this.sliderRange, broadcastChange);
   }
 
   public minValuechange(newLowPres: number ): void {

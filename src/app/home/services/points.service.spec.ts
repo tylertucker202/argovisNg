@@ -48,7 +48,7 @@ describe('PointsService', () => {
 
   it('should return mock points', inject([PointsService], (service: PointsService) => {
 
-    service.getMockPoints()
+    service.get_mock_points()
     .subscribe((mockPoints: ProfilePoints[]) => {
       expect(mockPoints).toBeTruthy();
       expect(mockPoints[0]._id).toBeTruthy();
@@ -84,7 +84,7 @@ describe('PointsService', () => {
   }));
 
   it('should format LatLng coordinates', inject([PointsService], (service: PointsService) => {
-    service.getMockPoints()
+    service.get_mock_points()
     .subscribe((mockPoints: ProfilePoints[]) => {
     const pointQ4 = mockPoints[0]
     const pointQ3 = mockPoints[1]

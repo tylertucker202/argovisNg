@@ -20,7 +20,7 @@ describe('MapComponent', () => {
   let mapService: MapService;
   let pointsService: PointsService;
   let spyRT: jasmine.Spy;
-  let getProjSpy: jasmine.Spy;
+  let get_projSpy: jasmine.Spy;
   let display_profilesSpy: jasmine.Spy;
   let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
@@ -35,7 +35,7 @@ describe('MapComponent', () => {
       declarations: [ MapComponent ],
       providers: 
       [NotifierService,
-       { provide: MapService, useValue: getProjSpy },
+       { provide: MapService, useValue: get_projSpy },
        MapService,
        PointsService,
        QueryService,
@@ -58,7 +58,7 @@ describe('MapComponent', () => {
     mapService = debugElement.injector.get(MapService)
     pointsService = debugElement.injector.get(PointsService)
 
-    const mockPoints = pointsService.getMockPoints()
+    const mockPoints = pointsService.get_mock_points()
 
     const get_selection_points = spyOn(pointsService, 'get_selection_points').and.returnValue(mockPoints)
     const getPlatformProfiles = spyOn(pointsService, 'getPlatformProfiles').and.returnValue(mockPoints)
@@ -68,7 +68,7 @@ describe('MapComponent', () => {
     spyURL = spyOn(queryService, 'set_url'); 
     display_profilesSpy = spyOn<any>(component, 'display_profiles').and.callThrough()
     set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
-    getProjSpy = spyOn(queryService, 'getProj').and.returnValue('WM');
+    get_projSpy = spyOn(queryService, 'get_proj').and.returnValue('WM');
     fixture.detectChanges();
   });
 
@@ -80,10 +80,10 @@ describe('MapComponent', () => {
   it('should have web mercator', () => {
     //TODO: find out why getting false positives!
     queryService['threeDayToggle'] = false
-    queryService.setProj('WM')
+    queryService.set_proj('WM')
 
     //getLastThreeDaysProfiles
-    //spy = spyOn(queryService, 'getProj').and.returnValue('WM');
+    //spy = spyOn(queryService, 'get_proj').and.returnValue('WM');
     expect(component['wrappedComponents'] == true)
 
     const lat = mapService['WMstartView'][0]
@@ -96,7 +96,7 @@ describe('MapComponent', () => {
 
   it('should have southern stereographic', () => {
     //TODO: find out why getting false positives!
-    queryService.setProj('SSP')
+    queryService.set_proj('SSP')
     expect(component['proj'] == 'SSP')
     expect(component['wrappedComponents'] == false)
     const lat = mapService['SSPstartView'][0]
@@ -107,7 +107,7 @@ describe('MapComponent', () => {
   })
 
   it('should have northern stereographic', () => {
-    queryService.setProj('NSP')
+    queryService.set_proj('NSP')
     expect(component['proj'] == 'NSP')
     expect(component['wrappedComponents'] == false)
     const lat = mapService['NSPstartView'][0]
@@ -118,7 +118,7 @@ describe('MapComponent', () => {
   })
 
   it('should have Default set', () => {
-    queryService.setProj('made up')
+    queryService.set_proj('made up')
     expect(component['proj'] == 'WM')
     expect(component['wrappedComponents'] == true)
     const lat = mapService['WMstartView'][0]

@@ -26,10 +26,10 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
         this.includeRT = this.tcQueryService.get_realtime_toggle()
         this.onlyBGC = this.tcQueryService.get_bgc_toggle()
         this.onlyDeep = this.tcQueryService.get_deep_toggle()
-        this.threeDayToggle = this.tcQueryService.getThreeDayToggle()
-        this.proj = this.tcQueryService.getProj()
+        this.threeDayToggle = this.tcQueryService.get_three_day_toggle()
+        this.proj = this.tcQueryService.get_proj()
   
-        let displayDate = new Date(this.tcQueryService.getGlobalDisplayDate())
+        let displayDate = new Date(this.tcQueryService.get_global_display_date())
         displayDate.setDate(displayDate.getDate())
         displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
         this.date = new FormControl(displayDate)
@@ -38,22 +38,22 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
 
   realtimeChange(checked: boolean): void {
     this.includeRT = checked
-    this.tcQueryService.sendRealtimeMsg(this.includeRT);
+    this.tcQueryService.send_realtime_msg(this.includeRT);
   }
 
   displayGlobalChange(checked: boolean): void {
     this.threeDayToggle = checked
-    this.tcQueryService.sendThreeDayMsg(this.threeDayToggle);
+    this.tcQueryService.send_three_day_msg(this.threeDayToggle);
   }
 
   bgcChange(checked: boolean): void {
     this.onlyBGC = checked
-    this.tcQueryService.sendBGCToggleMsg(this.onlyBGC);
+    this.tcQueryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
   deepChange(checked: boolean): void {
     this.onlyDeep = checked
-    this.tcQueryService.sendDeepToggleMsg(this.onlyDeep);
+    this.tcQueryService.send_deep_toggle_msg(this.onlyDeep);
   }
 
   clearProfiles(): void {

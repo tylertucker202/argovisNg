@@ -50,13 +50,13 @@ describe('ArSidebarNavComponent', () => {
 
     arQueryService.set_params_from_url()
     
-    spyRT = spyOn(arQueryService, 'sendRealtimeMsg'); 
+    spyRT = spyOn(arQueryService, 'send_realtime_msg'); 
     spyDisplayGlobally = spyOn(arQueryService, 'send_display_globally'); 
-    spyBGC = spyOn(arQueryService, 'sendBGCToggleMsg'); 
-    spyDeep = spyOn(arQueryService, 'sendDeepToggleMsg'); 
-    spyProj = spyOn(arQueryService, 'sendProj'); 
-    spyPlatform = spyOn(arQueryService, 'triggerShowPlatform'); 
-    spyDate = spyOn(arQueryService, 'sendGlobalDate')
+    spyBGC = spyOn(arQueryService, 'send_bgc_toggle_msg'); 
+    spyDeep = spyOn(arQueryService, 'send_deep_toggle_msg'); 
+    spyProj = spyOn(arQueryService, 'send_proj'); 
+    spyPlatform = spyOn(arQueryService, 'trigger_show_platform'); 
+    spyDate = spyOn(arQueryService, 'send_global_date')
     fixture.detectChanges();
   });
 
@@ -69,7 +69,7 @@ describe('ArSidebarNavComponent', () => {
      const RTToggle = arQueryService.get_realtime_toggle()
      const bgcToggle = arQueryService.get_bgc_toggle()
      const deepToggle = arQueryService.get_deep_toggle()
-     const proj = arQueryService.getProj()
+     const proj = arQueryService.get_proj()
      const displayGlobally = arQueryService.get_display_globally()
 
      arQueryService.urlBuild.emit('test')

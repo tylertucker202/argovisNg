@@ -51,12 +51,12 @@ export class ControlComponent implements OnInit {
 
 
   ngOnInit() {
-    this.proj = this.covarService.getProj()
+    this.proj = this.covarService.get_proj()
     this.forcastDays = this.covarService.getForcast()
   }
 
   public mapProjChange(proj: string): void {
-    this.covarService.sendProj(proj)
+    this.covarService.send_proj(proj)
   }
 
   public forcastChange(forcastDays: number): void {

@@ -21,9 +21,9 @@ export class ArQueryService extends QueryService {
   public reset_params(): void{
     console.log('reset params pressed')
     const broadcastChange = false
-    this.sendDeepToggleMsg(false, broadcastChange)
-    this.sendBGCToggleMsg(false, broadcastChange)
-    this.sendRealtimeMsg(true, broadcastChange)
+    this.send_deep_toggle_msg(false, broadcastChange)
+    this.send_bgc_toggle_msg(false, broadcastChange)
+    this.send_realtime_msg(true, broadcastChange)
     const arDate = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const arHourRange = [-18, 18]
     this.send_display_globally(true, broadcastChange)
@@ -136,17 +136,17 @@ export class ArQueryService extends QueryService {
     switch(key) {
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
-        this.sendRealtimeMsg(includeRealtime, notifyChange)
+        this.send_realtime_msg(includeRealtime, notifyChange)
         break
       }
       case 'onlyBGC': {
         const onlyBGC = JSON.parse(value)
-        this.sendBGCToggleMsg(onlyBGC, notifyChange)
+        this.send_bgc_toggle_msg(onlyBGC, notifyChange)
         break
       }
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
-        this.sendDeepToggleMsg(onlyDeep, notifyChange)
+        this.send_deep_toggle_msg(onlyDeep, notifyChange)
         break;
       }
       case 'displayGlobally': {

@@ -74,7 +74,7 @@ export class GridPickerComponent implements OnInit {
     this.selectGridService.getGridMeta(this.gridName).subscribe( (gridMetas: GridMeta[] )=> {
       //quietly check the pressure level and update pressure if invalid.
       if (!gridMetas[0].presLevels.includes(this.queryGridService.getPresLevel())) {
-        this.queryGridService.sendPres(gridMetas[0].presLevels[0], false)
+        this.queryGridService.send_pres(gridMetas[0].presLevels[0], false)
       }
       this.queryGridService.sendGrid(this.gridName, false)
       this.selectGridService.gridMetaChange.emit(gridMetas[0])

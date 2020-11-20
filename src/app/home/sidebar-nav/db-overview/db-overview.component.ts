@@ -33,7 +33,6 @@ export class DbOverviewComponent implements OnInit {
    });
   }
 
-
   private getDatabaseInfo(): Observable<DatabaseOverview> {
     const url = '/selection/overview';
     return this.http.get<DatabaseOverview>(url)

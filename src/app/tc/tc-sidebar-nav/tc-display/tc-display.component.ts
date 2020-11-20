@@ -115,7 +115,7 @@ export class TcDisplayComponent implements OnInit {
   }
 
   public set_tc_tracks(): void {
-    this.tcQueryService.sendThreeDayMsg(false, false)
+    this.tcQueryService.send_three_day_msg(false, false)
     // this.tcQueryService.clear_layers.emit('tc shapes being drawn')
     // this.tcQueryService.tcEvent.emit('tc shapes being drawn')
   }

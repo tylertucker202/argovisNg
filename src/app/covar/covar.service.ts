@@ -56,7 +56,7 @@ export class CovarService {
         break;
       }
       case 'proj': {
-        this.sendProj(value, notifyChange)
+        this.send_proj(value, notifyChange)
         break;
       }
       case 'lngLat': {
@@ -85,11 +85,11 @@ export class CovarService {
     this.dataUrl = url
   }
 
-  public getProj(): string {
+  public get_proj(): string {
     return this.proj
   }
 
-  public sendProj(proj: string, notifyChange=true): void {
+  public send_proj(proj: string, notifyChange=true): void {
     if (proj !== this.proj) {
       this.proj = proj;
     }

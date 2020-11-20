@@ -84,7 +84,7 @@ export class ArDisplayComponent implements OnInit {
   }
 
   public set_ar_shapes(): void {
-    this.arQueryService.sendThreeDayMsg(false, false)
+    this.arQueryService.send_three_day_msg(false, false)
     this.arQueryService.clear_layers.emit('ar shapes being drawn')
     this.arQueryService.arEvent.emit('ar shapes being drawn')
   }

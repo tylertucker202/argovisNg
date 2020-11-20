@@ -48,13 +48,13 @@ describe('SidebarNavComponent', () => {
 
     queryService.set_params_from_url()
     
-    spyRT = spyOn(queryService, 'sendRealtimeMsg'); 
-    spy3D = spyOn(queryService, 'sendThreeDayMsg'); 
-    spyBGC = spyOn(queryService, 'sendBGCToggleMsg'); 
-    spyDeep = spyOn(queryService, 'sendDeepToggleMsg'); 
-    spyProj = spyOn(queryService, 'sendProj'); 
-    spyPlatform = spyOn(queryService, 'triggerShowPlatform'); 
-    spyDate = spyOn(queryService, 'sendGlobalDate')
+    spyRT = spyOn(queryService, 'send_realtime_msg'); 
+    spy3D = spyOn(queryService, 'send_three_day_msg'); 
+    spyBGC = spyOn(queryService, 'send_bgc_toggle_msg'); 
+    spyDeep = spyOn(queryService, 'send_deep_toggle_msg'); 
+    spyProj = spyOn(queryService, 'send_proj'); 
+    spyPlatform = spyOn(queryService, 'trigger_show_platform'); 
+    spyDate = spyOn(queryService, 'send_global_date')
     fixture.detectChanges();
   });
 
@@ -67,9 +67,9 @@ describe('SidebarNavComponent', () => {
      const RTToggle = queryService.get_realtime_toggle()
      const bgcToggle = queryService.get_bgc_toggle()
      const deepToggle = queryService.get_deep_toggle()
-     const proj = queryService.getProj()
-     const threeDayToggle = queryService.getThreeDayToggle()
-     const globalDisplayDate = queryService.getGlobalDisplayDate()
+     const proj = queryService.get_proj()
+     const threeDayToggle = queryService.get_three_day_toggle()
+     const globalDisplayDate = queryService.get_global_display_date()
 
      queryService.urlBuild.emit('test')
      expect(component['proj']).toEqual(proj)

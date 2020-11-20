@@ -105,7 +105,7 @@ describe('ArMapComponent', () => {
   })
 
   it('should convert between ar to shape array properly', () => {
-    const shapeArray = component['convertArShapesToshapeArraysAndIds']([mockShapeSimple, mockShapeComplex])
+    const shapeArray = component['convert_ar_to_shape_array_and_id']([mockShapeSimple, mockShapeComplex])
     expect(shapeArray.length).toEqual(2)
     expect(shapeArray[1][0]).toEqual(mockShapeSimple._id)
     expect(shapeArray[1][1]).toEqual(mockShapeComplex._id)

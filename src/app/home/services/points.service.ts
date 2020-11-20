@@ -1,3 +1,4 @@
+import { DateRange } from './../../../typeings/daterange.d';
 import { Injectable, ApplicationRef, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
@@ -95,12 +96,15 @@ export class PointsService {
   {"_id":"3901110_107","date":"2018-07-08T16:58:26.001Z","cycle_number":107,"geoLocation":{"type":"Point","coordinates":[-27.48367,-24.22411]},"platform_number":"3901110", "DATA_MODE":'R'},
   ]
 
-  public getMockPoints(): Observable<ProfilePoints[]> {
+  public get_mock_points(): Observable<ProfilePoints[]> {
     return of(this.mockPoints)
   }
 
-  public get_selection_points(urlQuery: string): Observable<ProfilePoints[]> {
-    const url = urlQuery;
+  public get_selection_points(daterange: DateRange, transformedShape: number[][][], presRange?: [number, number]): Observable<ProfilePoints[]> {
+    let base = '/selection/profiles/map'
+    let url = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
+    url += '&shape='+JSON.stringify(transformedShape)
+    if (presRange) { url += '&presRange='+JSON.stringify(presRange) }
     return this.http.get<ProfilePoints[]>(url);
   }
 

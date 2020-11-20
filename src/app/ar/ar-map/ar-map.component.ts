@@ -86,7 +86,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
     })
   }
   
-  private convertArShapesToshapeArraysAndIds(arShapes: ARShape[]) {
+  private convert_ar_to_shape_array_and_id(arShapes: ARShape[]) {
     let shapeArrays = []
     let shape_ids = []
     for(let idx=0; idx<arShapes.length; idx++){
@@ -100,7 +100,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
   }
 
   private set_ar_shape(arShapes: ARShape[]) {
-    const [shapeArrays, shape_ids] = this.convertArShapesToshapeArraysAndIds(arShapes)
+    const [shapeArrays, shape_ids] = this.convert_ar_to_shape_array_and_id(arShapes)
     const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.arShapeOptions)
     const shapeType = 'atmospheric river shape'
 
@@ -124,24 +124,20 @@ export class ArMapComponent extends MapComponent implements OnInit {
     let shapeArrays = this.arQueryService.get_shapes()
     const displayGlobally = this.arQueryService.get_display_globally()
     if (shapeArrays && !displayGlobally) {
-      this.setShapeProfiles(shapeArrays, sendNotification)
+      this.set_shape_profiles(shapeArrays, sendNotification)
     }
     if (displayGlobally) {
-      this.setGlobalProfiles()
+      this.sed_global_profiles()
     }
   }
 
-  private setShapeProfiles(shapeArrays: number[][][], sendNotification=true): void { 
+  private set_shape_profiles(shapeArrays: number[][][], sendNotification=true): void { 
     this.markersLayer.clearLayers()
-    let base = '/selection/profiles/map'
     const daterange = this.arQueryService.get_ar_date_as_date_range()
 
     shapeArrays.forEach( (shape) => {
       const transformedShape = this.arMapService.get_transformed_shape(shape)
-      let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
-      urlQuery += '&shape='+JSON.stringify(transformedShape)
-
-      this.pointsService.get_selection_points(urlQuery)
+      this.pointsService.get_selection_points(daterange, transformedShape)
           .subscribe((selectionPoints: ProfilePoints[]) => {
             if (selectionPoints.length == 0 && !this.arQueryService.get_display_globally()) {
               this.notifier.notify( 'info', 'no profile points found inside a shape' )
@@ -158,7 +154,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
 
 }
 
-  private setGlobalProfiles(): void {
+  private sed_global_profiles(): void {
 
     const dateRange = this.arQueryService.get_ar_date_as_date_range()
     this.pointsService.getGlobalMapProfiles(dateRange.startDate, dateRange.endDate)

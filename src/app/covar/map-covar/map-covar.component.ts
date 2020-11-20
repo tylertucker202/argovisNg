@@ -45,7 +45,7 @@ export class MapCovarComponent implements OnInit {
     this.covarService.readURLParams()
     this.covarService.buildDataUrl()
 
-    this.proj = this.covarService.getProj()
+    this.proj = this.covarService.get_proj()
 
     this.makeMousePositionControl()
 
@@ -59,7 +59,7 @@ export class MapCovarComponent implements OnInit {
 
     this.covarService.change
     .subscribe(msg => {
-       this.proj = this.covarService.getProj()
+       this.proj = this.covarService.get_proj()
        this.covarService.buildDataUrl()
        this.removePoints()
        //this.addMockPoints()

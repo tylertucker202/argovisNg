@@ -44,7 +44,7 @@ export class QueryGridService {
     const date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
     this.sendDate(date, broadcastChange)
     const presLevel = 10
-    this.sendPres(presLevel, broadcastChange)
+    this.send_pres(presLevel, broadcastChange)
     this.colorScale = 'balance'
     this.inverseColorScale = false
     this.gridDomain = [0, 1]
@@ -57,7 +57,7 @@ export class QueryGridService {
     this.resetToStart.emit('reset params pushed')
   }
 
-  public sendPres(presLevel: number, broadcastChange=true): void {
+  public send_pres(presLevel: number, broadcastChange=true): void {
     const msg = 'pres level change'
     this.presLevel = presLevel
     if (broadcastChange){ this.change.emit(msg) }
@@ -356,7 +356,7 @@ export class QueryGridService {
       }
       case 'presLevel': {
         const presLevel = JSON.parse(value)
-        this.sendPres(presLevel, notifyChange)
+        this.send_pres(presLevel, notifyChange)
         break
       }
       case 'gridDomain': {

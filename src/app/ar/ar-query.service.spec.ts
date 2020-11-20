@@ -79,9 +79,9 @@ describe('ArQueryService', () => {
     expect(service.get_ar_date()).toEqual(arDateDefault)
     expect(service.get_display_globally()).toEqual(!dispGlob)    
     //change all params to non default
-    service.sendRealtimeMsg(rtTog, broadcastChange)
-    service.sendBGCToggleMsg(bgcTog, broadcastChange)
-    service.sendDeepToggleMsg(deepTog, broadcastChange)
+    service.send_realtime_msg(rtTog, broadcastChange)
+    service.send_bgc_toggle_msg(bgcTog, broadcastChange)
+    service.send_deep_toggle_msg(deepTog, broadcastChange)
     service.send_ar_date_range(arDR, broadcastChange)
     service.send_ar_date(arDate)
     service.send_display_globally(dispGlob, broadcastChange)
@@ -106,9 +106,9 @@ describe('ArQueryService', () => {
     const arDateDefault = moment(new Date( 2010, 0, 1, 0, 0, 0, 0))
     const dispGlob = false
     //change all params to non default
-    service.sendRealtimeMsg(rtTog, broadcastChange)
-    service.sendBGCToggleMsg(bgcTog, broadcastChange)
-    service.sendDeepToggleMsg(deepTog, broadcastChange)
+    service.send_realtime_msg(rtTog, broadcastChange)
+    service.send_bgc_toggle_msg(bgcTog, broadcastChange)
+    service.send_deep_toggle_msg(deepTog, broadcastChange)
     service.send_ar_date_range(arDR, broadcastChange)
     service.send_ar_date(arDate)
     service.send_display_globally(dispGlob, broadcastChange)

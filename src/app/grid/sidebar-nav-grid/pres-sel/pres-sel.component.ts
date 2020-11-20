@@ -31,7 +31,7 @@ export class PresSelComponent implements OnInit {
       this.makePressureLevels()
       if (!this.presLevels.includes(this.presLevel)) {
         this.presLevel = this.presLevels[0]
-        this.queryGridService.sendPres(this.presLevel, false)
+        this.queryGridService.send_pres(this.presLevel, false)
         this.queryGridService.set_url()
       }
     })
@@ -50,22 +50,22 @@ export class PresSelComponent implements OnInit {
     const inc = idx + increment
     if( inc >= 0 && inc < this.presLevelsDisplay.length) {
       this.presLevel = this.presLevelsDisplay[inc].value
-      this.sendPresLevel()
+      this.send_presLevel()
     }
 
   }
 
-  public sendPresLevel(): void {
+  public send_presLevel(): void {
     const broadcastChange = true
     if (this.presLevel !== this.queryGridService.getPresLevel()){
-      this.queryGridService.sendPres(this.presLevel, broadcastChange)
+      this.queryGridService.send_pres(this.presLevel, broadcastChange)
     }
   } 
 
   public selChange(newPres: number ): void {
     this.presLevel = newPres
     console.log(this.presLevel)
-    this.sendPresLevel();
+    this.send_presLevel();
   }
 
 }

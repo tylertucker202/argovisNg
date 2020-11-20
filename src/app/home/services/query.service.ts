@@ -15,7 +15,7 @@ export class QueryService {
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
-  private presRange = [0, 2000]
+  private presRange: [number, number] = [0, 2000]
   public selectionDateRange: DateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
                                           endDate: this.format_date(moment().utc()), label: 'initial date range'};
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss')
@@ -37,20 +37,20 @@ export class QueryService {
 
   public reset_params(): void{
     const broadcastChange = false
-    this.sendDeepToggleMsg(false, broadcastChange)
-    this.sendBGCToggleMsg(false, broadcastChange)
-    this.sendRealtimeMsg(true, broadcastChange)
+    this.send_deep_toggle_msg(false, broadcastChange)
+    this.send_bgc_toggle_msg(false, broadcastChange)
+    this.send_realtime_msg(true, broadcastChange)
     const globalDisplayDate = this.format_date(moment().utc().subtract(2, 'days'));
-    this.sendGlobalDate(globalDisplayDate, broadcastChange)
-    const presRange = [0, 2000]
-    this.sendPres(presRange, broadcastChange)
+    this.send_global_date(globalDisplayDate, broadcastChange)
+    const presRange = [0, 2000] as [number, number]
+    this.send_pres(presRange, broadcastChange)
     const clearOtherShapes = false
     let selectionDateRange: DateRange
     let sendThreeDayMsg: boolean
     sendThreeDayMsg = true
     selectionDateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
     endDate: this.format_date(moment().utc()), label: 'initial date range'};
-    this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
+    this.send_three_day_msg(sendThreeDayMsg, broadcastChange)
     this.send_selected_date(selectionDateRange, broadcastChange)
   }
 
@@ -96,16 +96,16 @@ export class QueryService {
       shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'mapProj': this.getProj(),
+                         'mapProj': this.get_proj(),
                          'presRange': presRangeString, 
                          'selectionStartDate': this.get_selection_dates().startDate,
                          'selectionEndDate': this.get_selection_dates().endDate,
-                         'threeDayEndDate': this.getGlobalDisplayDate(),
+                         'threeDayEndDate': this.get_global_display_date(),
                          'shapes': shapesString,
                          'includeRealtime': this.get_realtime_toggle(),
                          'onlyBGC': this.get_bgc_toggle(),
                          'onlyDeep': this.get_deep_toggle(),
-                         'threeDayToggle': this.getThreeDayToggle(),
+                         'threeDayToggle': this.get_three_day_toggle(),
                         }
     this.router.navigate(
       [], 
@@ -116,11 +116,7 @@ export class QueryService {
       });
   }
 
-  public getURL(): string {
-    return location.pathname
-  }
-
-  public triggerPlatformShow(platform: string): void {
+  public trigger_platform_show_event(platform: string): void {
     this.triggerPlatformDisplay.emit(platform)
   }
 
@@ -134,7 +130,7 @@ export class QueryService {
     this.set_url()
   }
 
-  public triggerShowPlatform(platform: string): void {
+  public trigger_show_platform(platform: string): void {
     this.displayPlatform.emit(platform);
   }
 
@@ -142,13 +138,13 @@ export class QueryService {
     let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
-      this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
+      this.send_three_day_msg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public sendProj(proj: string): void {
+  public send_proj(proj: string): void {
     const msg = 'proj changed';
     this.proj = proj;
     this.set_url()
@@ -157,11 +153,11 @@ export class QueryService {
      } );
   }
 
-  public setProj(proj: string): void {
+  public set_proj(proj: string): void {
     this.proj = proj
   }
 
-  public getProj(): string {
+  public get_proj(): string {
     return this.proj;
   }
 
@@ -173,14 +169,14 @@ export class QueryService {
     this.latLngShapes = null;
   }
 
-  public sendPres(presRange: number[], broadcastChange=true): void {
+  public send_pres(presRange: [number, number], broadcastChange=true): void {
     const msg = 'presRange';
     this.presRange = presRange;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public get_pres_range(): number[] {
-    return [...this.presRange];
+  public get_pres_range(): [number, number] {
+    return [...this.presRange] as [number, number];
   }
 
   public send_selected_date(selectionDateRange: DateRange, broadcastChange=true): void {
@@ -193,17 +189,17 @@ export class QueryService {
     return this.selectionDateRange;
   }
 
-  public sendGlobalDate(globalDisplayDate: string, broadcastChange=true): void {
+  public send_global_date(globalDisplayDate: string, broadcastChange=true): void {
     const msg = 'three day display date';
     this.globalDisplayDate = globalDisplayDate;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getGlobalDisplayDate(): string{
+  public get_global_display_date(): string{
     return this.globalDisplayDate;
   }
 
-  public sendRealtimeMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_realtime_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'realtime'
     this.includeRealtime = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
@@ -213,17 +209,17 @@ export class QueryService {
     return this.includeRealtime;
   }
 
-  public sendThreeDayMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_three_day_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = '3 day toggle'
     this.threeDayToggle = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getThreeDayToggle(): boolean {
+  public get_three_day_toggle(): boolean {
     return this.threeDayToggle;
   }
 
-  sendBGCToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_bgc_toggle_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'bgc only'
     this.onlyBGC = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
@@ -233,7 +229,7 @@ export class QueryService {
     return this.onlyBGC
   }
 
-  sendDeepToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_deep_toggle_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'deep only'
     this.onlyDeep = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
@@ -247,32 +243,32 @@ export class QueryService {
     const notifyChange = false
     switch(key) {
       case 'mapProj': {
-        this.setProj(value)
+        this.set_proj(value)
         break
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
-        this.sendRealtimeMsg(includeRealtime, notifyChange)
+        this.send_realtime_msg(includeRealtime, notifyChange)
         break
       }
       case 'onlyBGC': {
         const onlyBGC = JSON.parse(value)
-        this.sendBGCToggleMsg(onlyBGC, notifyChange)
+        this.send_bgc_toggle_msg(onlyBGC, notifyChange)
         break
       }
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
-        this.sendDeepToggleMsg(onlyDeep, notifyChange)
+        this.send_deep_toggle_msg(onlyDeep, notifyChange)
         break;
       }
       case 'threeDayToggle': {
         const threeDayToggle = JSON.parse(value)
-        this.sendThreeDayMsg(threeDayToggle, notifyChange)
+        this.send_three_day_msg(threeDayToggle, notifyChange)
         break
       }
       case 'threeDayEndDate': {
         const globalDisplayDate = value
-        this.sendGlobalDate(globalDisplayDate, notifyChange)
+        this.send_global_date(globalDisplayDate, notifyChange)
         break
       }
       case 'shapes': {
@@ -293,7 +289,7 @@ export class QueryService {
       }
       case 'presRange': {
         const presRange = JSON.parse(value)
-        this.sendPres(presRange, notifyChange)
+        this.send_pres(presRange, notifyChange)
         break
       }
      default: {

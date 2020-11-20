@@ -28,7 +28,7 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
       this.onlyBGC = this.arQueryService.get_bgc_toggle()
       this.onlyDeep = this.arQueryService.get_deep_toggle()
       this.displayGlobally = this.arQueryService.get_display_globally()
-      this.proj = this.arQueryService.getProj()
+      this.proj = this.arQueryService.get_proj()
     })
   }
 
@@ -47,17 +47,17 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
 
   realtimeChange(checked: boolean): void {
     this.includeRT = checked
-    this.arQueryService.sendRealtimeMsg(this.includeRT);
+    this.arQueryService.send_realtime_msg(this.includeRT);
   }
 
   bgcChange(checked: boolean): void {
     this.onlyBGC = checked
-    this.arQueryService.sendBGCToggleMsg(this.onlyBGC);
+    this.arQueryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
   deepChange(checked: boolean): void {
     this.onlyDeep = checked
-    this.arQueryService.sendDeepToggleMsg(this.onlyDeep);
+    this.arQueryService.send_deep_toggle_msg(this.onlyDeep);
   }
 
 }

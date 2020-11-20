@@ -49,7 +49,7 @@ export class ProfPopupComponent {
 
 
   showPlatformsProfiles() {
-    this.queryService.triggerPlatformShow(this.platform)
+    this.queryService.trigger_platform_show_event(this.platform)
   }
 
 }

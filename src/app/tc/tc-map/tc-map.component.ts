@@ -157,18 +157,13 @@ export class TcMapComponent extends MapComponent implements OnInit {
       this.markersLayer.clearLayers()
       let base = '/selection/profiles/map'
       const daterange = this.tcQueryService.get_selection_dates()
-      const presRange = this.tcQueryService.get_pres_range()
+      const presRange = this.tcQueryService.get_pres_range() as [number, number]
 
       // console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.tcMapService.get_transformed_shape(shape)
-        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
-        if (presRange) {
-          urlQuery += '&presRange='+JSON.stringify(presRange)
-        }
-        urlQuery += '&shape='+JSON.stringify(transformedShape)
-        this.pointsService.get_selection_points(urlQuery)
+        this.pointsService.get_selection_points(daterange, transformedShape, presRange)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.display_profiles(selectionPoints, 'normalMarker')
               if (selectionPoints.length == 0 && sendNotification) {

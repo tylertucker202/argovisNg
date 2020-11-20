@@ -23,7 +23,7 @@ describe('ArDisplayComponent', () => {
   let spysend_ar_date: jasmine.Spy;
   let spysend_ar_date_range: jasmine.Spy;
   let spyset_url: jasmine.Spy;
-  let spySendThreeDayMsg: jasmine.Spy;
+  let spysend_three_day_msg: jasmine.Spy;
   let spyget_ar_shapes: jasmine.Spy;
   let spyget_ar_date: jasmine.Spy;
   let spyReset: jasmine.Spy
@@ -50,7 +50,7 @@ describe('ArDisplayComponent', () => {
     spysend_ar_date = spyOn(arQueryService, 'send_ar_date').and.callThrough()
     spysend_ar_date_range = spyOn(arQueryService, 'send_ar_date_range').and.callThrough()
     spyset_url = spyOn(arQueryService, 'set_url').and.callThrough()
-    spySendThreeDayMsg = spyOn(arQueryService, 'sendThreeDayMsg').and.callThrough()
+    spysend_three_day_msg = spyOn(arQueryService, 'send_three_day_msg').and.callThrough()
     spyget_ar_shapes = spyOn(arQueryService, 'get_ar_shapes').and.callThrough()
     spyget_ar_date = spyOn(arQueryService, 'get_ar_date').and.callThrough()
     spyReset = spyOn(arQueryService, 'trigger_reset_to_start').and.callThrough()

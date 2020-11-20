@@ -1,4 +1,3 @@
-import { PlatformMeta } from './../profview/profiles.d';
 export interface TcTrack {
 	_id : string,
 	name : string,

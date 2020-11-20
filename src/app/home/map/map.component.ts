@@ -105,7 +105,7 @@ export class MapComponent implements OnInit, OnDestroy {
   public set_params_and_events(): void {
     //can be overwritten in child components
     this.queryService.set_params_from_url()
-    this.proj = this.queryService.getProj()
+    this.proj = this.queryService.get_proj()
     if ( this.proj === 'WM' ){
       this.wrapCoordinates = true
     }
@@ -115,9 +115,9 @@ export class MapComponent implements OnInit, OnDestroy {
          this.queryService.set_url()
          this.markersLayer.clearLayers()
          this.set_points_on_map()
-         const showThreeDay = this.queryService.getThreeDayToggle()
+         const showThreeDay = this.queryService.get_three_day_toggle()
          if (showThreeDay) {
-            this.adddisplay_profiles()
+            this.add_display_profiles()
          }
         })
 
@@ -134,7 +134,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.queryService.clear_shapes()
         this.markersLayer.clearLayers()
         this.mapService.drawnItems.clearLayers()
-        this.setStartingProfiles()
+        this.set_starting_profiles()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
 
@@ -188,8 +188,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this.queryService.send_shape(shape, broadcast, toggleThreeDayOff)
   }
 
-  public setStartingProfiles(this): void {
-    if (this.queryService.getThreeDayToggle()) {
+  public set_starting_profiles(this): void {
+    if (this.queryService.get_three_day_toggle()) {
       this.pointsService.getLastThreeDaysProfiles()
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {
@@ -205,9 +205,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public adddisplay_profiles(): void {
-    if (!this.queryService.getThreeDayToggle()) {return}
-    const startDate = this.queryService.getGlobalDisplayDate()
+  public add_display_profiles(): void {
+    if (!this.queryService.get_three_day_toggle()) {return}
+    const startDate = this.queryService.get_global_display_date()
     this.pointsService.getLastThreeDaysProfiles(startDate)
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
@@ -223,7 +223,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   
   public setMockPoints(): void {
-    this.pointsService.getMockPoints()
+    this.pointsService.get_mock_points()
     .subscribe((profilePoints: ProfilePoints[]) => {
       if (profilePoints.length == 0) {
         this.notifier.notify( 'warning', 'zero mock profile points returned' )
@@ -280,18 +280,12 @@ export class MapComponent implements OnInit, OnDestroy {
     let shapeArrays = this.queryService.get_shapes()
     if (shapeArrays) {
       this.markersLayer.clearLayers()
-      let base = '/selection/profiles/map'
       const daterange = this.queryService.get_selection_dates()
       const presRange = this.queryService.get_pres_range()
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.mapService.get_transformed_shape(shape)
-        let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
-        if (presRange) {
-          urlQuery += '&presRange='+JSON.stringify(presRange)
-        }
-        urlQuery += '&shape='+JSON.stringify(transformedShape)
-        this.pointsService.get_selection_points(urlQuery)
+        this.pointsService.get_selection_points(daterange, transformedShape, presRange)
             .subscribe((selectionPoints: ProfilePoints[]) => {
               this.display_profiles(selectionPoints, 'normalMarker')
               if (selectionPoints.length == 0 && sendNotification) {
