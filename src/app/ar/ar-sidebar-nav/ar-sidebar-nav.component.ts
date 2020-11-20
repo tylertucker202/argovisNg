@@ -45,7 +45,7 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arQueryService.trigger_reset_to_start();
   }
 
-  realtimeChange(checked: boolean): void {
+  realtime_changed(checked: boolean): void {
     this.includeRT = checked
     this.arQueryService.send_realtime_msg(this.includeRT);
   }

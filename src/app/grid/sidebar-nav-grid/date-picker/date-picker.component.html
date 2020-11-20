@@ -6,14 +6,14 @@
     <input matInput [matDatepicker]="dp"
      placeholder="Date"
      [formControl]="dateForm"
-     (dateChange)="displayDateChanged($event.value)"
+     (dateChange)="displaydate_changed($event.value)"
      matTooltip="select date of grid data on display" 
      [min]="minDate" [max]="maxDate" >
     <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
     <mat-datepicker 
                     #dp
                     startView="multi-year"
-                    (dateChange)="displayDateChanged($event.value)"
+                    (dateChange)="displaydate_changed($event.value)"
                     panelClass="date-picker">
     </mat-datepicker>
   </mat-form-field>

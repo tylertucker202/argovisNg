@@ -54,32 +54,32 @@ export class ArDisplayComponent implements OnInit {
     })
   }
 
-  dateChanged(): void {
+  date_changed(): void {
     this.arFormDate = new FormControl(this.date.toDate())
     this.arQueryService.send_ar_date(this.date)
     this.arQueryService.set_url()
     this.set_ar_shapes() //remove if you don't want to fire ar event
   }
 
-  timeChange(hour: number): void {
+  time_changed(hour: number): void {
     this.hour = hour
     this.date.hour(this.hour)
-    this.dateChanged()
+    this.date_changed()
   }
 
-  calendarDateChanged(calDate: Date): void {
+  calendar_date_changed(calDate: Date): void {
     this.date = moment(calDate).hour(this.hour)
-    this.dateChanged()
+    this.date_changed()
   }
 
-  public incrementDay(increment: number): void {
+  public increment_day(increment: number): void {
     this.date = this.date.add(increment, 'd')
-    this.dateChanged()
+    this.date_changed()
   }
 
-  public incrementHour(increment: number): void {
+  public increment_hour(increment: number): void {
     this.date = this.date.add(increment, 'h')
-    this.dateChanged()
+    this.date_changed()
     this.hour = this.date.hour()
   }
 

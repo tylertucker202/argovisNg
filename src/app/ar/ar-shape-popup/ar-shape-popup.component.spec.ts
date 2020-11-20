@@ -8,7 +8,7 @@ describe('ArShapePopupComponent', () => {
   let component: ArShapePopupComponent;
   let fixture: ComponentFixture<ArShapePopupComponent>;
   let arQueryService: ArQueryService;
-  let queryARShapeSpy: jasmine.Spy
+  let query_ar_shapeSpy: jasmine.Spy
   let debugElement: DebugElement
 
   beforeEach(async(() => {
@@ -25,7 +25,7 @@ describe('ArShapePopupComponent', () => {
     component = fixture.componentInstance;
     debugElement = fixture.debugElement
     arQueryService = debugElement.injector.get(ArQueryService)
-    queryARShapeSpy = spyOn<any>(component, 'queryARShape').and.callThrough()
+    query_ar_shapeSpy = spyOn<any>(component, 'query_ar_shape').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -56,7 +56,7 @@ describe('ArShapePopupComponent', () => {
     expect(url.includes('/ng/home?')).toEqual(true)
   })
 
-  it('should generate queryARShape on init', () => {
-    expect(queryARShapeSpy).toHaveBeenCalled()
+  it('should generate query_ar_shape on init', () => {
+    expect(query_ar_shapeSpy).toHaveBeenCalled()
   })
 });

@@ -70,7 +70,7 @@ export class TcDisplayComponent implements OnInit {
     this.set_tc_tracks() //remove if you don't want to fire ar event
   }
 
-  timeChange(hour: number, startBool: Boolean): void {
+  time_changed(hour: number, startBool: Boolean): void {
     if (startBool) {
       this.startHour = hour
       this.startDate.hour(this.startHour)
@@ -92,7 +92,7 @@ export class TcDisplayComponent implements OnInit {
     this.date_changed(startBool)
   }
 
-  public incrementDay(increment: number, startBool: Boolean): void {
+  public increment_day(increment: number, startBool: Boolean): void {
     if (startBool) {
       this.startDate = this.startDate.add(increment, 'd')
     }
@@ -102,7 +102,7 @@ export class TcDisplayComponent implements OnInit {
     this.date_changed(startBool)
   }
 
-  public incrementHour(increment: number, startBool: Boolean): void {
+  public increment_hour(increment: number, startBool: Boolean): void {
     if (startBool) {
       this.startDate = this.startDate.add(increment, 'h')
       this.startHour = this.startDate.hour()

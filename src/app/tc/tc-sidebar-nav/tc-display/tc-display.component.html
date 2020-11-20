@@ -2,7 +2,7 @@
 <div id="dialog-form" mat-dialog-content>
   <p  id="row">Pick a start/end date and time</p>
 <div id="row">
-  <button mat-icon-button matTooltip="-1 day" (click)="incrementDay(-1, true)"  id="minusOne">-1</button>
+  <button mat-icon-button matTooltip="-1 day" (click)="increment_day(-1, true)"  id="minusOne">-1</button>
   <mat-form-field id="dateInput">
     <input matInput 
     matTooltip="Date of TC" 
@@ -15,22 +15,22 @@
     <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
     <mat-datepicker #startPicker></mat-datepicker>
   </mat-form-field>
-  <button mat-icon-button matTooltip="+1 day" (click)="incrementDay(1, true)"  id="plusOne">+1</button>
+  <button mat-icon-button matTooltip="+1 day" (click)="increment_day(1, true)"  id="plusOne">+1</button>
 </div>
 <div id="row">
-  <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, true)"  id="minusSix">-6</button>
+  <button mat-icon-button matTooltip="-6 hours" (click)="increment_hour(-6, true)"  id="minusSix">-6</button>
   <mat-form-field id="timeInput">
     <mat-select placeholder="Choose Hour" matTooltip="Time in six hour incrments"
-     [(value)]="startHour" (selectionChange)="timeChange($event.value, true)">
+     [(value)]="startHour" (selectionChange)="time_changed($event.value, true)">
       <mat-option *ngFor="let hour of hours" [value]="hour.value">
         {{hour.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, true)"  id="plusSix">+6</button>
+  <button mat-icon-button matTooltip="+6 hours" (click)="increment_hour(6, true)"  id="plusSix">+6</button>
 </div>
 <div id="row">
-    <button mat-icon-button matTooltip="-1 day" (click)="incrementDay(-1, true)"  id="minusOne">-1</button>
+    <button mat-icon-button matTooltip="-1 day" (click)="increment_day(-1, true)"  id="minusOne">-1</button>
     <mat-form-field id="dateInput">
       <input matInput 
       matTooltip="Date of TC" 
@@ -43,17 +43,17 @@
       <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
       <mat-datepicker #endPicker></mat-datepicker>
     </mat-form-field>
-    <button mat-icon-button matTooltip="+1 day" (click)="incrementDay(1, false)"  id="plusOne">+1</button>
+    <button mat-icon-button matTooltip="+1 day" (click)="increment_day(1, false)"  id="plusOne">+1</button>
   </div>
   <div id="row">
-    <button mat-icon-button matTooltip="-6 hours" (click)="incrementHour(-6, false)"  id="minusSix">-6</button>
+    <button mat-icon-button matTooltip="-6 hours" (click)="increment_hour(-6, false)"  id="minusSix">-6</button>
     <mat-form-field id="timeInput">
       <mat-select placeholder="Choose Hour" matTooltip="Time in six hour incrments"
-       [(value)]="endHour" (selectionChange)="timeChange($event.value, false)">
+       [(value)]="endHour" (selectionChange)="time_changed($event.value, false)">
         <mat-option *ngFor="let hour of hours" [value]="hour.value">
           {{hour.viewValue}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button mat-icon-button matTooltip="+6 hours" (click)="incrementHour(6, false)"  id="plusSix">+6</button>
+    <button mat-icon-button matTooltip="+6 hours" (click)="increment_hour(6, false)"  id="plusSix">+6</button>
   </div>

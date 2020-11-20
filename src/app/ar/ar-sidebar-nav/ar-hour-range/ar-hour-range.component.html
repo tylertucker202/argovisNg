@@ -7,15 +7,15 @@
         <input matInput matTooltip="sets lower time limit (hours) for profile selection"
           class="hour-input" placeholder="lower range:"
           value={{sliderRange[0]}} type="number"
-          min="-36" max="0" id='minHour' (change)="minValuechange($event.target.value)">
+          min="-36" max="0" id='minHour' (change)="min_value_change($event.target.value)">
       </mat-form-field>
       <mat-form-field class="hour-half-width">
         <input matInput matTooltip="sets upper time limit (hours) for profile selection" 
           class="hour-input" placeholder="upper range:"
           value={{sliderRange[1]}} type="number"
-          min="0" max="36" id='maxHour' (change)="maxValuechange($event.target.value)">
+          min="0" max="36" id='maxHour' (change)="max_value_change($event.target.value)">
       </mat-form-field>
     </form>
-    <nouislider id='slider' (change)="sliderChange($event)" [config]="config" [(ngModel)]="sliderRange" ></nouislider>
+    <nouislider id='slider' (change)="slider_change($event)" [config]="config" [(ngModel)]="sliderRange" ></nouislider>
   </div>
 </div>

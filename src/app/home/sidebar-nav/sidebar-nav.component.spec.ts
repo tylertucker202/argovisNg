@@ -83,9 +83,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set realtime toggle', () => {
     const checked = false
-    component.realtimeChange(!checked)  
+    component.realtime_changed(!checked)  
     expect(component['includeRT']).toBeTruthy()
-    component.realtimeChange(checked)
+    component.realtime_changed(checked)
     expect(component['includeRT']).toBeFalsy()
     expect(spyRT).toHaveBeenCalled()
     expect(spyRT).toHaveBeenCalledTimes(2);
@@ -146,7 +146,7 @@ describe('SidebarNavComponent', () => {
     const momentDate = moment(dateStr, 'YYYY-MM-DD').utc()
     let date = momentDate
 
-    component.displayGlobalDateChanged(date)
+    component.displayGlobaldate_changed(date)
     const outDate = component['date'];
     const outDateMoment = moment(outDate.value)
     expect(outDateMoment).toEqual(date)

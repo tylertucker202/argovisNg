@@ -42,23 +42,23 @@ describe('ArHourRangeComponent', () => {
   });
   it('should set slider range to default', () => {
     expect(component['sliderRange']).toEqual(defaultPresRange)
-    component['setSliderRange']()
+    component['set_slider_range']()
     expect(component['sliderRange']).toEqual(presRange)
   });
   it('should set min/max value', () => {
     expect(component['lRange']).toEqual(defaultPresRange[0])
     expect(component['uRange']).toEqual(defaultPresRange[1])
     
-    component['minValuechange'](presRange[0])
+    component['min_value_change'](presRange[0])
     expect(component['lRange']).toEqual(presRange[0])
     expect(component['sliderRange']).toEqual([presRange[0], defaultPresRange[1]])
     
-    component['maxValuechange'](presRange[1])
+    component['max_value_change'](presRange[1])
     expect(component['uRange']).toEqual(presRange[1])
     expect(component['sliderRange']).toEqual(presRange)
   });
   it('should send slider range', () => {
-    component['updateSelectDates']()
+    component['update_select_dates']()
     expect(spySendRange).toHaveBeenCalledTimes(1)
   });
   it('should reset on trigger', () => {

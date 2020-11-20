@@ -46,19 +46,19 @@ export class PresDoubleSliderComponent implements OnInit {
     this.queryService.send_pres(this.sliderRange, broadcastChange);
   }
 
-  public minValuechange(newLowPres: number ): void {
+  public min_value_change(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.sendSliderRange();
   }
 
-  public maxValuechange(newUpPres: number ): void {
+  public max_value_change(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
     this.sendSliderRange();
   }
 
-  public sliderChange(newRange: number[]): void { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
+  public slider_change(newRange: number[]): void { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.lRange = newRange[0]
     this.uRange = newRange[1]
     this.sendSliderRange();

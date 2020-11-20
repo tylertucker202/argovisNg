@@ -26,7 +26,7 @@ export class ArShapePopupComponent implements OnInit {
     this.bgcOnlyToggle = false
     this.deepOnlyToggle = false
     this.shapeButtonText = "To Selection Page"
-    this.queryARShape()
+    this.query_ar_shape()
   }
 
   public bgc_only_change(bgcOnlyToggle: boolean): void {
@@ -37,7 +37,7 @@ export class ArShapePopupComponent implements OnInit {
     this.deepOnlyToggle = deepOnlyToggle
   }
 
-  public queryARShape(): void {
+  public query_ar_shape(): void {
     const broadcastChange = true
     const toggle3DayOff = false // should already be off
     let shapes = this.arQueryService.get_shapes()
@@ -80,7 +80,7 @@ export class ArShapePopupComponent implements OnInit {
     window.open(url,"_blank")
   }
 
-  public goToShapeJson(): void {
+  public go_to_shape_json(): void {
     const windowURL = '/arShapes/findByID?_id=' + this.shape_id
     window.open(windowURL,"_blank")
   } 

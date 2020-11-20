@@ -18,7 +18,7 @@ export class ArHourRangeComponent implements OnInit {
 
   ngOnInit() {
 
-    this.setSliderRange()
+    this.set_slider_range()
     
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
@@ -35,38 +35,38 @@ export class ArHourRangeComponent implements OnInit {
     }
 
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
-      this.setSliderRange()
+      this.set_slider_range()
     })
 
   }
 
-  public minValuechange(newLowPres: number ): void {
+  public min_value_change(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
-    this.updateSelectDates();
+    this.update_select_dates();
   }
 
-  public maxValuechange(newUpPres: number ): void {
+  public max_value_change(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
-    this.updateSelectDates();
+    this.update_select_dates();
   }
 
-  public setSliderRange(): void {
+  public set_slider_range(): void {
     this.sliderRange = this.arQueryService.get_ar_date_range()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
   }
 
-  public updateSelectDates(): void {
+  public update_select_dates(): void {
     this.arQueryService.send_ar_date_range(this.sliderRange)
   }
 
-  public sliderChange(sliderRange: number[]) {
+  public slider_change(sliderRange: number[]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
-    this.updateSelectDates()
+    this.update_select_dates()
   }
 }

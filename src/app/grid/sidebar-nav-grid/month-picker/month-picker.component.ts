@@ -88,7 +88,7 @@ export class MonthPickerComponent implements OnInit {
     this.queryGridService.sendDate(this.date, broadcastChange)
   }
 
-  public displayDateChanged(date: moment.Moment): void {
+  public displaydate_changed(date: moment.Moment): void {
     //triggered when user changes date manually
     this.dateForm.setValue(date)
     this.date = date

@@ -18,7 +18,7 @@ export class TcHourRangeComponent implements OnInit {
 
   ngOnInit() {
 
-    this.setSliderRange()
+    this.set_slider_range()
     
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
@@ -35,24 +35,24 @@ export class TcHourRangeComponent implements OnInit {
     }
 
     this.tcQueryService.resetToStart.subscribe( (msg: string) => {
-      this.setSliderRange()
+      this.set_slider_range()
     })
 
   }
 
-  public minValuechange(newLowPres: number ): void {
+  public min_value_change(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
     this.updateHourRange();
   }
 
-  public maxValuechange(newUpPres: number ): void {
+  public max_value_change(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
     this.updateHourRange();
   }
 
-  public setSliderRange(): void {
+  public set_slider_range(): void {
     this.sliderRange = this.tcQueryService.get_prof_hour_range() as [number, number]
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
@@ -62,7 +62,7 @@ export class TcHourRangeComponent implements OnInit {
     this.tcQueryService.send_prof_date_range(this.sliderRange, true, 'slider change')
   }
 
-  public sliderChange(sliderRange: [number, number]) {
+  public slider_change(sliderRange: [number, number]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
     this.lRange = this.sliderRange[0]

@@ -7,16 +7,16 @@
           <input matInput matTooltip="sets hours before tropical cyclone for profile selection"
             class="hour-input" placeholder="hours before TC"
             value={{sliderRange[0]}} type="number"
-            min="-72" max="72" id='beforeHour' (change)="minValuechange($event.target.value)">
+            min="-72" max="72" id='beforeHour' (change)="min_value_change($event.target.value)">
         </mat-form-field>
         <mat-form-field class="hour-half-width">
           <input matInput matTooltip="sets hours after tropical cyclone for profile selection" 
             class="hour-input" placeholder="hours after TC"
             value={{sliderRange[1]}} type="number"
-            min="-72" max="72" id='afterHour' (change)="maxValuechange($event.target.value)">
+            min="-72" max="72" id='afterHour' (change)="max_value_change($event.target.value)">
         </mat-form-field>
       </form>
-      <nouislider id='slider' (change)="sliderChange($event)" [config]="config" [(ngModel)]="sliderRange" ></nouislider>
+      <nouislider id='slider' (change)="slider_change($event)" [config]="config" [(ngModel)]="sliderRange" ></nouislider>
     </div>
   </div>
   

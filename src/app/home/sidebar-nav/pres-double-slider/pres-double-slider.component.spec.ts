@@ -48,23 +48,23 @@ describe('PresDoubleSliderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set minValuechange', () => {
+  it('should set min_value_change', () => {
       const value = 1000;
-      component.minValuechange(value)
+      component.min_value_change(value)
       expect(component['lRange']).toEqual(value)
   });
 
-  it('should set maxValuechange', () => {
+  it('should set max_value_change', () => {
       const value = 5555;
-      component.maxValuechange(value)
+      component.max_value_change(value)
       expect(component['uRange']).toEqual(value)
   });
 
   it('should set inputs', () => {
     const maxValue = 5555;
-    component.maxValuechange(maxValue)
+    component.max_value_change(maxValue)
     const minValue = 1111;
-    component.minValuechange(minValue)
+    component.min_value_change(minValue)
     expect(component['sliderRange']).toEqual([minValue, maxValue])
 });
 });

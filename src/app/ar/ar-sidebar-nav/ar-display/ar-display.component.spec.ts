@@ -75,10 +75,10 @@ describe('ArDisplayComponent', () => {
   })
 
   it('should change date on increment day', () => {
-    component['incrementDay'](1)
+    component['increment_day'](1)
     expect(component['date']).toEqual(arDateDefault.add(1, 'd'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(1)
-    component['incrementDay'](-1)
+    component['increment_day'](-1)
     expect(component['date']).toEqual(arDateDefault.add(-1, 'd'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
@@ -88,7 +88,7 @@ describe('ArDisplayComponent', () => {
   it('should change date on drop down menu select', () => {
     expect(component['hour']).toEqual(0)
     expect(component['date']).toEqual(arDateDefault)
-    component['timeChange'](21)
+    component['time_changed'](21)
     expect(component['hour']).toEqual(21)
     expect(component['date']).toEqual(arDateDefault.add(21, 'h'))
 
@@ -97,10 +97,10 @@ describe('ArDisplayComponent', () => {
 
   it('should change date on date select, preserving hour', () => {
     const hour = 6
-    component['incrementHour'](hour)
+    component['increment_hour'](hour)
     const newDate = new Date(2016, 1, 4, 0, 0, 0, 0) //calendar date does not use hours 
     const date = moment(newDate).add(hour, 'h')
-    component['calendarDateChanged'](newDate)
+    component['calendar_date_changed'](newDate)
     expect(component['date']).toEqual(date)
     //check if the hour carried over
     expect(component['hour']).toEqual(hour)
@@ -110,10 +110,10 @@ describe('ArDisplayComponent', () => {
   })
 
   it('should change date on increment hour', () => {
-    component['incrementHour'](3)
+    component['increment_hour'](3)
     expect(component['date']).toEqual(arDateDefault.add(3, 'h'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(1)
-    component['incrementHour'](-3)
+    component['increment_hour'](-3)
     expect(component['date']).toEqual(arDateDefault.add(-3, 'h'))
     expect(spysend_ar_date).toHaveBeenCalledTimes(2)
 
@@ -123,9 +123,9 @@ describe('ArDisplayComponent', () => {
 
   it('should reset to default on resetEvent', () => {
     const hour = 6
-    component['incrementHour'](hour)
+    component['increment_hour'](hour)
     const newDate = new Date(2016, 1, 4, 0, 0, 0, 0) //calendar date does not use hours
-    component['calendarDateChanged'](newDate)
+    component['calendar_date_changed'](newDate)
     arQueryService.trigger_reset_to_start()
 
     expect(component['date']).toEqual(arDateDefault)

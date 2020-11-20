@@ -81,9 +81,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set realtime toggle', () => {
     const checked = false
-    component.realtimeChange(!checked)  
+    component.realtime_changed(!checked)  
     expect(component['includeRT']).toBeTruthy()
-    component.realtimeChange(checked)
+    component.realtime_changed(checked)
     expect(component['includeRT']).toBeFalsy()
     expect(spyRT).toHaveBeenCalled()
     expect(spyRT).toHaveBeenCalledTimes(2);

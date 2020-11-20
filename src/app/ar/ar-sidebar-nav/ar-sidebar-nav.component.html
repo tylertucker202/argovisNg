@@ -17,7 +17,7 @@
   <div><b>Display options:</b></div>
   <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                    color="accent" [checked]="includeRT"
-                   (change)="realtimeChange($event.checked)">Include realtime
+                   (change)="realtime_changed($event.checked)">Include realtime
   </mat-slide-toggle>
   <mat-slide-toggle matTooltip="toggle on to show only BGC profiles"
                     color="accent" [checked]="onlyBGC"

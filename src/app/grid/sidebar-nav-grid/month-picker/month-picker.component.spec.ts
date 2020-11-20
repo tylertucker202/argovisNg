@@ -100,9 +100,9 @@ describe('MonthPickerComponent', () => {
     expect(spySendDate).toHaveBeenCalledTimes(1)
   });
 
-  it('should displayDateChanged', () => {
+  it('should displaydate_changed', () => {
     const mys = moment('2015-11-01', 'YYYY-MM-DD').utc(false)
-    component['displayDateChanged'](mys)
+    component['displaydate_changed'](mys)
     expect(component['date'].format('YYYY-MM-DD')).toEqual(mys.format('YYYY-MM-DD'))
     expect(spySendDate).toHaveBeenCalledTimes(1)
   });

@@ -36,7 +36,7 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
       })
     }
 
-  realtimeChange(checked: boolean): void {
+  realtime_changed(checked: boolean): void {
     this.includeRT = checked
     this.tcQueryService.send_realtime_msg(this.includeRT);
   }

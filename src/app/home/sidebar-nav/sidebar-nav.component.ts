@@ -58,7 +58,7 @@ export class SidebarNavComponent implements OnInit {
     })
   }
 
-  realtimeChange(checked: boolean): void {
+  realtime_changed(checked: boolean): void {
     this.includeRT = checked
     this.queryService.send_realtime_msg(this.includeRT);
   }
@@ -98,7 +98,7 @@ export class SidebarNavComponent implements OnInit {
     }
   }
 
-  displayGlobalDateChanged(date: moment.Moment): void {
+  displayGlobaldate_changed(date: moment.Moment): void {
     this.date = new FormControl(date)
     const dateStr = date.format('YYYY-MM-DD')
     this.queryService.send_global_date(dateStr)
