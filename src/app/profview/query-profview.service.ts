@@ -16,6 +16,7 @@ export class QueryProfviewService {
 
   @Output() changeStatParams: EventEmitter<string> = new EventEmitter
   @Output() urlParsed: EventEmitter<string> = new EventEmitter
+  @Output() buildChart: EventEmitter<number> = new EventEmitter
   @Output() profileMetaChanged: EventEmitter<string> = new EventEmitter
   public platform_number: string = "5903260"
   public topChart: string = 'doxy'
@@ -61,7 +62,7 @@ export class QueryProfviewService {
   public value_of_chart_labels(id: string): ChartItems {
     let chartLabel: ChartItems
     switch(id) {
-      case'leftChart': {
+      case 'leftChart': {
         chartLabel = this.leftChart
         break
       }
@@ -171,16 +172,19 @@ export class QueryProfviewService {
     return moment.utc(date).format('YYYY-MM-DD');
   }
 
-  public set_params_from_url(): void{
+  public set_params_from_url(msg?: string): void{
     this.route.queryParams.subscribe(params => {
       Object.keys(params).forEach(key => {
         this.set_map_state(key, params[key])
       });
     });
-    this.urlParsed.emit('url parsed. safe to build chart and window')
+    if (!msg) { msg = 'url parsed. safe to build chart and window'}
+    this.urlParsed.emit(msg)
   }
 
   public set_url(): void {
+
+    console.log('setting selected index in url to ', this.selectedIndex)
 
     const queryParams = {
                          'platform_number': this.platform_number,

@@ -27,8 +27,8 @@ export class TableComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.queryProfviewService.set_params_from_url()
-    this.queryProfviewService.set_url()
+    this.queryProfviewService.set_params_from_url('setting url from table component')
+    this.queryProfviewService.set_url() // sets default parameters
 
     this.platform_number = this.queryProfviewService.platform_number
     this.statParamKey = this.queryProfviewService.statParamKey

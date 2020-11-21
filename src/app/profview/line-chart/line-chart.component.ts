@@ -4,7 +4,6 @@ import { GetProfilesService } from '../get-profiles.service'
 import { ChartService } from '../chart.service'
 import { QueryProfviewService, ChartItems } from '../query-profview.service';
 
-
 @Component({
   selector: 'app-line-chart',
   templateUrl: './line-chart.component.html',
@@ -36,7 +35,9 @@ export class LineChartComponent implements OnInit {
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
       this.bgcPlatform = this.queryProfviewService.bgcPlatform
-      this.make_chart()
+
+      const lineChartTabSelected = Boolean(this.queryProfviewService.selectedIndex)
+      if (lineChartTabSelected && this.revision <= 0) {  this.make_chart() }
     }, 
     error => {
       console.error('an error occured when checking if url parsed: ', error)
@@ -48,9 +49,10 @@ export class LineChartComponent implements OnInit {
     error => {
       console.error('an error occured when listening to changeStatParams: ', error)
     })
+
   }
 
-  // Upon click a new tab opens to the corresponding profile.
+  // clicking a new tab opens to the corresponding profile.
   on_select(points: any): void {
     const xidx = points.pointNumber
     const profile_id = points.data['profile_ids'][xidx]

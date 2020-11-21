@@ -41,7 +41,11 @@ export class ColorChartComponent implements OnInit {
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
       this.bgcPlatform = this.queryProfviewService.bgcPlatform
-      this.make_chart()
+
+
+      const colorTabSelected = !Boolean(this.queryProfviewService.selectedIndex)
+      if (colorTabSelected && this.revision <= 0) {  this.make_chart() }
+
       const yParams = this.chartService.get_trace_params(this.yLabel)
       this.yAxisTitle = yParams.title
     }, 

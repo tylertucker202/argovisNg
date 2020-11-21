@@ -12,7 +12,6 @@ export class GlobeScatterComponent implements OnInit {
   public graph: any
 
   ngOnInit(): void {
-
     let dataArrays = {lats: [], lon: [], ids: [], date: [], cycle: [], qc: []}
     this.queryProfviewService.profileMetaChanged.subscribe((msg: string) => {
       const metaData = this.queryProfviewService.profileMeta
@@ -24,10 +23,8 @@ export class GlobeScatterComponent implements OnInit {
         dataArrays.qc.push(profileMeta.position_qc)
         dataArrays.cycle.push(profileMeta.cycle_number)
       } )
-
       this.graph = this.make_map(dataArrays.ids, dataArrays.lats, dataArrays.lon, dataArrays.date, dataArrays.cycle, dataArrays.qc)
     })
-
   }
 
   make_hovor_chart_text(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
@@ -40,7 +37,7 @@ export class GlobeScatterComponent implements OnInit {
     return box
   }
 
-  private on_select(text: string) {
+  public on_select(text: string) {
     console.log('text', text)
     const profile_id = text.split('id: ').pop().split('<br>')[0]
     const url = '/catalog/profiles/' + profile_id + '/bgcPage';

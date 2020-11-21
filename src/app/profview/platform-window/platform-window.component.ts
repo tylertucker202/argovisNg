@@ -19,19 +19,23 @@ export class PlatformWindowComponent implements OnInit {
   public platform_number: string
   public platMeta: PlatformMeta
   public dateFormat: string = "MMM Do YYYY"
+  public revision: number = 0
 
   ngOnInit(): void {
     this.queryProfviewService.urlParsed.subscribe( (msg: string) => {
       this.platform_number = this.queryProfviewService.platform_number
-      this.platform_number = this.queryProfviewService.platform_number
-      this.getProfilesService.getPlaformMetaData(this.platform_number)
-      .subscribe( (platMeta: PlatformMeta[]) => {
-        this.platMeta = platMeta[0]
-        this.platMeta['most_recent_date'] = moment(this.platMeta['most_recent_date']).format(this.dateFormat); 
-        this.platMeta['most_recent_date_added'] = moment(this.platMeta['most_recent_date_added']).format(this.dateFormat);
-        this.platMeta['jcommopsLink'] = this.queryProfviewService.make_jcommops_platform(this.platMeta['platform_number'].toString())
-        this.platMeta['fleetMonitoringLink'] = this.queryProfviewService.make_fleet_monitoring_platform(this.platMeta['platform_number'].toString())
-      })
+
+      if (this.revision <= 0 ){
+        this.getProfilesService.getPlaformMetaData(this.platform_number)
+        .subscribe( (platMeta: PlatformMeta[]) => {
+          this.platMeta = platMeta[0]
+          this.platMeta['most_recent_date'] = moment(this.platMeta['most_recent_date']).format(this.dateFormat); 
+          this.platMeta['most_recent_date_added'] = moment(this.platMeta['most_recent_date_added']).format(this.dateFormat);
+          this.platMeta['jcommopsLink'] = this.queryProfviewService.make_jcommops_platform(this.platMeta['platform_number'].toString())
+          this.platMeta['fleetMonitoringLink'] = this.queryProfviewService.make_fleet_monitoring_platform(this.platMeta['platform_number'].toString())
+        })
+      }
+      this.revision += 1
     })
 
     this.queryProfviewService.changeStatParams.subscribe( (msg: string) => {
@@ -41,6 +45,7 @@ export class PlatformWindowComponent implements OnInit {
         statParamsList += ', ' + statParam.value
       })
       this.statParamsList = statParamsList.substring(2)
+      this.revision += 1
     })
   }
 
