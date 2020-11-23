@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { QueryGridService } from '../query-grid.service'
+import * as moment from 'moment'
+import { SelectGridService } from '../select-grid.service'
+import { GridMeta } from './../../../typeings/grids'
 
 @Component({
   selector: 'app-sidebar-nav-grid',
@@ -8,44 +11,69 @@ import { QueryGridService } from '../query-grid.service'
 })
 export class SidebarNavGridComponent implements OnInit {
 
-  constructor(private queryGridService: QueryGridService) { }
-  private interpolateBool: boolean
-  private paramMode: boolean
-  ngOnInit() {
+  constructor(private queryGridService: QueryGridService, private selectGridService: SelectGridService) { }
+  public interpolateBool: boolean
+  public paramMode: boolean
+  public monthPicker: boolean
+  public initSet: boolean = false
 
+  ngOnInit() {
     this.paramMode = this.queryGridService.getParamMode()
     this.interpolateBool = this.queryGridService.getInterplateBool()
 
-    this.queryGridService.urlBuild.subscribe(msg => {
+    this.queryGridService.urlRead.subscribe(msg => {
       this.interpolateBool = this.queryGridService.getInterplateBool()
       this.paramMode = this.queryGridService.getParamMode();
+      if (!this.initSet) { // initialize gridMeta
+        this.getGridMeta()
+      }
+      this.initSet = true
     })
     
     this.queryGridService.change.subscribe(msg => {
       this.paramMode = this.queryGridService.getParamMode();
+      const gridName = this.queryGridService.getGridName()
+      gridName.includes('sose_si_area')? this.monthPicker = false: this.monthPicker = true
+
+      //set date to start of month if using month picker.
+      if (this.monthPicker) { this.queryGridService.sendDate(this.queryGridService.getDate().startOf('month'), false)}
+      if (msg === 'grid change') {
+        console.log('getting grid meta')
+        this.getGridMeta()
+      }
     })
   }
 
-  private clearGrids(): void {
-    this.queryGridService.triggerClearLayers();
+  public getGridMeta(): void {
+    const gridName = this.queryGridService.getGridName()
+    gridName.includes('sose_si_area')? this.monthPicker = false: this.monthPicker = true
+    console.log('gridName', gridName, 'monthPicker?', this.monthPicker)
+
+    this.selectGridService.getGridMeta(gridName).subscribe( (gridMetas: GridMeta[] )=> {
+      this.selectGridService.gridMetaChange.emit(gridMetas[0])
+    })
   }
 
-  private resetToStart(): void {
-    this.queryGridService.triggerResetToStart();
+  public clearGrids(): void {
+    this.queryGridService.trigger_clear_layers();
   }
 
-  private interpolateBoolToggle(checked: boolean): void {
+  public resetToStart(): void {
+    this.queryGridService.trigger_reset_to_start();
+  }
+
+  public interpolateBoolToggle(checked: boolean): void {
     this.interpolateBool = checked
     const broadcastChange = true
     this.queryGridService.sendInterpolateBool(this.interpolateBool, broadcastChange);
   }
 
-  private paramModeToggle(checked: boolean): void {
+  public paramModeToggle(checked: boolean): void {
     this.paramMode = checked
     if (this.paramMode) {
       const broadcastChange = false
       const param = 'anomaly'
-      this.queryGridService.sendParam(param, broadcastChange)
+      this.queryGridService.sendProperty(param, broadcastChange)
     }
     this.queryGridService.sendParamMode(this.paramMode);
   }

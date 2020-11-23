@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -47,10 +47,10 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     HttpClientModule,
     BrowserAnimationsModule,
     NouisliderModule,
-    FormsModule,
-    ReactiveFormsModule,
     NgxDaterangepickerMd.forRoot(),
     MaterialModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     MapService,
@@ -64,6 +64,7 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     BottomSheet, 
     HelpBottomSheet,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   exports: [
     HomeComponent,
     SidebarNavComponent,
@@ -77,6 +78,8 @@ import { HelpBottomSheetComponent, HelpBottomSheet } from './sidebar-nav/help-bo
     HelpBottomSheetComponent,
     HelpBottomSheet,
     NouisliderModule,
+    FormsModule,
+    ReactiveFormsModule,
     NgxDaterangepickerMd
   ]
 })

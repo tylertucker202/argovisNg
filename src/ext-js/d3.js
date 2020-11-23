@@ -1786,7 +1786,7 @@ function noevent() {
 function dragDisable(view) {
   var root = view.document.documentElement,
       selection$$1 = select(view).on("dragstart.drag", noevent, true);
-  if ("onselectstart" in root) {
+  if ("on_select_start" in root) {
     selection$$1.on("selectstart.drag", noevent, true);
   } else {
     root.__noselect = root.style.MozUserSelect;
@@ -1801,7 +1801,7 @@ function yesdrag(view, noclick) {
     selection$$1.on("click.drag", noevent, true);
     setTimeout(function() { selection$$1.on("click.drag", null); }, 0);
   }
-  if ("onselectstart" in root) {
+  if ("on_select_start" in root) {
     selection$$1.on("selectstart.drag", null);
   } else {
     root.style.MozUserSelect = root.__noselect;
@@ -5805,7 +5805,7 @@ function formatYear(year) {
     : pad(year, 4);
 }
 
-function formatDate(date) {
+function format_date(date) {
   var hours = date.getUTCHours(),
       minutes = date.getUTCMinutes(),
       seconds = date.getUTCSeconds(),
@@ -5908,7 +5908,7 @@ function dsvFormat(delimiter) {
 
   function formatValue(value) {
     return value == null ? ""
-        : value instanceof Date ? formatDate(value)
+        : value instanceof Date ? format_date(value)
         : reFormat.test(value += "") ? "\"" + value.replace(/"/g, "\"\"") + "\""
         : value;
   }

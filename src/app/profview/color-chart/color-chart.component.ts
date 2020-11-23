@@ -14,23 +14,23 @@ export class ColorChartComponent implements OnInit {
   constructor(private getProfileService: GetProfilesService,
               private chartService: ChartService,
               private queryProfviewService: QueryProfviewService) { }
-  private graph: any
-  private chartTitle: string
-  private platform_number: string
-  private measKey: string
-  private profileData: BgcProfileData[] |  CoreProfileData[]
-  private statParams: StationParameters[]
-  private layout: {}
-  private bgcPlatform: boolean
-  private statParamKey: string
-  private colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
-  private cmapName: string
-  private yAxisTitle: string
-  private colorLabel: string
+  public graph: any
+  public chartTitle: string
+  public platform_number: string
+  public measKey: string
+  public profileData: BgcProfileData[] |  CoreProfileData[]
+  public statParams: StationParameters[]
+  public layout: {}
+  public bgcPlatform: boolean
+  public statParamKey: string
+  public colorscaleSelections: ColorScaleSelection[] =  this.chartService.colorscaleSelections
+  public cmapName: string
+  public yAxisTitle: string
+  public colorLabel: string
   @Input() id: string
-  private yLabel: string = 'pres'
-  private revision: number = 0
-  private readonly reduceMeas = 200
+  public yLabel: string = 'pres'
+  public revision: number = 0
+  public readonly reduceMeas = 200
   @Output() colorbarDomain: [number, number] = [0, 1]
   @Output() colorscale: [number, string][] = this.chartService.getColorScale('thermal')
 
@@ -41,8 +41,12 @@ export class ColorChartComponent implements OnInit {
       this.platform_number = this.queryProfviewService.platform_number
       this.measKey = this.queryProfviewService.measKey
       this.bgcPlatform = this.queryProfviewService.bgcPlatform
-      this.makeChart()
-      const yParams = this.chartService.getTraceParams(this.yLabel)
+
+
+      const colorTabSelected = !Boolean(this.queryProfviewService.selectedIndex)
+      if (colorTabSelected && this.revision <= 0) {  this.make_chart() }
+
+      const yParams = this.chartService.get_trace_params(this.yLabel)
       this.yAxisTitle = yParams.title
     }, 
     error => {
@@ -60,18 +64,18 @@ export class ColorChartComponent implements OnInit {
   }
 
   // Upon click a new tab opens to the corresponding profile.
-  onSelect(points: any): void {
+  on_select(points: any): void {
     const xidx = points.pointNumber
     const profile_id = points.data['profile_ids'][xidx]
     const url = '/catalog/profiles/' + profile_id + '/bgcPage'
     window.open(url,'_blank')
   } 
 
-  makeChart(): void {
-    this.getProfileService.getPlaformData(this.platform_number, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
+  make_chart(): void {
+    this.getProfileService.get_platform_data(this.platform_number, this.yLabel, this.colorLabel).subscribe( (profileData: BgcProfileData[] | CoreProfileData[] | any) => {
       this.profileData = profileData
       const defaultColorScale = true
-      this.setChart(this.profileData, defaultColorScale)
+      this.set_chart(this.profileData, defaultColorScale)
       this.revision += 1;
     },
     error => {
@@ -79,8 +83,8 @@ export class ColorChartComponent implements OnInit {
     })
   }
 
-  setChart(profileData: BgcProfileData[] | CoreProfileData[], defaultColorScale=false, defaultColorbarDomain=true) {
-    const colorParams = this.chartService.getTraceParams(this.colorLabel)
+  set_chart(profileData: BgcProfileData[] | CoreProfileData[], defaultColorScale=false, defaultColorbarDomain=true) {
+    const colorParams = this.chartService.get_trace_params(this.colorLabel)
     this.layout = this.chartService.makeLayout(this.yAxisTitle)
     this.chartTitle = colorParams.title
     let cmapName = colorParams.cmapName
@@ -116,15 +120,15 @@ export class ColorChartComponent implements OnInit {
     this.colorLabel = colorLabel
     this.queryProfviewService[this.id] = this.colorLabel
     this.graph = false // destroy plotly-plot element and rebuild it entirely. needed for some browsers (ahem, chrome) don't update colorbar.
-    this.makeChart()
-    this.queryProfviewService.setURL()
+    this.make_chart()
+    this.queryProfviewService.set_url()
   }
 
   colorscaleChange(cmapName: string): void {
     this.cmapName = cmapName
     const defaultColorScale = false
     const defaultColorbarDomain = false
-    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
+    this.set_chart(this.profileData, defaultColorScale, defaultColorbarDomain)
     this.revision += 1;
   }
 
@@ -132,22 +136,22 @@ export class ColorChartComponent implements OnInit {
     this.colorbarDomain = domain
     const defaultColorScale = false
     const defaultColorbarDomain = false
-    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
+    this.set_chart(this.profileData, defaultColorScale, defaultColorbarDomain)
     this.revision += 1
   }
 
-  downloadChartData(): void {
+  download_chart_data(): void {
     let url = '/catalog/bgc_platform_data/'
     url += this.platform_number 
-    url += '?yaxis=' + this.yLabel
-    url += '&xaxis=' + this.colorLabel
+    url += '?meas_2=' + this.yLabel
+    url += '&meas_1=' + this.colorLabel
     window.open(url,'_blank')
   }
   
   resetColorbarScale(): void {
     const defaultColorScale = true
     const defaultColorbarDomain = true
-    this.setChart(this.profileData, defaultColorScale, defaultColorbarDomain)
+    this.set_chart(this.profileData, defaultColorScale, defaultColorbarDomain)
     this.revision += 1
   }
 }

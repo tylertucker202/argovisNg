@@ -11,14 +11,14 @@ export class QueryService {
   @Output() change: EventEmitter<string> = new EventEmitter
   @Output() urlBuild: EventEmitter<string> = new EventEmitter
   @Output() triggerPlatformDisplay: EventEmitter<string> = new EventEmitter
-  @Output() clearLayers: EventEmitter<string> = new EventEmitter
+  @Output() clear_layers: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
   @Output() displayPlatform: EventEmitter<string> = new EventEmitter
 
-  private presRange = [0, 2000]
-  private selectionDateRange: DateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-                                           endDate: moment().utc().format('YYYY-MM-DD')}
-  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD')
+  private presRange: [number, number] = [0, 2000]
+  public selectionDateRange: DateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
+                                          endDate: this.format_date(moment().utc()), label: 'initial date range'};
+  private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss')
   private latLngShapes: number[][][]
   private includeRealtime = true
   private onlyBGC = false
@@ -35,26 +35,26 @@ export class QueryService {
                                             this.router.urlUpdateStrategy = 'eager'
                                           }
 
-  public resetParams(): void{
+  public reset_params(): void{
     const broadcastChange = false
-    this.sendDeepToggleMsg(false, broadcastChange)
-    this.sendBGCToggleMsg(false, broadcastChange)
-    this.sendRealtimeMsg(true, broadcastChange)
-    const globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DD');
-    this.sendGlobalDate(globalDisplayDate, broadcastChange)
-    const presRange = [0, 2000]
-    this.sendPres(presRange, broadcastChange)
+    this.send_deep_toggle_msg(false, broadcastChange)
+    this.send_bgc_toggle_msg(false, broadcastChange)
+    this.send_realtime_msg(true, broadcastChange)
+    const globalDisplayDate = this.format_date(moment().utc().subtract(2, 'days'));
+    this.send_global_date(globalDisplayDate, broadcastChange)
+    const presRange = [0, 2000] as [number, number]
+    this.send_pres(presRange, broadcastChange)
     const clearOtherShapes = false
     let selectionDateRange: DateRange
     let sendThreeDayMsg: boolean
     sendThreeDayMsg = true
-    selectionDateRange = {startDate: moment().utc().subtract(14, 'days').format('YYYY-MM-DD'),
-    endDate: moment().utc().format('YYYY-MM-DD'), label: 'initial date range'};
-    this.sendThreeDayMsg(sendThreeDayMsg, broadcastChange)
-    this.sendSelectedDate(selectionDateRange, broadcastChange)
+    selectionDateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
+    endDate: this.format_date(moment().utc()), label: 'initial date range'};
+    this.send_three_day_msg(sendThreeDayMsg, broadcastChange)
+    this.send_selected_date(selectionDateRange, broadcastChange)
   }
 
-  public getShapesFromFeatures(features: GeoJSON.Feature): number[][][] {
+  public get_shapes_from_features(features: GeoJSON.Feature): number[][][] {
     //const features = this.latLngShapes.features
     let shapes = []
     for(let idx in features){
@@ -71,36 +71,41 @@ export class QueryService {
     return shapes
   }
 
-  public setParamsFromURL(): void{
+  public set_params_from_url(): void{
       let mapState: MapState
       this.route.queryParams.subscribe(params => {
         mapState = params
         Object.keys(mapState).forEach(key => {
-          this.setMapState(key, mapState[key])
+          this.set_map_state(key, mapState[key])
         });
         this.urlBuild.emit('got state from map component')
       });
     }
-  public setURL(): void {
+  
+  public format_date(date: moment.Moment): string {
+    return date.format("YYYY-MM-DDTHH:mm:ss") + 'Z'
+  }
+
+  public set_url(): void {
 
     //this is reversing the order of this.latLngShapes()
-    const presRangeString = JSON.stringify(this.getPresRange())
+    const presRangeString = JSON.stringify(this.get_pres_range())
     let shapesString = null
-    const shapes = this.getShapes()
+    const shapes = this.get_shapes()
     if (shapes) {
       shapesString = JSON.stringify(shapes)
     }
     const queryParams = {
-                         'mapProj': this.getProj(),
+                         'mapProj': this.get_proj(),
                          'presRange': presRangeString, 
-                         'selectionStartDate': this.getSelectionDates().startDate,
-                         'selectionEndDate': this.getSelectionDates().endDate,
-                         'threeDayEndDate': this.getGlobalDisplayDate(),
+                         'selectionStartDate': this.get_selection_dates().startDate,
+                         'selectionEndDate': this.get_selection_dates().endDate,
+                         'threeDayEndDate': this.get_global_display_date(),
                          'shapes': shapesString,
-                         'includeRealtime': this.getRealtimeToggle(),
-                         'onlyBGC': this.getBGCToggle(),
-                         'onlyDeep': this.getDeepToggle(),
-                         'threeDayToggle': this.getThreeDayToggle(),
+                         'includeRealtime': this.get_realtime_toggle(),
+                         'onlyBGC': this.get_bgc_toggle(),
+                         'onlyDeep': this.get_deep_toggle(),
+                         'threeDayToggle': this.get_three_day_toggle(),
                         }
     this.router.navigate(
       [], 
@@ -111,184 +116,180 @@ export class QueryService {
       });
   }
 
-  public getURL(): string {
-    return location.pathname
-  }
-
-  public triggerPlatformShow(platform: string): void {
+  public trigger_platform_show_event(platform: string): void {
     this.triggerPlatformDisplay.emit(platform)
   }
 
-  public triggerClearLayers(): void {
-    this.clearLayers.emit()
+  public trigger_clear_layers(): void {
+    this.clear_layers.emit()
   }
 
-  public triggerResetToStart(): void {
-    this.resetParams()
+  public trigger_reset_to_start(): void {
+    this.reset_params()
     this.resetToStart.emit()
-    this.setURL()
+    this.set_url()
   }
 
-  public triggerShowPlatform(platform: string): void {
+  public trigger_show_platform(platform: string): void {
     this.displayPlatform.emit(platform);
   }
 
-  public sendShape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
+  public send_shape(data: number[][][], broadcastChange=true, toggleThreeDayOff=true): void {
     let msg = 'shape'
     if (toggleThreeDayOff) {
       const broadcastThreeDayToggle = false
-      this.sendThreeDayMsg(broadcastThreeDayToggle, broadcastThreeDayToggle)
+      this.send_three_day_msg(broadcastThreeDayToggle, broadcastThreeDayToggle)
     }
     this.latLngShapes = data;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public sendProj(proj: string): void {
+  public send_proj(proj: string): void {
     const msg = 'proj changed';
     this.proj = proj;
-    this.setURL()
+    this.set_url()
     setTimeout(() => {  // need to wait for url to be set before reloading page.
       location.reload();
      } );
   }
 
-  public setProj(proj: string): void {
+  public set_proj(proj: string): void {
     this.proj = proj
   }
 
-  public getProj(): string {
+  public get_proj(): string {
     return this.proj;
   }
 
-  public getShapes(): number[][][] {
+  public get_shapes(): number[][][] {
     return this.latLngShapes;
   }
 
-  public clearShapes(): void {
+  public clear_shapes(): void {
     this.latLngShapes = null;
   }
 
-  public sendPres(presRange: number[], broadcastChange=true): void {
+  public send_pres(presRange: [number, number], broadcastChange=true): void {
     const msg = 'presRange';
     this.presRange = presRange;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getPresRange(): number[] {
-    return [...this.presRange];
+  public get_pres_range(): [number, number] {
+    return [...this.presRange] as [number, number];
   }
 
-  public sendSelectedDate(selectionDateRange: DateRange, broadcastChange=true): void {
+  public send_selected_date(selectionDateRange: DateRange, broadcastChange=true): void {
     const msg = 'selection date';
     this.selectionDateRange = selectionDateRange;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getSelectionDates(): DateRange {
+  public get_selection_dates(): DateRange {
     return this.selectionDateRange;
   }
 
-  public sendGlobalDate(globalDisplayDate: string, broadcastChange=true): void {
+  public send_global_date(globalDisplayDate: string, broadcastChange=true): void {
     const msg = 'three day display date';
     this.globalDisplayDate = globalDisplayDate;
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getGlobalDisplayDate(): string{
+  public get_global_display_date(): string{
     return this.globalDisplayDate;
   }
 
-  public sendRealtimeMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_realtime_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'realtime'
     this.includeRealtime = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getRealtimeToggle(): boolean {
+  public get_realtime_toggle(): boolean {
     return this.includeRealtime;
   }
 
-  public sendThreeDayMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_three_day_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = '3 day toggle'
     this.threeDayToggle = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getThreeDayToggle(): boolean {
+  public get_three_day_toggle(): boolean {
     return this.threeDayToggle;
   }
 
-  sendBGCToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_bgc_toggle_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'bgc only'
     this.onlyBGC = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getBGCToggle(): boolean {
+  public get_bgc_toggle(): boolean {
     return this.onlyBGC
   }
 
-  sendDeepToggleMsg(toggleChecked: boolean, broadcastChange=true): void {
+  public send_deep_toggle_msg(toggleChecked: boolean, broadcastChange=true): void {
     const msg = 'deep only'
     this.onlyDeep = toggleChecked
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getDeepToggle(): boolean {
+  public get_deep_toggle(): boolean {
     return this.onlyDeep
   }
 
-  public setMapState(this, key: string, value: string): void {
+  public set_map_state(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'mapProj': {
-        this.setProj(value)
+        this.set_proj(value)
         break
       }
       case 'includeRealtime': {
         const includeRealtime = JSON.parse(value)
-        this.sendRealtimeMsg(includeRealtime, notifyChange)
+        this.send_realtime_msg(includeRealtime, notifyChange)
         break
       }
       case 'onlyBGC': {
         const onlyBGC = JSON.parse(value)
-        this.sendBGCToggleMsg(onlyBGC, notifyChange)
+        this.send_bgc_toggle_msg(onlyBGC, notifyChange)
         break
       }
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
-        this.sendDeepToggleMsg(onlyDeep, notifyChange)
+        this.send_deep_toggle_msg(onlyDeep, notifyChange)
         break;
       }
       case 'threeDayToggle': {
         const threeDayToggle = JSON.parse(value)
-        this.sendThreeDayMsg(threeDayToggle, notifyChange)
+        this.send_three_day_msg(threeDayToggle, notifyChange)
         break
       }
       case 'threeDayEndDate': {
         const globalDisplayDate = value
-        this.sendGlobalDate(globalDisplayDate, notifyChange)
+        this.send_global_date(globalDisplayDate, notifyChange)
         break
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
         const toggleThreeDayOff = false
-        this.sendShape(arrays, notifyChange, toggleThreeDayOff)
+        this.send_shape(arrays, notifyChange, toggleThreeDayOff)
         break
       }
       case 'selectionStartDate': {
         const stateDateRange = {startDate: value, endDate: this.selectionDateRange.endDate}
-        this.sendSelectedDate(stateDateRange, notifyChange)
+        this.send_selected_date(stateDateRange, notifyChange)
         break
       }
       case 'selectionEndDate': {
         const stateDateRange = {startDate: this.selectionDateRange.startDate, endDate: value}
-        this.sendSelectedDate(stateDateRange, notifyChange)
+        this.send_selected_date(stateDateRange, notifyChange)
         break
       }
       case 'presRange': {
         const presRange = JSON.parse(value)
-        this.sendPres(presRange, notifyChange)
+        this.send_pres(presRange, notifyChange)
         break
       }
      default: {

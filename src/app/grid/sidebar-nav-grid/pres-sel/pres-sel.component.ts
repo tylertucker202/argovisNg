@@ -13,57 +13,59 @@ export interface PressureLevels {
   styleUrls: ['./pres-sel.component.css'],
 })
 export class PresSelComponent implements OnInit {
-  private presLevels: PressureLevels[]
-  private presArray: number[]
-  private presLevel: number;
+  public presLevelsDisplay: PressureLevels[]
+  public presLevel: number;
+  public presLevels: number[]
   
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
 
   ngOnInit() { 
     this.presLevel = this.queryGridService.getPresLevel()
-    this.makePressureLevels()
-
-    this.queryGridService.resetToStart.subscribe((msg) => {
+    this.queryGridService.resetToStart.subscribe((msg: string) => {
       this.presLevel = this.queryGridService.getPresLevel()
+    })
+
+    this.selectGridService.gridMetaChange.subscribe((gridMeta: GridMeta) => {
+      this.presLevels = gridMeta.presLevels
+      this.makePressureLevels()
+      if (!this.presLevels.includes(this.presLevel)) {
+        this.presLevel = this.presLevels[0]
+        this.queryGridService.send_pres(this.presLevel, false)
+        this.queryGridService.set_url()
+      }
     })
   }
 
-  private makePressureLevels(): void {
-    let presLevels = []
-    this.selectGridService.getGridMeta(this.queryGridService.getGrid())
-      .subscribe((gridMeta: GridMeta[]) => {
-        this.presArray = gridMeta[0]['presLevels']
-        this.presArray.sort(function(a, b){return a-b})
-        for (let idx=0; idx < this.presArray.length; ++idx) {
-          presLevels.push({value: this.presArray[idx]})
-        }
-      })
-    
-    this.presLevels = presLevels
+  public makePressureLevels(): void {
+    let presLevelsDisplay = []
+    this.presLevels.forEach(pres => {
+      presLevelsDisplay.push({value: pres})
+    });
+    this.presLevelsDisplay = presLevelsDisplay
   }
 
-  private incrementLevel(increment: number): void {
-    const idx = this.presArray.indexOf(this.presLevel)
+  public incrementLevel(increment: number): void {
+    const idx = this.presLevels.indexOf(this.presLevel)
     const inc = idx + increment
-    if( inc >= 0 && inc < this.presLevels.length) {
-      this.presLevel = this.presLevels[inc].value
-      this.sendPresLevel()
+    if( inc >= 0 && inc < this.presLevelsDisplay.length) {
+      this.presLevel = this.presLevelsDisplay[inc].value
+      this.send_presLevel()
     }
 
   }
 
-  private sendPresLevel(): void {
+  public send_presLevel(): void {
     const broadcastChange = true
     if (this.presLevel !== this.queryGridService.getPresLevel()){
-      this.queryGridService.sendPres(this.presLevel, broadcastChange)
+      this.queryGridService.send_pres(this.presLevel, broadcastChange)
     }
   } 
 
-  private selChange(newPres: number ): void {
+  public selChange(newPres: number ): void {
     this.presLevel = newPres
     console.log(this.presLevel)
-    this.sendPresLevel();
+    this.send_presLevel();
   }
 
 }

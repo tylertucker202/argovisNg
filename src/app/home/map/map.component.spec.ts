@@ -1,5 +1,5 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, fakeAsync, tick, flush, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { MapComponent } from './map.component';
 import { MapService } from '../services/map.service';
 import { PointsService } from '../services/points.service';
@@ -7,9 +7,6 @@ import { QueryService } from '../services/query.service';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
 import { PopupCompileService } from '../services/popup-compile.service';
 import { NotifierService, NotifierModule } from 'angular-notifier';
-import { ShapePopupComponent } from '../shape-popup/shape-popup.component';
-
-import { HomeModule } from '../home.module';
 
 import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,13 +20,13 @@ describe('MapComponent', () => {
   let mapService: MapService;
   let pointsService: PointsService;
   let spyRT: jasmine.Spy;
-  let getProjSpy: jasmine.Spy;
-  let displayProfilesSpy: jasmine.Spy;
-  let setPointsOnMapSpy: jasmine.Spy;
+  let get_projSpy: jasmine.Spy;
+  let display_profilesSpy: jasmine.Spy;
+  let set_points_on_mapSpy: jasmine.Spy;
   let spyURL: jasmine.Spy;
-  let getSelectionPointsSpy: jasmine.Spy;
-  let getPlatformProfilesSpy: jasmine.Spy;
-  let getLatestProfiles: jasmine.Spy;
+  let get_selection_pointsSpy: jasmine.Spy;
+  let get_platform_profilesSpy: jasmine.Spy;
+  let get_latest_profiles: jasmine.Spy;
   let getLastThreeDaysProfiles: jasmine.Spy;
   let popupWindowCreationSpy: jasmine.Spy;
 
@@ -38,10 +35,7 @@ describe('MapComponent', () => {
       declarations: [ MapComponent ],
       providers: 
       [NotifierService,
-       HttpClient,
-       HttpClientModule,
-       HttpHandler,
-       { provide: MapService, useValue: getProjSpy },
+       { provide: MapService, useValue: get_projSpy },
        MapService,
        PointsService,
        QueryService,
@@ -49,7 +43,8 @@ describe('MapComponent', () => {
        imports: [ RouterTestingModule,
                   NotifierModule,
                   MaterialModule,
-                  BrowserAnimationsModule
+                  BrowserAnimationsModule,
+                  HttpClientTestingModule
                 ],
 
     })
@@ -63,17 +58,17 @@ describe('MapComponent', () => {
     mapService = debugElement.injector.get(MapService)
     pointsService = debugElement.injector.get(PointsService)
 
-    const mockPoints = pointsService.getMockPoints()
+    const mockPoints = pointsService.get_mock_points()
 
-    const getSelectionPoints = spyOn(pointsService, 'getSelectionPoints').and.returnValue(mockPoints)
-    const getPlatformProfiles = spyOn(pointsService, 'getPlatformProfiles').and.returnValue(mockPoints)
-    const getLatestProfiles = spyOn(pointsService, 'getLatestProfiles').and.returnValue(mockPoints)
-    const getLastThreeDaysProfiles = spyOn(pointsService, 'getLastThreeDaysProfiles').and.returnValue(mockPoints)
-    const popupWindowCreationSpy = spyOn(mapService, 'popupWindowCreation').and.callThrough()
-    spyURL = spyOn(queryService, 'setURL'); 
-    displayProfilesSpy = spyOn<any>(component, 'displayProfiles').and.callThrough()
-    setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
-    getProjSpy = spyOn(queryService, 'getProj').and.returnValue('WM');
+    const get_selection_points = spyOn(pointsService, 'get_selection_points').and.returnValue(mockPoints)
+    const get_platform_profiles = spyOn(pointsService, 'get_platform_profiles').and.returnValue(mockPoints)
+    const get_latest_profiles = spyOn(pointsService, 'get_latest_profiles').and.returnValue(mockPoints)
+    const getLastThreeDaysProfiles = spyOn(pointsService, 'get_last_three_days_profiles').and.returnValue(mockPoints)
+    const popupWindowCreationSpy = spyOn(mapService, 'popup_window_creation').and.callThrough()
+    spyURL = spyOn(queryService, 'set_url'); 
+    display_profilesSpy = spyOn<any>(component, 'display_profiles').and.callThrough()
+    set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
+    get_projSpy = spyOn(queryService, 'get_proj').and.returnValue('WM');
     fixture.detectChanges();
   });
 
@@ -85,10 +80,10 @@ describe('MapComponent', () => {
   it('should have web mercator', () => {
     //TODO: find out why getting false positives!
     queryService['threeDayToggle'] = false
-    queryService.setProj('WM')
+    queryService.set_proj('WM')
 
-    //getLastThreeDaysProfiles
-    //spy = spyOn(queryService, 'getProj').and.returnValue('WM');
+    //get_last_three_days_profiles
+    //spy = spyOn(queryService, 'get_proj').and.returnValue('WM');
     expect(component['wrappedComponents'] == true)
 
     const lat = mapService['WMstartView'][0]
@@ -101,7 +96,7 @@ describe('MapComponent', () => {
 
   it('should have southern stereographic', () => {
     //TODO: find out why getting false positives!
-    queryService.setProj('SSP')
+    queryService.set_proj('SSP')
     expect(component['proj'] == 'SSP')
     expect(component['wrappedComponents'] == false)
     const lat = mapService['SSPstartView'][0]
@@ -112,7 +107,7 @@ describe('MapComponent', () => {
   })
 
   it('should have northern stereographic', () => {
-    queryService.setProj('NSP')
+    queryService.set_proj('NSP')
     expect(component['proj'] == 'NSP')
     expect(component['wrappedComponents'] == false)
     const lat = mapService['NSPstartView'][0]
@@ -123,7 +118,7 @@ describe('MapComponent', () => {
   })
 
   it('should have Default set', () => {
-    queryService.setProj('made up')
+    queryService.set_proj('made up')
     expect(component['proj'] == 'WM')
     expect(component['wrappedComponents'] == true)
     const lat = mapService['WMstartView'][0]
@@ -146,30 +141,30 @@ describe('MapComponent', () => {
   it('should detect query service change', () => {
 
     component.setMockPoints()
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(1);
+    expect(display_profilesSpy).toHaveBeenCalledTimes(1);
     expect(spyURL).toHaveBeenCalledTimes(0);
     
     queryService.change.emit('testing a change')
     expect(spyURL).toHaveBeenCalled()
     expect(spyURL).toHaveBeenCalledTimes(1);
 
-    expect(displayProfilesSpy).toHaveBeenCalled();
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(2);
+    expect(display_profilesSpy).toHaveBeenCalled();
+    expect(display_profilesSpy).toHaveBeenCalledTimes(2);
 
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
   });
 
-  it('should detect query service clearLayers', () => {
+  it('should detect query service clear_layers', () => {
     component.setMockPoints()
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(1);
+    expect(display_profilesSpy).toHaveBeenCalledTimes(1);
     expect(spyURL).toHaveBeenCalledTimes(0);
     
     queryService.resetToStart.emit('testing a clear')
     expect(spyURL).toHaveBeenCalledTimes(0); //should not be called
 
-    expect(displayProfilesSpy).toHaveBeenCalledTimes(2); //should not be called
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0);
+    expect(display_profilesSpy).toHaveBeenCalledTimes(2); //should not be called
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0);
     let myMarkers = component.markersLayer.toGeoJSON()
     expect(myMarkers['features'].length === 0)
   });
@@ -177,12 +172,12 @@ describe('MapComponent', () => {
   it('should add a shape', () => {
     const shapes = [[[55.578345,-146.074219],[52.908902,-148.886719],[52.48278,-141.328125],[55.578345,-146.074219]]]
     const notifiyChange = true 
-    //we check if shape is added indirectly by checking if setPointsOnMap() is called. It should when a change occurs.
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0)
+    //we check if shape is added indirectly by checking if set_points_on_map() is called. It should when a change occurs.
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0)
     let drawnItemsBefore = component.mapService.drawnItems.toGeoJSON()
     expect(drawnItemsBefore['features'].length).toEqual(0)
-    queryService.sendShape(shapes, notifiyChange)
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(1)
+    queryService.send_shape(shapes, notifiyChange)
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(1)
   })
 
 });

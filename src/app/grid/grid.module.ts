@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from '../material/material.module';
@@ -19,6 +19,7 @@ import { GridPickerComponent } from './sidebar-nav-grid/grid-picker/grid-picker.
 import { GridComparePickerComponent } from './sidebar-nav-grid/grid-compare-picker/grid-compare-picker.component';
 import { GridColorPickerComponent } from './sidebar-nav-grid/grid-color-picker/grid-color-picker.component';
 import { ColorbarComponent } from './sidebar-nav-grid/colorbar/colorbar.component';
+import { DatePickerComponent } from './sidebar-nav-grid/date-picker/date-picker.component';
 
 @NgModule({
   declarations: [
@@ -30,11 +31,13 @@ import { ColorbarComponent } from './sidebar-nav-grid/colorbar/colorbar.componen
     GridPickerComponent,
     GridComparePickerComponent,
     GridColorPickerComponent,
-    ColorbarComponent
+    ColorbarComponent,
+    DatePickerComponent
     ],
   providers: [
     QueryGridService,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   imports: [
     MaterialModule,
     NouisliderModule,

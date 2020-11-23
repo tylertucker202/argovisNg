@@ -1,29 +1,29 @@
+import { HEX_COLOR_MAPS } from './../../../profview/colormap.parameters';
 import { Component, OnInit } from '@angular/core'
 import { QueryGridService } from '../../query-grid.service';
 import * as chroma from 'chroma'
 import 'd3'
 import 'd3-scale'
-
-declare let chroma: any
 declare let d3: any
-
+import { ChromaStatic } from 'chroma-js';
+declare const chroma: ChromaStatic
 @Component({
   selector: 'app-colorbar',
   templateUrl: './colorbar.component.html',
   styleUrls: ['./colorbar.component.css']
 })
 export class ColorbarComponent implements OnInit {
-  private colorScale: string
-  private colorArr: string[]
-  private inverseColorScale: boolean
-  private domain: number[]
-  private cbrange: number[]
-  private cbarShift: string
-  private ticks: number
-  private rectHeight: number
-  private svgHeight: number
-  private svgWidth: string
-  private svg: any
+  public colorScale: string
+  public colorArr: string[]
+  public inverseColorScale: boolean
+  public domain: number[]
+  public cbrange: number[]
+  public cbarShift: string
+  public ticks: number
+  public rectHeight: number
+  public svgHeight: number
+  public svgWidth: string
+  public svg: any
 
   constructor( private queryGridService: QueryGridService ) { }
 
@@ -37,37 +37,37 @@ export class ColorbarComponent implements OnInit {
     this.cbarShift = "10"
     this.colorScale = this.queryGridService.getColorScale()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
-    this.colorArr = chroma.brewer[this.colorScale]
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
+    if ( this.inverseColorScale ) { this.create_colorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.create_colorbar(this.colorArr.slice(), this.domain.slice()) }
 
     this.queryGridService.change
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
         })
     
-    this.queryGridService.updateColorbar
+    this.queryGridService.update_colorbarEvent
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
       })
 
     this.queryGridService.resetToStart
       .subscribe(msg => {
-        this.updateColorbar()
+        this.update_colorbar()
       })
   }
 
-  private updateColorbar() {
+  public update_colorbar() {
     this.colorScale = this.queryGridService.getColorScale()
     this.domain = this.queryGridService.getGridDomain()
     this.inverseColorScale = this.queryGridService.getInverseColorScale()
-    this.colorArr = chroma.brewer[this.colorScale]
+    this.colorArr = HEX_COLOR_MAPS[this.colorScale.toLowerCase()]
     this.svg.remove();
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorArr.slice(), this.domain.slice()) }
+    if ( this.inverseColorScale ) { this.create_colorbar(this.colorArr.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.create_colorbar(this.colorArr.slice(), this.domain.slice()) }
   }
 
-  private createColorbar(colorArr: string[], domain: number[]) {
+  public create_colorbar(colorArr: string[], domain: number[]) {
 
     this.svg = d3.select("app-colorbar").append("svg")
     .attr("width", this.svgWidth)
@@ -112,7 +112,7 @@ export class ColorbarComponent implements OnInit {
         .call(axis);
     }
 
-  public minChange(val: number ): void {
+  public min_change(val: number ): void {
     const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
     const uRange = this.domain.sort()[1]
     this.domain = [lRange, uRange]
@@ -120,7 +120,7 @@ export class ColorbarComponent implements OnInit {
     this.queryGridService.sendGridDomain(lRange, uRange, broadcastChange)
   }
 
-  public maxChange(val: number ): void {
+  public max_change(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];

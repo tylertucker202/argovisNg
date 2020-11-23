@@ -25,9 +25,10 @@ export interface ModelParam {
   viewValue: string;
 }
 
-export interface AvailableParams {
+export interface EarthProperty {
   param: string;
   viewValue: string;
+  colorScale: string;
 }
 
 export interface GridRange {
@@ -43,6 +44,11 @@ export interface ColorScaleGroup {
 }
 
 export interface GridMeta {
-  _id: string,
+  _id?: string
   presLevels: number[]
+  dates: string[]
+  minDate: string
+  maxDate: string
 }
+
+

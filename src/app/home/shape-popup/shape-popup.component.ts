@@ -11,13 +11,13 @@ export class ShapePopupComponent implements OnInit {
   @Input() transformedShape: number[][]
   @Input() message: string
   @Input() shape_id: string
-  private color: string
-  private presRangeToggle: boolean
-  private bgcOnlyToggle: boolean
-  private deepOnlyToggle: boolean
-  private pageToggle: boolean
-  private shapeButtonText: string
-  private jsonButtonText: string
+  public color: string
+  public presRangeToggle: boolean
+  public bgcOnlyToggle: boolean
+  public deepOnlyToggle: boolean
+  public pageToggle: boolean
+  public shapeButtonText: string
+  public jsonButtonText: string
   constructor(private queryService: QueryService) { }
 
   ngOnInit() {
@@ -29,31 +29,31 @@ export class ShapePopupComponent implements OnInit {
     this.jsonButtonText = "Download JSON Data"
   }
 
-  private presRangeChange(presRangeToggle: boolean): void {
+  public presRangeChange(presRangeToggle: boolean): void {
     this.presRangeToggle = presRangeToggle;
   }
 
-  private bgcOnlyChange(bgcOnlyToggle: boolean): void {
+  public bgc_only_change(bgcOnlyToggle: boolean): void {
     this.bgcOnlyToggle = bgcOnlyToggle
   }
 
-  private deepOnlyChange(deepOnlyToggle: boolean): void {
+  public deep_only_change(deepOnlyToggle: boolean): void {
     this.deepOnlyToggle = deepOnlyToggle
   }
 
-  private pageChange(pageToggle: boolean): void {
+  public pageChange(pageToggle: boolean): void {
     this.pageToggle = pageToggle
   }
 
-  private generateURL(goToPage: boolean): string {
+  public generate_url(goToPage: boolean): string {
     let url = '/selection/profiles'
     if (goToPage) {
       url += '/page'
     }
-    let dates = this.queryService.getSelectionDates();
+    let dates = this.queryService.get_selection_dates();
     url += '?startDate=' + dates.startDate + '&endDate=' + dates.endDate
     if (this.presRangeToggle) {
-      const presRange = this.queryService.getPresRange();
+      const presRange = this.queryService.get_pres_range();
       url += '&presRange='+JSON.stringify(presRange)
     }
     if (this.bgcOnlyToggle) {
@@ -66,8 +66,8 @@ export class ShapePopupComponent implements OnInit {
     return url 
   }
 
-  private goToSelectionPage(goToPage: boolean): void {
-    const url = this.generateURL(goToPage)
+  public go_to_selection_page(goToPage: boolean): void {
+    const url = this.generate_url(goToPage)
     window.open(url,"_blank")
   }
 

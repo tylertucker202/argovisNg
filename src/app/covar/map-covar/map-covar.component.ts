@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core'
-import { CovarPoints } from './../../home/models/covar-points'
+import { CovarPoints } from '../../models/covar-points'
 import { CovarService } from '../covar.service'
 import { MapCovarService } from '../map-covar.service'
 
@@ -45,7 +45,7 @@ export class MapCovarComponent implements OnInit {
     this.covarService.readURLParams()
     this.covarService.buildDataUrl()
 
-    this.proj = this.covarService.getProj()
+    this.proj = this.covarService.get_proj()
 
     this.makeMousePositionControl()
 
@@ -59,12 +59,12 @@ export class MapCovarComponent implements OnInit {
 
     this.covarService.change
     .subscribe(msg => {
-       this.proj = this.covarService.getProj()
+       this.proj = this.covarService.get_proj()
        this.covarService.buildDataUrl()
        this.removePoints()
        //this.addMockPoints()
        this.addCovarPoints()
-       this.covarService.setURL()
+       this.covarService.set_url()
        if (msg === 'proj changed') {
          this.updateMap()
        }

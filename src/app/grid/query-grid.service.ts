@@ -9,53 +9,55 @@ import { FeatureCollection, Feature, Polygon } from 'geojson'
 export class QueryGridService {
 
   @Output() change: EventEmitter<string> = new EventEmitter
-  @Output() updateColorbar: EventEmitter<string> = new EventEmitter
+  @Output() update_colorbarEvent: EventEmitter<string> = new EventEmitter
   @Output() resetToStart: EventEmitter<string> = new EventEmitter
-  @Output() clearLayers: EventEmitter<string> = new EventEmitter
-  @Output() urlBuild: EventEmitter<string> = new EventEmitter
+  @Output() clear_layers: EventEmitter<string> = new EventEmitter
+  @Output() urlRead: EventEmitter<string> = new EventEmitter
 
   private presLevel = 10
-  private monthYear = moment('01-2012', 'MM-YYYY').utc(false)
+  private date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
   private mapState: MapState
-  private grid = 'rgTempAnom'
-  private param = 'anomaly' //total anomaly or mean
+  private gridName = 'rgTempAnom'
+  private param = 'tempAnomaly' //total anomaly or mean
   private gridParam: string
   private compareGrid: string
-  private latLngShapes = [[-65, -5, -15, 15]]
+  private boundingBox = [[-40, -70, 0, -30]]
+  public  startView = {lat: -30, lng: -15} as L.LatLng
+  public startZoom = 3
   private compare = false
   private paramMode = false
   private interpolateBool = false
-  private colorScale = 'OrRd'
+  private colorScale = 'balance'
   private inverseColorScale = false
   private gridDomain = [0, 1]
 
   constructor(private route: ActivatedRoute,
               private router: Router) { this.router.urlUpdateStrategy = 'eager' }
 
-  public formatMonthYear(monthYear: Moment): string {
-    const monthYearString = monthYear.format('MM-YYYY')
-    return(monthYearString)
+  public format_date(date: Moment): string {
+    const dateString = date.format('YYYY-MM-DD')
+    return(dateString)
   }
 
-  public resetParams(): void{
+  public reset_params(): void{
     const broadcastChange = false
-    const monthYear = moment('01-2012', 'MM-YYYY').utc(false)
-    this.sendmonthYear(monthYear, broadcastChange)
+    const date = moment('2012-01-01', 'YYYY-MM-DD').utc(false)
+    this.sendDate(date, broadcastChange)
     const presLevel = 10
-    this.sendPres(presLevel, broadcastChange)
-    this.colorScale = 'OrRd'
+    this.send_pres(presLevel, broadcastChange)
+    this.colorScale = 'balance'
     this.inverseColorScale = false
     this.gridDomain = [0, 1]
-    this.param = 'anomaly'
+    this.param = 'tempAnomaly'
     this.paramMode = false
     this.compare = false
-    //this.clearShapes()
-    this.latLngShapes = [[-65, -5, -15, 15]]
-    this.setURL()
+    //this.clear_shapes()
+    this.boundingBox = [[-30, 0, -70, -40]]
+    this.set_url()
     this.resetToStart.emit('reset params pushed')
   }
 
-  public sendPres(presLevel: number, broadcastChange=true): void {
+  public send_pres(presLevel: number, broadcastChange=true): void {
     const msg = 'pres level change'
     this.presLevel = presLevel
     if (broadcastChange){ this.change.emit(msg) }
@@ -73,7 +75,7 @@ export class QueryGridService {
     const msg = 'grid range changed'
     const gridDomain = [lowerRange, upperRange]
     this.gridDomain = [+(gridDomain[0].toFixed(3)), +(gridDomain[1].toFixed(3))]
-    this.setURL()
+    this.set_url()
     if (broadcastChange) {this.change.emit(msg)}
   }
 
@@ -96,42 +98,40 @@ export class QueryGridService {
   public getInverseColorScale(): boolean {
     return this.inverseColorScale
   }
-  public sendmonthYear(monthYear: Moment, broadcastChange=true): void {
-    const msg = 'month year change'
-    if (!monthYear.isValid) {
-      monthYear = moment('01-2007', 'MM-YYYY').utc(false)
-    }
-    this.monthYear = monthYear
+  public sendDate(date: Moment, broadcastChange=true, init=false): void {
+    if (!date.isValid) { date = moment('2007-01-01', 'YYYY-MM-DD').utc(false) }
+    this.date = date
+    const msg = 'date changed'
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getMonthYear(): Moment {
-    return this.monthYear
+  public getDate(): Moment {
+    return this.date
   }
 
-  public sendShape(bboxes: number[][], broadcastChange=true): void {
+  public send_shape(bboxes: number[][], broadcastChange=true): void {
     let msg = 'shape change'
-    this.latLngShapes = bboxes
+    this.boundingBox = bboxes
     if (broadcastChange){ this.change.emit(msg) }
   }
 
-  public getShapes(): number[][] {
-    return this.latLngShapes
+  public get_shapes(): number[][] {
+    return this.boundingBox
   }
 
-  public sendGrid(grid: string, broadcastChange=true): void {
+  public sendGrid(gridName: string, broadcastChange=true): void {
     let msg = 'grid change'
-    this.grid = grid
+    this.gridName = gridName
     if (broadcastChange) { this.change.emit(msg) }
   }
 
-  public getGrid(): string {
-    return this.grid
+  public getGridName(): string {
+    return this.gridName
   }
 
   public sendGridParam(grid: string, gridParam: string, broadcastChange=true): void {
     let msg = 'grid param change'
-    this.grid = grid
+    this.gridName = grid
     this.gridParam = gridParam
     if (broadcastChange) { this.change.emit(msg) }
   }
@@ -140,13 +140,13 @@ export class QueryGridService {
     return this.gridParam
   }
 
-  public sendParam(param: string, broadcastChange=true): void {
+  public sendProperty(param: string, broadcastChange=true): void {
     let msg = 'param change'
     this.param = param
     if (broadcastChange) { this.change.emit(msg) }
   }
 
-  public getParam(): string {
+  public getProperty(): string {
     return this.param
   }
 
@@ -170,8 +170,8 @@ export class QueryGridService {
     return this.paramMode
   }
 
-  public clearShapes(): void {
-    this.latLngShapes = null
+  public clear_shapes(): void {
+    this.boundingBox = null
   }
 
   public getInterplateBool(): boolean {
@@ -208,14 +208,14 @@ export class QueryGridService {
     return shapeArray
   }
 
-  public triggerResetToStart(): void {
-    this.resetParams()
+  public trigger_reset_to_start(): void {
+    this.reset_params()
     this.resetToStart.emit()
-    this.setURL()
+    this.set_url()
   }
 
-  public triggerClearLayers(): void {
-    this.clearLayers.emit()
+  public trigger_clear_layers(): void {
+    this.clear_layers.emit()
   }
 
   public getBBoxes(fc: FeatureCollection<Polygon>): number[][]{
@@ -227,24 +227,24 @@ export class QueryGridService {
     return bboxes
   }
 
-  public setURL(): void {
+  public set_url(): void {
 
     const presLevelString = JSON.stringify(this.presLevel)
     const gridDomainStr = JSON.stringify(this.gridDomain)
     let shapesString = null
     let bboxes: number[][]
-    if (this.latLngShapes) {
-      bboxes = this.latLngShapes
+    if (this.boundingBox) {
+      bboxes = this.boundingBox
       shapesString = JSON.stringify(bboxes)
     }
     const interpolateBool = JSON.stringify(this.getInterplateBool())
     const inverseColorScale = JSON.stringify(this.getInverseColorScale())
-    const monthYearString = this.formatMonthYear(this.monthYear)
+    const dateString = this.format_date(this.date)
     let queryParams = {
                          'presLevel': presLevelString, 
-                         'monthYear': monthYearString,
+                         'date': dateString,
                          'shapes': shapesString,
-                         'grid': this.grid,
+                         'gridName': this.gridName,
                          'interpolateBool': interpolateBool,
                          'colorScale': this.colorScale,
                          'inverseColorScale': inverseColorScale,
@@ -285,17 +285,21 @@ export class QueryGridService {
     return bbox
   }
 
-  public setParamsFromURL(): void {
+  public set_params_from_url(msg: string): void {
     this.route.queryParams.subscribe(params => {
       this.mapState = params
       Object.keys(this.mapState).forEach((key) => {
-        this.setMapState(key, this.mapState[key])
+        this.set_map_state(key, this.mapState[key])
       })
-      this.urlBuild.emit('got state from map component')
+      //wait a few for the other components to load
+      console.log('emitting url read message')
+      setTimeout(() => {
+        this.urlRead.emit(msg)
+      },100);
     })
   }
 
-  private setMapState(this, key: string, value: string): void {
+  private set_map_state(this, key: string, value: string): void {
     const notifyChange = false
     switch(key) {
       case 'colorScale': {
@@ -320,17 +324,18 @@ export class QueryGridService {
       }
       case 'param': {
         const param = value
-        this.sendParam(param, notifyChange)
+        this.sendProperty(param, notifyChange)
         break
       }
-      case 'monthYear': {
-        const monthYear = moment(value, 'MM-YYYY').utc()
-        if (monthYear.isValid)  { this.sendmonthYear(monthYear, notifyChange) }
+      case 'date': {
+        const date = moment(value, 'YYYY-MM-DD').utc()
+        const init = true
+        if (date.isValid)  { this.sendDate(date, notifyChange, true) }
         break
       }
-      case 'grid': {
-        const grid = value
-        this.sendGrid(grid, notifyChange)
+      case 'gridName': {
+        const gridName = value
+        this.sendGrid(gridName, notifyChange)
         break
       }
       case 'compareGrid': {
@@ -341,7 +346,7 @@ export class QueryGridService {
       }
       case 'shapes': {
         const arrays = JSON.parse(value)
-        this.sendShape(arrays, notifyChange)
+        this.send_shape(arrays, notifyChange)
         break
       }
       case 'interpolateBool': {
@@ -351,7 +356,7 @@ export class QueryGridService {
       }
       case 'presLevel': {
         const presLevel = JSON.parse(value)
-        this.sendPres(presLevel, notifyChange)
+        this.send_pres(presLevel, notifyChange)
         break
       }
       case 'gridDomain': {

@@ -1,4 +1,4 @@
-import { ARShape } from '../home/models/ar-shape'
+import { ARShape } from '../models/ar-shape'
 
 
   export const mockShapeSimple: ARShape = {

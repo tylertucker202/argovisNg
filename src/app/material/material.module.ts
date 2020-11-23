@@ -23,6 +23,7 @@ import { MatSortModule } from '@angular/material/sort'
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatListModule } from '@angular/material/list'
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 
 // table export module
 import { MatTableExporterModule } from 'mat-table-exporter'
@@ -51,7 +52,8 @@ import { MatTableExporterModule } from 'mat-table-exporter'
     MatTableExporterModule,
     MatGridListModule,
     MatListModule,
-    MatTabsModule
+    MatTabsModule,
+    MatAutocompleteModule,
   ],
   imports: [
     CommonModule,
@@ -76,6 +78,7 @@ import { MatTableExporterModule } from 'mat-table-exporter'
     MatGridListModule,
     MatListModule,
     MatTabsModule,
+    MatAutocompleteModule,
   ]
 })
 export class MaterialModule { }

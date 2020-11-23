@@ -8,7 +8,7 @@ describe('ArShapePopupComponent', () => {
   let component: ArShapePopupComponent;
   let fixture: ComponentFixture<ArShapePopupComponent>;
   let arQueryService: ArQueryService;
-  let queryARShapeSpy: jasmine.Spy
+  let query_ar_shapeSpy: jasmine.Spy
   let debugElement: DebugElement
 
   beforeEach(async(() => {
@@ -25,7 +25,7 @@ describe('ArShapePopupComponent', () => {
     component = fixture.componentInstance;
     debugElement = fixture.debugElement
     arQueryService = debugElement.injector.get(ArQueryService)
-    queryARShapeSpy = spyOn<any>(component, 'queryARShape').and.callThrough()
+    query_ar_shapeSpy = spyOn<any>(component, 'query_ar_shape').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -34,29 +34,29 @@ describe('ArShapePopupComponent', () => {
   });
 
   it('should generate selection page url properly', () => {
-    let url = component['generateURL'](false)
+    let url = component['generate_url'](false)
 
     expect(url.includes('startDate=')).toEqual(true)
     expect(url.includes('endDate')).toEqual(true)
     expect(url.includes('/page')).toEqual(false)
-    url = component['generateURL'](true)
+    url = component['generate_url'](true)
     expect(url.includes('/page')).toEqual(true)
     expect(url.includes('&bgcOnly=true')).toEqual(false)
     expect(url.includes('&deepOnly=true')).toEqual(false)
 
-    component['bgcOnlyChange'](true)
-    component['deepOnlyChange'](true)
-    url = component['generateURL'](true)
+    component['bgc_only_change'](true)
+    component['deep_only_change'](true)
+    url = component['generate_url'](true)
     expect(url.includes('&bgcOnly=true')).toEqual(true)
     expect(url.includes('&deepOnly=true')).toEqual(true)
   })
 
   it('should generate homepage url', () => {
-    let url = component['generateHomepageURL']()
+    let url = component['generate_homepage_url']()
     expect(url.includes('/ng/home?')).toEqual(true)
   })
 
-  it('should generate queryARShape on init', () => {
-    expect(queryARShapeSpy).toHaveBeenCalled()
+  it('should generate query_ar_shape on init', () => {
+    expect(query_ar_shapeSpy).toHaveBeenCalled()
   })
 });

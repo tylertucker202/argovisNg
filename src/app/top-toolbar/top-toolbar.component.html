@@ -1,42 +1,46 @@
 <mat-toolbar id="top-toolbar" color="primary">
-  <button mat-icon-button matTooltip="go to argovis profile page (home)" (click)="goToHome()">
+  <button mat-icon-button matTooltip="go to argovis profile page (home)" (click)="go_to_home()">
     <mat-icon>home</mat-icon>
   </button>
+  <button mat-icon-button matTooltip="go to API documentation" (click)="go_to_api_docs()">
+    <mat-icon>api</mat-icon>
+  </button>
+  <button class="nav-link" 
+    mat-button 
+    matTooltip="we have expanded to include several new modules!"
+    [matMenuTriggerFor]="moduleMenu">Choose viewer</button>
+    <mat-menu #moduleMenu="matMenu">
+    <a mat-menu-item *ngFor="let module of avModules" 
+      href={{module.link}}
+      routerLinkActive="active"
+      matTooltip={{module.tooltip}}>{{module.viewValue}}
+    </a>
+ </mat-menu>
   <a class="nav-link"
      matTooltip="link to about page"
      target='_blank'
      rel="noopener"
-     href="http://www.argo.ucsd.edu/Argovis_About.html">
+     href="https://argovis.colorado.edu/docs/Argovis_About.html">
      About Argovis</a>
   <a class="nav-link"
      matTooltip="link to tutorial page"
      target='_blank'
      rel="noopener"
-     href="http://www.argo.ucsd.edu/Argovis/Argovis_Tutorials.html">
+     href="https://argovis.colorado.edu/docs/Argovis_Tutorials.html">
      Tutorials</a>
   <a class="nav-link"
      matTooltip="link to faq page"
      target='_blank'
      rel="noopener"
-     href="http://www.argo.ucsd.edu/Argovis_FAQ.html">
+     href="https://argovis.colorado.edu/docs/Argovis_FAQ.html">
      FAQ</a>
-     <button class="nav-link" 
-     mat-button 
-     matTooltip="we have expanded to include several new modules!"
-     [matMenuTriggerFor]="moduleMenu">Argovis Module Menu</button>
-     <mat-menu #moduleMenu="matMenu">
-      <a mat-menu-item *ngFor="let module of avModules" 
-        href={{module.link}}
-        routerLinkActive="active"
-        matTooltip={{module.tooltip}}>{{module.viewValue}}
-      </a>
-    </mat-menu>
   <a class="nav-link-survey"
     matTooltip="take a survey, comment, request features!"
     target='_blank'
     rel="noopener"
     href="https://docs.google.com/forms/d/e/1FAIpQLSckbH8WJSHruoPZ72xlGJDegpzwYinTVCmyFLJsum_GYYIg3A/viewform">
     Take a Survey</a>
+  <p class="current-module">{{currentModule}}</p>
   <span class="fill-space"></span>
   <img id='logo' src="assets/img/Argovis_logo-1.png">
 </mat-toolbar>

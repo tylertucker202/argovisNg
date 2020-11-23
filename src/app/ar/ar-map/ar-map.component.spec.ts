@@ -1,12 +1,12 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NotifierService, NotifierModule } from 'angular-notifier'
+import { NotifierModule } from 'angular-notifier'
 import { ArMapComponent } from './ar-map.component';
 import { ArQueryService } from '../ar-query.service'
 import { ArShapeService } from '../ar-shape.service'
 import { ArMapService } from '../ar-map.service'
 import { mockShapeComplex, mockShapeSimple} from '../ar-shape.parameters'
-import { HttpClient, HttpClientModule, HttpHandler } from '@angular/common/http';
 import { PopupCompileService } from '../../home/services/popup-compile.service';
 import { QueryService } from '../../home/services/query.service'
 import { MapService } from '../../home/services/map.service'
@@ -15,8 +15,7 @@ import { MaterialModule } from '../../material/material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core'; //can view dom elements with this
-import { Observable, of } from 'rxjs';
-import { ProtractorExpectedConditions } from 'protractor';
+import { of } from 'rxjs';
 
 describe('ArMapComponent', () => {
   let component: ArMapComponent;
@@ -25,18 +24,15 @@ describe('ArMapComponent', () => {
   let arQueryService: ArQueryService;
   let arShapeService: ArShapeService;
   let arMapService: ArMapService;
-  let setPointsOnMapSpy: jasmine.Spy;
-  let setArShapeSpy: jasmine.Spy;
-  let getArShapeSpy: jasmine.Spy;
+  let set_points_on_mapSpy: jasmine.Spy;
+  let set_ar_shapeSpy: jasmine.Spy;
+  let get_ar_shapespy: jasmine.Spy;
 
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ArMapComponent ],
       providers: [ 
-          HttpClient,
-          HttpClientModule,
-          HttpHandler,
           ArMapService, 
           ArQueryService, 
           ArShapeService, 
@@ -44,7 +40,13 @@ describe('ArMapComponent', () => {
           QueryService, 
           PopupCompileService, 
           PointsService ],
-      imports: [NotifierModule, RouterTestingModule, BrowserAnimationsModule, MaterialModule ]
+      imports: [
+        NotifierModule,
+        RouterTestingModule,
+        BrowserAnimationsModule,
+        MaterialModule,
+        HttpClientTestingModule
+       ]
     })
     .compileComponents();
   }));
@@ -58,9 +60,9 @@ describe('ArMapComponent', () => {
     arQueryService = debugElement.injector.get(ArQueryService);
     arShapeService = debugElement.injector.get(ArShapeService);
     arMapService = debugElement.injector.get(ArMapService);
-    setPointsOnMapSpy = spyOn<any>(component, 'setPointsOnMap').and.callThrough()
-    setArShapeSpy = spyOn<any>(component, 'setArShape').and.callThrough()
-    getArShapeSpy = spyOn(arShapeService, 'getArShapes').and.returnValue(of([mockShapeSimple, mockShapeComplex]))
+    set_points_on_mapSpy = spyOn<any>(component, 'set_points_on_map').and.callThrough()
+    set_ar_shapeSpy = spyOn<any>(component, 'set_ar_shape').and.callThrough()
+    get_ar_shapespy = spyOn(arShapeService, 'get_ar_shapes').and.returnValue(of([mockShapeSimple, mockShapeComplex]))
   });
 
   it('should create', () => {
@@ -68,9 +70,9 @@ describe('ArMapComponent', () => {
   });
 
   it('should acknoledge a change event', () => {
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(0)
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(0)
     arQueryService.change.emit('test')
-    expect(setPointsOnMapSpy).toHaveBeenCalledTimes(1)    
+    expect(set_points_on_mapSpy).toHaveBeenCalledTimes(1)    
   })
 
   it('should have web mercator', () => {
@@ -79,7 +81,7 @@ describe('ArMapComponent', () => {
 
   it('should acknoledge a clear layers event emit', () => {
     arQueryService.arEvent.emit('test')
-    arQueryService.clearLayers.emit('test')
+    arQueryService.clear_layers.emit('test')
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON()
     expect(drawnItems['features'].length).toEqual(0)
   })
@@ -87,23 +89,23 @@ describe('ArMapComponent', () => {
   it('should acknoledge a reset to start event emit', () => {
     arQueryService.arEvent.emit('test') //create an ar shape
     arQueryService.resetToStart.emit('test') // state is reset and then an ar shapes are cleared
-    expect(setArShapeSpy).toHaveBeenCalledTimes(1)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(1)
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON() //check if ar shapes have been cleared
     console.log('drawn items:', drawnItems)
     expect(drawnItems['features'].length).toEqual(0)
   })
   
   it('should get ar shapes on arEvent emit', () => {
-    expect(setArShapeSpy).toHaveBeenCalledTimes(0)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(0)
     arQueryService.arEvent.emit('test')
-    expect(setArShapeSpy).toHaveBeenCalledTimes(1)
+    expect(set_ar_shapeSpy).toHaveBeenCalledTimes(1)
     const drawnItems = component['arMapService'].arShapeItems.toGeoJSON()
     console.log('drawn items:', drawnItems)
     expect(drawnItems['features'].length).toEqual(2)
   })
 
   it('should convert between ar to shape array properly', () => {
-    const shapeArray = component['convertArShapesToshapeArraysAndIds']([mockShapeSimple, mockShapeComplex])
+    const shapeArray = component['convert_ar_to_shape_array_and_id']([mockShapeSimple, mockShapeComplex])
     expect(shapeArray.length).toEqual(2)
     expect(shapeArray[1][0]).toEqual(mockShapeSimple._id)
     expect(shapeArray[1][1]).toEqual(mockShapeComplex._id)

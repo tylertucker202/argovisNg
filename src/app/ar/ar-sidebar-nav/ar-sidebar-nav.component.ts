@@ -1,6 +1,6 @@
 import { Component, OnInit, Injector } from '@angular/core';
-import { SidebarNavComponent } from './../../home/sidebar-nav/sidebar-nav.component'
-import { ArQueryService } from './../ar-query.service'
+import { SidebarNavComponent } from '../../home/sidebar-nav/sidebar-nav.component'
+import { ArQueryService } from '../ar-query.service'
 import { MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 
@@ -24,40 +24,40 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.arQueryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed 
-      this.includeRT = this.arQueryService.getRealtimeToggle()
-      this.onlyBGC = this.arQueryService.getBGCToggle()
-      this.onlyDeep = this.arQueryService.getDeepToggle()
-      this.displayGlobally = this.arQueryService.getDisplayGlobally()
-      this.proj = this.arQueryService.getProj()
+      this.includeRT = this.arQueryService.get_realtime_toggle()
+      this.onlyBGC = this.arQueryService.get_bgc_toggle()
+      this.onlyDeep = this.arQueryService.get_deep_toggle()
+      this.displayGlobally = this.arQueryService.get_display_globally()
+      this.proj = this.arQueryService.get_proj()
     })
   }
 
-  displayGlobalChange(checked: boolean): void {
+  display_global_change(checked: boolean): void {
     this.displayGlobally = checked
-    this.arQueryService.sendDisplayGlobally(this.displayGlobally, true)
+    this.arQueryService.send_display_globally(this.displayGlobally, true)
   }
 
-  clearProfiles(): void {
-    this.arQueryService.triggerClearLayers();
+  clear_profiles(): void {
+    this.arQueryService.trigger_clear_layers();
   }
 
   resetToStart(): void {
-    this.arQueryService.triggerResetToStart();
+    this.arQueryService.trigger_reset_to_start();
   }
 
-  realtimeChange(checked: boolean): void {
+  realtime_changed(checked: boolean): void {
     this.includeRT = checked
-    this.arQueryService.sendRealtimeMsg(this.includeRT);
+    this.arQueryService.send_realtime_msg(this.includeRT);
   }
 
-  bgcChange(checked: boolean): void {
+  bgc_change(checked: boolean): void {
     this.onlyBGC = checked
-    this.arQueryService.sendBGCToggleMsg(this.onlyBGC);
+    this.arQueryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
-  deepChange(checked: boolean): void {
+  deep_change(checked: boolean): void {
     this.onlyDeep = checked
-    this.arQueryService.sendDeepToggleMsg(this.onlyDeep);
+    this.arQueryService.send_deep_toggle_msg(this.onlyDeep);
   }
 
 }

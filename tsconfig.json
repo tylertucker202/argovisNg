@@ -23,8 +23,8 @@
       "es2017",
       "dom"
     ],
-    "module": "es2015",
+    "module": "es2020",
     "baseUrl": "./",
-    "allowSyntheticDefaultImports": true 
-  }
+    "allowSyntheticDefaultImports": true,
+  },
 }

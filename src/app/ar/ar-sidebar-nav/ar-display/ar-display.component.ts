@@ -23,14 +23,14 @@ export class ArDisplayComponent implements OnInit {
               private arQueryService: ArQueryService,
               private arMapService: ArMapService,
               private notifierService: NotifierService ) { this.notifier = notifierService }
-  private arDate: moment.Moment;
+  private date: moment.Moment;
   private readonly notifier: NotifierService
-  private arFormDate: FormControl
+  public arFormDate: FormControl
   
-  private hour: number
-  private MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
-  private MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
-  private hours: DropDownSelection[] = [
+  public hour: number
+  public MIN_DATE = new Date(2004, 0, 1, 0, 0, 0, 0)
+  public MAX_DATE = new Date(2016, 12, 31, 0, 0, 0, 0)
+  public hours: DropDownSelection[] = [
     {value: 0, viewValue: '0:00'},
     {value: 3, viewValue: '3:00'},
     {value: 6, viewValue: '6:00'},
@@ -42,50 +42,50 @@ export class ArDisplayComponent implements OnInit {
   ];
 
   ngOnInit() { 
-    this.arDate = this.arQueryService.getArDate()
-    this.arFormDate = new FormControl( this.arDate.toDate() )
-    this.hour = this.arDate.hour() 
-    this.setArShapes()
+    this.date = this.arQueryService.get_ar_date()
+    this.arFormDate = new FormControl( this.date.toDate() )
+    this.hour = this.date.hour() 
+    this.set_ar_shapes()
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
-      this.arDate = this.arQueryService.getArDate()
-      this.arFormDate = new FormControl(this.arDate.toDate())
-      this.hour = this.arDate.hour()
-      this.setArShapes()
+      this.date = this.arQueryService.get_ar_date()
+      this.arFormDate = new FormControl(this.date.toDate())
+      this.hour = this.date.hour()
+      this.set_ar_shapes()
     })
   }
 
-  dateChanged(): void {
-    this.arFormDate = new FormControl(this.arDate.toDate())
-    this.arQueryService.sendArDate(this.arDate)
-    this.arQueryService.setURL()
-    this.setArShapes() //remove if you don't want to fire ar event
+  date_changed(): void {
+    this.arFormDate = new FormControl(this.date.toDate())
+    this.arQueryService.send_ar_date(this.date)
+    this.arQueryService.set_url()
+    this.set_ar_shapes() //remove if you don't want to fire ar event
   }
 
-  timeChange(hour: number): void {
+  time_changed(hour: number): void {
     this.hour = hour
-    this.arDate.hour(this.hour)
-    this.dateChanged()
+    this.date.hour(this.hour)
+    this.date_changed()
   }
 
-  calendarDateChanged(calDate: Date): void {
-    this.arDate = moment(calDate).hour(this.hour)
-    this.dateChanged()
+  calendar_date_changed(calDate: Date): void {
+    this.date = moment(calDate).hour(this.hour)
+    this.date_changed()
   }
 
-  private incrementDay(increment: number): void {
-    this.arDate = this.arDate.add(increment, 'd')
-    this.dateChanged()
+  public increment_day(increment: number): void {
+    this.date = this.date.add(increment, 'd')
+    this.date_changed()
   }
 
-  private incrementHour(increment: number): void {
-    this.arDate = this.arDate.add(increment, 'h')
-    this.dateChanged()
-    this.hour = this.arDate.hour()
+  public increment_hour(increment: number): void {
+    this.date = this.date.add(increment, 'h')
+    this.date_changed()
+    this.hour = this.date.hour()
   }
 
-  private setArShapes(): void {
-    this.arQueryService.sendThreeDayMsg(false, false)
-    this.arQueryService.clearLayers.emit('ar shapes being drawn')
+  public set_ar_shapes(): void {
+    this.arQueryService.send_three_day_msg(false, false)
+    this.arQueryService.clear_layers.emit('ar shapes being drawn')
     this.arQueryService.arEvent.emit('ar shapes being drawn')
   }
     

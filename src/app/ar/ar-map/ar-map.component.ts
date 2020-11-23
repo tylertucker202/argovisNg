@@ -3,8 +3,8 @@ import { MapComponent } from './../../home/map/map.component'
 import { ArQueryService } from './../ar-query.service'
 import { ArMapService } from './../ar-map.service'
 import { ArShapeService } from './../ar-shape.service'
-import { ARShape } from '../../home/models/ar-shape'
-import { ProfilePoints } from './../../home/models/profile-points'
+import { ARShape } from '../../models/ar-shape'
+import { ProfilePoints } from '../../models/profile-points'
 import * as L from "leaflet"
 @Component({
   selector: 'app-ar-map',
@@ -24,16 +24,16 @@ export class ArMapComponent extends MapComponent implements OnInit {
   ngOnInit() {
     this.pointsService.init(this.appRef)
     this.arMapService.init(this.appRef)
-    this.setParamsAndEvents()
+    this.set_params_and_events()
     this.proj = 'WM'
     this.wrapCoordinates = true
-    this.setPointsOnMap()
+    this.set_points_on_map()
 
-    this.invalidateSize()
+    this.invalidate_size()
   }
 
-  public setMap(): void {
-    this.map = this.arMapService.generateMap(this.proj)
+  public set_map(): void {
+    this.map = this.arMapService.generate_map(this.proj)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
 
@@ -43,41 +43,41 @@ export class ArMapComponent extends MapComponent implements OnInit {
     this.markersLayer.addTo(this.map)   
   }
 
-  public setParamsAndEvents(): void { //  rewritten function is called in super.ngOnInit()
-    this.setMap()
+  public set_params_and_events(): void { //  rewritten function is called in super.ngOnInit()
+    this.set_map()
     console.log('setting params from ar map component')
-    this.arQueryService.setParamsFromURL()
+    this.arQueryService.set_params_from_url()
 
     this.arQueryService.change
       .subscribe(msg => {
-        this.arQueryService.setURL()
+        this.arQueryService.set_url()
         this.markersLayer.clearLayers()
-        this.setPointsOnMap()
+        this.set_points_on_map()
         })
-    this.arQueryService.clearLayers
+    this.arQueryService.clear_layers
       .subscribe( () => {
-        this.arQueryService.clearShapes()
+        this.arQueryService.clear_shapes()
         this.markersLayer.clearLayers()
         this.arMapService.arShapeItems.clearLayers()
-        this.arQueryService.setURL()
+        this.arQueryService.set_url()
       })
     this.arQueryService.resetToStart
       .subscribe( () => {
-        this.arQueryService.clearShapes()
+        this.arQueryService.clear_shapes()
         this.markersLayer.clearLayers()
-        // this.arMapService.drawnItems.clearLayers()
+        // this.arMapService.drawnItems.clear_layers()
         this.arMapService.arShapeItems.clearLayers()
         this.map.setView([this.startView.lat, this.startView.lng], this.startZoom)
       })
     this.arQueryService.arEvent
     .subscribe( (msg: string) => {
       console.log('arEvent emitted')
-      const dateString = this.arQueryService.formatDate(this.arQueryService.getArDate())
-      const arShapes = this.arShapeService.getArShapes(dateString)
+      const dateString = this.arQueryService.format_date(this.arQueryService.get_ar_date())
+      const arShapes = this.arShapeService.get_ar_shapes(dateString)
       arShapes.subscribe((arShapes: ARShape[]) => {
         if (arShapes.length !== 0) {
-          this.arQueryService.setSelectionDateRange() // for profiles
-          this.setArShape(arShapes)
+          this.arQueryService.set_selection_date_range() // for profiles
+          this.set_ar_shape(arShapes)
         }
         else {
             this.notifier.notify( 'warning', 'no ar shapes found for date selected' )
@@ -86,7 +86,7 @@ export class ArMapComponent extends MapComponent implements OnInit {
     })
   }
   
-  private convertArShapesToshapeArraysAndIds(arShapes: ARShape[]) {
+  private convert_ar_to_shape_array_and_id(arShapes: ARShape[]) {
     let shapeArrays = []
     let shape_ids = []
     for(let idx=0; idx<arShapes.length; idx++){
@@ -99,8 +99,8 @@ export class ArMapComponent extends MapComponent implements OnInit {
     return [shapeArrays, shape_ids]
   }
 
-  private setArShape(arShapes: ARShape[]) {
-    const [shapeArrays, shape_ids] = this.convertArShapesToshapeArraysAndIds(arShapes)
+  private set_ar_shape(arShapes: ARShape[]) {
+    const [shapeArrays, shape_ids] = this.convert_ar_to_shape_array_and_id(arShapes)
     const shapeFeatureGroup = this.arMapService.convertArrayToFeatureGroup(shapeArrays, this.arMapService.arShapeOptions)
     const shapeType = 'atmospheric river shape'
 
@@ -114,60 +114,56 @@ export class ArMapComponent extends MapComponent implements OnInit {
     for(let idx=0; idx<shapes.length; idx++){
       const shape_id = shapes[idx][0]
       const polygon = shapes[idx][1] as L.Polygon
-      this.arMapService.arPopupWindowCreation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
+      this.arMapService.ar_popup_window_creation(polygon, this.arMapService.arShapeItems, shapeType, shape_id)
     }
-    this.arQueryService.sendArShapes(shapeArrays)
+    this.arQueryService.send_ar_shapes(shapeArrays)
   }
 
   
-  public setPointsOnMap(sendNotification=true): void {
-    let shapeArrays = this.arQueryService.getShapes()
-    const displayGlobally = this.arQueryService.getDisplayGlobally()
+  public set_points_on_map(sendNotification=true): void {
+    let shapeArrays = this.arQueryService.get_shapes()
+    const displayGlobally = this.arQueryService.get_display_globally()
     if (shapeArrays && !displayGlobally) {
-      this.setShapeProfiles(shapeArrays, sendNotification)
+      this.set_shape_profiles(shapeArrays, sendNotification)
     }
     if (displayGlobally) {
-      this.setGlobalProfiles()
+      this.sed_global_profiles()
     }
   }
 
-  private setShapeProfiles(shapeArrays: number[][][], sendNotification=true): void { 
+  private set_shape_profiles(shapeArrays: number[][][], sendNotification=true): void { 
     this.markersLayer.clearLayers()
-    let base = '/selection/profiles/map'
-    const daterange = this.arQueryService.getArDateAsDateRange()
+    const daterange = this.arQueryService.get_ar_date_as_date_range()
 
     shapeArrays.forEach( (shape) => {
-      const transformedShape = this.arMapService.getTransformedShape(shape)
-      let urlQuery = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
-      urlQuery += '&shape='+JSON.stringify(transformedShape)
-
-      this.pointsService.getSelectionPoints(urlQuery)
+      const transformedShape = this.arMapService.get_transformed_shape(shape)
+      this.pointsService.get_selection_points(daterange, transformedShape)
           .subscribe((selectionPoints: ProfilePoints[]) => {
-            if (selectionPoints.length == 0 && !this.arQueryService.getDisplayGlobally()) {
+            if (selectionPoints.length == 0 && !this.arQueryService.get_display_globally()) {
               this.notifier.notify( 'info', 'no profile points found inside a shape' )
             }
             else {
-              this.displayProfiles(selectionPoints, 'normalMarker')
+              this.display_profiles(selectionPoints, 'normalMarker')
             }
             }, 
           error => {
             if (sendNotification) {this.notifier.notify( 'error', 'error in getting profiles in shape' )}
-            console.log('error occured when selecting points: ', error)
+            console.log('error occured when selecting points: ', error.message)
           })      
       })
 
 }
 
-  private setGlobalProfiles(): void {
+  private sed_global_profiles(): void {
 
-    const dateRange = this.arQueryService.getArDateAsDateRange()
-    this.pointsService.getGlobalMapProfiles(dateRange.startDate, dateRange.endDate)
+    const dateRange = this.arQueryService.get_ar_date_as_date_range()
+    this.pointsService.get_global_map_profiles(dateRange.startDate, dateRange.endDate)
       .subscribe((profilePoints: ProfilePoints[]) => {
         if (profilePoints.length == 0) {
           this.notifier.notify( 'warning', 'zero profile points returned' )
         }
         else {
-          this.displayProfiles(profilePoints, 'normalMarker')
+          this.display_profiles(profilePoints, 'normalMarker')
         }
         },
         error => {
@@ -175,11 +171,11 @@ export class ArMapComponent extends MapComponent implements OnInit {
         })
 }
 
-  public displayProfiles(profilePoints: ProfilePoints[], markerType: string): void {
+  public display_profiles(profilePoints: ProfilePoints[], markerType: string): void {
 
-    const includeRT = this.arQueryService.getRealtimeToggle()
-    const bgcOnly = this.arQueryService.getBGCToggle()
-    const deepOnly = this.arQueryService.getDeepToggle()
+    const includeRT = this.arQueryService.get_realtime_toggle()
+    const bgcOnly = this.arQueryService.get_bgc_toggle()
+    const deepOnly = this.arQueryService.get_deep_toggle()
 
     for (let idx in profilePoints) {
       let profile = profilePoints[idx]
@@ -188,19 +184,19 @@ export class ArMapComponent extends MapComponent implements OnInit {
       if ( !profile.containsBGC===true && bgcOnly) { continue } //be careful, old values may equal 1. use ==
       if ( !profile.isDeep===true && deepOnly ) { continue } // always use ===
       if (markerType==='history') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBW, this.wrapCoordinates)
       }
       else if (markerType==='platform') {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.platformIcon, this.wrapCoordinates)
       }
       else if (profile.containsBGC) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconBGC, this.wrapCoordinates)
       }
       else if (profile.isDeep) {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIconDeep, this.wrapCoordinates)
       }
       else {
-        this.markersLayer = this.pointsService.addToMarkersLayer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
+        this.markersLayer = this.pointsService.add_to_markers_layer(profile, this.markersLayer, this.pointsService.argoIcon, this.wrapCoordinates)
       }
     }
     }

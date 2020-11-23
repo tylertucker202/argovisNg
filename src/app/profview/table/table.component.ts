@@ -18,17 +18,17 @@ export class TableComponent implements OnInit {
 
   constructor(private getProfileService: GetProfilesService, 
               private queryProfviewService: QueryProfviewService ) { }
-  private metaColumns: string[] = ['cycle_number', '_id', 'dac', 'date',
+  public metaColumns: string[] = ['cycle_number', '_id', 'dac', 'date',
                                    'lat_str', 'lon_str',
                                     'DATA_MODE']
-  private dataSource: any
-  private platform_number: string
-  private statParamKey: string
+  public dataSource: any
+  public platform_number: string
+  public statParamKey: string
 
   ngOnInit(): void {
 
-    this.queryProfviewService.setParamsFromURL()
-    this.queryProfviewService.setURL()
+    this.queryProfviewService.set_params_from_url('setting url from table component')
+    this.queryProfviewService.set_url() // sets default parameters
 
     this.platform_number = this.queryProfviewService.platform_number
     this.statParamKey = this.queryProfviewService.statParamKey
@@ -47,7 +47,7 @@ export class TableComponent implements OnInit {
     })
   }
 
-  private applyFilter(filterValue: string) {
+  public apply_filter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
     this.dataSource.filter = filterValue;

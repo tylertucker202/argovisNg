@@ -54,8 +54,8 @@ export interface PlatformMeta {
     most_recent_date: Date | moment.Moment | string,
     most_recent_date_added: Date | moment.Moment | string,
     number_of_profiles: number,
-    POSITIONING_SYSTEM: string,
-    PI_NAME: string,
+    POSITIONING_SYSTEM?: string,
+    PI_NAME?: string,
     dac: string,
     jcomoppsLink?: string,
     fleetMonitoringLink?: string

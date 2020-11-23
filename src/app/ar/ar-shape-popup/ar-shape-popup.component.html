@@ -3,37 +3,37 @@
   <mat-slide-toggle 
   id="bgc-toggle" matTooltip="toggle on to query BGC profiles only (green dots)"
   color="accent" [checked]="bgcOnlyToggle"
-  (change)="bgcOnlyChange($event.checked)">Filter BGC profies only
+  (change)="bgc_only_change($event.checked)">Filter BGC profies only
   </mat-slide-toggle>
   <mat-slide-toggle 
   id="deep-toggle" matTooltip="toggle on to query deep profiles only (blue dots)"
   color="accent" [checked]="deepOnlyToggle"
-  (change)="deepOnlyChange($event.checked)">Filter deep profiles only
+  (change)="deep_only_change($event.checked)">Filter deep profiles only
   </mat-slide-toggle>
   <br /> <button id='popup-button'
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
-    (click)="goToSelectionPage(true)" >
+    (click)="go_to_selection_page(true)" >
     {{shapeButtonText}}</button>
   <br /> <button id='popup-button'
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
-    (click)="goToSelectionPage(false)" >
+    (click)="go_to_selection_page(false)" >
     {{jsonButtonText}}</button>
 
   <!-- <br /> <button id='popup-button'
     matTooltip="Save as a shape and query for argo profiles" 
     mat-raised-button color={{color}} 
-    (click)="queryARShape()" >
+    (click)="query_ar_shape()" >
     Query for Argo profiles</button> -->
   <!-- <br /> <button id='popup-button'
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
-    (click)="goToShapeJson()" >
+    (click)="go_to_shape_json()" >
     {{jsonButtonText}}</button> -->
   <br /> <button id='popup-button'
     matTooltip="hint: be sure to enable tabs on your browser" 
     mat-raised-button color={{color}} 
-    (click)="goToHomePage(false)" >
+    (click)="go_to_home_page()" >
     Go to home page with this shape</button>
 </section>

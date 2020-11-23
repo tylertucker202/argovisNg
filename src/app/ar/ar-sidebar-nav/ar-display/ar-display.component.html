@@ -2,7 +2,7 @@
 <div id="dialog-form" mat-dialog-content>
   <p  id="row">Pick a date and time</p>
   <div id="row">
-  <button mat-icon-button matTooltip="-1 day" (click)="incrementDay(-1)"  id="minusOne">-1</button>
+  <button mat-icon-button matTooltip="-1 day" (click)="increment_day(-1)"  id="minusOne">-1</button>
   <mat-form-field id="dateInput">
     <input matInput 
     matTooltip="Date of AR" 
@@ -11,22 +11,22 @@
     [max]="MAX_DATE"
     [value]="arFormDate.value"
     placeholder="AR date"
-    (dateChange)="calendarDateChanged($event.value)">
+    (dateChange)="calendar_date_changed($event.value)">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
-  <button mat-icon-button matTooltip="+1 day" (click)="incrementDay(1)"  id="plusOne">+1</button>
+  <button mat-icon-button matTooltip="+1 day" (click)="increment_day(1)"  id="plusOne">+1</button>
 </div>
 <div id="row">
-  <button mat-icon-button matTooltip="-3 hours" (click)="incrementHour(-3)"  id="minusThree">-3</button>
+  <button mat-icon-button matTooltip="-3 hours" (click)="increment_hour(-3)"  id="minusThree">-3</button>
   <mat-form-field id="timeInput">
     <mat-select placeholder="Choose Hour" matTooltip="Time in three hour incrments"
-     [(value)]="hour" (selectionChange)="timeChange($event.value)">
+     [(value)]="hour" (selectionChange)="time_changed($event.value)">
       <mat-option *ngFor="let hour of hours" [value]="hour.value">
         {{hour.viewValue}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-icon-button matTooltip="+3 hours" (click)="incrementHour(3)"  id="plusThree">+3</button>
+  <button mat-icon-button matTooltip="+3 hours" (click)="increment_hour(3)"  id="plusThree">+3</button>
 </div>
 

@@ -11,16 +11,16 @@ import { Options } from 'nouislider'
 })
 export class PresDoubleSliderComponent implements OnInit {
 
-  private config: Options;
-  private sliderRange: number[];
-  private lRange: number;
-  private uRange: number;
+  public config: Options;
+  public sliderRange: [number, number];
+  public lRange: number;
+  public uRange: number;
 
   constructor(private queryService: QueryService) {}
 
   ngOnInit() {
 
-    this.sliderRange = this.queryService.getPresRange()
+    this.sliderRange = this.queryService.get_pres_range()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
 
@@ -31,37 +31,37 @@ export class PresDoubleSliderComponent implements OnInit {
       connect: true,
       orientation: 'horizontal'
     }
-    const newRange = this.queryService.getPresRange()
+    const newRange = this.queryService.get_pres_range()
     const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
     this.sliderRange[0] = nRange[0]
     this.sliderRange[1] = nRange[1]
 
     this.queryService.resetToStart
     .subscribe( () => {
-      this.sliderRange = this.queryService.getPresRange()
+      this.sliderRange = this.queryService.get_pres_range()
     })
   }
 
-  private sendSliderRange(broadcastChange=true): void {
-    this.queryService.sendPres(this.sliderRange, broadcastChange);
+  public send_slider_range(broadcastChange=true): void {
+    this.queryService.send_pres(this.sliderRange, broadcastChange);
   }
 
-  public minValuechange(newLowPres: number ): void {
+  public min_value_change(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
-    this.sendSliderRange();
+    this.send_slider_range();
   }
 
-  public maxValuechange(newUpPres: number ): void {
+  public max_value_change(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
-    this.sendSliderRange();
+    this.send_slider_range();
   }
 
-  public sliderChange(newRange: number[]): void { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
+  public slider_change(newRange: number[]): void { //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.lRange = newRange[0]
     this.uRange = newRange[1]
-    this.sendSliderRange();
+    this.send_slider_range();
   }
 
 }

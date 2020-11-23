@@ -1,10 +1,13 @@
 import { Injectable, ApplicationRef, Injector } from "@angular/core"
 import { ShapePopupComponent } from '../shape-popup/shape-popup.component'
 import { PopupCompileService } from './popup-compile.service'
-import { Feature, FeatureCollection, Polygon, Geometry } from 'geojson'
 
 import 'leaflet'
-import '../../../ext-js/leaflet.draw-arc-src.js'
+import 'proj4leaflet'
+import 'arc'
+import 'leaflet-arc'
+import 'leaflet-draw'
+import 'leaflet-buffer'
 import * as msp from './map.service.parameters'
 declare const L;
 
@@ -88,7 +91,7 @@ export class MapService {
       }
     },
   }
-
+  
   public drawControl = new L.Control.Draw(this.drawOptions);
   public gridDrawControl = new L.Control.Draw(this.gridDrawOptions);
 
@@ -123,7 +126,7 @@ export class MapService {
     this.compileService.configure(this.appRef);
   }
 
-  public generateMap(this, proj: string, gridMap=false): L.Map {
+  public generate_map(this, proj: string, gridMap=false): L.Map {
     switch(proj) {
       case 'WM': {
         console.log('generating web mercator');
@@ -219,7 +222,7 @@ export class MapService {
     }
   }
 
-  public getTransformedShape(shape: number[][]): number[][][] {
+  public get_transformed_shape(shape: number[][]): number[][][] {
     //takes [lat long] array and transforms it into a [lng lat] nested array 
     let transformedShape = [];
     for (let j = 0; j < shape.length; j++) {
@@ -238,10 +241,10 @@ export class MapService {
     return([transformedShape])
   };
 
-  public popupWindowCreation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
-    const feature = layer.toGeoJSON() as Feature<Polygon>
-    const shape = this.getLatLngFromFeature(feature)
-    const transformedShape = this.getTransformedShape(shape);
+  public popup_window_creation(layer: L.Polygon, featureGroup: L.FeatureGroup, shapeType='shape', shape_id=''): void{
+    const feature = layer.toGeoJSON()
+    const shape = this.get_lat_lng_from_feature(feature)
+    const transformedShape = this.get_transformed_shape(shape);
     layer.bindPopup(null);
     layer.on('click', (event) => {
       const popupContent = this.compileService.compile(ShapePopupComponent, (c) => { 
@@ -258,7 +261,7 @@ export class MapService {
     featureGroup.addLayer(layer);
     }
 
-  public getLatLngFromFeature(feature: Feature<Polygon>): number[][] {
+  public get_lat_lng_from_feature(feature): number[][] {
     let shape = []
     feature.geometry.coordinates[0].forEach( (coord) => {
       const reverseCoord = [coord[1], coord[0]] // don't use reverse(), as it changes value in place

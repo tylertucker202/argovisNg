@@ -3,12 +3,13 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "baseUrl": "./",
-    "module": "commonjs",
+    "module": "es2020", // needed for wasm
     "target": "es5",
     "types": [
       "jasmine",
-      "node"
-    ]
+      "node",
+    ],
+    "allowSyntheticDefaultImports": true 
   },
   "files": [
     "test.ts",
@@ -17,5 +18,5 @@
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"
-  ]
+  ],
 }

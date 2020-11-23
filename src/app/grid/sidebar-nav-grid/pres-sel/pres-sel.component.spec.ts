@@ -17,7 +17,7 @@ describe('PresSelComponent', () => {
   let debugElement: DebugElement;
   let queryGridService: QueryGridService;
   let selectGridService: SelectGridService
-  let spysendPres: jasmine.Spy;
+  let spysend_pres: jasmine.Spy;
   let spyGetPresLevel: jasmine.Spy;
   let spyGetGridMeta: jasmine.Spy;
 
@@ -46,10 +46,10 @@ describe('PresSelComponent', () => {
     selectGridService = debugElement.injector.get(SelectGridService)
 
     const pres = 10
-    const dummyGridMeta: Observable<GridMeta[]> = of([{_id: 'dummyGrid', presLevels: [5, 10, 200]}])
+    const dummyGridMeta: Observable<GridMeta[]> = of([{_id: 'dummyGrid', presLevels: [5, 10, 200], minDate: "min date", maxDate: "max date", dates: ["test date 1"]}])
     spyGetGridMeta = spyOn(selectGridService, 'getGridMeta').and.returnValue(dummyGridMeta)
     spyGetPresLevel = spyOn(queryGridService, 'getPresLevel').and.returnValue(pres)
-    spysendPres = spyOn(queryGridService, 'sendPres').and.callThrough()
+    spysend_pres = spyOn(queryGridService, 'send_pres').and.callThrough()
     fixture.detectChanges();
   });
 
@@ -57,7 +57,7 @@ describe('PresSelComponent', () => {
     expect(component).toBeTruthy();
     const pres = 10;
     expect(component['presLevel']).toEqual(pres)
-    expect(spysendPres).toHaveBeenCalledTimes(0)
+    expect(spysend_pres).toHaveBeenCalledTimes(0)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(1)
   });
 
@@ -68,10 +68,8 @@ describe('PresSelComponent', () => {
 
   it('should incrementLevel', () => {
     const pres = 10
-    // component['presArray'] = [5, 10, 200]
-    // component['presLevel'] = pres
-    // component['presLevels'] = [{value: 5}, {value: 10}, {value: 200}]
-    // component['makePressureLevels']()
+    component['presLevels'] = [5, 10, 200]
+    component['makePressureLevels']()
     expect(component['presLevel']).toEqual(pres)
     let inc = 1
     component['incrementLevel'](inc)
@@ -85,14 +83,14 @@ describe('PresSelComponent', () => {
 
   });
 
-  it('should sendPresLevel', () => {
-    component['sendPresLevel']
-    expect(spysendPres).toHaveBeenCalledTimes(0)
+  it('should send_presLevel', () => {
+    component['send_presLevel']
+    expect(spysend_pres).toHaveBeenCalledTimes(0)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(1)
 
     const pres = 200
     component['selChange'](pres)
-    expect(spysendPres).toHaveBeenCalledTimes(1)
+    expect(spysend_pres).toHaveBeenCalledTimes(1)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(2)
   });
 
@@ -101,7 +99,7 @@ describe('PresSelComponent', () => {
     const pres = 200
     component['selChange'](pres)
     expect(component['presLevel']).toEqual(pres)
-    expect(spysendPres).toHaveBeenCalledTimes(1)
+    expect(spysend_pres).toHaveBeenCalledTimes(1)
     expect(spyGetPresLevel).toHaveBeenCalledTimes(2)
 
   });

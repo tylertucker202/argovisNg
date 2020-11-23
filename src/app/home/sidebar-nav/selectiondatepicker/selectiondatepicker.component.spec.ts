@@ -37,16 +37,16 @@ describe('SelectionDatePicker', () => {
 
     queryService = debugElement.injector.get(QueryService);
 
-    queryService.setParamsFromURL()
+    queryService.set_params_from_url()
     
-    spySend = spyOn(queryService, 'sendSelectedDate');
+    spySend = spyOn(queryService, 'send_selected_date');
 
     const start = moment('1900-01-01').format('YYYY-MM-DD')
     const end = moment('1900-02-01').format('YYYY-MM-DD')
 
     var dr = {startDate: start, endDate: end, label: ''}
 
-    spyGet = spyOn(queryService, 'getSelectionDates').and.returnValue(dr)
+    spyGet = spyOn(queryService, 'get_selection_dates').and.returnValue(dr)
 
     fixture.detectChanges();
   });

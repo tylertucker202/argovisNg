@@ -13,14 +13,15 @@ export class GridComparePickerComponent implements OnInit {
   constructor(private queryGridService: QueryGridService,
               private selectGridService: SelectGridService) { }
 
-  private compareGrid: boolean
-  private grid: string
-  private param: string
+  public compareGrid: boolean
+  public grid: string
+  public param: string
+  @Input() paramMode: boolean
 
-  private availableGrids: GridGroup[]
+  public availableGrids: GridGroup[]
 
   ngOnInit() {
-    this.param = this.queryGridService.getParam()
+    this.param = this.queryGridService.getProperty()
     this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
     this.compareGrid = this.queryGridService.getCompare()
     this.grid = this.queryGridService.getCompareGrid()
@@ -28,11 +29,11 @@ export class GridComparePickerComponent implements OnInit {
     this.queryGridService.change //updates selection upon change
     .subscribe(msg => {
        if (msg === 'param change'){
-        this.param = this.queryGridService.getParam()
+        this.param = this.queryGridService.getProperty()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
        }
        if (msg === 'display grid param change' && this.compareGrid) {
-        this.param = this.queryGridService.getParam()
+        this.param = this.queryGridService.getProperty()
         this.availableGrids = this.selectGridService.getAvailableGrids(this.param)
        }
       })
@@ -50,12 +51,12 @@ export class GridComparePickerComponent implements OnInit {
     this.queryGridService.sendCompare(this.compareGrid, broadcast);
   }
 
-  private sendGrid(): void {
+  public sendGrid(): void {
     const broadcastChange = true
     this.queryGridService.sendCompareGrid(this.grid, broadcastChange)
   }
 
-  private selChange(grid: string ): void {
+  public selChange(grid: string ): void {
     this.grid = grid
     this.sendGrid();
   }

@@ -1,9 +1,9 @@
 <h5 class="disclaimer">Beta Product: Still in development!</h5>
 <app-platform-window></app-platform-window>
-<mat-tab-group [selectedIndex]="selectedIndex">
+<mat-tab-group (selectedTabChange)="on_tab_click($event.index)" [selectedIndex]="selectedIndex">
     <mat-tab label="Color charts">
         <mat-grid-list id=color-charts cols="5" gutterSize="0px" rowHeight="300px">
-            <mat-grid-tile id=color-chart
+            <mat-grid-tile id=chart
             [colspan]="3"
             [rowspan] ="1">
                 <app-color-chart id="topChart"></app-color-chart>
@@ -13,29 +13,29 @@
             [rowspan]="2">
                 <app-globe-scatter id="globe-scatter-chart"></app-globe-scatter>
             </mat-grid-tile>
-            <mat-grid-tile id=color-chart
+            <mat-grid-tile id=chart
             [colspan]="3"
             [rowspan] ="1">
                 <app-color-chart id="bottomChart"></app-color-chart>
             </mat-grid-tile>
         </mat-grid-list>
     </mat-tab>
-    <mat-tab label="Pres vs X charts">
-        <mat-grid-list id=pvx-charts cols="3" gutterSize="0px" rowHeight="400px">
-            <mat-grid-tile id=color-chart
+    <mat-tab label="Line charts">
+        <mat-grid-list id=line-charts cols="3" gutterSize="0px" rowHeight="400px">
+            <mat-grid-tile id=chart
             [colspan]="1"
             [rowspan] ="1">
-                <app-pvx-chart id="leftChart"></app-pvx-chart>
+                <app-line-chart id="leftChart"></app-line-chart>
             </mat-grid-tile>
             <mat-grid-tile
             [colspan]="1"
             [rowspan]="1">
-                <app-pvx-chart id="middleChart" id="middleChart"></app-pvx-chart>
+                <app-line-chart id="middleChart"></app-line-chart>
             </mat-grid-tile>
-            <mat-grid-tile id=color-chart
+            <mat-grid-tile id=chart
             [colspan]="1"
             [rowspan] ="1">
-                <app-pvx-chart id="rightChart"></app-pvx-chart>
+                <app-line-chart id="rightChart"></app-line-chart>
             </mat-grid-tile>
         </mat-grid-list>
     </mat-tab>

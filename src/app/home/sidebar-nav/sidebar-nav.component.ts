@@ -45,63 +45,63 @@ export class SidebarNavComponent implements OnInit {
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    
-      this.includeRT = this.queryService.getRealtimeToggle()
-      this.onlyBGC = this.queryService.getBGCToggle()
-      this.onlyDeep = this.queryService.getDeepToggle()
-      this.threeDayToggle = this.queryService.getThreeDayToggle()
-      this.proj = this.queryService.getProj()
+      this.includeRT = this.queryService.get_realtime_toggle()
+      this.onlyBGC = this.queryService.get_bgc_toggle()
+      this.onlyDeep = this.queryService.get_deep_toggle()
+      this.threeDayToggle = this.queryService.get_three_day_toggle()
+      this.proj = this.queryService.get_proj()
 
-      let displayDate = new Date(this.queryService.getGlobalDisplayDate())
+      let displayDate = new Date(this.queryService.get_global_display_date())
       displayDate.setDate(displayDate.getDate())
       displayDate.setMinutes( displayDate.getMinutes() + displayDate.getTimezoneOffset() );
       this.date = new FormControl(displayDate)
     })
   }
 
-  realtimeChange(checked: boolean): void {
+  realtime_changed(checked: boolean): void {
     this.includeRT = checked
-    this.queryService.sendRealtimeMsg(this.includeRT);
+    this.queryService.send_realtime_msg(this.includeRT);
   }
 
-  displayGlobalChange(checked: boolean): void {
+  display_global_change(checked: boolean): void {
     this.threeDayToggle = checked
-    this.queryService.sendThreeDayMsg(this.threeDayToggle);
+    this.queryService.send_three_day_msg(this.threeDayToggle);
   }
 
-  bgcChange(checked: boolean): void {
+  bgc_change(checked: boolean): void {
     this.onlyBGC = checked
-    this.queryService.sendBGCToggleMsg(this.onlyBGC);
+    this.queryService.send_bgc_toggle_msg(this.onlyBGC);
   }
 
-  deepChange(checked: boolean): void {
+  deep_change(checked: boolean): void {
     this.onlyDeep = checked
-    this.queryService.sendDeepToggleMsg(this.onlyDeep);
+    this.queryService.send_deep_toggle_msg(this.onlyDeep);
   }
 
-  clearProfiles(): void {
-    this.queryService.triggerClearLayers();
+  clear_profiles(): void {
+    this.queryService.trigger_clear_layers();
   }
 
   resetToStart(): void {
-    this.queryService.triggerResetToStart();
+    this.queryService.trigger_reset_to_start();
   }
 
   mapProjChange(proj: string): void {
     this.proj = proj
-    this.queryService.sendProj(proj)
+    this.queryService.send_proj(proj)
   }
 
   displayPlatformInputChanged(platformInput: string): void {
     this.platformInput = platformInput
     if (platformInput.length >= 5){
-       this.queryService.triggerShowPlatform(platformInput)
+       this.queryService.trigger_show_platform(platformInput)
     }
   }
 
-  displayGlobalDateChanged(date: moment.Moment): void {
+  displayGlobaldate_changed(date: moment.Moment): void {
     this.date = new FormControl(date)
     const dateStr = date.format('YYYY-MM-DD')
-    this.queryService.sendGlobalDate(dateStr)
+    this.queryService.send_global_date(dateStr)
   }
 
 }

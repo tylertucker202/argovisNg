@@ -48,15 +48,15 @@ describe('ArSidebarNavComponent', () => {
 
     arQueryService = debugElement.injector.get(ArQueryService);
 
-    arQueryService.setParamsFromURL()
+    arQueryService.set_params_from_url()
     
-    spyRT = spyOn(arQueryService, 'sendRealtimeMsg'); 
-    spyDisplayGlobally = spyOn(arQueryService, 'sendDisplayGlobally'); 
-    spyBGC = spyOn(arQueryService, 'sendBGCToggleMsg'); 
-    spyDeep = spyOn(arQueryService, 'sendDeepToggleMsg'); 
-    spyProj = spyOn(arQueryService, 'sendProj'); 
-    spyPlatform = spyOn(arQueryService, 'triggerShowPlatform'); 
-    spyDate = spyOn(arQueryService, 'sendGlobalDate')
+    spyRT = spyOn(arQueryService, 'send_realtime_msg'); 
+    spyDisplayGlobally = spyOn(arQueryService, 'send_display_globally'); 
+    spyBGC = spyOn(arQueryService, 'send_bgc_toggle_msg'); 
+    spyDeep = spyOn(arQueryService, 'send_deep_toggle_msg'); 
+    spyProj = spyOn(arQueryService, 'send_proj'); 
+    spyPlatform = spyOn(arQueryService, 'trigger_show_platform'); 
+    spyDate = spyOn(arQueryService, 'send_global_date')
     fixture.detectChanges();
   });
 
@@ -66,11 +66,11 @@ describe('ArSidebarNavComponent', () => {
   });
 
   it('should have set state according to urlBuild', () => {
-     const RTToggle = arQueryService.getRealtimeToggle()
-     const bgcToggle = arQueryService.getBGCToggle()
-     const deepToggle = arQueryService.getDeepToggle()
-     const proj = arQueryService.getProj()
-     const displayGlobally = arQueryService.getDisplayGlobally()
+     const RTToggle = arQueryService.get_realtime_toggle()
+     const bgcToggle = arQueryService.get_bgc_toggle()
+     const deepToggle = arQueryService.get_deep_toggle()
+     const proj = arQueryService.get_proj()
+     const displayGlobally = arQueryService.get_display_globally()
 
      arQueryService.urlBuild.emit('test')
      expect(component['includeRT']).toEqual(RTToggle)
@@ -81,9 +81,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set realtime toggle', () => {
     const checked = false
-    component.realtimeChange(!checked)  
+    component.realtime_changed(!checked)  
     expect(component['includeRT']).toBeTruthy()
-    component.realtimeChange(checked)
+    component.realtime_changed(checked)
     expect(component['includeRT']).toBeFalsy()
     expect(spyRT).toHaveBeenCalled()
     expect(spyRT).toHaveBeenCalledTimes(2);
@@ -91,9 +91,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set global toggle', () => {
     const checked = false
-    component.displayGlobalChange(!checked)
+    component.display_global_change(!checked)
     expect(component['displayGlobally']).toBeTruthy()
-    component.displayGlobalChange(checked)
+    component.display_global_change(checked)
     expect(component['displayGlobally']).toBeFalsy()
     expect(spyDisplayGlobally).toHaveBeenCalled()
     expect(spyDisplayGlobally).toHaveBeenCalledTimes(2);
@@ -101,9 +101,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set bgc toggle', () => {
     const checked = true
-    component.bgcChange(!checked)
+    component.bgc_change(!checked)
     expect(component['onlyBGC']).toBeFalsy()
-    component.bgcChange(checked)
+    component.bgc_change(checked)
     expect(component['onlyBGC']).toBeTruthy()
     expect(spyBGC).toHaveBeenCalled()
     expect(spyBGC).toHaveBeenCalledTimes(2);
@@ -111,9 +111,9 @@ describe('ArSidebarNavComponent', () => {
 
   it('should set deep toggle', () => {
     const checked = true
-    component.deepChange(!checked)
+    component.deep_change(!checked)
     expect(component['onlyDeep']).toBeFalsy()
-    component.deepChange(checked)
+    component.deep_change(checked)
     expect(component['onlyDeep']).toBeTruthy()
     expect(spyDeep).toHaveBeenCalled()
     expect(spyDeep).toHaveBeenCalledTimes(2);

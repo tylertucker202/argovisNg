@@ -1,15 +1,16 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Injector } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import {FormControl} from '@angular/forms';
-import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import {MatDatepicker} from '@angular/material/datepicker';
-
+import { FormControl } from '@angular/forms';
+import { MomentDateAdapter} from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepicker } from '@angular/material/datepicker';
+import { SelectGridService } from './../../select-grid.service'
+import { GridMeta } from './../../../../typeings/grids'
 import { QueryGridService } from '../../query-grid.service'
 
 import * as moment from 'moment';
 
-export const MY_FORMATS = {
+export const MONTH_FORMATS = {
   parse: {
     dateInput: 'MM/YYYY',
   },
@@ -27,66 +28,94 @@ export const MY_FORMATS = {
   styleUrls: ['./month-picker.component.css'],
   providers: [
     {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+    {provide: MAT_DATE_FORMATS, useValue: MONTH_FORMATS},
   ],
 })
+
 export class MonthPickerComponent implements OnInit {
-
-  private date = new FormControl(moment());
-  private monthYear: moment.Moment;
-  private minDate = new Date(2012, 0, 1);
-  private maxDate = new Date(2012, 11, 1);
+  public monthPicker: boolean = true
+  public inc: number = 1
+  public dateForm = new FormControl(moment());
+  public date: moment.Moment;
+  public minDate: Date
+  public maxDate: Date
   @Input() paramMode: boolean
+  public dates: string[]
   @ViewChild('dp') datepicker: MatDatepicker<any>;
+  public queryGridService: QueryGridService
+  public selectGridService: SelectGridService
 
-  constructor(private queryGridService: QueryGridService) { }
+  constructor(public injector: Injector) { 
+    this.queryGridService = injector.get(QueryGridService)
+    this.selectGridService = injector.get(SelectGridService) 
+  }
 
   ngOnInit() {
-    this.setDate()
+    this.date = this.queryGridService.getDate()
     this.queryGridService.resetToStart.subscribe((msg) => {
+      console.log('resetToStart triggered. setting date', this.queryGridService.getDate())
       this.setDate()
+    })
+
+    this.selectGridService.gridMetaChange.subscribe((gridMeta: GridMeta) => {
+      this.setDate()
+      this.dates = gridMeta.dates
+      this.minDate = new Date(gridMeta.minDate)
+      this.maxDate = new Date(gridMeta.maxDate)
+      if (!this.dates.includes(this.date.format())) {
+        let newDate = this.dates[0]
+        this.date = moment.utc(newDate)
+      }
+      this.queryGridService.sendDate(this.date, false)
     })
   }
 
-  private incrementMonth(increment: number): void {
-    this.monthYear = this.monthYear.add(increment, 'M')
-    this.date = new FormControl(this.monthYear)
-    this.sendmonthYear()
+  public increment(sign: number): void {
+    const increment = sign * this.inc
+    this.monthPicker? this.date.add(increment, 'M') : this.date.add(increment, 'd')
+    this.dateForm = new FormControl(this.date)
+    console.log(`date incremented to ${this.date.format('YYYY-MM-DD')}`)
+    this.sendDate()
   }
 
-  private setDate(): void {
-    this.monthYear = this.queryGridService.getMonthYear()
-    this.date = new FormControl(this.monthYear)    
+  public setDate(): void {
+    this.date = this.queryGridService.getDate()
+    this.dateForm = new FormControl(this.date)    
   }
 
-  private sendmonthYear(): void {
+  public sendDate(): void {
     const broadcastChange = true;
-    this.queryGridService.sendmonthYear(this.monthYear, broadcastChange)
+    this.queryGridService.sendDate(this.date, broadcastChange)
   }
 
-  private displayDateChanged(date: moment.Moment): void {
+  public displaydate_changed(date: moment.Moment): void {
     //triggered when user changes date manually
-    this.date.setValue(date)
-    this.monthYear = date
-    this.sendmonthYear()
+    this.dateForm.setValue(date)
+    this.date = date
+    this.sendDate()
   }
 
-  private chosenYearHandler(year: number) {
+  public chosenYearHandler(year: number) {
     //triggered when user selects on menu
-    const ctrlValue = this.date.value;
+    const ctrlValue = this.dateForm.value;
     ctrlValue.year(year);
-    this.date.setValue(ctrlValue);
-    this.monthYear = ctrlValue
-    this.sendmonthYear()
+    this.dateForm.setValue(ctrlValue);
+    this.date = ctrlValue
+    this.sendDate()
   }
 
-  private chosenMonthHandler(month: number) {
+  public chosenMonthHandler(month: number) {
     //triggered when user selects month on menu
-    const ctrlValue = this.date.value;
+    const ctrlValue = this.dateForm.value;
     ctrlValue.month(month);
-    this.date.setValue(ctrlValue);
+    this.dateForm.setValue(ctrlValue);
     this.datepicker.close();
-    this.monthYear = ctrlValue
-    this.sendmonthYear()
+    this.date = ctrlValue
+    this.sendDate()
+  }
+
+  dateFilter = (date: moment.Moment): boolean => {
+    // return date.month() % 2 == 1 //filter out odd months
+    return true
   }
 }

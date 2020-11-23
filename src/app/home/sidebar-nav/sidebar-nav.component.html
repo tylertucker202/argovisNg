@@ -1,7 +1,7 @@
 <div class="sidebar-nav">
   <div class='mat-elevation-z8'>
   <app-db-overview></app-db-overview>
-  <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clearProfiles()" >
+  <button mat-icon-button matTooltip="clear all profiles and shapes from map" (click)="clear_profiles()" >
     <mat-icon aria-label="clear profile and shape layers">layers_clear</mat-icon>
   </button>
   <button mat-icon-button matTooltip="reset map to starting position and markers." (click)="resetToStart()" >
@@ -21,7 +21,7 @@
     </mat-form-field>
     <mat-slide-toggle id="three-day-toggle" matTooltip="toggle on show global profiles within a three day window"
       color="accent" [checked]="threeDayToggle"
-      (change)="displayGlobalChange($event.checked)">Profiles in 3 days, globally
+      (change)="display_global_change($event.checked)">Profiles in 3 days, globally
     </mat-slide-toggle>
      <mat-form-field class="date-form" [hidden]="!threeDayToggle">
       <input matInput 
@@ -29,21 +29,21 @@
       [matDatepicker]="picker"
       [value]="date.value"
       placeholder="3 day window end date"
-      (dateChange)="displayGlobalDateChanged($event.value)">
+      (dateChange)="displayGlobaldate_changed($event.value)">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
                     color="accent" [checked]="includeRT"
-                    (change)="realtimeChange($event.checked)">Include realtime
+                    (change)="realtime_changed($event.checked)">Include realtime
       </mat-slide-toggle>
       <mat-slide-toggle matTooltip="toggle on to show only BGC profiles"
                         color="accent" [checked]="onlyBGC"
-                        (change)="bgcChange($event.checked)">Show only BGC
+                        (change)="bgc_change($event.checked)">Show only BGC
       </mat-slide-toggle>
       <mat-slide-toggle matTooltip="toggle on to show only Deep profiles"
                         color="accent" [checked]="onlyDeep"
-                        (change)="deepChange($event.checked)">Show only Deep
+                        (change)="deep_change($event.checked)">Show only Deep
       </mat-slide-toggle>
     </div>
   <div class="mat-elevation-z8">

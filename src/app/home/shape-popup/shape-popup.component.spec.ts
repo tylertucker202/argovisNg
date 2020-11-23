@@ -28,21 +28,21 @@ describe('ShapePopupComponent', () => {
   });
 
   it('should generate selection page url properly', () => {
-    let url = component['generateURL'](false)
+    let url = component['generate_url'](false)
 
     expect(url.includes('startDate=')).toEqual(true)
     expect(url.includes('endDate')).toEqual(true)
     expect(url.includes('/page')).toEqual(false)
-    url = component['generateURL'](true)
+    url = component['generate_url'](true)
     expect(url.includes('/page')).toEqual(true)
     expect(url.includes('&presRange=[0,2000]')).toEqual(true)
     expect(url.includes('&bgcOnly=true')).toEqual(false)
     expect(url.includes('&deepOnly=true')).toEqual(false)
 
     component['presRangeChange'](false)
-    component['bgcOnlyChange'](true)
-    component['deepOnlyChange'](true)
-    url = component['generateURL'](true)
+    component['bgc_only_change'](true)
+    component['deep_only_change'](true)
+    url = component['generate_url'](true)
     expect(url.includes('&presRange=[0,2000]')).toEqual(false)
     expect(url.includes('&bgcOnly=true')).toEqual(true)
     expect(url.includes('&deepOnly=true')).toEqual(true)

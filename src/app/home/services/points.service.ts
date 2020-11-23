@@ -1,7 +1,8 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { DateRange } from './../../../typeings/daterange.d';
+import { Injectable, ApplicationRef, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-import { ProfilePoints } from '../models/profile-points'
+import { ProfilePoints } from '../../models/profile-points'
 import { MapService } from './map.service';
 import * as L from 'leaflet';
 import { PopupCompileService } from './popup-compile.service';
@@ -14,10 +15,19 @@ export class PointsService {
 
   public platformProfilesSelection: any;
   public appRef: ApplicationRef;
+  public mapService: MapService
+  public http: HttpClient
+  public compileService: PopupCompileService
 
-  constructor(public mapService: MapService,
-              private http: HttpClient,
-              private compileService: PopupCompileService) { }
+  constructor(public injector: Injector) { 
+    this.mapService = injector.get(MapService)
+    this.http = injector.get(HttpClient)
+    this.compileService = injector.get(PopupCompileService)
+  }
+
+  // constructor(public mapService: MapService,
+  //             public http: HttpClient,
+  //             public compileService: PopupCompileService) { }
 
   init(appRef: ApplicationRef): void {
     this.appRef = appRef;
@@ -50,14 +60,21 @@ export class PointsService {
     iconSize:     [12, 12], 
     iconAnchor:   [0, 0],
     popupAnchor:  [6, 6]
-});
+  });
 
-public argoIconDeep = L.icon({
-  iconUrl: 'assets/img/dot_blue.png',
-  iconSize:     [12, 12], 
-  iconAnchor:   [0, 0],
-  popupAnchor:  [6, 6]
-});
+  public argoIconDeep = L.icon({
+    iconUrl: 'assets/img/dot_blue.png',
+    iconSize:     [12, 12], 
+    iconAnchor:   [0, 0],
+    popupAnchor:  [6, 6]
+  });
+
+  public stormIcon = L.icon({
+    iconUrl: 'assets/img/storm.png',
+    iconSize:     [12, 12], 
+    iconAnchor:   [0, 0],
+    popupAnchor:  [6, 6]
+  })
 
   public mockPoints:  ProfilePoints[] = 
   [{"_id":"6901549_169","date":"2018-07-09T20:43:00.000Z","cycle_number":169,"geoLocation":{"type":"Point","coordinates":[4.74,-20.18]},"platform_number":"6901549", "DATA_MODE":'D', 'containsBGC': true},
@@ -79,30 +96,33 @@ public argoIconDeep = L.icon({
   {"_id":"3901110_107","date":"2018-07-08T16:58:26.001Z","cycle_number":107,"geoLocation":{"type":"Point","coordinates":[-27.48367,-24.22411]},"platform_number":"3901110", "DATA_MODE":'R'},
   ]
 
-  public getMockPoints(): Observable<ProfilePoints[]> {
+  public get_mock_points(): Observable<ProfilePoints[]> {
     return of(this.mockPoints)
   }
 
-  public getSelectionPoints(urlQuery: string): Observable<ProfilePoints[]> {
-    const url = urlQuery;
+  public get_selection_points(daterange: DateRange, transformedShape: number[][][], presRange?: [number, number]): Observable<ProfilePoints[]> {
+    let base = '/selection/profiles/map'
+    let url = base+'?startDate=' + daterange.startDate + '&endDate=' + daterange.endDate
+    url += '&shape='+JSON.stringify(transformedShape)
+    if (presRange) { url += '&presRange='+JSON.stringify(presRange) }
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getPlatformProfiles(platform: string): Observable<ProfilePoints[]> {
+  public get_platform_profiles(platform: string): Observable<ProfilePoints[]> {
     const url = '/catalog/platforms/' + platform + '/map';
     return this.http.get<ProfilePoints[]>(url)
   }
 
-  public getLatestProfiles(): Observable<ProfilePoints[]> {
+  public get_latest_profiles(): Observable<ProfilePoints[]> {
     const url = '/selection/latestProfiles/map'
     return this.http.get<ProfilePoints[]>(url);
   }
-  public getLastProfiles(): Observable<ProfilePoints[]> {
+  public get_last_profiles(): Observable<ProfilePoints[]> {
     const url = '/selection/lastProfiles/map';
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getLastThreeDaysProfiles(startDate: string): Observable<ProfilePoints[]> {
+  public get_last_three_days_profiles(startDate: string): Observable<ProfilePoints[]> {
     let url = '/selection/lastThreeDays/';
     if (startDate) {
       url += startDate
@@ -110,7 +130,7 @@ public argoIconDeep = L.icon({
     return this.http.get<ProfilePoints[]>(url);
   }
 
-  public getGlobalMapProfiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
+  public get_global_map_profiles(startDate: string, endDate: string): Observable<ProfilePoints[]> {
     let url = '/selection/globalMapProfiles/'
     url += startDate + '/'
     url += endDate
@@ -118,27 +138,27 @@ public argoIconDeep = L.icon({
   }
 
   // plots the markers on the map three times. 
-   private makeWrappedLngLatCoordinates(coordinates: Number[]): number[][] {
+   public make_wrapped_lng_lat_coordinates(coordinates: Number[]): number[][] {
       const lat = coordinates[1].valueOf();
       const lon = coordinates[0].valueOf();
       let coords: number[][]
-      if (-90 > lon && lon > -180) {
+      if (-90 > lon && lon > -180) { //duplicate to the right
         coords = [[lon, lat], [lon + 360, lat]]
       }
-      else if (90 < lon && lon < 180) {
+      else if (90 < lon && lon < 180) { //duplicate to the left
         coords = [[lon, lat], [lon - 360, lat]];
       }
       else{ coords = [[lon, lat]]}
       return coords;
   };
 
-  private makeLngLatCoords(coordinates: Number[]): number[][] {
+  public make_lng_lat_coords(coordinates: Number[]): number[][] {
     const lat = coordinates[1].valueOf();
     const lon = coordinates[0].valueOf();    
     return [[lon, lat]]
   }
 
-  public formatLatLng( lonLat : Number[]): String[] {
+  public format_lat_lng( lonLat : Number[]): String[] {
     const lat = Number(lonLat[1])
     const lng = Number(lonLat[0])
     if (lat > 0) {
@@ -157,13 +177,13 @@ public argoIconDeep = L.icon({
     return [strLat, strLng]
   }
 
-  public addToMarkersLayer(profile: ProfilePoints, markersLayer: L.LayerGroup , markerIcon=this.argoIcon, wrapCoordinates=true) {
+  public add_to_markers_layer(profile: ProfilePoints, markersLayer: L.LayerGroup , markerIcon=this.argoIcon, wrapCoordinates=true) {
     const selectedPlatform = profile.platform_number;
     const geoLocation = profile.geoLocation;
     const lat = geoLocation.coordinates[1]
     const lon = geoLocation.coordinates[0]
     const date = moment(profile.date).format('LLL')
-    const strLatLng = this.formatLatLng([lon, lat])
+    const strLatLng = this.format_lat_lng([lon, lat])
     const cycle = profile.cycle_number
     //for some reason _id looses its cycle number when passed to the popup object.
     // _id is made this way.
@@ -181,10 +201,10 @@ public argoIconDeep = L.icon({
     }
     let coordArray: number[][]
     if (wrapCoordinates){
-      coordArray = this.makeWrappedLngLatCoordinates(geoLocation.coordinates);
+      coordArray = this.make_wrapped_lng_lat_coordinates(geoLocation.coordinates);
     }
     else {
-      coordArray = this.makeLngLatCoords(geoLocation.coordinates);
+      coordArray = this.make_lng_lat_coords(geoLocation.coordinates);
     }
 
     for(let i = 0; i < coordArray.length; i++) { //wrapped coordinates are repeated across map

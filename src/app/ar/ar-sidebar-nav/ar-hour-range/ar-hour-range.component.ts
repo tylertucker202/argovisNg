@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { Options } from 'nouislider'
 import { ArQueryService } from '../../ar-query.service'
-import * as moment from 'moment';
 
 @Component({
   selector: 'app-ar-hour-range',
@@ -11,15 +10,16 @@ import * as moment from 'moment';
   encapsulation: ViewEncapsulation.Emulated //add to set styles as global
 })
 export class ArHourRangeComponent implements OnInit {
-  private config: Options;
+  public config: Options;
   public sliderRange: number[];
-  private lRange: number;
-  private uRange: number;
-  constructor( private arQueryService: ArQueryService ) { }
+  public lRange: number;
+  public uRange: number;
+  constructor( private arQueryService: ArQueryService) {}
 
   ngOnInit() {
 
-    this.setSliderRange()
+    this.set_slider_range()
+    
     this.config = {
       start: this.sliderRange, //binds sliderRange to slider element
       range: { min: -36, max: 36 },
@@ -33,41 +33,40 @@ export class ArHourRangeComponent implements OnInit {
         density: 4
       }
     }
-    const newRange = this.arQueryService.getArDateRange()
-    const nRange = [newRange[0].valueOf(), newRange[1].valueOf()]
-    this.sliderRange[0] = nRange[0]
-    this.sliderRange[1] = nRange[1]
 
     this.arQueryService.resetToStart.subscribe( (msg: string) => {
-      this.setSliderRange()
+      this.set_slider_range()
     })
+
   }
 
-  private minValuechange(newLowPres: number ): void {
+  public min_value_change(newLowPres: number ): void {
     this.lRange = Number(newLowPres).valueOf(); //newLowPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.lRange, this.sliderRange[1]];
-    this.updateSelectDates();
+    this.update_select_dates();
   }
 
-  private maxValuechange(newUpPres: number ): void {
+  public max_value_change(newUpPres: number ): void {
     this.uRange = Number(newUpPres).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     this.sliderRange = [this.sliderRange[0], this.uRange];
-    this.updateSelectDates();
+    this.update_select_dates();
   }
 
-  private setSliderRange(): void {
-    this.sliderRange = this.arQueryService.getArDateRange()
+  public set_slider_range(): void {
+    this.sliderRange = this.arQueryService.get_ar_date_range()
     this.lRange = this.sliderRange[0]
     this.uRange = this.sliderRange[1]
   }
 
-  private updateSelectDates(): void {
-    this.arQueryService.sendArDateRange(this.sliderRange)
+  public update_select_dates(): void {
+    this.arQueryService.send_ar_date_range(this.sliderRange)
   }
 
-  private sliderChange(sliderRange: number[]) {
+  public slider_change(sliderRange: number[]) {
     //triggers when a user stops sliding, when a slider value is changed by 'tap', or on keyboard interaction.
     this.sliderRange = sliderRange
-    this.updateSelectDates()
+    this.lRange = this.sliderRange[0]
+    this.uRange = this.sliderRange[1]
+    this.update_select_dates()
   }
 }

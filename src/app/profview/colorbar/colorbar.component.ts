@@ -13,18 +13,18 @@ declare let d3: any
   styleUrls: ['./colorbar.component.css']
 })
 export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
-  private cbrange: number[]
-  private cbarShift: number
-  private ticks: number
-  private rectHeight: number
-  private svgHeight: number
-  private svgWidth: number
-  private svg: any
+  public cbrange: number[]
+  public cbarShift: number
+  public ticks: number
+  public rectHeight: number
+  public svgHeight: number
+  public svgWidth: number
+  public svg: any
   @Input() id: string;
   @Input() domain: [number, number]
   @Input() colorscale: [number, string][]
-  private colorbarId: string
-  private inverseColorScale: boolean = false
+  public colorbarId: string
+  public inverseColorScale: boolean = false
   @Output() domainChange = new EventEmitter<[number, number]>()
   constructor( private chartService: ChartService ) { }
 
@@ -39,23 +39,23 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    if ( this.inverseColorScale ) { this.createColorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
-    else { this.createColorbar(this.colorscale.slice(), this.domain.slice()) }
+    if ( this.inverseColorScale ) { this.create_colorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
+    else { this.create_colorbar(this.colorscale.slice(), this.domain.slice()) }
   }
 
   ngOnChanges() {
-    this.updateColorbar()
+    this.update_colorbar()
   }
 
-  private updateColorbar() {
+  public update_colorbar() {
     if (this.svg) {
       this.svg.remove();
-      if ( this.inverseColorScale ) { this.createColorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
-      else { this.createColorbar(this.colorscale.slice(), this.domain.slice()) }
+      if ( this.inverseColorScale ) { this.create_colorbar(this.colorscale.slice().reverse(),this.domain.slice().reverse()) }
+      else { this.create_colorbar(this.colorscale.slice(), this.domain.slice()) }
     }
   }
 
-  private createColorbar(colorscale: string[] | [number, string][], domain: number[]) {
+  public create_colorbar(colorscale: string[] | [number, string][], domain: number[]) {
     this.svg = d3.select("#" + this.colorbarId).append("svg")
     .attr("width", this.cbrange[1] + 10)
     .attr("height", this.svgHeight)
@@ -106,19 +106,19 @@ export class ColorbarComponent implements OnInit, AfterViewInit, OnChanges {
         .call(axis);
     }
 
-  public minChange(val: number ): void {
+  public min_change(val: number ): void {
     const lRange = Number(val).valueOf() //newLowPres is somehow cast as a string. this converts it to a number.
     const uRange = this.domain.sort()[1]
     this.domain = [lRange, uRange]
-    this.updateColorbar()
+    this.update_colorbar()
     this.domainChange.emit(this.domain)
   }
 
-  public maxChange(val: number ): void {
+  public max_change(val: number ): void {
     const uRange = Number(val).valueOf(); //newUpPres is somehow cast as a string. this converts it to a number.
     const lRange = this.domain.sort()[0]
     this.domain = [lRange, uRange];
-    this.updateColorbar()
+    this.update_colorbar()
     this.domainChange.emit(this.domain)
   }
   

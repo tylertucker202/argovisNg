@@ -2,7 +2,7 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { BgcProfileData, CoreProfileData, StationParameters, ColorScaleSelection, DataArrays } from './profiles'
 import * as moment from 'moment';
 
-import { Cmap, cmaps, } from './chart.parameters'
+import { HEX_COLOR_MAPS } from './colormap.parameters'
 
 export interface TraceParam {
     short_name: string
@@ -21,7 +21,6 @@ export class ChartService {
 
   constructor() { }
 
-  public readonly cmaps: Cmap[] = cmaps
   public statParams: StationParameters[]
   public colorscaleSelections: ColorScaleSelection[] = this.makeColorScaleSelections()
   
@@ -55,7 +54,7 @@ export class ChartService {
     return layout
   }
 
-  public makePvxLayout(xLabel: string, yLabel: string) {
+  public make_line_layout(xLabel: string, yLabel: string) {
     const layout = {
       height:300, 
       width: 300,
@@ -93,8 +92,18 @@ export class ChartService {
     box += "<br>click to see profile page"
     return(box)
   }
+
+  make_hovor_chart_text(_id: string, lat: number, lon: number, date: string, cycle: number, qc: number): string {
+    let box = "<br>profile id: " + _id
+    + "<br>latitude: " + lat.toFixed(3) 
+    + "<br>longitude: " + lon.toFixed(3)
+    + "<br>date: " + lon.toFixed(3)
+    + "<br>cycle: " + cycle
+    + "<br>position qc: " + qc
+    return box
+  }
   
-  makePvxChartText(xvalue: number, yvalue: number, time: string, xtext: string, ytext: string,
+  makeLineChartText(xvalue: number, yvalue: number, time: string, xtext: string, ytext: string,
                    xunits: string, yunits: string, cycle: number,
                    xqc?: number, yqc?: number): string {
     let box = 
@@ -109,7 +118,7 @@ export class ChartService {
   }
 
   makeColorScaleSelections(): ColorScaleSelection[] {
-    const cmapNames = this.cmaps.map(cmap => cmap.name)
+    const cmapNames = Object.keys(HEX_COLOR_MAPS)
     let colorScaleSelections = []
     cmapNames.forEach( (cmapName: string) => {
       colorScaleSelections.push({value: cmapName, viewValue: cmapName})
@@ -206,7 +215,7 @@ export class ChartService {
     return (dataArrays as DataArrays)
   }
 
-  makePvxChartDataArrays( profileData: BgcProfileData[] | CoreProfileData[],
+  make_line_chart_data_arrays( profileData: BgcProfileData[] | CoreProfileData[],
     yLabel: string, xLabel: string, measKey: string,
     reduceMeas: number, statParamsKey: string, includeQC?: boolean): DataArrays {
     let yMeas = []
@@ -299,20 +308,20 @@ export class ChartService {
       return [scatterTrace]
   }
 
-  makePvxChartTrace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
+  make_line_chart_trace(da: DataArrays, key: string, includeQC: boolean, xunits: string, yunits: string) {
       let hovorText = []
       const xtext = da['x1_label'] + ':'
       const ytext = da['x2_label'] + ':'
       if (includeQC) {
         for(let idx=0; idx < da['x1'].length; idx++){
-          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+          let pointText = this.makeLineChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
             xtext, ytext, xunits, yunits, da['cycle'][idx], da['x1_qc'][idx], da['x2_qc'][idx])
           hovorText.push(pointText)
       }
       }
       else {
         for(let idx=0; idx < da['x1'].length; idx++){
-          let pointText = this.makePvxChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
+          let pointText = this.makeLineChartText(da['x1'][idx], da['x2'][idx], da['time'][idx], 
             xtext, ytext, xunits, yunits, da['cycle'][idx])
           hovorText.push(pointText)
           }
@@ -341,7 +350,7 @@ export class ChartService {
 
 
 
-  public getTraceParams(paramKey: string): TraceParam {
+  public get_trace_params(paramKey: string): TraceParam {
     let traceParam = {} as TraceParam
     const baseKey = paramKey.replace(/[0-9]/g, '')
     const waveLength = paramKey.replace(/[a-z_]/g, '')
@@ -507,12 +516,14 @@ export class ChartService {
     return traceParam
   }
 
-  public getColorScale(cmapName: string) {
-    const isColorscale = function(cmap) { 
-      return cmap.name === cmapName;
+  public getColorScale(cmapName: string): [number, string][] {
+    const cmap = HEX_COLOR_MAPS[cmapName.toLocaleLowerCase()] as string[]
+
+    let plotlyMap = []
+    for( let idx=0; idx<cmap.length; ++idx) {
+      plotlyMap.push([idx/(cmap.length-1), cmap[idx]])
     }
-    const cmap = this.cmaps.find(isColorscale) 
-    return cmap.cmap
+    return plotlyMap
   }
 
 

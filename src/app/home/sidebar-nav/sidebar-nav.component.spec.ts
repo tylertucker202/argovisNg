@@ -46,15 +46,15 @@ describe('SidebarNavComponent', () => {
 
     queryService = debugElement.injector.get(QueryService);
 
-    queryService.setParamsFromURL()
+    queryService.set_params_from_url()
     
-    spyRT = spyOn(queryService, 'sendRealtimeMsg'); 
-    spy3D = spyOn(queryService, 'sendThreeDayMsg'); 
-    spyBGC = spyOn(queryService, 'sendBGCToggleMsg'); 
-    spyDeep = spyOn(queryService, 'sendDeepToggleMsg'); 
-    spyProj = spyOn(queryService, 'sendProj'); 
-    spyPlatform = spyOn(queryService, 'triggerShowPlatform'); 
-    spyDate = spyOn(queryService, 'sendGlobalDate')
+    spyRT = spyOn(queryService, 'send_realtime_msg'); 
+    spy3D = spyOn(queryService, 'send_three_day_msg'); 
+    spyBGC = spyOn(queryService, 'send_bgc_toggle_msg'); 
+    spyDeep = spyOn(queryService, 'send_deep_toggle_msg'); 
+    spyProj = spyOn(queryService, 'send_proj'); 
+    spyPlatform = spyOn(queryService, 'trigger_show_platform'); 
+    spyDate = spyOn(queryService, 'send_global_date')
     fixture.detectChanges();
   });
 
@@ -64,12 +64,12 @@ describe('SidebarNavComponent', () => {
   });
 
   it('should have set state according to urlBuild', () => {
-     const RTToggle = queryService.getRealtimeToggle()
-     const bgcToggle = queryService.getBGCToggle()
-     const deepToggle = queryService.getDeepToggle()
-     const proj = queryService.getProj()
-     const threeDayToggle = queryService.getThreeDayToggle()
-     const globalDisplayDate = queryService.getGlobalDisplayDate()
+     const RTToggle = queryService.get_realtime_toggle()
+     const bgcToggle = queryService.get_bgc_toggle()
+     const deepToggle = queryService.get_deep_toggle()
+     const proj = queryService.get_proj()
+     const threeDayToggle = queryService.get_three_day_toggle()
+     const globalDisplayDate = queryService.get_global_display_date()
 
      queryService.urlBuild.emit('test')
      expect(component['proj']).toEqual(proj)
@@ -78,14 +78,14 @@ describe('SidebarNavComponent', () => {
      expect(component['onlyDeep']).toEqual(deepToggle)
      expect(component['threeDayToggle']).toEqual(threeDayToggle)
      const date = moment(component['date'].value).format('YYYY-MM-DD')
-     expect(date).toEqual(globalDisplayDate)
+     expect(date).toEqual(globalDisplayDate.split('T')[0])
   })
 
   it('should set realtime toggle', () => {
     const checked = false
-    component.realtimeChange(!checked)  
+    component.realtime_changed(!checked)  
     expect(component['includeRT']).toBeTruthy()
-    component.realtimeChange(checked)
+    component.realtime_changed(checked)
     expect(component['includeRT']).toBeFalsy()
     expect(spyRT).toHaveBeenCalled()
     expect(spyRT).toHaveBeenCalledTimes(2);
@@ -93,9 +93,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set three day toggle toggle', () => {
     const checked = false
-    component.displayGlobalChange(!checked)
+    component.display_global_change(!checked)
     expect(component['threeDayToggle']).toBeTruthy()
-    component.displayGlobalChange(checked)
+    component.display_global_change(checked)
     expect(component['threeDayToggle']).toBeFalsy()
     expect(spy3D).toHaveBeenCalled()
     expect(spy3D).toHaveBeenCalledTimes(2);
@@ -103,9 +103,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set bgc toggle', () => {
     const checked = true
-    component.bgcChange(!checked)
+    component.bgc_change(!checked)
     expect(component['onlyBGC']).toBeFalsy()
-    component.bgcChange(checked)
+    component.bgc_change(checked)
     expect(component['onlyBGC']).toBeTruthy()
     expect(spyBGC).toHaveBeenCalled()
     expect(spyBGC).toHaveBeenCalledTimes(2);
@@ -113,9 +113,9 @@ describe('SidebarNavComponent', () => {
 
   it('should set deep toggle', () => {
     const checked = true
-    component.deepChange(!checked)
+    component.deep_change(!checked)
     expect(component['onlyDeep']).toBeFalsy()
-    component.deepChange(checked)
+    component.deep_change(checked)
     expect(component['onlyDeep']).toBeTruthy()
     expect(spyDeep).toHaveBeenCalled()
     expect(spyDeep).toHaveBeenCalledTimes(2);
@@ -146,7 +146,7 @@ describe('SidebarNavComponent', () => {
     const momentDate = moment(dateStr, 'YYYY-MM-DD').utc()
     let date = momentDate
 
-    component.displayGlobalDateChanged(date)
+    component.displayGlobaldate_changed(date)
     const outDate = component['date'];
     const outDateMoment = moment(outDate.value)
     expect(outDateMoment).toEqual(date)

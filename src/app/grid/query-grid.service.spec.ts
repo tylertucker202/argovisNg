@@ -19,9 +19,9 @@ describe('QueryGridService', () => {
     route = TestBed.get(ActivatedRoute)
     queryParamsDefault = {
                          presLevel: '10',
-                         monthYear: '01-2012', 
+                         date: '01-2012', 
                          shapes: '[[-65,-5,-15,15]]',
-                         grid: 'rgTempAnom', 
+                         gridName: 'rgTempAnom', 
                          interpolateBool: 'false', 
                          colorScale: 'OrRd', 
                          inverseColorScale: 'false',
@@ -38,7 +38,7 @@ describe('QueryGridService', () => {
 
   it('should set url with state', done => {
     const queryParamsDefaultKeys = Object.keys(queryParamsDefault)
-      service.setURL()
+      service.set_url()
       route.queryParamMap.pipe(
         filter(params => !!params.keys.length), // filter out any emissions where keys is an empty array.
       ).subscribe( params => {

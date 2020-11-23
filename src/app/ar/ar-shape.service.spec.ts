@@ -1,14 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
 import { ArShapeService } from './ar-shape.service';
-
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HttpErrorResponse, HttpClientModule, HttpHandler } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ArShapeService', () => {
   beforeEach(() => 
   TestBed.configureTestingModule({
-    providers: [ HttpClientTestingModule, HttpTestingController, HttpClient, HttpClientModule, HttpHandler, ArShapeService ], 
+    providers: [  ], 
+    imports: [HttpClientTestingModule]
   }));
 
   it('should be created', () => {
