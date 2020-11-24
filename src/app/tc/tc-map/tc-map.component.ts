@@ -65,7 +65,9 @@ export class TcMapComponent extends MapComponent implements OnInit {
         // this.tcMapService.drawnItems.clearLayers()
         // this.tcQueryService.clear_shapes()
         this.set_points_on_tc_map()
-        this.set_tc_tracks_by_date_range()
+        if (this.tcQueryService.get_global_storms_toggle()){
+          this.set_tc_tracks_by_date_range()
+        }
         // this.set_mock_tc_tracks()
         this.tcQueryService.set_url()
         })
@@ -94,27 +96,38 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.markersLayer.clearLayers()
         this.tcMapService.tcTrackItems.clearLayers()
         this.tcQueryService.clear_shapes()
-        this.set_tc_track_by_storm_name_year(stormNameYear)
+        if (stormNameYear.includes('-')) {
+          this.set_tc_track_by_storm_name_year(stormNameYear)
+        }
         this.tcQueryService.set_url()
 
       })
       
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
         const layer = event.layer as L.Polygon<any>
+        const globalStormToggle = this.tcQueryService.get_global_storms_toggle()
+        if (globalStormToggle) {
+          this.tcMapService.tcTrackItems.clearLayers() //do not clear the storm track item
+        }
         this.markersLayer.clearLayers()
-        this.tcMapService.tcTrackItems.clearLayers()
         this.tcMapService.markersLayer.clearLayers()
         this.tcMapService.drawnItems.clearLayers()        
         this.tcQueryService.clear_shapes() // only want one shape at a time
         this.tcMapService.tcTrackItems.addLayer(layer);
         this.tcMapService.buffer_popup_window_creation(layer, this.tcMapService.drawnItems)
-        const broadcast = true
+        let broadcast = true
         const toggleThreeDayOff = true
   
         const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
         let shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
         shapes = this.tcQueryService.round_shapes(shapes)
+        if (!globalStormToggle) { broadcast=false }
         this.tcQueryService.send_tc_shape(shapes, broadcast)
+        if (!globalStormToggle) {
+          // this.set_tc_track_by_storm_name_year(this.tcQueryService.get_storm_year())
+          // this.tcQueryService.tcEvent.emit('buffer drawn around storm')
+        }
+
        });
   
       this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {

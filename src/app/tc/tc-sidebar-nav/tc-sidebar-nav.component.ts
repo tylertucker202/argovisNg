@@ -15,14 +15,15 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.tcQueryService = this.injector.get(TcQueryService) }
 
     ngOnInit() {
-      this.includeRT = this.queryService.get_realtime_toggle()
-      this.onlyBGC = this.queryService.get_bgc_toggle()
-      this.onlyDeep = this.queryService.get_deep_toggle()
+      this.includeRT = this.tcQueryService.get_realtime_toggle()
+      this.onlyBGC = this.tcQueryService.get_bgc_toggle()
+      this.onlyDeep = this.tcQueryService.get_deep_toggle()
+      this.globalStorms = this.tcQueryService.get_global_storms_toggle()
       this.setSubscriptions()
     }
   
     setSubscriptions() {
-      this.queryService.urlBuild
+      this.tcQueryService.urlBuild
       .subscribe(msg => {
         //toggle if states have changed 
         this.globalStorms = this.tcQueryService.get_global_storms_toggle()   

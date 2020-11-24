@@ -57,6 +57,7 @@ export class TcQueryService extends QueryService {
 
   public send_storm_year(stormYear: string, broadcastChange=true): void {
     this.stormYear = stormYear
+    this.send_global_storms_msg(false, false)
     if (broadcastChange) { this.tcEvent.emit(stormYear)}
   }
 
@@ -139,11 +140,13 @@ export class TcQueryService extends QueryService {
 
   public send_tc_start_date(date: moment.Moment, broadcastChange=true): void {
     this.tcStartDate = date
+    this.send_global_storms_msg(true, false)
     if (broadcastChange) { this.change.emit('tcStartDate changed')}
   }
 
   public send_tc_end_date(date: moment.Moment, broadcastChange=true): void {
     this.tcEndDate = date
+    this.send_global_storms_msg(true, false)
     if (broadcastChange) { this.change.emit('tcEndDate changed')}
   }
 
