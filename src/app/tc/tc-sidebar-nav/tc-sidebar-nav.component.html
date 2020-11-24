@@ -7,7 +7,7 @@
       <mat-icon aria-label="reset to starting view">restore_page</mat-icon>
     </button>
     <div><b>Display options:</b></div>
-    <mat-slide-toggle matTooltip="toggle on to include delayed mode profiles in queries"
+    <mat-slide-toggle matTooltip="toggle off to include only delayed mode profiles in queries"
                      color="accent" [checked]="includeRT"
                      (change)="realtime_changed($event.checked)">Include realtime
     </mat-slide-toggle>
@@ -21,5 +21,9 @@
     </mat-slide-toggle>
     <app-storm-select></app-storm-select>
     <app-tc-hour-range></app-tc-hour-range>
+    <mat-slide-toggle matTooltip="toggle on to display storms in date range (otherwise use storm-year selector)"
+      color="accent" [checked]="globalStorms"
+      (change)="global_storms_change($event.checked)">Display storms globally
+    </mat-slide-toggle>
     <app-tc-display ></app-tc-display>
   </div>

@@ -19,7 +19,7 @@ export class QueryService {
   public selectionDateRange: DateRange = {startDate: this.format_date(moment().utc().subtract(14, 'days')),
                                           endDate: this.format_date(moment().utc()), label: 'initial date range'};
   private globalDisplayDate = moment().utc().subtract(2, 'days').format('YYYY-MM-DDTHH:mm:ss')
-  private latLngShapes: number[][][]
+  public latLngShapes: number[][][]
   private includeRealtime = true
   private onlyBGC = false
   private onlyDeep = false

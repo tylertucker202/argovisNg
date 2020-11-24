@@ -16,7 +16,9 @@ export class TcQueryService extends QueryService {
   private tcEndDate = moment(new Date( 2018, 7, 17, 0, 0, 0, 0))
   private tcTracks: number[][][]
   private profHourRange = [-18, 18] as [number, number]
-  private displayGlobally = true
+  private globalStormToggle = true
+  private stormYear: string
+
   public selectionDateRange = this.convert_hour_range_to_date_range(this.tcStartDate, this.tcEndDate, this.profHourRange, 'inital set date range')
 
   constructor( public injector: Injector ) { super(injector) }
@@ -30,7 +32,7 @@ export class TcQueryService extends QueryService {
     const tcStartDate = moment(new Date( 2018, 7, 15, 0, 0, 0, 0))
     const tcEndDate = moment(new Date( 2018, 7, 17, 0, 0, 0, 0))
     const profHourRange = [-18, 18] as [number, number]
-    this.send_display_globally(true, broadcastChange)
+    this.send_global_storms_msg(true, broadcastChange)
     const selectionDateRange = this.convert_hour_range_to_date_range(tcStartDate, tcEndDate, profHourRange)
     this.send_selected_date(selectionDateRange, broadcastChange)
     this.send_tc_start_date(tcStartDate, broadcastChange)
@@ -51,6 +53,15 @@ export class TcQueryService extends QueryService {
     this.reset_params()
     this.resetToStart.emit()
     this.set_url()
+  }
+
+  public send_storm_year(stormYear: string, broadcastChange=true): void {
+    this.stormYear = stormYear
+    if (broadcastChange) { this.tcEvent.emit(stormYear)}
+  }
+
+  public get_storm_year(): string {
+    return this.stormYear
   }
 
   public set_selection_date_range(): void {
@@ -84,6 +95,7 @@ export class TcQueryService extends QueryService {
     }
     const queryParams = {
                          'includeRealtime': this.get_realtime_toggle(),
+                         'stormYear': this.get_storm_year(),
                          'onlyBGC': this.get_bgc_toggle(),
                          'onlyDeep': this.get_deep_toggle(),
                          'profHourRange': profDateRangeString,
@@ -91,7 +103,7 @@ export class TcQueryService extends QueryService {
                          'tcEndDate': tcEndDateString,
                          'selectionStartDate': this.get_selection_dates().startDate,
                          'selectionEndDate': this.get_selection_dates().endDate,
-                         'displayGlobally': this.get_display_globally(),
+                         'globalStormToggle': this.get_global_storms_toggle(),
                          'shapes': shapesString
                         }
     this.router.navigate(
@@ -102,16 +114,6 @@ export class TcQueryService extends QueryService {
       });
   }
 
-  public get_display_globally(): boolean {
-    return this.displayGlobally
-  }
-
-  public send_display_globally(displayGlobally: boolean, broadcastChange=true): void {
-    this.displayGlobally = displayGlobally
-    if (broadcastChange) { this.change.emit('displayGlobally changed')}
-  }
-
-
   public send_prof_date_range(sliderRange: [number, number], broadcastChange=true, msg=''): void {
     this.profHourRange = sliderRange
     this.selectionDateRange = this.convert_hour_range_to_date_range(this.tcStartDate, this.tcEndDate, sliderRange, msg)
@@ -120,6 +122,12 @@ export class TcQueryService extends QueryService {
 
   public get_tc_date_range(): [moment.Moment, moment.Moment] {
     return [this.tcStartDate, this.tcEndDate]
+  }
+
+  public send_tc_shape(data: number[][][], broadcastChange=true, msg='tcShape Drawn'): void {
+    this.latLngShapes = data;
+    console.log('tc shapes: ', this.latLngShapes)
+    if (msg){ this.change.emit(msg) }
   }
 
   public get_prof_date_range(): DateRange {
@@ -168,6 +176,22 @@ export class TcQueryService extends QueryService {
     return this.tcTracks
   }
 
+  public get_global_storms_toggle(): boolean {
+    return this.globalStormToggle
+  }
+
+  public send_global_storms_msg(globalStormToggle: boolean, broadcastChange=true): void {
+    this.globalStormToggle = globalStormToggle
+    if (broadcastChange) { 
+      
+      if (globalStormToggle) {
+        this.change.emit('global storms emit')}
+      else {
+        this.tcEvent.emit('showing storm only')
+      }
+    }
+  }
+
   public set_params_from_url(msg='got state from map component'): void {
     // let mapState: MapState
     this.route.queryParams.subscribe(params => {
@@ -196,13 +220,16 @@ export class TcQueryService extends QueryService {
       case 'onlyDeep': {
         const onlyDeep = JSON.parse(value)
         this.send_deep_toggle_msg(onlyDeep, notifyChange)
-        break;
+        break
       }
-      case 'displayGlobally': {
-        const displayGlobally = JSON.parse(value)
-        this.send_display_globally(displayGlobally, notifyChange)
-        break;
-
+      case 'globalStormToggle': {
+        const globalStormToggle = JSON.parse(value)
+        this.send_global_storms_msg(globalStormToggle, notifyChange)
+        break
+      }
+      case 'stormYear': {
+        this.send_storm_year(value, notifyChange)
+        break
       }
       case 'profHourRange': {
         const tcHourRange = JSON.parse(value)
@@ -237,7 +264,7 @@ export class TcQueryService extends QueryService {
       }
       default: {
         console.log('key not found. not doing anything: ', key)
-        break;
+        break
     }
   }
 }

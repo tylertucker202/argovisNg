@@ -15,11 +15,13 @@ export class StormSelectComponent implements OnInit {
   // public stormNames: string[]
   public stormControl = new FormControl();
   public stormNames: string[]
+  public stormYear: string
   public filteredStorms: Observable<string[]>
 
   constructor(private trackService: TcTrackService, private tcQueryService: TcQueryService) { }
 
   ngOnInit(): void {
+    this.stormYear = this.tcQueryService.get_storm_year()
     this.trackService.get_storm_names().subscribe((stormNames: string[])=> {
       this.stormNames = stormNames
       this.filteredStorms = this.stormControl.valueChanges
@@ -37,7 +39,7 @@ export class StormSelectComponent implements OnInit {
   }
 
   public stormChange(stormNameYear: string): void {
-    this.tcQueryService.tcEvent.emit(stormNameYear)
+    this.tcQueryService.send_storm_year(stormNameYear)
   }
 
 }

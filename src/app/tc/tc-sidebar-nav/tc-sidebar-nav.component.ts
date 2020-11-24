@@ -10,23 +10,25 @@ import { FormControl } from '@angular/forms';
 })
 export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit {
   public tcQueryService: TcQueryService
-  
+  public globalStorms: boolean
   constructor( public injector: Injector) { super(injector)
     this.tcQueryService = this.injector.get(TcQueryService) }
 
     ngOnInit() {
-
+      this.includeRT = this.queryService.get_realtime_toggle()
+      this.onlyBGC = this.queryService.get_bgc_toggle()
+      this.onlyDeep = this.queryService.get_deep_toggle()
       this.setSubscriptions()
     }
   
     setSubscriptions() {
       this.queryService.urlBuild
       .subscribe(msg => {
-        //toggle if states have changed    
+        //toggle if states have changed 
+        this.globalStorms = this.tcQueryService.get_global_storms_toggle()   
         this.includeRT = this.tcQueryService.get_realtime_toggle()
         this.onlyBGC = this.tcQueryService.get_bgc_toggle()
         this.onlyDeep = this.tcQueryService.get_deep_toggle()
-        this.threeDayToggle = this.tcQueryService.get_three_day_toggle()
         this.proj = this.tcQueryService.get_proj()
   
         let displayDate = new Date(this.tcQueryService.get_global_display_date())
@@ -41,9 +43,9 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
     this.tcQueryService.send_realtime_msg(this.includeRT);
   }
 
-  display_global_change(checked: boolean): void {
-    this.threeDayToggle = checked
-    this.tcQueryService.send_three_day_msg(this.threeDayToggle);
+  global_storms_change(checked: boolean): void {
+    this.globalStorms = checked
+    this.tcQueryService.send_global_storms_msg(this.globalStorms);
   }
 
   bgc_change(checked: boolean): void {

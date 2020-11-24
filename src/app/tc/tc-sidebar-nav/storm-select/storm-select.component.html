@@ -5,6 +5,7 @@
              aria-label="Number"
              matInput
              [formControl]="stormControl"
+             [(ngModel)]="stormYear"
              [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="stormChange($event.option.value)" >
         <mat-option *ngFor="let storm of (filteredStorms | async)" [value]="storm">

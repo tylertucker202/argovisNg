@@ -43,6 +43,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
     this.map.setView(this.startView, this.startZoom)
     this.startView = this.map.getCenter()
     this.startZoom = this.map.getZoom()
+    this.tcMapService.drawnItems.addTo(this.map) //polygons
 
     this.tcMapService.coordDisplay.addTo(this.map)
     this.tcMapService.tcTrackItems.addTo(this.map) //special shapes for track objects
@@ -53,26 +54,26 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
   public set_params_and_events(): void { //  rewritten function is called in super.ngOnInit()
     this.set_map()
-    console.log('setting params from tc map component')
     this.tcQueryService.set_params_from_url()
+    this.tcQueryService.set_url()
 
     this.tcQueryService.change
       .subscribe(msg => {
         console.log('change emitted:', msg)
-        this.tcQueryService.set_url()
         this.markersLayer.clearLayers()
         // this.tcMapService.tcTrackItems.clearLayers()
         // this.tcMapService.drawnItems.clearLayers()
+        // this.tcQueryService.clear_shapes()
         this.set_points_on_tc_map()
         this.set_tc_tracks_by_date_range()
         // this.set_mock_tc_tracks()
+        this.tcQueryService.set_url()
         })
     this.tcQueryService.clear_layers
       .subscribe( () => {
         this.markersLayer.clearLayers()
         this.tcMapService.tcTrackItems.clearLayers()
-        this.tcQueryService.clear_shapes()
-        // this.tcMapService.drawnItems.clearLayers()
+        this.tcMapService.drawnItems.clearLayers()
         this.tcQueryService.set_url()
       })
     this.tcQueryService.resetToStart
@@ -94,15 +95,18 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.tcMapService.tcTrackItems.clearLayers()
         this.tcQueryService.clear_shapes()
         this.set_tc_track_by_storm_name_year(stormNameYear)
-
+        this.tcQueryService.set_url()
 
       })
-
+      
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
         const layer = event.layer as L.Polygon<any>
-        console.log(layer.getLatLngs())
-        this.tcMapService.tcTrackItems.addLayer(layer); //show rectangles
-        // this.markersLayer.clearLayers()
+        this.markersLayer.clearLayers()
+        this.tcMapService.tcTrackItems.clearLayers()
+        this.tcMapService.markersLayer.clearLayers()
+        this.tcMapService.drawnItems.clearLayers()        
+        this.tcQueryService.clear_shapes() // only want one shape at a time
+        this.tcMapService.tcTrackItems.addLayer(layer);
         this.tcMapService.buffer_popup_window_creation(layer, this.tcMapService.drawnItems)
         const broadcast = true
         const toggleThreeDayOff = true
@@ -110,7 +114,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
         const drawnItems = this.tcMapService.drawnItems.toGeoJSON().features
         let shapes = this.tcQueryService.get_shapes_from_features(drawnItems)
         shapes = this.tcQueryService.round_shapes(shapes)
-        this.tcQueryService.send_shape(shapes, broadcast, toggleThreeDayOff)
+        this.tcQueryService.send_tc_shape(shapes, broadcast)
        });
   
       this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -159,7 +163,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
       const daterange = this.tcQueryService.get_selection_dates()
       const presRange = this.tcQueryService.get_pres_range() as [number, number]
 
-      // console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
+      console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.tcMapService.get_transformed_shape(shape)
