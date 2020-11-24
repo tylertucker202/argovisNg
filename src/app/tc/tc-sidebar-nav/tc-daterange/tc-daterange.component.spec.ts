@@ -1,23 +1,23 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MapService } from './../../../home/services/map.service';
-import { TcTrackService } from './../../tc-track.service';
-import { PopupCompileService } from './../../../home/services/popup-compile.service';
+import { MapService } from '../../../home/services/map.service';
+import { TcTrackService } from '../../tc-track.service';
+import { PopupCompileService } from '../../../home/services/popup-compile.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NotifierModule, NotifierService } from 'angular-notifier';
-import { MaterialModule } from './../../../material/material.module';
-import { TcDisplayComponent } from './tc-display.component';
+import { MaterialModule } from '../../../material/material.module';
+import { TcDaterangeComponent } from './tc-daterange.component';
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 
-describe('TcDisplayComponent', () => {
-  let component: TcDisplayComponent;
-  let fixture: ComponentFixture<TcDisplayComponent>;
+describe('TcDaterangeComponent', () => {
+  let component: TcDaterangeComponent;
+  let fixture: ComponentFixture<TcDaterangeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ 
-        TcDisplayComponent 
+        TcDaterangeComponent 
       ], 
       imports: [
         BrowserAnimationsModule,
@@ -38,7 +38,7 @@ describe('TcDisplayComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TcDisplayComponent);
+    fixture = TestBed.createComponent(TcDaterangeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

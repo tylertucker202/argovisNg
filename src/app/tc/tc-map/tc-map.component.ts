@@ -3,8 +3,9 @@ import { MapComponent } from './../../home/map/map.component'
 import { TcQueryService } from './../tc-query.service'
 import { TcMapService } from './../tc-map.service'
 import { TcTrackService } from './../tc-track.service'
-import { TcTrack, TcTrajTrack } from '../../models/tc-shape'
+import { TcTrack, TrajData } from '../../models/tc-shape'
 import { ProfilePoints } from '../../models/profile-points'
+import * as moment from 'moment'
 
 import * as L from "leaflet"
 @Component({
@@ -61,9 +62,6 @@ export class TcMapComponent extends MapComponent implements OnInit {
       .subscribe(msg => {
         console.log('change emitted:', msg)
         this.markersLayer.clearLayers()
-        // this.tcMapService.tcTrackItems.clearLayers()
-        // this.tcMapService.drawnItems.clearLayers()
-        // this.tcQueryService.clear_shapes()
         this.set_points_on_tc_map()
         if (this.tcQueryService.get_global_storms_toggle()){
           this.set_tc_tracks_by_date_range()
@@ -100,7 +98,6 @@ export class TcMapComponent extends MapComponent implements OnInit {
           this.set_tc_track_by_storm_name_year(stormNameYear)
         }
         this.tcQueryService.set_url()
-
       })
       
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
@@ -123,11 +120,6 @@ export class TcMapComponent extends MapComponent implements OnInit {
         shapes = this.tcQueryService.round_shapes(shapes)
         if (!globalStormToggle) { broadcast=false }
         this.tcQueryService.send_tc_shape(shapes, broadcast)
-        if (!globalStormToggle) {
-          // this.set_tc_track_by_storm_name_year(this.tcQueryService.get_storm_year())
-          // this.tcQueryService.tcEvent.emit('buffer drawn around storm')
-        }
-
        });
   
       this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
@@ -158,8 +150,33 @@ export class TcMapComponent extends MapComponent implements OnInit {
     const [name, year] = stormNameYear.split('-')
     const tcTrack = this.tcTrackService.get_tc_tracks_by_name_year(name, year)
     tcTrack.subscribe((tcTracks: TcTrack[]) => {
-      this.tcTrackService.add_to_track_layer(tcTracks[0], this.tcMapService.tcTrackItems)
+      const track = tcTracks[0]
+      const startDate = track.startDate
+      const endDate = track.endDate
+      this.tcQueryService.send_tc_start_date(moment.utc(startDate), false)
+      this.tcQueryService.send_tc_end_date(moment.utc(endDate), false)
+      this.tcQueryService.set_url()
+      this.tcQueryService.stormNameUpdate.emit('set_tc_track_by_storm_name_year dates set')
+      this.zoom_to_storm(track)
+      this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
     })
+  }
+
+  private zoom_to_storm(track: TcTrack): void {
+    let latMin = 999
+    let latMax = -999
+    let lonMin = 999
+    let lonMax = -999
+
+    track.traj_data.forEach( (point: TrajData) => {
+      latMin = Math.min(point.lat, latMin)
+      lonMin = Math.min(point.lon, lonMin)
+      latMax = Math.max(point.lat, latMax)
+      lonMax = Math.max(point.lon, lonMax)
+    })
+    const latLonBounds = new L.LatLngBounds([latMin, lonMin], [latMax, lonMax])
+    const options = {padding: [65,65]} as L.FitBoundsOptions
+    this.map.fitBounds(latLonBounds, options)
   }
 
   private set_tc_tracks(tcTracks: TcTrack[]) {

@@ -20,7 +20,7 @@ export class ArSidebarNavComponent extends SidebarNavComponent implements OnInit
     super.ngOnInit()
   }
 
-  setSubscriptions() {
+  set_subscriptions() {
     this.arQueryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed 

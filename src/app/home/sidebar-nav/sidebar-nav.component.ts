@@ -38,10 +38,10 @@ export class SidebarNavComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.setSubscriptions()
+    this.set_subscriptions()
   }
 
-  setSubscriptions() {
+  set_subscriptions() {
     this.queryService.urlBuild
     .subscribe(msg => {
       //toggle if states have changed    

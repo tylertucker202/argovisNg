@@ -19,10 +19,10 @@ export class TsSidebarNavComponent extends SidebarNavComponent implements OnInit
       this.onlyBGC = this.tcQueryService.get_bgc_toggle()
       this.onlyDeep = this.tcQueryService.get_deep_toggle()
       this.globalStorms = this.tcQueryService.get_global_storms_toggle()
-      this.setSubscriptions()
+      this.set_subscriptions()
     }
   
-    setSubscriptions() {
+    set_subscriptions() {
       this.tcQueryService.urlBuild
       .subscribe(msg => {
         //toggle if states have changed 

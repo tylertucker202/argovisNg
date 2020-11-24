@@ -2,12 +2,10 @@ import { StormPopupComponent } from './storm-popup/storm-popup.component';
 import { PointsService } from '../home/services/points.service';
 import { Injectable, ApplicationRef, Injector } from '@angular/core';
 import * as moment from 'moment';
-import { TcMapService } from './tc-map.service';
 import * as L from 'leaflet';
 import { Observable, of } from 'rxjs';
-import { PopupCompileService } from '../home/services/popup-compile.service';
-import { TcTrack, TcTrajTrack, TrajData } from '../models/tc-shape'
-import { carlottaTraj, carlotta } from './tc-track.parameters'
+import { TcTrack, TrajData } from '../models/tc-shape'
+import { carlotta } from './tc-track.parameters'
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +33,6 @@ export class TcTrackService extends PointsService {
     return of(carlotta);
   }
 
-  public get_mock_tc_traj(): Observable<TcTrajTrack[]> {
-    return of(carlottaTraj)
-  }
-
   public get_tc_tracks_by_date_range(startDate: moment.Moment, endDate: moment.Moment): Observable<TcTrack[]> {
     let url = `/tc/findByDateRange?startDate=${startDate.format('YYYY-MM-DDTHH:mm:ss')}&endDate=${endDate.format('YYYY-MM-DDTHH:mm:ss')}`
     return this.http.get<TcTrack[]>(url)
@@ -47,10 +41,6 @@ export class TcTrackService extends PointsService {
   public get_tc_tracks_by_name_year(name: string, year: string): Observable<TcTrack[]> {
     let url = `/tc/findByNameYear?name=${name}&year=${year}`
     return this.http.get<TcTrack[]>(url)
-  }
-
-  public get_tc_traj_tracks(url=''): Observable<TcTrajTrack[]> {
-    return this.http.get<TcTrajTrack[]>(url)
   }
 
   public get_storm_names(): Observable<string[]> {

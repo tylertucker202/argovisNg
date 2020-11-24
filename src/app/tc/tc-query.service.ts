@@ -10,6 +10,7 @@ import { TcTrack } from '../models/tc-shape'
 export class TcQueryService extends QueryService {
 
   @Output() tcEvent: EventEmitter<string> = new EventEmitter
+  @Output() stormNameUpdate: EventEmitter<string> = new EventEmitter
 
 
   private tcStartDate = moment(new Date( 2018, 7, 15, 0, 0, 0, 0))

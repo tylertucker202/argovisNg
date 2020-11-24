@@ -1,8 +1,8 @@
-import { TcTrackService } from './../../tc-track.service';
+import { TcTrackService } from '../../tc-track.service';
 import { Component, OnInit } from '@angular/core'
 import { FormControl } from '@angular/forms'
 import { TcQueryService } from '../../tc-query.service'
-import { TcMapService } from './../../tc-map.service'
+import { TcMapService } from '../../tc-map.service'
 import { NotifierService } from 'angular-notifier'
 
 import * as moment from 'moment';
@@ -13,11 +13,11 @@ export interface DropDownSelection {
 }
 
 @Component({
-  selector: 'app-tc-display',
-  templateUrl: './tc-display.component.html',
-  styleUrls: ['./tc-display.component.css']
+  selector: 'app-tc-daterange',
+  templateUrl: './tc-daterange.component.html',
+  styleUrls: ['./tc-daterange.component.css']
 })
-export class TcDisplayComponent implements OnInit {
+export class TcDaterangeComponent implements OnInit {
   
   constructor(private tcService: TcTrackService,
               private tcQueryService: TcQueryService,
@@ -54,6 +54,24 @@ export class TcDisplayComponent implements OnInit {
     this.tcQueryService.resetToStart.subscribe( (msg: string) => {
       this.reset_dates()
       this.set_tc_tracks()
+    })
+
+    // this.tcQueryService.tcEvent.subscribe( (msg: string) => {
+    //   [this.startDate, this.endDate] = this.tcQueryService.get_tc_date_range()
+    //   console.log('tc daterange tcEvent emit. startDate ', this.startDate)
+    //   this.formStartDate = new FormControl( this.startDate.toDate() )
+    //   this.formEndDate = new FormControl( this.endDate.toDate() )
+    //   this.startHour = this.startDate.hour() 
+    //   this.endHour = this.endDate.hour() 
+    // })
+
+    this.tcQueryService.stormNameUpdate.subscribe( (msg: string) =>{ 
+      [this.startDate, this.endDate] = this.tcQueryService.get_tc_date_range()
+      console.log('tc daterange tcEvent emit. startDate ', this.startDate.hour())
+      this.formStartDate = new FormControl( this.startDate.toDate() )
+      this.formEndDate = new FormControl( this.endDate.toDate() )
+      this.startHour = this.startDate.hour() 
+      this.endHour = this.endDate.hour() 
     })
   }
 
