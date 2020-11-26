@@ -1,3 +1,4 @@
+import { TcQueryService } from './tc-query.service';
 import { StormPopupComponent } from './storm-popup/storm-popup.component';
 import { PointsService } from '../home/services/points.service';
 import { Injectable, ApplicationRef, Injector } from '@angular/core';
@@ -12,10 +13,11 @@ import { carlotta } from './tc-track.parameters'
 })
 export class TcTrackService extends PointsService {
 
-  public platformProfilesSelection: any;
   public appRef: ApplicationRef;
+  public selectedTrackInfo: TcTrack
+  public selectedTrack: any;
 
-  constructor(public injector: Injector) { super(injector) }
+  constructor(public injector: Injector, public tcQueryService: TcQueryService) { super(injector) }
 
   init(appRef: ApplicationRef): void {
     this.appRef = appRef;
@@ -23,7 +25,7 @@ export class TcTrackService extends PointsService {
   }
 
   public stormIcon = L.icon({
-    iconUrl: 'assets/img/storm.png',
+    iconUrl: 'assets/img/42681-cyclone-icon.png',
     iconSize:     [24, 24], 
     iconAnchor:   [12, 12],
     popupAnchor:  [0, 0]
@@ -93,13 +95,12 @@ export class TcTrackService extends PointsService {
     }
     const source = track['source']
     let latLngs = []
-    // console.log('storm name:', name)
     for (let idx=0; idx<trajDataArr.length; ++idx) {
       const trajData = trajDataArr[idx]
       const lat = trajData['lat']
       const lon = trajData['lon']
       latLngs.push([lat, lon])
-      const date = moment(trajData['timestamp']).format('LLLL')
+      const date = moment.utc(trajData['timestamp']).format('LLLL')
       const strLatLng = this.format_lat_lng([lon, lat])
       const catagory = trajData['class']
       const geoLocation = trajData['geoLocation']
@@ -114,7 +115,8 @@ export class TcTrackService extends PointsService {
         marker.on('click', (event) => {
           marker.setPopupContent(
                 this.compileService.compile(StormPopupComponent, (c) => 
-                  { c.instance.name = name
+                  { 
+                    c.instance.name = name
                     c.instance.source = source
                     c.instance.catagory = catagory
                     c.instance.lat = strLatLng[0]
@@ -131,10 +133,22 @@ export class TcTrackService extends PointsService {
     latLngs = this.anti_meridian_transform(latLngs)
     const wrappedLatLngs = this.make_wrapped_latLngs(latLngs)
     for(let jdx = 0; jdx<wrappedLatLngs.length; jdx++){
-      const pl = L.polyline(wrappedLatLngs[jdx] as L.LatLngExpression[])
+      let pl = L.polyline(wrappedLatLngs[jdx] as L.LatLngExpression[]) as any
+      pl['name'] = name
+      pl['startDate'] = track['startDate']
+      pl['endDate'] = track['endDate']
+      pl.on('mousedown', (event) => {
+        console.log(track['startDate'], track['endDate'], track['_id'], pl._leaflet_id)
+        let lTrack = track
+        lTrack['leaflet_id'] = pl._leaflet_id
+        this.selectedTrack = lTrack
+      });
       trackLayer.addLayer(pl)
     }
     return trackLayer
+  }
+  public get_selected_track(): TcTrack {
+    return this.selectedTrack
   }
 
 }

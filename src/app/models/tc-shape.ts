@@ -6,6 +6,7 @@ export interface TcTrack {
     traj_data : TrajData[]
     startDate: Date,
     endDate: Date,
+    leaflet_id?: number
 }
 
 export interface TrajData {
@@ -21,4 +22,11 @@ export interface TrajData {
     timestamp: Date
     geoLocation: {type: string, coordinates: Array<number> };
 }
+
+export interface TcTrackInfo {
+    _id: string,
+    startDate: Date,
+    endDate: Date,
+    leaflet_id: number,
+  }
 

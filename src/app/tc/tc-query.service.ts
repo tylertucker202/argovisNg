@@ -3,13 +3,14 @@ import { QueryService } from './../home/services/query.service'
 import * as moment from 'moment'
 import { DateRange } from './../../typeings/daterange'
 import { MapState } from './../../typeings/mapState'
-import { TcTrack } from '../models/tc-shape'
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class TcQueryService extends QueryService {
 
-  @Output() tcEvent: EventEmitter<string> = new EventEmitter
+  @Output() stormSelectionEvent: EventEmitter<string> = new EventEmitter
   @Output() stormNameUpdate: EventEmitter<string> = new EventEmitter
 
 
@@ -59,7 +60,7 @@ export class TcQueryService extends QueryService {
   public send_storm_year(stormYear: string, broadcastChange=true): void {
     this.stormYear = stormYear
     this.send_global_storms_msg(false, false)
-    if (broadcastChange) { this.tcEvent.emit(stormYear)}
+    if (broadcastChange) { this.stormSelectionEvent.emit(stormYear)}
   }
 
   public get_storm_year(): string {
@@ -86,15 +87,14 @@ export class TcQueryService extends QueryService {
 
 
   public set_url(): void {
-    console.log('setting tc url')
     const profDateRangeString = JSON.stringify(this.profHourRange)
     const tcStartDateString = this.tcStartDate.format('YYYY-MM-DDTHH:mm:ss')
     const tcEndDateString = this.tcEndDate.format('YYYY-MM-DDTHH:mm:ss')
-    let shapesString = null
-     const shapes = this.get_shapes()
-     if (shapes) {
-       shapesString = JSON.stringify(shapes)
-    }
+    // let shapesString = null
+    //  const shapes = this.get_shapes()
+    //  if (shapes) {
+    //    shapesString = JSON.stringify(shapes)
+    // }
     const queryParams = {
                          'includeRealtime': this.get_realtime_toggle(),
                          'stormYear': this.get_storm_year(),
@@ -106,7 +106,7 @@ export class TcQueryService extends QueryService {
                          'selectionStartDate': this.get_selection_dates().startDate,
                          'selectionEndDate': this.get_selection_dates().endDate,
                          'globalStormToggle': this.get_global_storms_toggle(),
-                         'shapes': shapesString
+                        //  'shapes': shapesString
                         }
     this.router.navigate(
       [], 
@@ -191,7 +191,7 @@ export class TcQueryService extends QueryService {
       if (globalStormToggle) {
         this.change.emit('global storms emit')}
       else {
-        this.tcEvent.emit('showing storm only')
+        this.stormSelectionEvent.emit('showing storm only')
       }
     }
   }

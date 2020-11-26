@@ -56,9 +56,9 @@ export class TcDaterangeComponent implements OnInit {
       this.set_tc_tracks()
     })
 
-    // this.tcQueryService.tcEvent.subscribe( (msg: string) => {
+    // this.tcQueryService.stormSelectionEvent.subscribe( (msg: string) => {
     //   [this.startDate, this.endDate] = this.tcQueryService.get_tc_date_range()
-    //   console.log('tc daterange tcEvent emit. startDate ', this.startDate)
+    //   console.log('tc daterange stormSelectionEvent emit. startDate ', this.startDate)
     //   this.formStartDate = new FormControl( this.startDate.toDate() )
     //   this.formEndDate = new FormControl( this.endDate.toDate() )
     //   this.startHour = this.startDate.hour() 
@@ -67,7 +67,7 @@ export class TcDaterangeComponent implements OnInit {
 
     this.tcQueryService.stormNameUpdate.subscribe( (msg: string) =>{ 
       [this.startDate, this.endDate] = this.tcQueryService.get_tc_date_range()
-      console.log('tc daterange tcEvent emit. startDate ', this.startDate.hour())
+      console.log('tc daterange stormSelectionEvent emit. startDate ', this.startDate.hour())
       this.formStartDate = new FormControl( this.startDate.toDate() )
       this.formEndDate = new FormControl( this.endDate.toDate() )
       this.startHour = this.startDate.hour() 
@@ -135,7 +135,7 @@ export class TcDaterangeComponent implements OnInit {
   public set_tc_tracks(): void {
     this.tcQueryService.send_three_day_msg(false, false)
     // this.tcQueryService.clear_layers.emit('tc shapes being drawn')
-    // this.tcQueryService.tcEvent.emit('tc shapes being drawn')
+    // this.tcQueryService.stormSelectionEvent.emit('tc shapes being drawn')
   }
     
 

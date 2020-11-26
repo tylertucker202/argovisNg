@@ -8,6 +8,7 @@ import { ProfilePoints } from '../../models/profile-points'
 import * as moment from 'moment'
 
 import * as L from "leaflet"
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable'
 @Component({
   selector: 'app-tc-map',
   templateUrl: './tc-map.component.html',
@@ -17,7 +18,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
   private tcQueryService: TcQueryService
   private tcMapService: TcMapService
   private tcTrackService: TcTrackService
-  // public trackLayer = L.layerGroup()
+
   constructor(public injector: Injector) { super(injector)
                                            this.tcQueryService = this.injector.get(TcQueryService)
                                            this.tcMapService = this.injector.get(TcMapService)
@@ -47,7 +48,8 @@ export class TcMapComponent extends MapComponent implements OnInit {
     this.tcMapService.drawnItems.addTo(this.map) //polygons
 
     this.tcMapService.coordDisplay.addTo(this.map)
-    this.tcMapService.tcTrackItems.addTo(this.map) //special shapes for track objects
+    this.tcMapService.globalTcTracks.addTo(this.map) //special shapes for global track objects
+    this.tcMapService.selectedStorm.addTo(this.map) // selected storm has its own feature group
     this.tcMapService.scaleDisplay.addTo(this.map)
     // this.trackLayer.addTo(this.map)
     this.markersLayer.addTo(this.map)  
@@ -59,8 +61,12 @@ export class TcMapComponent extends MapComponent implements OnInit {
     this.tcQueryService.set_url()
 
     this.tcQueryService.change
-      .subscribe(msg => {
+      .subscribe((msg: string) => {
         console.log('change emitted:', msg)
+        if (msg.toLowerCase().includes('date')){ //clear tracks on date change
+          this.tcMapService.globalTcTracks.clearLayers()
+          this.tcMapService.selectedStorm.clearLayers()
+        }
         this.markersLayer.clearLayers()
         this.set_points_on_tc_map()
         if (this.tcQueryService.get_global_storms_toggle()){
@@ -72,14 +78,16 @@ export class TcMapComponent extends MapComponent implements OnInit {
     this.tcQueryService.clear_layers
       .subscribe( () => {
         this.markersLayer.clearLayers()
-        this.tcMapService.tcTrackItems.clearLayers()
+        this.tcMapService.globalTcTracks.clearLayers()
+        this.tcMapService.selectedStorm.clearLayers()
         this.tcMapService.drawnItems.clearLayers()
         this.tcQueryService.set_url()
       })
     this.tcQueryService.resetToStart
       .subscribe( () => {
         this.markersLayer.clearLayers()
-        this.tcMapService.tcTrackItems.clearLayers()
+        this.tcMapService.globalTcTracks.clearLayers()
+        this.tcMapService.selectedStorm.clearLayers()
         this.tcQueryService.clear_shapes()
         this.tcMapService.drawnItems.clearLayers()
         this.set_tc_tracks_by_date_range()
@@ -88,11 +96,12 @@ export class TcMapComponent extends MapComponent implements OnInit {
         this.tcQueryService.set_url()
 
       })
-    this.tcQueryService.tcEvent
+    this.tcQueryService.stormSelectionEvent
       .subscribe( (stormNameYear: string) => {
-        console.log('tcEvent emitted', stormNameYear)
+        console.log('stormSelectionEvent emitted', stormNameYear)
         this.markersLayer.clearLayers()
-        this.tcMapService.tcTrackItems.clearLayers()
+        this.tcMapService.selectedStorm.clearLayers()
+        this.tcMapService.globalTcTracks.clearLayers()
         this.tcQueryService.clear_shapes()
         if (stormNameYear.includes('-')) {
           this.set_tc_track_by_storm_name_year(stormNameYear)
@@ -101,17 +110,23 @@ export class TcMapComponent extends MapComponent implements OnInit {
       })
       
       this.map.on('draw:created', (event: any) => { //  had to make event any in order to deal with typings
-        const layer = event.layer as L.Polygon<any>
+        const drawnBuffer = event.layer as L.Polygon<any>
+
+        const selectedTrack = this.tcTrackService.get_selected_track()
+        this.tcQueryService.send_global_storms_msg(false, false) //drawing events always set global to false
         const globalStormToggle = this.tcQueryService.get_global_storms_toggle()
-        if (globalStormToggle) {
-          this.tcMapService.tcTrackItems.clearLayers() //do not clear the storm track item
-        }
+        if (!globalStormToggle) { this.tcMapService.globalTcTracks.clearLayers() }
+
+        this.tcMapService.selectedStorm.clearLayers()
         this.markersLayer.clearLayers()
         this.tcMapService.markersLayer.clearLayers()
-        this.tcMapService.drawnItems.clearLayers()        
+        this.tcMapService.drawnItems.clearLayers()
         this.tcQueryService.clear_shapes() // only want one shape at a time
-        this.tcMapService.tcTrackItems.addLayer(layer);
-        this.tcMapService.buffer_popup_window_creation(layer, this.tcMapService.drawnItems)
+
+        this.tcTrackService.add_to_track_layer(selectedTrack, this.tcMapService.selectedStorm)
+        this.tcMapService.globalTcTracks.addLayer(drawnBuffer);
+
+        this.tcMapService.buffer_popup_window_creation(drawnBuffer, this.tcMapService.drawnItems)
         let broadcast = true
         const toggleThreeDayOff = true
   
@@ -121,7 +136,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
         if (!globalStormToggle) { broadcast=false }
         this.tcQueryService.send_tc_shape(shapes, broadcast)
        });
-  
+
       this.map.on('draw:deleted', (event: L.DrawEvents.Deleted) => {
        });
   
@@ -155,10 +170,12 @@ export class TcMapComponent extends MapComponent implements OnInit {
       const endDate = track.endDate
       this.tcQueryService.send_tc_start_date(moment.utc(startDate), false)
       this.tcQueryService.send_tc_end_date(moment.utc(endDate), false)
+      this.tcQueryService.set_selection_date_range() //set profile query dates to hurricane
       this.tcQueryService.set_url()
       this.tcQueryService.stormNameUpdate.emit('set_tc_track_by_storm_name_year dates set')
       this.zoom_to_storm(track)
-      this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
+      // this.tcTrackService.add_to_track_layer(track, this.tcMapService.selectedStorm) // add to set times
+      this.tcTrackService.add_to_track_layer(track, this.tcMapService.globalTcTracks) // add so that you can draw buffer
     })
   }
 
@@ -181,7 +198,7 @@ export class TcMapComponent extends MapComponent implements OnInit {
 
   private set_tc_tracks(tcTracks: TcTrack[]) {
     tcTracks.forEach((track: TcTrack) => {
-      this.tcTrackService.add_to_track_layer(track, this.tcMapService.tcTrackItems)
+      this.tcTrackService.add_to_track_layer(track, this.tcMapService.globalTcTracks)
     })
   }
 
@@ -192,8 +209,6 @@ export class TcMapComponent extends MapComponent implements OnInit {
       let base = '/selection/profiles/map'
       const daterange = this.tcQueryService.get_selection_dates()
       const presRange = this.tcQueryService.get_pres_range() as [number, number]
-
-      console.log('shape', shapeArrays, 'dateRange', daterange, this.tcQueryService.get_tc_date_range(), this.tcQueryService.get_prof_hour_range() )
 
       shapeArrays.forEach( (shape) => {
         const transformedShape = this.tcMapService.get_transformed_shape(shape)

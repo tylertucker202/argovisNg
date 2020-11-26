@@ -21,27 +21,23 @@ export class TcMapService extends MapService {
 
   constructor(public injector: Injector, public tcQueryService: TcQueryService) { super(injector) }
 
-  public tcTrackItems = L.featureGroup() //non editable shapes which can be added to drawnItems.
-
+  public globalTcTracks: L.FeatureGroup = L.featureGroup() //non editable shapes which can be added to drawnItems.
+  public selectedStorm: L.FeatureGroup  = L.featureGroup()
+  
   public tcDrawOptions = {
     position: 'topleft',
-    draw: {
-      polygon: {
-          allowIntersection: <false> false,
-          shapeOptions: {
-            color: '#983fb2',
-            weight: 4
-          },
-      },
-      rectangle: <false> false,
-      polyline: <false> false,
-      lineString: <false> false,
-      marker: <false> false,
-      circlemarker: <false> false, 
-      circle: <false> false
-    },
+    // draw: {
+    //   polygon: <false> false,
+    //   rectangle: <false> false,
+    //   polyline: <false> false,
+    //   lineString: <false> false,
+    //   marker: <false> false,
+    //   circlemarker: <false> false, 
+    //   circle: <false> false
+    // },
+    draw: false,
     edit: {
-      featureGroup: this.tcTrackItems,
+      featureGroup: this.globalTcTracks,
       polygon: {
         allowIntersection: <false> false
       },
