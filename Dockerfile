@@ -11,7 +11,7 @@ RUN npm install && \
 COPY . .
 RUN npm run ng-high-memory
 #Install and run express app
-WORKDIR /usr/src/ng_argovis/backend_argovis
+WORKDIR /usr/src/ng_argovis/argovis_backend
 RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
